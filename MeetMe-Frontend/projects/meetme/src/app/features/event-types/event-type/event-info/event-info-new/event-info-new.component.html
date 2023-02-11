@@ -1,0 +1,15 @@
+<div class="page-container page-width-65p page">
+    <div class="page-header">
+        <h2>New Event!</h2>
+    </div>
+    <div class="page-body">
+        <app-event-info-form [model]="model" (dataSavedEvent)="onSaved($event)" (cancelEvent)="onCancelled()">
+        </app-event-info-form>
+    </div>
+
+    
+    <!-- <div class="page-footer">
+        <input type="button" class="btn btn-default" value="Cancel" (click)="onCancel()"/>
+        <input type="submit" class="btn btn-primary" value="Submit">
+    </div> -->
+</div>

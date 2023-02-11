@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Bookings\**" />
+    <Compile Remove="EventTypes\Queries\TimeSpots\**" />
+    <Compile Remove="EventTypes\Schedule\**" />
+    <EmbeddedResource Remove="Bookings\**" />
+    <EmbeddedResource Remove="EventTypes\Queries\TimeSpots\**" />
+    <EmbeddedResource Remove="EventTypes\Schedule\**" />
+    <None Remove="Bookings\**" />
+    <None Remove="EventTypes\Queries\TimeSpots\**" />
+    <None Remove="EventTypes\Schedule\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="10.4.0" />
+    <PackageReference Include="MediatR" Version="10.0.1" />
+    <PackageReference Include="MediatR.Extensions.FluentValidation.AspNetCore" Version="2.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Calendar\" />
+    <Folder Include="Commands\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MeetMe.Core\MeetMe.Core.csproj" />
+    <ProjectReference Include="..\MeetMe.Util\MeetMe.Util.csproj" />
+  </ItemGroup>
+
+</Project>

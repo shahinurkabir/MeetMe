@@ -1,0 +1,78 @@
+<div>
+    <ul class="list">
+        <li *ngFor="let item of eventTypeQuestions;let index=index">
+            {{item.name}}
+            <ng-container [ngSwitch]="true">
+                <ng-container *ngSwitchCase="item.questionType=='Text' ||
+                item.questionType=='MultilineText'">
+
+                </ng-container>
+                <ng-container *ngSwitchCase="item.questionType==='Compobox' ||
+                 (item.questionType==='RadioButtons')||
+                (item.questionType==='CheckBoxes')">
+                    <ul>
+                        <li *ngFor="let option of item.options;let index=index;">
+                            {{option.text}}
+                        </li>
+                    </ul>
+                </ng-container>
+
+            </ng-container>
+
+            <button (click)="onEditQuestion(item,index)">Edit</button>
+        </li>
+    </ul>
+</div>
+<div>
+    <button type="button" (click)="onAddNewQuestion()">+Question</button>
+</div>
+
+<div *ngIf="selectedQuestion!=null">
+    <form #fromQuestionDetails="ngForm">
+        <div class="form-group">
+            <label class="form-cortrol" for="name">Name</label>
+            <input type="text" name="name" [(ngModel)]="selectedQuestion.name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="required" class="form-control">
+                <input type="checkbox" name="requred" [(ngModel)]="selectedQuestion.requiredYN"
+                    class="form-control">Requred</label>
+        </div>
+        <div class="form-group">
+            <label for="questionType" class="form-control">Question Type</label>
+            <select [(ngModel)]="selectedQuestion.questionType" id="questionType" name="questionType" id=""
+                class="form-control">
+                <option value="Text">Text</option>
+                <option value="MultilineText">MultilineText</option>
+                <option value="Compobox">Compobox</option>
+                <option value="RadioButtons">RadioButtons</option>
+                <option value="CheckBoxes">CheckBoxes</option>
+            </select>
+        </div>
+        <ng-container [ngSwitch]="true">
+            <ng-container *ngSwitchCase="selectedQuestion?.questionType==null"></ng-container>
+            <ng-container *ngSwitchCase="selectedQuestion.questionType==='Compobox' ||
+             (selectedQuestion.questionType==='RadioButtons')||
+            (selectedQuestion.questionType==='CheckBoxes')">
+                <ul>
+                    <li *ngFor="let option of selectedQuestion.options;let index=index;">
+                        <input type="text" id="option-{{index}}" name="option-{{index}}"
+                            placeholder="Answer {{index+1}}" [(ngModel)]="option.text" required>
+                        <button (click)="onRemoveOption(index)">Remove</button>
+                    </li>
+                </ul>
+                <button (click)="onAddOption()">Add more option</button>
+            </ng-container>
+
+        </ng-container>
+        <div>
+            <button (click)="onCancelEditing()">Cancel</button>
+            <button (click)="onAddQuestion(fromQuestionDetails)">OK</button>
+        </div>
+    </form>
+</div>
+<hr>
+<div>
+    <button (click)="onCancelChanges()">Cancel Changes</button>
+    <button (click)="onSave()">Save</button>
+</div>

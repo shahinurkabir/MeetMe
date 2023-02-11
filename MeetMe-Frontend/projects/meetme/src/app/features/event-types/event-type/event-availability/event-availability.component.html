@@ -1,0 +1,253 @@
+<h4>Set your working hours</h4>
+<form (ngSubmit)="onSubmit(formAvailability)" #formAvailability="ngForm">
+    <datalist id="time_slots">
+        <option value="12:00am"></option>
+        <option value="12:15am"></option>
+        <option value="12:30am"></option>
+        <option value="12:45am"></option>
+        <option value="1:00am"></option>
+        <option value="1:15am"></option>
+        <option value="1:30am"></option>
+        <option value="1:45am"></option>
+        <option value="2:00am"></option>
+        <option value="2:15am"></option>
+        <option value="2:30am"></option>
+        <option value="2:45am"></option>
+        <option value="3:00am"></option>
+        <option value="3:15am"></option>
+        <option value="3:30am"></option>
+        <option value="3:45am"></option>
+        <option value="4:00am"></option>
+        <option value="4:15am"></option>
+        <option value="4:30am"></option>
+        <option value="4:45am"></option>
+        <option value="5:00am"></option>
+        <option value="5:15am"></option>
+        <option value="5:30am"></option>
+        <option value="5:45am"></option>
+        <option value="6:00am"></option>
+        <option value="6:15am"></option>
+        <option value="6:30am"></option>
+        <option value="6:45am"></option>
+        <option value="7:00am"></option>
+        <option value="7:15am"></option>
+        <option value="7:45am"></option>
+        <option value="8:00am"></option>
+        <option value="8:15am"></option>
+        <option value="8:30am"></option>
+        <option value="8:45am"></option>
+        <option value="9:00am"></option>
+        <option value="9:15am"></option>
+        <option value="9:30am"></option>
+        <option value="9:45am"></option>
+        <option value="10:00am"></option>
+        <option value="10:15am"></option>
+        <option value="10:30am"></option>
+        <option value="10:45am"></option>
+        <option value="11:00am"></option>
+        <option value="11:15am"></option>
+        <option value="11:30am"></option>
+        <option value="11:45am"></option>
+        <option value="12:00pm"></option>
+        <option value="12:00pm"></option>
+        <option value="12:15pm"></option>
+        <option value="12:30pm"></option>
+        <option value="12:45pm"></option>
+        <option value="1:00pm"></option>
+        <option value="1:15pm"></option>
+        <option value="1:30pm"></option>
+        <option value="1:45pm"></option>
+        <option value="2:00pm"></option>
+        <option value="2:15pm"></option>
+        <option value="2:30pm"></option>
+        <option value="2:45pm"></option>
+        <option value="3:00pm"></option>
+        <option value="3:15pm"></option>
+        <option value="3:30pm"></option>
+        <option value="3:45pm"></option>
+        <option value="4:00pm"></option>
+        <option value="4:15pm"></option>
+        <option value="4:30pm"></option>
+        <option value="4:45pm"></option>
+        <option value="5:00pm"></option>
+        <option value="5:15pm"></option>
+        <option value="5:30pm"></option>
+        <option value="5:45pm"></option>
+        <option value="6:00pm"></option>
+        <option value="6:15pm"></option>
+        <option value="6:30pm"></option>
+        <option value="6:45pm"></option>
+        <option value="7:00pm"></option>
+        <option value="7:15pm"></option>
+        <option value="7:45pm"></option>
+        <option value="8:00pm"></option>
+        <option value="8:15pm"></option>
+        <option value="8:30pm"></option>
+        <option value="8:45pm"></option>
+        <option value="9:00pm"></option>
+        <option value="9:15pm"></option>
+        <option value="9:30pm"></option>
+        <option value="9:45pm"></option>
+        <option value="10:00pm"></option>
+        <option value="10:15pm"></option>
+        <option value="10:30am"></option>
+        <option value="10:45am"></option>
+        <option value="11:00pm"></option>
+        <option value="11:15pm"></option>
+        <option value="11:30pm"></option>
+        <option value="11:45pm"></option>
+        <option value="12:00pm"></option>
+    </datalist>
+    <div class="form-group">
+        <label for="name">Data Range - in future*</label>
+        <input type="text" class="form-control" id="forwardDuration" required [(ngModel)]="model.forwardDurationInDays"
+            name="forwardDuration">
+    </div>
+
+    <div class="form-group">
+
+        <label for="meetingDuration">Duration:</label>
+        <select id="meetingDuration" name="meetingDuration" class="form-control"
+            (change)="onMeetingDurationChanged($event)" [(ngModel)]="model.meetingDuration">
+            <option [value]="meetingDuration.value" *ngFor="let meetingDuration of meetingDurations">
+                {{meetingDuration.text}}</option>
+        </select>
+
+    </div>
+    <h2>Time Intervals</h2>
+    <p>
+        <label for="timeZoneData">Time Zone:</label>
+        <select id="timeZoneData" name="timeZoneData" required class="form-control" [(ngModel)]="model.timeZoneId">
+            <option value="">Select</option>
+            <option [value]="timeZoneItem.id" *ngFor="let timeZoneItem of timeZoneList">
+                {{timeZoneItem.name}}</option>
+        </select>
+    </p>
+    <hr>
+    <div class="time-intervals-container">
+
+        <div class="time-intervals-weekly-container">
+            <h3>Weekly hours</h3>
+            <div *ngFor="let dailyTimeAvailabilities of weeklyTimeAvailabilities">
+                <table width="400px;">
+                    <tr>
+                        <td valign="top" style="width:15px">
+                            <input type="checkbox" id="dailyTimeAvailabilities.day" name="dailyTimeAvailabilities.day"
+                                [(ngModel)]="dailyTimeAvailabilities.isAvailable">
+                        </td>
+                        <td valign="top" style="width:150px">
+                            <div>{{dailyTimeAvailabilities.day}}</div>
+                        </td>
+                        <td style="width: 200px">
+                            <div *ngIf="!dailyTimeAvailabilities.isAvailable ">
+                                Not available
+                            </div>
+
+                            <div *ngIf="dailyTimeAvailabilities.isAvailable">
+                                <div *ngFor="let timeInterval of dailyTimeAvailabilities.intervals; let i=index">
+                                    <table>
+                                        <tr>
+                                            <td style="width: 70px;">
+                                                <input type="text"
+                                                    [id]="'startTime_'+[dailyTimeAvailabilities.day]+''+i"
+                                                    [name]="'startTime_'+[dailyTimeAvailabilities.day]+''+i"
+                                                    list="time_slots" [(ngModel)]="timeInterval.startTime" required
+                                                    (focusout)="onLostFocus($event,i,false,dailyTimeAvailabilities)">
+                                            </td>
+                                            <td>-</td>
+                                            <td style="width: 70px;">
+                                                <input type="text" list="time_slots" [(ngModel)]="timeInterval.endTime"
+                                                    [id]="'endTime_'+[dailyTimeAvailabilities.day]+''+i"
+                                                    [name]="'endTime_'+[dailyTimeAvailabilities.day]+''+i" required
+                                                    (focusout)="onLostFocus($event,i,true,dailyTimeAvailabilities)">
+                                            </td>
+                                            <td><input type="button" value="Delete"
+                                                    (click)="onRemoveTimeInterval(i,dailyTimeAvailabilities)" /></td>
+
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" *ngIf="timeInterval.errorMessage" colspan="3">
+                                                {{timeInterval.errorMessage}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </td>
+                        <td valign="top" style="width: 100px;">
+                            <input type="button" value="Add" (click)="onAddTimeInterval(dailyTimeAvailabilities)" />
+                        </td>
+                    </tr>
+                </table>
+                <hr>
+            </div>
+        </div>
+        <div class="time-intervals-date-override-container">
+            <h3>Time overrides in date</h3>
+            <button (click)="onShowCalendarWidget($event)">Override date intervals</button>
+        </div>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-success" [disabled]="!formAvailability.form.valid">Submit</button>
+    </div>
+</form>
+
+<div class="modal-override-dates">
+    <h3>Date overrides</h3>
+    <app-calender></app-calender>
+    <div class="override-time-intervals">
+        <table>
+            <tr>
+                <td style="width: 70px;">
+                    <input type="text">
+                </td>
+                <td>-</td>
+                <td style="width: 70px;">
+                    <input type="text">
+                </td>
+                <td><input type="button" value="Delete" /></td>
+
+            </tr>
+            <tr>
+                <td style="width: 70px;">
+                    <input type="text">
+                </td>
+                <td>-</td>
+                <td style="width: 70px;">
+                    <input type="text">
+                </td>
+                <td><input type="button" value="Delete" /></td>
+
+            </tr>
+            <tr>
+                <td style="width: 70px;">
+                    <input type="text">
+                </td>
+                <td>-</td>
+                <td style="width: 70px;">
+                    <input type="text">
+                </td>
+                <td><input type="button" value="Delete" /></td>
+
+            </tr>
+            <tr>
+                <td style="width: 70px;">
+                    <input type="text">
+                </td>
+                <td>-</td>
+                <td style="width: 70px;">
+                    <input type="text">
+                </td>
+                <td><input type="button" value="Delete" /></td>
+
+            </tr>
+            <tr>
+                <td colspan="3">
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="override-toolbar">
+        <button (click)="onShowCalendarWidget($event)">Cancel</button>
+        <button (click)="onShowCalendarWidget($event)">Apply</button>
+    </div>
+</div>

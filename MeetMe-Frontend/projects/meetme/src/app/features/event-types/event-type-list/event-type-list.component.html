@@ -1,0 +1,51 @@
+<div class="event-list-header">
+    <h3>All Events</h3>
+    <button class="btn btn-primary" (click)="onAddNew()"> Add Events</button>
+
+</div>
+<hr>
+<div class="event-list-container">
+    <div class="event-list-item" *ngFor="let item of listEventTypes" [ngStyle]="getDynamicStyle(item)">
+        <div class="header">
+            <h3>{{item.name}}</h3>
+            <button class="button" (click)="onEdit(item.id)">Edit</button>
+        </div>
+        <div class="time-location">
+            <span>Duration {{15}} minutes </span>
+        </div>
+        <hr>
+        <article>{{item.description}}
+
+        </article>
+        <div class="footer">
+            <button class="button">OFF</button>
+            <button class="button">Preview</button>
+        </div>
+    </div>
+</div>
+<h1> Event Type List</h1>
+<a routerLink="new">
+    Add New</a>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Event Color</th>
+            <th>Location</th>
+            <th>Slug</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of listEventTypes">
+            <td>
+                <a [routerLink]="[ item.id]">
+                    {{item.name}}</a>
+            </td>
+            <td>{{item.description}}</td>
+            <td>{{item.eventColor}}</td>
+            <td>{{item.location}}</td>
+            <td>{{item.slug}}</td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,105 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "meetme": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/meetme",
+      "sourceRoot": "projects/meetme/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/meetme",
+            "index": "projects/meetme/src/index.html",
+            "main": "projects/meetme/src/main.ts",
+            "polyfills": "projects/meetme/src/polyfills.ts",
+            "tsConfig": "projects/meetme/tsconfig.app.json",
+            "assets": [
+              "projects/meetme/src/favicon.ico",
+              "projects/meetme/src/assets"
+            ],
+            "styles": [
+              "projects/meetme/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "projects/meetme/src/environments/environment.ts",
+                  "with": "projects/meetme/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "meetme:build:production"
+            },
+            "development": {
+              "browserTarget": "meetme:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "meetme:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/meetme/src/test.ts",
+            "polyfills": "projects/meetme/src/polyfills.ts",
+            "tsConfig": "projects/meetme/tsconfig.spec.json",
+            "karmaConfig": "projects/meetme/karma.conf.js",
+            "assets": [
+              "projects/meetme/src/favicon.ico",
+              "projects/meetme/src/assets"
+            ],
+            "styles": [
+              "projects/meetme/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+  }
+}

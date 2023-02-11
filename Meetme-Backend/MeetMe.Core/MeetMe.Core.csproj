@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Interface\Persistence\**" />
+    <EmbeddedResource Remove="Interface\Persistence\**" />
+    <None Remove="Interface\Persistence\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Interface\Services\" />
+  </ItemGroup>
+
+</Project>

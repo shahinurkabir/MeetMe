@@ -1,0 +1,41 @@
+.time-intervals-container {
+    display: flex;
+    margin: 10px 0;
+}
+.time-intervals-container .time-intervals-weekly-container {
+    flex:1.5
+}
+.time-intervals-container .time-intervals-date-override-container {
+    flex:1;
+    background-color: gray;
+}
+
+.modal-override-dates {
+    position:absolute;
+    width: 400px;
+    /* min-height: 400px; */
+    left: 40%;
+    top:25%;
+    visibility:hidden;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+    z-index: 100;
+    background-color: red;
+}
+.modal-override-dates.is-open {
+    visibility: visible;
+}
+.modal-override-dates .override-toolbar{
+    display: flex;
+    padding: 15px 5px;
+    justify-content:space-evenly;
+    align-items: center;
+}
+
+.modal-override-dates .override-time-intervals {
+    padding: 10px 10px;
+    background-color: lightgray;
+    border-bottom: 1px solid gray;
+    border-top: 1px solid gray;
+}
