@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-calender',
@@ -6,7 +6,8 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
   styleUrls: ['./calender.component.scss']
 })
 export class CalenderComponent implements OnInit {
-  @Output() onClickedDay=new EventEmitter()
+  @Output() dateClicked = new EventEmitter()
+  @Input() selectedDates: { [id: string]: string } = {};
   calenderWidget: string = "";
   currentDate: Date = new Date();
   selectedMonth: number = 0
@@ -29,6 +30,7 @@ export class CalenderComponent implements OnInit {
   ];
 
   days_slot_in_month: { [id: string]: number[] } = {};
+  
 
   constructor() { }
 
@@ -37,6 +39,7 @@ export class CalenderComponent implements OnInit {
     this.selectedYear = this.currentDate.getFullYear();
     this.selectedMonth = this.currentDate.getMonth();
     this.intCalendar(this.selectedYear, this.selectedMonth);
+    this.selectedDates={};
   }
 
 
@@ -74,7 +77,7 @@ export class CalenderComponent implements OnInit {
     let weekDay = currentDate.getDay();
 
     this.selectedYearMonth = this.month_of_year[this.selectedMonth] + " " + this.selectedYear;
-    this.days_slot_in_month={};
+    this.days_slot_in_month = {};
 
     html = "<table><thead><tr>"
     this.day_of_week.forEach(dayName => {
@@ -106,7 +109,18 @@ export class CalenderComponent implements OnInit {
     this.calenderWidget = html;
   }
 
-  onClickDay(dayNo:number) {
-    this.onClickedDay.emit(dayNo);
+  onClickDay(dayNo: number) {
+
+    let shortMonth = this.month_of_year[this.selectedMonth].substring(0, 3);
+
+    let date = dayNo+ "-"+shortMonth +"-"+ this.selectedYear ;
+
+    // toggle date
+    if (this.selectedDates[date])
+      delete this.selectedDates[date]
+    else
+      this.selectedDates[date] = date;
+
+    this.dateClicked.emit(this.selectedDates);
   }
 }

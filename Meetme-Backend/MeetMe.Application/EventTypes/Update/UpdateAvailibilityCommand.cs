@@ -31,7 +31,7 @@ namespace MeetMe.Application.EventTypes.Update
         /// W:Weekday
         /// </summary>
         public string Type { get; set; } = null!;
-        public string Day { get; set; } = null!;
+        public string? Day { get; set; }
         public DateTime? Date { get; set; }
         public short StepId { get; set; }
         public double From { get; set; }

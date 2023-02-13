@@ -15,11 +15,15 @@ export class EventAvailabilityComponent implements OnInit {
   timeZoneList: TimeZoneData[] = [];
   eventTypeId: string = "";
   weekdays: string[] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  weeklyTimeAvailabilities: IDailyTimeAvailabilities[] = [];
+  weeklyTimeAvailabilities: ITimeIntervalsInDay[] = [];
   timeAvailability: EventTypeAvailability | undefined;
   model: model = this.getDefaultModel();
   meetingDurations: ListItem[] = [];
-
+  selecteDateOverrideIntervals: ITimeIntervalsInDay | undefined;
+  default_startTime_minutes = 60 * 9 // 9:00am 
+  default_endTime_Minutes = 60 * 17;// 5:00pm 
+  dateOverrideAvailability: ITimeIntervalsInDay[] = [];
+  selectedDatesFromCalender: { [id: string]: string } = {};
   constructor(
     private eventTypeService: EventTypeService,
     private timeZoneService: TimeZoneService,
@@ -43,11 +47,11 @@ export class EventAvailabilityComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onAddTimeInterval(dailyTimeAvailabilities: IDailyTimeAvailabilities) {
-    let startTime_Minutes = 60 * 9 // 9:00am 
-    let endTime_Minutes = 60 * 17;// 5:00pm 
+  onAddTimeInterval(timeInteralsInDay: ITimeIntervalsInDay) {
+    let startTime_Minutes = this.default_startTime_minutes;//  60 * 9 // 9:00am 
+    let endTime_Minutes = this.default_endTime_Minutes;// 60 * 17;// 5:00pm 
 
-    let intervals = dailyTimeAvailabilities.intervals;
+    let intervals = timeInteralsInDay.intervals;
 
     if (intervals.length > 0) {
       let lastSlot = intervals[intervals.length - 1];
@@ -62,21 +66,22 @@ export class EventAvailabilityComponent implements OnInit {
 
     }
 
-    let timeSlot: ITimeInterval = {
-      startTime: this.convertTime(startTime_Minutes),
-      startTimeInMinute: startTime_Minutes,
-      endTime: this.convertTime(endTime_Minutes),
-      endTimeInMinute: endTime_Minutes
-    };
+    // let timeSlot: ITimeInterval = {
+    //   startTime: this.convertTime(startTime_Minutes),
+    //   startTimeInMinute: startTime_Minutes,
+    //   endTime: this.convertTime(endTime_Minutes),
+    //   endTimeInMinute: endTime_Minutes
+    // };
+    let timeSlot = this.getTimeInterval(startTime_Minutes, endTime_Minutes);
 
     intervals.push(timeSlot)
 
-    dailyTimeAvailabilities.isAvailable = true;
+    timeInteralsInDay.isAvailable = true;
 
-    this.validateOverlapIntervals(dailyTimeAvailabilities);
+    this.validateOverlapIntervals(timeInteralsInDay);
   }
 
-  onRemoveTimeInterval(index: number, dailyTimeAvailabilities: IDailyTimeAvailabilities) {
+  onRemoveTimeInterval(index: number, dailyTimeAvailabilities: ITimeIntervalsInDay) {
 
     dailyTimeAvailabilities.intervals.splice(index, 1);
 
@@ -111,7 +116,6 @@ export class EventAvailabilityComponent implements OnInit {
 
   updateTimeIntervalData() {
 
-
     this.resetTimeIntervals();
 
     let timeAvailabilityInWeek = this.timeAvailability?.availabilityDetails
@@ -133,7 +137,7 @@ export class EventAvailabilityComponent implements OnInit {
     if (days <= 0) return 0;
     return days * 24;
   }
-  onLostFocus(e: Event, index: number, isEndTime: boolean, dailyTimeAvailabilities: IDailyTimeAvailabilities) {
+  onLostFocus(e: Event, index: number, isEndTime: boolean, dailyTimeAvailabilities: ITimeIntervalsInDay) {
     let htmlElement = e.target as HTMLInputElement;
     let timeValue = htmlElement.value;
     let intervalItem = dailyTimeAvailabilities.intervals[index];
@@ -221,21 +225,21 @@ export class EventAvailabilityComponent implements OnInit {
           });
       }
     }
+    // overrides intervals
+    for (let timeIntervalInDate of this.dateOverrideAvailability) {
+      for (let timeInterval of timeIntervalInDate.intervals) {
+        timeAvalabilityDetails.push(
+          {
+            type: "date",
+            stepId: 0,
+            date:new Date(timeIntervalInDate.day),
+            from: timeInterval.startTimeInMinute,
+            to: timeInterval.endTimeInMinute,
+          });
+      }
+    }
 
     let forwardDuration = parseInt(this.model.forwardDurationInDays.toString()) * (24 * 60);
-    // if (this.model.meetingDuration !== "custom") {
-    //   meetingDuration = parseInt(this.model.meetingDuration);
-    // }
-    // else {
-    //   if (this.model.meetingDurationType === 'min') {
-    //     meetingDuration = parseInt(this.model.meetingDurationCustom);
-    //   }
-    //   else { //hourly
-    //     meetingDuration = parseInt(this.model.meetingDurationCustom) * 60;
-    //   }
-    // }
-
-    // let durationKind = this.model.meetingDuration == 'custom' ? 'custom' : 'normal';
 
     let eventTypeAvailability: EventTypeAvailability = {
       id: this.eventTypeId,
@@ -253,13 +257,84 @@ export class EventAvailabilityComponent implements OnInit {
     });
 
   }
-  onShowCalendarWidget(event: any) {
+  onToggleCalendarModal(event: any) {
     event.preventDefault();
     this.toggleModalBackDrop();
     this.toggleOverrideModal();
+    this.toggleBodyScrollY();
+
+    this.selecteDateOverrideIntervals = undefined;
+    this.selectedDatesFromCalender = {};
+
+  }
+
+  onApplyCalendarDateChanges(event: any) {
+
+    event.preventDefault();
+
+    for (let date in this.selectedDatesFromCalender) {
+
+      let index = this.dateOverrideAvailability.findIndex(e => e.day == date);
+
+      if (index > -1) this.dateOverrideAvailability.splice(index, 1);
+
+      if (this.selecteDateOverrideIntervals?.intervals.length! > 0) {
+        let timeIntervalInDay: ITimeIntervalsInDay = { day: date, isAvailable: true, intervals: [] };
+
+        this.selecteDateOverrideIntervals?.intervals.forEach(interval => {
+          timeIntervalInDay.intervals.push(interval);
+        })
+        this.dateOverrideAvailability.push(timeIntervalInDay);
+      }
+    }
+
+    this.dateOverrideAvailability.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
+
+    this.onToggleCalendarModal(event);
+
+  }
+  removeOverrideData(index: number) {
+    this.dateOverrideAvailability.splice(index, 1);
+  }
+  onDateClicked(selectedDates: { [id: string]: string }) {
+
+    //this.selectedDatesFromCalender = selectedDates
+    if (this.selecteDateOverrideIntervals) return;
+
+    let timeSlot = this.getTimeInterval(this.default_startTime_minutes, this.default_endTime_Minutes)
+    this.selecteDateOverrideIntervals = { day: '', isAvailable: true, intervals: [] }
+    this.selecteDateOverrideIntervals.intervals.push(timeSlot);
+  }
+
+  toggleBodyScrollY() {
+    document.body.classList.toggle('is-modal-open')
   }
   toggleModalBackDrop() {
     document.querySelector('#modal-backdrop')?.classList.toggle('is-open')
+  }
+
+  private getTimeInterval(startTime_Minutes: number, endTime_Minutes: number): ITimeInterval {
+    let timeSlot: ITimeInterval = {
+      startTime: this.convertTime(startTime_Minutes),
+      startTimeInMinute: startTime_Minutes,
+      endTime: this.convertTime(endTime_Minutes),
+      endTimeInMinute: endTime_Minutes
+    };
+    return timeSlot;
+  }
+
+  private formatDate(date: Date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2)
+      month = '0' + month;
+    if (day.length < 2)
+      day = '0' + day;
+
+    return [year, month, day].join('-');
   }
   private toggleOverrideModal() {
     document.querySelector('.modal-override-dates')?.classList.toggle('is-open')
@@ -274,12 +349,12 @@ export class EventAvailabilityComponent implements OnInit {
     return item;
   }
 
-  private validateOverlapIntervals(dailyTimeAvailabilities: IDailyTimeAvailabilities) {
+  private validateOverlapIntervals(timeIntervalsInDay: ITimeIntervalsInDay) {
 
     // clean error message
-    dailyTimeAvailabilities.intervals.forEach(e => e.errorMessage = "");
+    timeIntervalsInDay.intervals.forEach(e => e.errorMessage = "");
 
-    let intervals = dailyTimeAvailabilities.intervals;
+    let intervals = timeIntervalsInDay.intervals;
     for (let i = 0; i < intervals.length; i++) {
       let item = intervals[i];
 
@@ -327,7 +402,7 @@ export class EventAvailabilityComponent implements OnInit {
   private resetTimeIntervals() {
     this.weeklyTimeAvailabilities = [];
     this.weekdays.forEach(weekDay => {
-      let dailyTimeAvailabilities: IDailyTimeAvailabilities = {
+      let dailyTimeAvailabilities: ITimeIntervalsInDay = {
         day: weekDay, isAvailable: true, intervals: []
       }
       this.weeklyTimeAvailabilities.push(dailyTimeAvailabilities);
@@ -345,7 +420,7 @@ export class EventAvailabilityComponent implements OnInit {
       bufferTimeBefore: 15,
       timeZoneId: 1,
       availabilityDetails: [],
-    }
+    };
     return item;
   }
   private initMeetingDurationAndTypes() {
@@ -357,7 +432,7 @@ export class EventAvailabilityComponent implements OnInit {
   }
 
 }
-export interface IDailyTimeAvailabilities {
+export interface ITimeIntervalsInDay {
   day: string,
   isAvailable: boolean
   intervals: ITimeInterval[]

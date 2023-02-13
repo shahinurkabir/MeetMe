@@ -10,6 +10,7 @@ import { EventTypeListComponent } from './event-type-list/event-type-list.compon
 import { EventInfoNewComponent } from './event-type/event-info/event-info-new/event-info-new.component';
 import { EventInfoUpdateComponent } from './event-type/event-info/event-info-update/event-info-update.component';
 import { CalenderComponent } from '../../controls/calender/calender.component';
+import { DailyTimeIntervalsComponent } from './event-type/event-availability/daily-time-intervals/daily-time-intervals.component';
 
 const routes: Route[] = [
   { path: "", component: EventTypeListComponent },
@@ -33,7 +34,8 @@ const routes: Route[] = [
         EventQuestionComponent,
         EventInfoNewComponent,
         EventInfoUpdateComponent,
-        CalenderComponent
+        CalenderComponent,
+        DailyTimeIntervalsComponent
     ],
     imports: [
         CommonModule,

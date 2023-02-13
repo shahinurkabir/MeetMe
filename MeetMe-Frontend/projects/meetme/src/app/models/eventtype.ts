@@ -40,7 +40,7 @@ export interface EventAvailabilityDetailItem {
     /// W:Weekday
     /// </summary>
     type: string,
-    day: string,
+    day?: string,
     date?: Date,
     stepId: number,
     from: number,

@@ -10,6 +10,9 @@ body {
     color: #525252;
  
 }
+body.is-modal-open {
+    overflow-y: hidden;
+}
 a {
     text-decoration: none;
 }
@@ -278,6 +281,8 @@ form .form-group textarea {
     top: 0;
     z-index: inherit;
     background-color: rgba(22,22,22,0.5);
+    background-repeat: repeat;
+
 }
 #modal-backdrop.is-open{
     display: block;
