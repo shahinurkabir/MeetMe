@@ -9,8 +9,9 @@ import { EventQuestionComponent } from './event-type/event-question/event-questi
 import { EventTypeListComponent } from './event-type-list/event-type-list.component';
 import { EventInfoNewComponent } from './event-type/event-info/event-info-new/event-info-new.component';
 import { EventInfoUpdateComponent } from './event-type/event-info/event-info-update/event-info-update.component';
-import { CalenderComponent } from '../../controls/calender/calender.component';
-import { DailyTimeIntervalsComponent } from './event-type/event-availability/daily-time-intervals/daily-time-intervals.component';
+//import { CalenderComponent } from '../../controls/calender/calender.component';
+
+//import { DailyTimeIntervalsComponent } from './event-type/event-availability/daily-time-intervals/daily-time-intervals.component';
 
 const routes: Route[] = [
   { path: "", component: EventTypeListComponent },
@@ -27,15 +28,15 @@ const routes: Route[] = [
 ]
 @NgModule({
     declarations: [
-        EventTypeListComponent,
-        EventTypeComponent,
-        EventInfoComponent,
-        EventAvailabilityComponent,
-        EventQuestionComponent,
-        EventInfoNewComponent,
-        EventInfoUpdateComponent,
-        CalenderComponent,
-        DailyTimeIntervalsComponent
+        // EventTypeListComponent,
+        // EventTypeComponent,
+        // EventInfoComponent,
+        // EventAvailabilityComponent,
+        // EventQuestionComponent,
+        // EventInfoNewComponent,
+        // EventInfoUpdateComponent,
+        //CalenderComponent,
+        //DailyTimeIntervalsComponent
     ],
     imports: [
         CommonModule,

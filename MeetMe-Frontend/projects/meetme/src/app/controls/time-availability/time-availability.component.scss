@@ -1,0 +1,92 @@
+.weekly_container {
+    display: flex;
+    width: 100%;
+}
+.weekly_container .weekly_days_container {
+    width: 60%;
+}
+.weekly_container .weekly_overrides_date_container {
+    width: 40%;
+}
+.modal-override-dates {
+    //position: absolute;
+    //width: 400px;
+    /* min-height: 400px; */
+    //left: 40%;
+    //top: 25%;
+    //visibility: hidden;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+    //z-index: 100;
+    //background-color: red;
+
+    position: absolute;
+    width: 400px;
+    left: 40%;
+    top: 25%;
+    visibility: hidden;
+    z-index: 100;
+    background-color: wheat;
+    padding: 10px 8px;
+}
+
+.modal-override-dates.is-open {
+    visibility: visible;
+}
+
+.monthly_calendar_container {
+
+}
+.monthly_calendar_container .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    padding: 15px 0px;
+    margin: 10px 0px;
+    background-color: lightgray;
+    font-size: 15px;
+
+}
+.daysInMonth {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.daysInMonth>* {
+    flex: 1 1 14%;
+
+
+}
+
+.daysInMonth .dayInMonth-item {
+    border-bottom: 1px solid gray;
+    border-right: 1px solid gray;
+    padding: 7px 5px;
+    position: relative;
+    height: 120px;
+    // margin: 1px;
+}
+.dayInMonth-item:hover {
+    background-color:rgb(218, 218, 239);
+    border:1px solid blueviolet
+}
+.daysInMonth .dayInMonth-item:nth-child(1) {
+    border-top: 1px solid greenyellow;
+}
+
+.daysInMonth .dayInMonth-item .action_buttons {
+    display: none;
+    position: absolute;
+    width: 250px;
+    left: 30px;
+    bottom: -30px;
+    z-index: 1;
+    border: 1px solid gray;
+    padding: 6px 7px;
+    background-color: lightgray;
+}
+
+.daysInMonth .dayInMonth-item .action_buttons.is_open {
+    display: block;
+}

@@ -41,7 +41,7 @@ export interface EventAvailabilityDetailItem {
     /// </summary>
     type: string,
     day?: string,
-    date?: Date,
+    date?: string,
     stepId: number,
     from: number,
     to: number

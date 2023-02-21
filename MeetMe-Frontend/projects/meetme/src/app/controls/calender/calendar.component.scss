@@ -1,0 +1,20 @@
+.calendar_control {
+    padding: 10px 7px;
+}
+// .calendar_control td, .calendar_control td{
+//     height: 45px;
+//     width: 45px; 
+// }
+.calendar_control .day{
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
+    border:1px solid wheat;
+    margin: 2px 2px;
+    cursor: pointer;
+    //color:white
+}
+.calendar_control .day.selected{
+    background-color: blue;
+    color:white
+}

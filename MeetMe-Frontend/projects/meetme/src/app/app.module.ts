@@ -11,6 +11,16 @@ import { WorkinghoursComponent } from './features/workinghours/workinghours.comp
 import { RouterModule } from '@angular/router';
 import { HttpRequestInterceptor } from './interceptors/http-interceptor';
 import { LoginComponent } from './features/users/login/login.component';
+import { AvailabilityComponent } from './features/availability/availability.component';
+import { TimeAvailabilityComponent } from './controls/time-availability/time-availability.component';
+import { CalendarComponent } from './controls/calender/calendar.component';
+import { EventTypeListComponent } from './features/event-types/event-type-list/event-type-list.component';
+import { EventAvailabilityComponent } from './features/event-types/event-type/event-availability/event-availability.component';
+import { EventInfoNewComponent } from './features/event-types/event-type/event-info/event-info-new/event-info-new.component';
+import { EventInfoUpdateComponent } from './features/event-types/event-type/event-info/event-info-update/event-info-update.component';
+import { EventInfoComponent } from './features/event-types/event-type/event-info/event-info.component';
+import { EventQuestionComponent } from './features/event-types/event-type/event-question/event-question.component';
+import { EventTypeComponent } from './features/event-types/event-type/eventtype.component';
 
 @NgModule({
     declarations: [
@@ -18,7 +28,16 @@ import { LoginComponent } from './features/users/login/login.component';
         HomeComponent,
         WorkinghoursComponent,
         LoginComponent,
-        //CalenderComponent
+        AvailabilityComponent,
+        TimeAvailabilityComponent,
+        CalendarComponent,
+        EventTypeListComponent,
+        EventTypeComponent,
+        EventInfoComponent,
+        EventAvailabilityComponent,
+        EventQuestionComponent,
+        EventInfoNewComponent,
+        EventInfoUpdateComponent,
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },

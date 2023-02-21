@@ -1,0 +1,27 @@
+<div class="calendar_control">
+    <div>
+        <button (click)="onPreviousMonth()">Back</button>
+        <button (click)="onNextMonth()">Next</button>
+        <div>{{selectedYearMonth}}</div>
+    </div>
+    <div>
+        <div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th *ngFor="let day of weekDays; let index=index;">{{day.substring(0,3)}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let daysInSlot of days_slot_in_month |keyvalue; let index=index">
+                    <td *ngFor="let weekDay of  daysInSlot.value" >
+                        <button class="day" *ngIf="weekDay.dayNo>0" [ngClass]="[weekDay.isSelected?'selected':'']" (click)="onClickDay(weekDay)">
+                            <span>{{weekDay.dayNo}}</span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

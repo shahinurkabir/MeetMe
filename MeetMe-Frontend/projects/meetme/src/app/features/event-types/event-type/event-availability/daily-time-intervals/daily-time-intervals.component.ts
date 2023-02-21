@@ -1,6 +1,6 @@
 import { outputAst } from '@angular/compiler';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ITimeIntervalsInDay } from '../event-availability.component';
+import { ITimeIntervalInDay } from '../event-availability.component';
 
 @Component({
   selector: 'app-daily-time-intervals',
@@ -8,7 +8,7 @@ import { ITimeIntervalsInDay } from '../event-availability.component';
   styleUrls: ['./daily-time-intervals.component.scss']
 })
 export class DailyTimeIntervalsComponent implements OnInit {
-  @Input() timeIntervalsInDay: ITimeIntervalsInDay | undefined;
+  @Input() timeIntervalsInDay: ITimeIntervalInDay | undefined;
   @Output() onFocusChanged = new EventEmitter();
   @Output() onIntervalRemovedEvent = new EventEmitter();
   @Output() onIntervalAddedEvent = new EventEmitter()
@@ -17,13 +17,13 @@ export class DailyTimeIntervalsComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  onLostFocus(e: Event, index: number, isEndTime: boolean, dailyTimeAvailabilities: ITimeIntervalsInDay) {
+  onLostFocus(e: Event, index: number, isEndTime: boolean, dailyTimeAvailabilities: ITimeIntervalInDay) {
     this.onFocusChanged.emit({ e, index, isEndTime, dailyTimeAvailabilities })
   }
-  onRemoveTimeInterval(i: number, timeIntervalsInDay: ITimeIntervalsInDay) {
+  onRemoveTimeInterval(i: number, timeIntervalsInDay: ITimeIntervalInDay) {
     this.onIntervalRemovedEvent.emit({ i, timeIntervalsInDay })
   }
-  onAddTimeInterval(timeIntervalsInDay: ITimeIntervalsInDay) {
+  onAddTimeInterval(timeIntervalsInDay: ITimeIntervalInDay) {
     this.onIntervalAddedEvent.emit({ timeIntervalsInDay })
   }
 }

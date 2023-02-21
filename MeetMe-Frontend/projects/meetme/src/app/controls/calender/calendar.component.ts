@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { day_of_week, month_of_year } from '../../constants/default-data';
 
 @Component({
   selector: 'app-calender',
-  templateUrl: './calender.component.html',
-  styleUrls: ['./calender.component.scss']
+  templateUrl: './calendar.component.html',
+  styleUrls: ['./calendar.component.scss']
 })
-export class CalenderComponent implements OnInit {
+export class CalendarComponent implements OnInit {
   @Output() dateClicked = new EventEmitter()
   @Input() selectedDates: { [id: string]: string } = {};
   calenderWidget: string = "";
@@ -13,24 +14,9 @@ export class CalenderComponent implements OnInit {
   selectedMonth: number = 0
   selectedYear: number = 2023
   selectedYearMonth: string = "";
-  day_of_week: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-  month_of_year: Array<string> = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "Jun",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-  ];
+  weekDays = day_of_week;
+  days_slot_in_month: { [weekNo: string]: IDay[] } = {};
 
-  days_slot_in_month: { [id: string]: number[] } = {};
-  
 
   constructor() { }
 
@@ -38,8 +24,8 @@ export class CalenderComponent implements OnInit {
     this.currentDate = new Date();
     this.selectedYear = this.currentDate.getFullYear();
     this.selectedMonth = this.currentDate.getMonth();
-    this.intCalendar(this.selectedYear, this.selectedMonth);
-    this.selectedDates={};
+    this.updateCalendar(this.selectedYear, this.selectedMonth);
+    this.selectedDates = {};
   }
 
 
@@ -51,8 +37,9 @@ export class CalenderComponent implements OnInit {
     else {
       this.selectedMonth++;
     }
-    this.intCalendar(this.selectedYear, this.selectedMonth);
+    this.updateCalendar(this.selectedYear, this.selectedMonth);
   }
+
   onPreviousMonth() {
     if (this.selectedMonth - 1 < 0) {
       this.selectedMonth = 11;
@@ -62,29 +49,31 @@ export class CalenderComponent implements OnInit {
       this.selectedMonth--;
     }
 
-    this.intCalendar(this.selectedYear, this.selectedMonth);
+    this.updateCalendar(this.selectedYear, this.selectedMonth);
+
   }
 
-
-  intCalendar(yearNo: number, monthNo: number) {
-
-
+  updateCalendar(yearNo: number, monthNo: number) {
     let html: string;
     let currentDate = new Date(yearNo, monthNo, 1);
-    let today = currentDate.getDate();
-    let month = currentDate.getMonth();
-    let year = currentDate.getFullYear();
     let weekDay = currentDate.getDay();
 
-    this.selectedYearMonth = this.month_of_year[this.selectedMonth] + " " + this.selectedYear;
+    this.selectedYearMonth = month_of_year[this.selectedMonth] + " " + this.selectedYear;
     this.days_slot_in_month = {};
 
     html = "<table><thead><tr>"
-    this.day_of_week.forEach(dayName => {
+    this.weekDays.forEach(dayName => {
       html += `<th>${dayName}</th>`
     })
 
     html += "</thead></tr>"
+    for(let i=0;i<7;i++){
+      let weekDays:IDay[]=[];
+      for (let j=0;j<6;j++) {
+        weekDays.push({ dayNo:0,isSelected:false})
+      }
+      this.days_slot_in_month[i]=weekDays;
+    }
 
     currentDate.setDate(1);
     for (let i = 0; i < weekDay; i++) {
@@ -93,27 +82,24 @@ export class CalenderComponent implements OnInit {
     let slot = 0;
     for (let i = 0; i < 31; i++) {
       if (currentDate.getDate() < i) break;
-      if (!this.days_slot_in_month[slot])
-        this.days_slot_in_month[slot] = [0, 0, 0, 0, 0, 0, 0];
+      //if (!this.days_slot_in_month[slot])
+      //  this.days_slot_in_month[slot] = [0, 0, 0, 0, 0, 0, 0];
       let weekDay = currentDate.getDay();
-      if (weekDay == 0)
-        html += "</tr><tr>"
-      this.days_slot_in_month[slot][weekDay] = (i + 1);
-      html += "<td class='aaa' (click)='function() {alert(i);}'>" + (i + 1) + "</td>"
+      this.days_slot_in_month[slot][weekDay] = {dayNo: (i + 1),isSelected:false};
       if (weekDay == 6) {
-        html += "</tr>"
         slot += 1
       }
       currentDate.setDate(currentDate.getDate() + 1)
     }
-    this.calenderWidget = html;
   }
 
-  onClickDay(dayNo: number) {
+  onClickDay(weekDay: IDay) {
 
-    let shortMonth = this.month_of_year[this.selectedMonth].substring(0, 3);
+    weekDay.isSelected=!weekDay.isSelected;
 
-    let date = dayNo+ "-"+shortMonth +"-"+ this.selectedYear ;
+    let shortMonth = month_of_year[this.selectedMonth].substring(0, 3);
+
+    let date =`${this.selectedYear}-${shortMonth}-${weekDay.dayNo}` ;
 
     // toggle date
     if (this.selectedDates[date])
@@ -123,4 +109,18 @@ export class CalenderComponent implements OnInit {
 
     this.dateClicked.emit(this.selectedDates);
   }
+
+  resetSelection(selectDay?:number) {
+    this.selectedDates={};
+    let selectedDay:IDay|undefined;
+    for (let week in this.days_slot_in_month){
+      let listDaysInWeek=this.days_slot_in_month[week];
+      listDaysInWeek.forEach(day=>day.isSelected=(day.dayNo==selectDay!));
+    }
+    if (selectDay) this.onClickDay({dayNo:selectDay!,isSelected:false})
+  }
+}
+interface IDay {
+  dayNo:number,
+  isSelected:boolean
 }

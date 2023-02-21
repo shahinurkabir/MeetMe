@@ -23,29 +23,3 @@
         </div>
     </div>
 </div>
-<h1> Event Type List</h1>
-<a routerLink="new">
-    Add New</a>
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Event Color</th>
-            <th>Location</th>
-            <th>Slug</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let item of listEventTypes">
-            <td>
-                <a [routerLink]="[ item.id]">
-                    {{item.name}}</a>
-            </td>
-            <td>{{item.description}}</td>
-            <td>{{item.eventColor}}</td>
-            <td>{{item.location}}</td>
-            <td>{{item.slug}}</td>
-        </tr>
-    </tbody>
-</table>

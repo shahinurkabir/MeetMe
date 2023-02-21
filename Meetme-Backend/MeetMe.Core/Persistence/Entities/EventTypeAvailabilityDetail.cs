@@ -12,9 +12,9 @@ namespace MeetMe.Core.Persistence.Entities
         /// D:Date
         /// W:Weekday
         /// </summary>
-        public string Type { get; set; } 
+        public string Type { get; set; } = null!;
         public string? Day { get; set; }
-        public DateTime? Date { get; set; }
+        public string? Date { get; set; }
         public short StepId { get; set; }
         public double From { get; set; }
         public double To { get; set; }
