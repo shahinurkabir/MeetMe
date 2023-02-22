@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { interval } from 'rxjs';
+import { interval, observable } from 'rxjs';
 import { day_of_week, default_endTime_Minutes, default_startTime_minutes, meeting_day_type_date, meeting_day_type_weekday, month_of_year } from '../../constants/default-data';
 import { EventAvailabilityDetailItem } from '../../models/eventtype';
 import { ITimeInterval } from '../../models/ITimeInterval';
@@ -13,7 +13,7 @@ import { CalendarComponent } from '../calender/calendar.component';
   templateUrl: './time-availability.component.html',
   styleUrls: ['./time-availability.component.scss']
 })
-export class TimeAvailabilityComponent implements OnInit, AfterViewInit{
+export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   weekDays = day_of_week;
   monthNames = month_of_year
   meetingDurations: ListItem[] = [];
@@ -25,11 +25,12 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit{
   listAvailability: EventAvailabilityDetailItem[] = [];
   viewMode: string = "list";
   calendarModalEl: Element | null = null;
+  dayConfigureModalEl: Element | null = null;
   selectedMonth: number = 0
   selectedYear: number = 2023
   selectedYearMonth: string = "";
-
-  @ViewChild(CalendarComponent) calendarComponent!:CalendarComponent;
+  selectedDayForConfigure: string = "";
+  @ViewChild(CalendarComponent) calendarComponent!: CalendarComponent;
   constructor() {
 
   }
@@ -38,56 +39,17 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit{
 
   ngOnInit(): void {
     this.calendarModalEl = document.querySelector('.modal-override-dates');
+    this.dayConfigureModalEl = document.querySelector(".modal-override-day");
     let currentDate = new Date();
     this.selectedYear = currentDate.getFullYear();
     this.selectedMonth = currentDate.getMonth();
-    this.updateTimeIntervalData();
-    this.resetMonthlyViewData();
+    this.prepareWeeklyViewData();
+    this.prepareMonthlyViewData();
   }
 
+  prepareWeeklyViewData() {
 
-  onAddTimeInterval(timeInteralsInDay: ITimeIntervalInDay) {
-    let startTime_Minutes = default_startTime_minutes;
-    let endTime_Minutes = default_endTime_Minutes;
-
-    let intervals = timeInteralsInDay.intervals;
-
-    if (intervals.length > 0) {
-      let lastSlot = intervals[intervals.length - 1];
-      startTime_Minutes = (lastSlot.endTimeInMinute + 60);
-      endTime_Minutes = startTime_Minutes + 60;
-
-      if (startTime_Minutes >= 1440)// changing pm to am
-      {
-        startTime_Minutes = 0;
-        endTime_Minutes = 60;
-      }
-
-    }
-
-    let timeSlot = this.getTimeInterval(startTime_Minutes, endTime_Minutes);
-
-    intervals.push(timeSlot)
-
-    timeInteralsInDay.isAvailable = true;
-
-    this.validateOverlapIntervals(timeInteralsInDay);
-  }
-
-  onRemoveTimeInterval(index: number, dailyTimeAvailabilities: ITimeIntervalInDay) {
-
-    dailyTimeAvailabilities.intervals.splice(index, 1);
-
-    if (dailyTimeAvailabilities.intervals.length == 0)
-      dailyTimeAvailabilities.isAvailable = false;
-
-    this.validateOverlapIntervals(dailyTimeAvailabilities);
-
-  }
-
-  updateTimeIntervalData() {
-
-    this.resetTimeIntervals();
+    this.resetWeeklyTimeIntervals();
 
     let timeAvailabilityInWeek = this.listAvailability
       .filter(e => e.type === meeting_day_type_weekday);
@@ -113,6 +75,88 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit{
     })
   }
 
+  prepareMonthlyViewData() {
+    let currntDate = new Date(this.selectedYear, this.selectedMonth, 1);
+    let firstDayOfMonth = new Date(currntDate.setDate(1));
+    let weekDay = new Date(firstDayOfMonth).getDay();
+    let beginDateInCalendarMonth = new Date(currntDate.setDate((weekDay - 1) * (-1)));
+    let dateIncremental = beginDateInCalendarMonth;
+    this.availabilityInMonth = [];
+
+    for (let i = 1; i <= 42; i++) {
+
+      let shortMonth = month_of_year[dateIncremental.getMonth()].substring(0, 3);
+
+      let dateName = `${dateIncremental.getFullYear()}-${shortMonth}-${dateIncremental.getDate()}`;
+
+      var weekdayName = day_of_week[dateIncremental.getDay()];
+      let isOverride = this.availabilityOnDateOverrides.findIndex(e => e.day == dateName) !== -1 ? true : false;
+      let intervalsInDay: ITimeInterval[] = [];
+
+      if (isOverride) {
+        intervalsInDay = this.availabilityOnDateOverrides.find(e => e.day == dateName)?.intervals!
+      }
+      else {
+        intervalsInDay = this.getTimeIntervalsByDay(dateName)!
+
+      }
+      let intervalsClone: ITimeInterval[] = [];
+      intervalsInDay.forEach(e => {
+        let item: ITimeInterval = { startTime: e.startTime, startTimeInMinute: e.startTimeInMinute, endTime: e.endTime, endTimeInMinute: e.endTimeInMinute, errorMessage: e.errorMessage }
+        intervalsClone.push(item)
+      });
+      let calendarDay: ICalendarDay = {
+        isOverride: isOverride,
+        dateString: dateName,
+        day: dateIncremental.getDate(),
+        weekDay: weekdayName,
+        intervals: intervalsClone
+      }
+      this.availabilityInMonth.push(calendarDay);
+
+      dateIncremental = new Date(dateIncremental.getFullYear(),
+        dateIncremental.getMonth(), dateIncremental.getDate() + 1);
+    }
+  }
+
+  onAddTimeInterval(timeInteralsInDay: ITimeIntervalInDay) {
+    let startTime_Minutes = default_startTime_minutes;
+    let endTime_Minutes = default_endTime_Minutes;
+
+    let intervals = timeInteralsInDay.intervals;
+
+    if (intervals.length > 0) {
+      let lastSlot = intervals[intervals.length - 1];
+      startTime_Minutes = (lastSlot.endTimeInMinute + 60);
+      endTime_Minutes = startTime_Minutes + 60;
+
+      if (startTime_Minutes >= 1440)// changing pm to am
+      {
+        startTime_Minutes = 0;
+        endTime_Minutes = 60;
+      }
+
+    }
+
+    let timeSlot = this.getTimeIntervalItem(startTime_Minutes, endTime_Minutes);
+
+    intervals.push(timeSlot)
+
+    timeInteralsInDay.isAvailable = true;
+
+    this.validateOverlapIntervals(timeInteralsInDay);
+  }
+
+  onRemoveTimeInterval(index: number, dailyTimeAvailabilities: ITimeIntervalInDay) {
+
+    dailyTimeAvailabilities.intervals.splice(index, 1);
+
+    if (dailyTimeAvailabilities.intervals.length == 0)
+      dailyTimeAvailabilities.isAvailable = false;
+
+    this.validateOverlapIntervals(dailyTimeAvailabilities);
+
+  }
 
   onLostFocus(e: Event, index: number, isEndTime: boolean, dailyTimeAvailabilities: ITimeIntervalInDay) {
     let htmlElement = e.target as HTMLInputElement;
@@ -183,22 +227,14 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit{
 
   }
 
-
-
-  onToggleCalendarModal(dateSelect?:number) {
-    //event.preventDefault();
-
-    toggleModalDialog(this.calendarModalEl);
-
-    this.selecteDateOverrideIntervals = undefined;
-    this.selectedDatesFromCalender = {};
+  onOpenCalendarModal(dateSelect?: number) {
+    //event.preventDefault();   
     //this.selectedDatesFromCalender={};
     this.calendarComponent.resetSelection(dateSelect);
+    toggleModalDialog(this.calendarModalEl);
   }
 
   onApplyCalendarDateChanges() {
-
-    //event.preventDefault();
 
     for (let date in this.selectedDatesFromCalender) {
 
@@ -218,29 +254,58 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit{
 
     this.availabilityOnDateOverrides.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
 
-    this.onToggleCalendarModal();
-
+    this.onCloseCalendarModal();
+    this.prepareMonthlyViewData();
   }
 
-  removeOverrideData(index: number) {
+  onCloseCalendarModal() {
+    this.selecteDateOverrideIntervals = undefined;
+    this.selectedDatesFromCalender = {};
+    toggleModalDialog(this.calendarModalEl);
+  }
+
+  onRemoveOverrideData(index: number) {
     this.availabilityOnDateOverrides.splice(index, 1);
   }
-  editOverrideData(index: number) {
+
+  onEditOverrideData(index: number) {
     this.selecteDateOverrideIntervals = this.availabilityOnDateOverrides[index];
-    let daySelect=new Date(this.selecteDateOverrideIntervals.day).getDate();
-    this.selecteDateOverrideIntervals=undefined;
-    this.onToggleCalendarModal(daySelect);
+    let daySelect = new Date(this.selecteDateOverrideIntervals.day).getDate();
+    this.calendarComponent.resetSelection(daySelect);
+    this.onOpenCalendarModal(daySelect);
   }
+  onEditIntervalsInDate(calendarDay: ICalendarDay) {
+    let cloneIntervals = calendarDay.intervals.slice()
+    this.selecteDateOverrideIntervals = {
+      day: calendarDay.dateString, isAvailable: true, intervals: cloneIntervals
+    };
+
+    let daySelect = new Date(calendarDay.dateString).getDate();
+    this.calendarComponent.resetSelection(daySelect);
+    this.onOpenCalendarModal(daySelect);
+  }
+
+  onEditIntervalsInDay(calendarDay: ICalendarDay) {
+    this.selecteDateOverrideIntervals = {
+      day: calendarDay.dateString, isAvailable: true, intervals: calendarDay.intervals.slice()
+    };
+    this.selectedDayForConfigure = calendarDay.weekDay;
+
+    toggleModalDialog(this.dayConfigureModalEl);
+  }
+
   onDateClicked(selectedDates: { [id: string]: string }) {
 
-    if (!selectedDates){
-      this.selecteDateOverrideIntervals=undefined;
-      return 
+    let filtered = Object.fromEntries(Object.entries(selectedDates)
+      .filter(([k, v]) => v != undefined));
+
+    if (Object.keys(filtered).length == 0) {
+      this.selecteDateOverrideIntervals?.intervals.splice(0, 100);
     }
-    //this.selectedDatesFromCalender = selectedDates
+    this.selectedDatesFromCalender = selectedDates
     if (this.selecteDateOverrideIntervals) return;
 
-    let timeSlot = this.getTimeInterval(default_startTime_minutes, default_endTime_Minutes)
+    let timeSlot = this.getTimeIntervalItem(default_startTime_minutes, default_endTime_Minutes)
     this.selecteDateOverrideIntervals = { day: '', isAvailable: true, intervals: [] }
     this.selecteDateOverrideIntervals.intervals.push(timeSlot);
 
@@ -248,8 +313,8 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit{
     for (var date in selectedDates) {
       selectedDate = date;
       let item = this.availabilityOnDateOverrides.find(e => e.day == date)
-      if (item){
-        this.selecteDateOverrideIntervals.intervals=item.intervals
+      if (item) {
+        this.selecteDateOverrideIntervals.intervals = item.intervals
       }
       break
     }
@@ -257,27 +322,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit{
 
   }
 
-  toggleBodyScrollY() {
-    document.body.classList.toggle('is-modal-open')
-  }
 
-  toggleModalBackDrop() {
-    document.querySelector('#modal-backdrop')?.classList.toggle('is-open')
-  }
-
-  private getTimeInterval(startTime_Minutes: number, endTime_Minutes: number): ITimeInterval {
-    let timeSlot: ITimeInterval = {
-      startTime: this.convertTime(startTime_Minutes),
-      startTimeInMinute: startTime_Minutes,
-      endTime: this.convertTime(endTime_Minutes),
-      endTimeInMinute: endTime_Minutes
-    };
-    return timeSlot;
-  }
-
-  private toggleOverrideModal() {
-    document.querySelector('.modal-override-dates')?.classList.toggle('is-open')
-  }
   private getTimeIntervalItem(fromTimeInMinute: number, endTimeInMinute: number): ITimeInterval {
     let item: ITimeInterval = {
       startTimeInMinute: fromTimeInMinute,
@@ -324,7 +369,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit{
   }
 
 
-  private resetTimeIntervals() {
+  private resetWeeklyTimeIntervals() {
     this.availabilityOnDateOverrides = [];
     this.availabilityInWeek = [];
     day_of_week.forEach(weekDay => {
@@ -343,44 +388,8 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit{
 
   }
 
-  resetMonthlyViewData() {
-    let currntDate = new Date(this.selectedYear, this.selectedMonth, 1);
-    let firstDayOfMonth = new Date(currntDate.setDate(1));
-    let weekDay = new Date(firstDayOfMonth).getDay();
-    let beginDateInCalendarMonth = new Date(currntDate.setDate((weekDay - 1) * (-1)));
-    let dayNoOfBeginDate = beginDateInCalendarMonth.getDate();
-    let dateIncremental = beginDateInCalendarMonth;
-    this.availabilityInMonth = [];
 
-    for (let i = 1; i <= 42; i++) {
 
-      let shortMonth = month_of_year[dateIncremental.getMonth()].substring(0, 3);
-
-      let dateName = `${dateIncremental.getFullYear()}-${shortMonth}-${dateIncremental.getDate()}`;
-
-      //let intervalInDay: ITimeIntervalInDay = { day: dateName, intervals: [], isAvailable: true };
-      var weekdayName = day_of_week[dateIncremental.getDay()];
-      let isOverride = this.availabilityOnDateOverrides.findIndex(e => e.day == dateName) !== -1 ? true : false;
-      let intervalsInDay: ITimeInterval[] = [];
-      if (isOverride) {
-        intervalsInDay = this.availabilityOnDateOverrides.find(e => e.day == dateName)?.intervals!
-      }
-      else {
-        intervalsInDay = this.getWeeklyIntervalsByDate(dateName)!
-      }
-      let calendarDay: ICalendarDay = {
-        isOverride: isOverride,
-        dateString: dateName,
-        day: dateIncremental.getDate(),
-        weekDay: weekdayName,
-        intervals: intervalsInDay
-      }
-      this.availabilityInMonth.push(calendarDay);
-
-      dateIncremental = new Date(dateIncremental.getFullYear(),
-        dateIncremental.getMonth(), dateIncremental.getDate() + 1);
-    }
-  }
   onClickCalendarDay(event: any) {
     let element = event.target.querySelector(".action_buttons");
     element.classList.toggle("is_open");
@@ -390,10 +399,11 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit{
     let element = event.target.querySelector(".action_buttons");
     element.classList.remove("is_open");
   }
-  resetView(viewMode: string) {
+  onToggleView(viewMode: string) {
     this.viewMode = viewMode;
-    this.resetMonthlyViewData();
+    this.prepareMonthlyViewData();
   }
+
   onClickPreviousMonth(event: any) {
     event.preventDefault();
     if (this.selectedMonth - 1 < 0) {
@@ -404,8 +414,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit{
       this.selectedMonth--;
     }
 
-    //this.updateTimeIntervalData();
-    this.resetMonthlyViewData();
+    this.prepareMonthlyViewData();
   }
 
   onClickNextMonth(event: any) {
@@ -418,9 +427,9 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit{
     else {
       this.selectedMonth++;
     }
-    //this.updateTimeIntervalData();
-    this.resetMonthlyViewData();
+    this.prepareMonthlyViewData();
   }
+
   isCurrentMonth(): boolean {
     let date = new Date();
     return this.selectedYear == date.getFullYear() && this.selectedMonth == date.getMonth();
@@ -428,17 +437,44 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit{
   getDay(date: string) {
     return new Date(date).getDate()
   }
-  getWeeklyIntervalsByDate(dateString: string): ITimeInterval[] | undefined {
+  getTimeIntervalsByDay(dateString: string): ITimeInterval[] | undefined {
     let date = new Date(dateString);
     let weekDay = day_of_week[date.getDay()];
 
-    let intervalsInDay = this.availabilityInWeek.find(e => e.day == weekDay);
+    let intervalsInDay = Object.assign({}, this.availabilityInWeek.find(e => e.day == weekDay));
     return intervalsInDay?.intervals;
   }
   getOverrideIntervalsByDate(dateString: string): ITimeInterval[] | undefined {
     let intervalInDate = this.availabilityOnDateOverrides.find(e => e.day == dateString);
 
     return intervalInDate?.intervals
+  }
+
+  onResetToWeeklyHours(calendarDay: ICalendarDay) {
+    let timeIntervalInDay = this.getTimeIntervalsByDay(calendarDay.dateString);
+    calendarDay.isOverride = false;
+    calendarDay.intervals = timeIntervalInDay!;
+    this.removeDayFromOverrrideList(calendarDay.dateString);
+  }
+  removeDayFromOverrrideList(dateString: string) {
+    let dateIndex = this.availabilityOnDateOverrides.findIndex(e => e.day == dateString);
+    if (dateIndex != -1) {
+      this.availabilityOnDateOverrides.splice(dateIndex, 1);
+    }
+  }
+  onCloseWeekdayConfigureModal() {
+    toggleModalDialog(this.dayConfigureModalEl)
+  }
+  onApplyWeekDayChanges() {
+    let date = new Date(this.selecteDateOverrideIntervals?.day!);
+    let weekDayName = day_of_week[date.getDay()];
+    let weekDayInvevals=this.availabilityInWeek.find(e=>e.day==weekDayName);
+    let intervals=this.selecteDateOverrideIntervals?.intervals.slice()!
+    weekDayInvevals!.intervals=intervals;
+
+    toggleModalDialog(this.dayConfigureModalEl)
+
+    this.prepareMonthlyViewData();
   }
 }
 

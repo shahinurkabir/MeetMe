@@ -18,7 +18,7 @@
     /* display: flex;
     justify-content: center;
     align-items: center; */
-    //z-index: 100;
+    //  z-index: 100;
     //background-color: red;
 
     position: absolute;
@@ -34,7 +34,19 @@
 .modal-override-dates.is-open {
     visibility: visible;
 }
-
+.modal-override-day{
+    position: absolute;
+    width: 400px;
+    left: 40%;
+    top: 25%;
+    visibility: hidden;
+    z-index: 100;
+    background-color: wheat;
+    padding: 10px 8px;
+}
+.modal-override-day.is-open {
+    visibility: visible;
+}
 .monthly_calendar_container {
 
 }

@@ -7,27 +7,24 @@ import { day_of_week, month_of_year } from '../../constants/default-data';
   styleUrls: ['./calendar.component.scss']
 })
 export class CalendarComponent implements OnInit {
-  @Output() dateClicked = new EventEmitter()
-  @Input() selectedDates: { [id: string]: string } = {};
-  calenderWidget: string = "";
-  currentDate: Date = new Date();
+  @Output() handlerDateClick = new EventEmitter()
+  @Input() selectedDates: { [id: string]: string | undefined } = {};
   selectedMonth: number = 0
   selectedYear: number = 2023
   selectedYearMonth: string = "";
   weekDays = day_of_week;
-  days_slot_in_month: { [weekNo: string]: IDay[] } = {};
+  days_in_month: { [weekNo: string]: IDay[] } = {};
 
 
   constructor() { }
 
   ngOnInit(): void {
-    this.currentDate = new Date();
-    this.selectedYear = this.currentDate.getFullYear();
-    this.selectedMonth = this.currentDate.getMonth();
-    this.updateCalendar(this.selectedYear, this.selectedMonth);
+    let currentDate = new Date();
+    this.selectedYear = currentDate.getFullYear();
+    this.selectedMonth = currentDate.getMonth();
     this.selectedDates = {};
+    this.updateCalendar(this.selectedYear, this.selectedMonth);
   }
-
 
   onNextMonth() {
     if (this.selectedMonth + 1 > 11) {
@@ -54,73 +51,80 @@ export class CalendarComponent implements OnInit {
   }
 
   updateCalendar(yearNo: number, monthNo: number) {
-    let html: string;
     let currentDate = new Date(yearNo, monthNo, 1);
-    let weekDay = currentDate.getDay();
 
     this.selectedYearMonth = month_of_year[this.selectedMonth] + " " + this.selectedYear;
-    this.days_slot_in_month = {};
+    this.days_in_month = {};
 
-    html = "<table><thead><tr>"
-    this.weekDays.forEach(dayName => {
-      html += `<th>${dayName}</th>`
-    })
-
-    html += "</thead></tr>"
-    for(let i=0;i<7;i++){
-      let weekDays:IDay[]=[];
-      for (let j=0;j<6;j++) {
-        weekDays.push({ dayNo:0,isSelected:false})
+    for (let i = 0; i < 7; i++) {
+      let weekDays: IDay[] = [];
+      for (let j = 0; j < 6; j++) {
+        weekDays.push({ dayNo: 0, isSelected: false, date: "" })
       }
-      this.days_slot_in_month[i]=weekDays;
+      this.days_in_month[i] = weekDays;
     }
 
     currentDate.setDate(1);
-    for (let i = 0; i < weekDay; i++) {
-      html += "<td></td>"
-    }
-    let slot = 0;
+
+    let weekNo = 0;
+    
     for (let i = 0; i < 31; i++) {
+      
       if (currentDate.getDate() < i) break;
-      //if (!this.days_slot_in_month[slot])
-      //  this.days_slot_in_month[slot] = [0, 0, 0, 0, 0, 0, 0];
+      
       let weekDay = currentDate.getDay();
-      this.days_slot_in_month[slot][weekDay] = {dayNo: (i + 1),isSelected:false};
+      let dayNo = i + 1
+      let shortDateString = this.getShortDateString(dayNo);
+      this.days_in_month[weekNo][weekDay] = { dayNo: dayNo, date: shortDateString, isSelected: false };
+      
       if (weekDay == 6) {
-        slot += 1
+        weekNo += 1
       }
+
       currentDate.setDate(currentDate.getDate() + 1)
+
     }
   }
 
   onClickDay(weekDay: IDay) {
 
-    weekDay.isSelected=!weekDay.isSelected;
+    weekDay.isSelected = !weekDay.isSelected;
+
+    if (this.selectedDates[weekDay.date])
+      this.selectedDates[weekDay.date] = undefined
+    else
+      this.selectedDates[weekDay.date] = weekDay.date;
+
+    this.handlerDateClick.emit(this.selectedDates);
+  }
+
+  resetSelection(defaultSelectedDay?: number) {
+
+    this.selectedDates = {};
+
+    for (let week in this.days_in_month) {
+      let listDaysInWeek = this.days_in_month[week];
+      listDaysInWeek.forEach(day => day.isSelected = (day.dayNo == defaultSelectedDay!));
+    }
+
+    if (defaultSelectedDay) {
+      let date = this.getShortDateString(defaultSelectedDay);
+      this.selectedDates[date] = date;
+      this.handlerDateClick.emit(this.selectedDates);
+    }
+  }
+
+  private getShortDateString(dayNo: number): string {
 
     let shortMonth = month_of_year[this.selectedMonth].substring(0, 3);
 
-    let date =`${this.selectedYear}-${shortMonth}-${weekDay.dayNo}` ;
+    let date = `${this.selectedYear}-${shortMonth}-${dayNo}`;
 
-    // toggle date
-    if (this.selectedDates[date])
-      delete this.selectedDates[date]
-    else
-      this.selectedDates[date] = date;
-
-    this.dateClicked.emit(this.selectedDates);
-  }
-
-  resetSelection(selectDay?:number) {
-    this.selectedDates={};
-    let selectedDay:IDay|undefined;
-    for (let week in this.days_slot_in_month){
-      let listDaysInWeek=this.days_slot_in_month[week];
-      listDaysInWeek.forEach(day=>day.isSelected=(day.dayNo==selectDay!));
-    }
-    if (selectDay) this.onClickDay({dayNo:selectDay!,isSelected:false})
+    return date;
   }
 }
 interface IDay {
-  dayNo:number,
-  isSelected:boolean
+  dayNo: number,
+  date: string,
+  isSelected: boolean
 }

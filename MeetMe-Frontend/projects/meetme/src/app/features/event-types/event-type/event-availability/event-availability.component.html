@@ -211,7 +211,7 @@
 
 <div class="modal-override-dates">
     <h3>Date overrides</h3>
-    <app-calender (dateClicked)="onDateClicked($event)" [selectedDates]="selectedDatesFromCalender"></app-calender>
+    <app-calender (handlerDateClick)="onDateClicked($event)" [selectedDates]="selectedDatesFromCalender"></app-calender>
     <div class="override-time-intervals" *ngIf="selecteDateOverrideIntervals">
         <ng-template
             *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay : selecteDateOverrideIntervals} "></ng-template>
