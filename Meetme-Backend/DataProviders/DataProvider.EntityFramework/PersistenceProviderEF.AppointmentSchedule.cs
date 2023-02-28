@@ -10,50 +10,50 @@ namespace DataProvider.EntityFramework
 {
     public partial class PersistenceProviderEF
     {
-        public async Task<bool> AddSchedule(ScheduleRule scheduleRule)
-        {
-            await bookingDbContext.AddAsync(scheduleRule);
+        //public async Task<bool> AddSchedule(Availability scheduleRule)
+        //{
+        //    await bookingDbContext.AddAsync(scheduleRule);
 
-            return true;
+        //    return true;
 
-        }
+        //}
 
-        public async Task<bool> UpdateSchedule(ScheduleRule scheduleRule)
-        {
-            bookingDbContext.Update(scheduleRule);
+        //public async Task<bool> UpdateSchedule(Availability scheduleRule)
+        //{
+        //    bookingDbContext.Update(scheduleRule);
 
-            return await Task.FromResult(true);
-        }
+        //    return await Task.FromResult(true);
+        //}
 
-        public async Task<bool> DeleteSchedule(Guid ruleId)
-        {
-            var entity = await bookingDbContext.Set<ScheduleRule>().FindAsync(ruleId);
-            var listScheduleLineItem = await bookingDbContext.Set<ScheduleRuleAttribute>().Where(e => e.RuleId == ruleId).ToListAsync();
+        //public async Task<bool> DeleteSchedule(Guid ruleId)
+        //{
+        //    var entity = await bookingDbContext.Set<Availability>().FindAsync(ruleId);
+        //    var listScheduleLineItem = await bookingDbContext.Set<AvailabilityDetail>().Where(e => e.RuleId == ruleId).ToListAsync();
 
-            bookingDbContext.RemoveRange(listScheduleLineItem);
+        //    bookingDbContext.RemoveRange(listScheduleLineItem);
 
-            bookingDbContext.Remove(entity);
+        //    bookingDbContext.Remove(entity);
 
-            return await Task.FromResult(true);
-        }
+        //    return await Task.FromResult(true);
+        //}
 
-        public async Task<List<ScheduleRule>> GetScheduleListByUserId(Guid userId)
-        {
-            var list = await bookingDbContext.Set<ScheduleRule>()
-                .Include(e => e.RuleAttributes)
-                .Where(e => e.OwnerId == userId).ToListAsync();
+        //public async Task<List<Availability>> GetScheduleListByUserId(Guid userId)
+        //{
+        //    var list = await bookingDbContext.Set<Availability>()
+        //        .Include(e => e.Details)
+        //        .Where(e => e.OwnerId == userId).ToListAsync();
 
-            return list;
-        }
+        //    return list;
+        //}
 
-        public async Task<ScheduleRule> GetScheduleById(Guid ruleId)
-        {
-            var scheduleRule = await bookingDbContext.Set<ScheduleRule>()
-                .Include(e => e.RuleAttributes)
-                .Where(e => e.Id == ruleId).FirstOrDefaultAsync();
+        //public async Task<Availability> GetScheduleById(Guid ruleId)
+        //{
+        //    var scheduleRule = await bookingDbContext.Set<Availability>()
+        //        .Include(e => e.Details)
+        //        .Where(e => e.Id == ruleId).FirstOrDefaultAsync();
 
-            return scheduleRule;
-        }
+        //    return scheduleRule;
+        //}
 
     }
 }

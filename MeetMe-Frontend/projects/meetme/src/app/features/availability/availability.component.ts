@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { TimeAvailabilityComponent } from '../../controls/time-availability/time-availability.component';
 
 @Component({
   selector: 'app-availability',
@@ -6,10 +7,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./availability.component.scss']
 })
 export class AvailabilityComponent implements OnInit {
-
+  @ViewChild(TimeAvailabilityComponent) timeAvailabilityComponent!: TimeAvailabilityComponent;
   constructor() { }
 
   ngOnInit(): void {
   }
+  onSave(event: any) {
+    event.preventDefault();
+    let availability=this.timeAvailabilityComponent.getAvailability();
 
+    console.log(availability);
+
+  }
 }

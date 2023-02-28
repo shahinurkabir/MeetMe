@@ -1,6 +1,6 @@
 <div class="calendar_control">
     <div>
-        <button (click)="onPreviousMonth()">Back</button>
+        <button [disabled]="isCurrentMonth()" (click)="onPreviousMonth()">Back</button>
         <button (click)="onNextMonth()">Next</button>
         <div>{{selectedYearMonth}}</div>
     </div>
@@ -16,7 +16,7 @@
             <tbody>
                 <tr *ngFor="let daysInSlot of days_in_month |keyvalue; let index=index">
                     <td *ngFor="let weekDay of  daysInSlot.value" >
-                        <button class="day" *ngIf="weekDay.dayNo>0" [ngClass]="[weekDay.isSelected?'selected':'']" (click)="onClickDay(weekDay)">
+                        <button [disabled]="weekDay.isPastDate" class="day" *ngIf="weekDay.dayNo>0" [ngClass]="[weekDay.isSelected?'selected':'']" (click)="onClickDay(weekDay)">
                             <span>{{weekDay.dayNo}}</span>
                         </button>
                     </td>

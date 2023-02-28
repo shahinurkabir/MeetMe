@@ -21,6 +21,7 @@ namespace DataProvider.EntityFramework
             services.AddScoped<ITimeZoneDataRepository, TimeZoneDataRepository>();
             services.AddScoped<IPersistenceProvider, PersistenceProviderEF>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
 
             return services;
 

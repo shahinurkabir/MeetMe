@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { day_of_week, month_of_year } from '../../constants/default-data';
+import { date } from '../../utils/functions/date-functions';
 
 @Component({
   selector: 'app-calender',
@@ -19,13 +20,16 @@ export class CalendarComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.init();
+  }
+  init() {
     let currentDate = new Date();
     this.selectedYear = currentDate.getFullYear();
     this.selectedMonth = currentDate.getMonth();
     this.selectedDates = {};
     this.updateCalendar(this.selectedYear, this.selectedMonth);
-  }
 
+  }
   onNextMonth() {
     if (this.selectedMonth + 1 > 11) {
       this.selectedMonth = 0;
@@ -59,7 +63,7 @@ export class CalendarComponent implements OnInit {
     for (let i = 0; i < 7; i++) {
       let weekDays: IDay[] = [];
       for (let j = 0; j < 6; j++) {
-        weekDays.push({ dayNo: 0, isSelected: false, date: "" })
+        weekDays.push({ dayNo: 0, isSelected: false, date: "",isPastDate:false })
       }
       this.days_in_month[i] = weekDays;
     }
@@ -67,16 +71,16 @@ export class CalendarComponent implements OnInit {
     currentDate.setDate(1);
 
     let weekNo = 0;
-    
+
     for (let i = 0; i < 31; i++) {
-      
+
       if (currentDate.getDate() < i) break;
-      
       let weekDay = currentDate.getDay();
       let dayNo = i + 1
       let shortDateString = this.getShortDateString(dayNo);
-      this.days_in_month[weekNo][weekDay] = { dayNo: dayNo, date: shortDateString, isSelected: false };
-      
+      let isPastDate =date.isDayPast(currentDate)
+      this.days_in_month[weekNo][weekDay] = { dayNo: dayNo, date: shortDateString, isPastDate: isPastDate, isSelected: false };
+
       if (weekDay == 6) {
         weekNo += 1
       }
@@ -98,17 +102,35 @@ export class CalendarComponent implements OnInit {
     this.handlerDateClick.emit(this.selectedDates);
   }
 
-  resetSelection(defaultSelectedDay?: number) {
+  isCurrentMonth(): boolean {
+    let date = new Date();
+    return this.selectedYear == date.getFullYear() 
+    && this.selectedMonth == date.getMonth();
+  }
+
+  resetSelection(defaultDate?: Date) {
 
     this.selectedDates = {};
+    let defaultDayNo: number | undefined = undefined;
+
+    if (defaultDate) {
+      this.selectedYear = defaultDate.getFullYear();
+      this.selectedMonth = defaultDate.getMonth();
+      defaultDayNo = defaultDate.getDate();
+      this.updateCalendar(this.selectedYear, this.selectedMonth);
+    }
+    else {
+      this.init();
+    }
+
 
     for (let week in this.days_in_month) {
       let listDaysInWeek = this.days_in_month[week];
-      listDaysInWeek.forEach(day => day.isSelected = (day.dayNo == defaultSelectedDay!));
+      listDaysInWeek.forEach(day => day.isSelected = (day.dayNo == defaultDayNo!));
     }
 
-    if (defaultSelectedDay) {
-      let date = this.getShortDateString(defaultSelectedDay);
+    if (defaultDayNo) {
+      let date = this.getShortDateString(defaultDayNo);
       this.selectedDates[date] = date;
       this.handlerDateClick.emit(this.selectedDates);
     }
@@ -122,9 +144,11 @@ export class CalendarComponent implements OnInit {
 
     return date;
   }
+  
 }
 interface IDay {
   dayNo: number,
   date: string,
+  isPastDate: boolean,
   isSelected: boolean
 }

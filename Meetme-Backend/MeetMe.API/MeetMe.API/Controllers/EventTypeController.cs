@@ -98,7 +98,7 @@ namespace MeetMe.API.Controllers
 
         [HttpPost]
         [Route("{id}/availability")]
-        public async Task<bool> UpdateAvailability(Guid id, UpdateAvailabilityCommand updateAvailabilityCommand)
+        public async Task<bool> UpdateAvailability(Guid id, UpdateEventAvailabilityCommand updateAvailabilityCommand)
         {
             var result = await mediator.Send(updateAvailabilityCommand);
 

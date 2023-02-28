@@ -29,6 +29,8 @@
   <ItemGroup>
     <Folder Include="Calendar\" />
     <Folder Include="Commands\" />
+    <Folder Include="ScheduleRules\Dtos\" />
+    <Folder Include="ScheduleRules\Extensions\" />
   </ItemGroup>
 
   <ItemGroup>
