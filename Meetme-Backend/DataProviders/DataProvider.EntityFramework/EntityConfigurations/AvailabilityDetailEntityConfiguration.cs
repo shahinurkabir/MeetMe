@@ -13,9 +13,10 @@ namespace DataProvider.EntityFramework.EntityConfigurations
         {
             builder.ToTable("AvailabilityDetail");
             builder.HasKey(e => e.Id);
+            builder.Property(e=>e.Id).ValueGeneratedOnAdd();
             builder.HasOne(e => e.Availability)
             .WithMany(m => m.Details)
-            .HasForeignKey("RuleId");
+            .HasForeignKey("AvailabilityId");
         }
     }
 }

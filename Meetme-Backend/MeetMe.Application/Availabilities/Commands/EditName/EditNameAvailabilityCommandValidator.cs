@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 using MeetMe.Core.Persistence.Entities;
 
-namespace MeetMe.Application.Availabilities.Commands.Create
+namespace MeetMe.Application.Availabilities.Commands.EditName
 {
-    public class EditNameAvailabilityCommandValidator : AbstractValidator<CreateAvailabilityCommand>
+    public class EditNameAvailabilityCommandValidator : AbstractValidator<EditAvailabilityNameCommand>
     {
         public EditNameAvailabilityCommandValidator()
         {

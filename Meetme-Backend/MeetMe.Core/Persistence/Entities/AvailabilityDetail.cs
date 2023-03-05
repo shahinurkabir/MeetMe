@@ -1,12 +1,14 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace MeetMe.Core.Persistence.Entities
 {
     public class AvailabilityDetail
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public Guid RuleId { get; set; }
+        public Guid AvailabilityId { get; set; }
 
         [JsonIgnore]
         public Availability? Availability { get; set; }

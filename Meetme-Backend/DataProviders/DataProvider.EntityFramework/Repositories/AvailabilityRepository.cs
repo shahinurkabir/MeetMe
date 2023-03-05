@@ -20,6 +20,7 @@ namespace DataProvider.EntityFramework.Repositories
         public async Task<bool> AddSchedule(Availability scheduleRule)
         {
             await bookingDbContext.AddAsync(scheduleRule);
+            bookingDbContext.SaveChanges();
 
             return true;
 
@@ -27,19 +28,24 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<bool> UpdateSchedule(Availability scheduleRule)
         {
-            bookingDbContext.Update(scheduleRule);
+            var listScheduleLineItem = await bookingDbContext.Set<AvailabilityDetail>().Where(e => e.AvailabilityId == scheduleRule.Id).ToListAsync();
 
+            bookingDbContext.RemoveRange(listScheduleLineItem);
+
+            bookingDbContext.Update(scheduleRule);
+            bookingDbContext.SaveChanges();
             return await Task.FromResult(true);
         }
 
         public async Task<bool> DeleteSchedule(Guid ruleId)
         {
             var entity = await bookingDbContext.Set<Availability>().FindAsync(ruleId);
-            var listScheduleLineItem = await bookingDbContext.Set<AvailabilityDetail>().Where(e => e.RuleId == ruleId).ToListAsync();
+            var listScheduleLineItem = await bookingDbContext.Set<AvailabilityDetail>().Where(e => e.AvailabilityId == ruleId).ToListAsync();
 
             bookingDbContext.RemoveRange(listScheduleLineItem);
 
             bookingDbContext.Remove(entity);
+            bookingDbContext.SaveChanges();
 
             return await Task.FromResult(true);
         }

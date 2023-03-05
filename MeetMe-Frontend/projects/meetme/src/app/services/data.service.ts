@@ -5,7 +5,7 @@ export abstract class DataService {
 
   constructor(protected http: HttpClient) { }
 
-  doGet(url: string, options: any): Observable<any> {
+  doGet(url: string, options?: any): Observable<any> {
     return this.http.get(url, options);
   }
 

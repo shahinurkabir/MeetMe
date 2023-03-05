@@ -7,7 +7,7 @@ namespace MeetMe.Application.Availabilities.Commands.Clone
 {
     public class CloneAvailabilityCommand : IRequest<Guid>
     {
-        public Guid AvailabilityId { get; set; }
+        public Guid Id { get; set; }
 
     }
 }

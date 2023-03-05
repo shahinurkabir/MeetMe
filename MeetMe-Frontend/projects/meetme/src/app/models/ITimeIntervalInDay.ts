@@ -2,6 +2,6 @@ import { ITimeInterval } from "./ITimeInterval"
 
 export interface ITimeIntervalInDay {
     day: string,
-    isAvailable: boolean
+    isAvailable:boolean,
     intervals: ITimeInterval[]
   }

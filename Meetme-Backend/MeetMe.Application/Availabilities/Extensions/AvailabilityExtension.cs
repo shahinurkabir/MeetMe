@@ -18,7 +18,7 @@ namespace MeetMe.Application.Availabilities.Extensions
                 var item = new AvailabilityDetail
                 {
                     Id = itemId,
-                    RuleId = scheduleRuleId,
+                    AvailabilityId = scheduleRuleId,
                     DayType = e.DayType,
                     Value = e.Value,
                     StepId = e.StepId,

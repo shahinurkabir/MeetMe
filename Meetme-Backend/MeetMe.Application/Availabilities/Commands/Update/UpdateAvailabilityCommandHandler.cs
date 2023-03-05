@@ -45,8 +45,8 @@ namespace MeetMe.Application.Availabilities.Commands.Update
             {
                 var item = new AvailabilityDetail
                 {
-                    Id = itemId,
-                    RuleId = availabilityId,
+                    //Id = itemId,
+                    AvailabilityId = availabilityId,
                     DayType = e.DayType,
                     Value = e.Value,
                     From = e.From,

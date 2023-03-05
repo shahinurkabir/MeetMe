@@ -5,6 +5,9 @@ using MeetMe.Core.Interface;
 using MeetMe.Application.Availabilities.Commands.Create;
 using MeetMe.Application.Availabilities.Commands.Update;
 using MeetMe.Application.Availabilities.Queries;
+using MeetMe.Application.Availabilities.Commands.EditName;
+using MeetMe.Application.Availabilities.Commands.Clone;
+using MeetMe.Application.Availabilities.Commands.Delete;
 
 namespace MeetMe.API.Controllers
 {
@@ -52,6 +55,24 @@ namespace MeetMe.API.Controllers
             return result;
         }
 
+        [HttpPost]
+        [Route("{id}/EditName")]
+        public async Task<bool> EditName(Guid id, EditAvailabilityNameCommand editAvailabilityNameCommand)
+        {
+            var result = await mediator.Send(editAvailabilityNameCommand);
+
+            return result;
+        }
+
+        [HttpPost]
+        [Route("{id}/clone")]
+        public async Task<Guid> Clone(Guid id, CloneAvailabilityCommand  cloneAvailabilityCommand)
+        {
+            var result = await mediator.Send(cloneAvailabilityCommand);
+
+            return result;
+        }
+
         [HttpPut]
         [Route("{id}")]
         public async Task<bool> Edit(Guid id, UpdateAvailabilityCommand updateAvailabilityCommand)
@@ -59,6 +80,14 @@ namespace MeetMe.API.Controllers
             updateAvailabilityCommand.Id = id;
 
             var result = await mediator.Send(updateAvailabilityCommand);
+
+            return result;
+        }
+        [HttpPost]
+        [Route("{id}/delete")]
+        public async Task<bool> DeleteAvailability(Guid id, DeleteAvailabilityCommand  deleteAvailabilityCommand)
+        {
+            var result = await mediator.Send(deleteAvailabilityCommand);
 
             return result;
         }

@@ -99,7 +99,8 @@
         <option value="12:00pm"></option>
     </datalist>
     <div>
-        <select id="timeZoneData" name="timeZoneData" required class="form-control" [(ngModel)]="selectedTimeZoneId">
+        <select id="timeZoneData" name="timeZoneData" required class="form-control"
+            [(ngModel)]="selectedTimeZoneId">
             <option value="">Select</option>
             <option [value]="timeZoneItem.id" *ngFor="let timeZoneItem of timeZoneList">
                 {{timeZoneItem.name}}</option>
@@ -116,7 +117,9 @@
                     <tr>
                         <td valign="top" style="width:15px">
                             <input type="checkbox" id="dailyTimeAvailabilities.day" name="dailyTimeAvailabilities.day"
-                                [(ngModel)]="dailyTimeAvailabilities.isAvailable">
+                                [checked]="dailyTimeAvailabilities.isAvailable"
+                                (click)="onWeekdaySelection(dailyTimeAvailabilities)"
+                                >
                         </td>
                         <td valign="top" style="width:150px">
                             <div>{{dailyTimeAvailabilities.day}}</div>
@@ -134,7 +137,7 @@
         </div>
         <div class="weekly_overrides_date_container">
             <h3>Time overrides in date</h3>
-            <button (click)="onOpenCalendarModal()">Override date intervals</button>
+            <button (click)="onOpenCalendarModal('modal-override-dates')">Override date intervals</button>
 
             <div *ngFor="let dailyTimeAvailabilities of availabilityOverrides;let index=index">
                 <div class="timeinterval_overrides">
@@ -165,8 +168,8 @@
             <div class="weekday-name" *ngFor="let day of weekDays;let index=index;">
                 {{day}}
             </div>
-            <div [ngClass]="dayItem.isPastDate?'past_day_calendar':''" 
-            (click)="!dayItem.isPastDate? onClickDayInMonthView($event):''"
+            <div [ngClass]="dayItem.isPastDate?'past_day_calendar':''"
+                (click)="!dayItem.isPastDate? onClickDayInMonthView($event):''"
                 (mouseleave)="onRemoveActionButtonFromCalendarDay($event)" class="dayInMonth-item"
                 *ngFor="let dayItem of availabilityInMonth; let index=index">
                 <span> {{dayItem.day}} </span>
@@ -177,8 +180,10 @@
                 </div>
                 <div class="action_buttons">
                     <input (click)="onEditAvailabilityForDate(dayItem)" type="button" value="Edit date(s)">
-                    <input (click)="onEditAvailabilityForWeekDay(dayItem)" *ngIf="!dayItem.isOverride" type="button" value='Edit all {{dayItem.weekDay}}s'>
-                    <input (click)="onResetToWeeklyHours(dayItem)" *ngIf="dayItem.isOverride" type="button" value='Reset to weekly hours'>
+                    <input (click)="onEditAvailabilityForWeekDay(dayItem)" *ngIf="!dayItem.isOverride" type="button"
+                        value='Edit all {{dayItem.weekDay}}s'>
+                    <input (click)="onResetToWeeklyHours(dayItem)" *ngIf="dayItem.isOverride" type="button"
+                        value='Reset to weekly hours'>
                 </div>
             </div>
         </div>
@@ -186,10 +191,10 @@
 
 
 </form>
-
-<div class="modal-override-dates">
+<mm-modal id="modal-override-dates">
     <h3>Date overrides</h3>
-    <app-calender (handlerDateClick)="onHandledCalendarClicked($event)" [selectedDates]="selectedDatesFromCalender"></app-calender>
+    <app-calender (handlerDateClick)="onHandledCalendarClicked($event)"
+        [selectedDates]="selectedDatesFromCalender"></app-calender>
     <div class="override-time-intervals" *ngIf="selecteDateOverride">
         <ng-template
             *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay : selecteDateOverride} "></ng-template>
@@ -198,8 +203,8 @@
         <button (click)="onCloseCalendarModal()">Cancel</button>
         <button (click)="onApplyCalendarDateChanges()">Apply</button>
     </div>
-</div>
-<div class="modal-override-day">
+</mm-modal>
+<mm-modal id="modal-override-day">
     <h3>{{selectedDayInWeek}} availability</h3>
     <div class="override-time-intervals" *ngIf="selecteDateOverride">
         <ng-template
@@ -209,7 +214,31 @@
         <button (click)="onCloseWeekdayConfigureModal()">Cancel</button>
         <button (click)="onApplyWeekDayChanges()">Apply</button>
     </div>
-</div>
+</mm-modal>
+<!-- <div class="modal-override-dates">
+    <h3>Date overrides</h3>
+    <app-calender (handlerDateClick)="onHandledCalendarClicked($event)"
+        [selectedDates]="selectedDatesFromCalender"></app-calender>
+    <div class="override-time-intervals" *ngIf="selecteDateOverride">
+        <ng-template
+            *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay : selecteDateOverride} "></ng-template>
+    </div>
+    <div class="override-toolbar">
+        <button (click)="onCloseCalendarModal()">Cancel</button>
+        <button (click)="onApplyCalendarDateChanges()">Apply</button>
+    </div>
+</div> -->
+<!-- <div class="modal-override-day">
+    <h3>{{selectedDayInWeek}} availability</h3>
+    <div class="override-time-intervals" *ngIf="selecteDateOverride">
+        <ng-template
+            *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay : selecteDateOverride} "></ng-template>
+    </div>
+    <div class="override-toolbar">
+        <button (click)="onCloseWeekdayConfigureModal()">Cancel</button>
+        <button (click)="onApplyWeekDayChanges()">Apply</button>
+    </div>
+</div> -->
 <ng-template #timeInvervalsInDayTemplate let-timeInvervalsInDay="timeInvervalsInDay">
     <div class="daily_time_interval_container">
         <div class="interval_list_grid">

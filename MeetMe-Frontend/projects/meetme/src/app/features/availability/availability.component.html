@@ -1,5 +1,19 @@
-<p>availability works!</p>
+<app-availability-list #listAvailabilityComponent (itemSelected)="onSelected($event)"></app-availability-list>
 
-<app-time-availability></app-time-availability>
+<div>
+    <h2>{{selectedAvailability?.name}}</h2>
+    <div>
+        <a href="javascript:void(0)" (click)="onClickEditName(selectedAvailability?.id!)">Edit Name</a>
+        <a href="javascript:void(0)" (click)="onClone(selectedAvailability?.id!)">Clone</a>
+        <!-- <a href="javascript:void(0)" (click)="onDefault(selectedAvailability?.id!)">Set as default</a> -->
+        <a href="javascript:void(0)" (click)="onDelete(selectedAvailability?.id!)">Delete</a>
+    </div>
+</div>
+<app-time-availability #availabilityComponent></app-time-availability>
+<input type="button" value="Save" (click)="onSave($event)">
 
-<input type="button" value="Save" (click)="onSave($event)" >
+<mm-modal id="edit-name-modal">
+    <h1>Edit Schedule Name</h1>
+    <input type="text" placeholder="name" [(ngModel)]="editName">
+    <input type="button" value="OK" (click)="onEditName()">
+</mm-modal>

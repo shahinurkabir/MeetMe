@@ -1,0 +1,13 @@
+<h2>Availability</h2>
+<div>
+    <input class="text-ellipsis" *ngFor="let item of listAvailability;let index=index" type="button" [value]="item.name"
+        (click)="onSelectItem(item)">
+    <input class="text-ellipsis" type="button" value="+ New Availability" (click)="onShowAddNewModal()">
+</div>
+<HR>
+
+<mm-modal id="new-availability-modal">
+    <h1>New Availability</h1>
+    <input type="text" placeholder="name" [(ngModel)]="newAvailabilityName">
+    <input type="button" value="OK" (click)="onAddNew()">
+</mm-modal>

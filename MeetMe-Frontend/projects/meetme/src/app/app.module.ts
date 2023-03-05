@@ -21,6 +21,8 @@ import { EventInfoUpdateComponent } from './features/event-types/event-type/even
 import { EventInfoComponent } from './features/event-types/event-type/event-info/event-info.component';
 import { EventQuestionComponent } from './features/event-types/event-type/event-question/event-question.component';
 import { EventTypeComponent } from './features/event-types/event-type/eventtype.component';
+import { AvailabilityListComponent } from './features/availability/availability-list/availability-list.component';
+import { ModalComponent } from './controls/modal/modal.component';
 
 @NgModule({
     declarations: [
@@ -38,6 +40,8 @@ import { EventTypeComponent } from './features/event-types/event-type/eventtype.
         EventQuestionComponent,
         EventInfoNewComponent,
         EventInfoUpdateComponent,
+        AvailabilityListComponent,
+        ModalComponent,
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },
