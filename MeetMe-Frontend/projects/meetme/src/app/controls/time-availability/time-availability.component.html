@@ -185,23 +185,34 @@
             </div>
             <button [disabled]="dayItem.isPastDate" (click)="!dayItem.isPastDate? onClickDayInMonthView($event):''"
                 (mouseleave)="onRemoveActionButtonFromCalendarDay($event)" class="dayInMonth-item"
-                
-                *ngFor="let dayItem of availabilityInMonth; let index=index">
+                *ngFor="let dayItem of availabilityInMonth; let index=index"
+                [ngClass]="dayItem.isOverride?'override_interval':''">
                 <div class="heading">
                     <div class="weekday_name"> {{dayItem.day}} </div>
-                    <div><i class="fa fa-angle-left"></i></div>
+                    <div>
+                        <i style="
+                        background-color: cornflowerblue;
+                        border: 1px solid orangered;" *ngIf="dayItem.isOverride" class="fa-solid fa-calendar-week"></i>
+                        <i *ngIf="!dayItem.isOverride" class="fa-solid fa-retweet"></i>
+                    </div>
                 </div>
                 <div role="button" class="weekly_intervals">
-                    <span role="button" *ngFor="let item of dayItem.intervals">
+                    <span role="button" *ngFor="let item of dayItem.intervals.slice(0,3);let index=index">
                         {{item.startTime}} - {{item.endTime}}
                     </span>
+                    <div *ngIf="dayItem.intervals.length>3">
+                       <strong> + {{dayItem.intervals.length-3}} more item {{dayItem.intervals.length-3>1?'s':''}}</strong>
+                    </div>
                 </div>
                 <div class="action_buttons">
-                    <input (click)="onEditAvailabilityForDate(dayItem)" type="button" value="Edit date(s)">
-                    <input (click)="onEditAvailabilityForWeekDay(dayItem)" *ngIf="!dayItem.isOverride" type="button"
-                        value='Edit all {{dayItem.weekDay}}s'>
-                    <input (click)="onResetToWeeklyHours(dayItem)" *ngIf="dayItem.isOverride" type="button"
-                        value='Reset to weekly hours'>
+                    <ul class="dropdown_menu">
+                        <li (click)="onEditAvailabilityForDate(dayItem)"><i
+                                class="fa-solid fa-calendar-week"></i><span>Edit date(s)</span></li>
+                        <li (click)="onEditAvailabilityForWeekDay(dayItem)" *ngIf="!dayItem.isOverride"><i
+                                class="fa-solid fa-retweet"></i><span>Edit all {{dayItem.weekDay}}s</span></li>
+                        <li (click)="onResetToWeeklyHours(dayItem)" *ngIf="dayItem.isOverride"><i
+                                class="fa-solid fa-rotate-left"></i><span>Reset to weekly hours</span></li>
+                    </ul>
                 </div>
             </button>
         </div>
@@ -209,10 +220,8 @@
 
 
 </form>
-<mm-modal id="modal-override-dates" title="Date overrride intervals"
-(cancelEvent)="onCloseCalendarModal()"
-(confirmEvent)="onApplyCalendarDateChanges()"
->
+<mm-modal id="modal-override-dates" title="Date overrride intervals" (cancelEvent)="onCloseCalendarModal()"
+    (confirmEvent)="onApplyCalendarDateChanges()">
     <app-calender (handlerDateClick)="onHandledCalendarClicked($event)"
         [selectedDates]="selectedDatesFromCalender"></app-calender>
     <div class="override_date_intervals" *ngIf="selecteDateOverride">
@@ -224,11 +233,8 @@
         <button (click)="onApplyCalendarDateChanges()">Apply</button>
     </div> -->
 </mm-modal>
-<mm-modal id="modal-override-day" 
-title="{{selectedDayInWeek}} availability"
-(cancelEvent)="onCloseWeekdayConfigureModal()"
-(confirmEvent)="onApplyWeekDayChanges()"
->
+<mm-modal id="modal-override-day" title="{{selectedDayInWeek}} availability"
+    (cancelEvent)="onCloseWeekdayConfigureModal()" (confirmEvent)="onApplyWeekDayChanges()">
     <!-- <h3>{{selectedDayInWeek}} availability</h3> -->
     <div class="override_date_intervals" *ngIf="selecteDateOverride">
         <ng-template

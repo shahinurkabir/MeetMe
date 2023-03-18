@@ -22,6 +22,7 @@
 
 }
 
+
 .toggle_interval .toggle_interval_button {
     border: 1px solid lightgray;
     background-color: white;
@@ -191,6 +192,9 @@
     // margin: 1px;
 }
 
+.daysInMonth .dayInMonth-item.override_interval {
+    border-top: 2px solid blue;
+}
 .daysInMonth .dayInMonth-item .heading {
     display: flex;
     justify-content: space-between;
@@ -200,7 +204,7 @@
 
 .daysInMonth .dayInMonth-item:hover:not([disabled]) {
     background-color: rgb(218, 218, 239);
-    border:2px solid blue;
+    border: 2px solid blue;
 }
 
 .daysInMonth .dayInMonth-item:hover:disabled {
@@ -214,14 +218,38 @@
 .daysInMonth .dayInMonth-item .action_buttons {
     display: none;
     position: absolute;
-    width: 250px;
+    width: 200px;
     left: 30px;
     bottom: -30px;
     z-index: 1;
-    border: 1px solid gray;
-    padding: 6px 7px;
-    background-color: lightgray;
 }
+
+.action_buttons .dropdown_menu {
+    list-style-type: none;
+    display: flex;
+    flex-flow: column;
+    background-color: whitesmoke;
+    border: 1px solid lightgray;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+
+}
+
+
+.dropdown_menu li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown_menu li:hover {
+    opacity: .7;
+}
+
+.dropdown_menu li i {
+    padding-right: 10px;
+}
+
+// end drop down menu
 
 .daysInMonth .dayInMonth-item .action_buttons.is_open {
     display: block;

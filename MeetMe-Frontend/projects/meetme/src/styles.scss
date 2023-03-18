@@ -372,33 +372,3 @@ form .form-group textarea {
 // End Event colors
 
 
-//Drop down menu
-.dropdown_menu_container {
-    list-style-type: none;
-    display: flex;
-    flex-flow: column;
-    position: absolute;
-    top: 41px;
-    right: 0;
-    background-color: whitesmoke;
-    padding: 7px;
-    border: 1px solid lightgray;
-    padding: 10px 20px;
-
-}
-
-
-.dropdown_menu_container li {
-    padding: 10px;
-    min-width: 150px;
-    display: block;
-    cursor: pointer;
-}
-.dropdown_menu_container li:hover {
-    opacity: .7;
-}
-.dropdown_menu_container li i {
-padding-right: 10px;
-}
-
-// end drop down menu

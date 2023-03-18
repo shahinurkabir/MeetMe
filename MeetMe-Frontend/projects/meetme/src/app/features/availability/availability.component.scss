@@ -35,3 +35,31 @@
 .overview .gear i:hover {
     color:gray;
 }
+
+//Drop down menu
+.availibility_item_toolbar {
+    list-style-type: none;
+    display: flex;
+    flex-flow: column;
+    position: absolute;
+    top: 41px;
+    right: 0;
+    background-color: whitesmoke;
+    border: 1px solid lightgray;
+    padding: 7px 20px;
+
+}
+
+
+.availibility_item_toolbar li {
+    padding: 10px;
+    cursor: pointer;
+}
+.availibility_item_toolbar li:hover {
+    opacity: .7;
+}
+.availibility_item_toolbar li i {
+padding-right: 10px;
+}
+
+// end drop down menu
