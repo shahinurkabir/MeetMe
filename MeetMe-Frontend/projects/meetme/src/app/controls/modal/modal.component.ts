@@ -1,14 +1,18 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ModalService } from './modalService';
 
 @Component({
-  selector: 'mm-modal',
-  templateUrl: './modal.component.html',
-  styleUrls: ['./modal.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'mm-modal',
+    templateUrl: './modal.component.html',
+    styleUrls: ['./modal.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
-  export class ModalComponent implements OnInit, OnDestroy {
+export class ModalComponent implements OnInit, OnDestroy {
     @Input() id?: string;
+    @Input() title?: string;
+    @Output() confirmEvent = new EventEmitter<any>();
+    @Output() cancelEvent = new EventEmitter<any>();
+
     isOpen = false;
     private element: any;
 
@@ -49,5 +53,12 @@ import { ModalService } from './modalService';
         this.element.style.display = 'none';
         document.body.classList.remove('mm-modal-open');
         this.isOpen = false;
+    }
+
+    onCancel() {
+        this.cancelEvent.emit()
+    }
+    onConfirm() {
+        this.confirmEvent.emit();
     }
 }

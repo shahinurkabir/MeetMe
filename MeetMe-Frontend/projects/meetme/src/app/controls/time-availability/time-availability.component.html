@@ -1,4 +1,3 @@
-<h4>Set your working hours</h4>
 <form #formAvailability="ngForm">
     <datalist id="time_slots">
         <option value="12:00am"></option>
@@ -98,22 +97,37 @@
         <option value="11:45pm"></option>
         <option value="12:00pm"></option>
     </datalist>
-    <div>
-        <select id="timeZoneData" name="timeZoneData" required class="form-control"
-            [(ngModel)]="selectedTimeZoneId">
+    <h3>Time Zone</h3>
+    <div class="section_overview">
+        <select id="timeZoneData" name="timeZoneData" required class="form-control" [(ngModel)]="selectedTimeZoneId">
             <option value="">Select</option>
             <option [value]="timeZoneItem.id" *ngFor="let timeZoneItem of timeZoneList">
                 {{timeZoneItem.name}}</option>
         </select>
-        <input type="button" value="List view" (click)="onToggleView('list')">
-        <input type="button" value="Monthly view" (click)="onToggleView('monthly')">
+        <div class="toggle_interval">
+            <button [ngClass]="viewMode==='list'?'toggle_interval_button':''" (click)="onToggleView('list')">List
+                view</button>
+            <button [ngClass]="viewMode==='monthly'?'toggle_interval_button':''"
+                (click)="onToggleView('monthly')">Monthly view</button>
+        </div>
     </div>
-    <div *ngIf="viewMode==='list'" class="weekly_container">
+    <div *ngIf="viewMode==='list'" class="weekly_availability">
 
-        <div class="weekly_days_container">
-            <h3>Weekly hours</h3>
-            <div *ngFor="let dailyTimeAvailabilities of availabilityInWeek">
-                <table>
+        <div class="weekly_days">
+            <h2 class="sub_title">Weekly hours</h2>
+            <div class="weekly_day" *ngFor="let dailyTimeAvailabilities of availabilityInWeek">
+                <span class="weekday_name"><input type="checkbox" id="dailyTimeAvailabilities.day"
+                        name="dailyTimeAvailabilities.day" [checked]="dailyTimeAvailabilities.isAvailable"
+                        (click)="onWeekdaySelection(dailyTimeAvailabilities)">
+                    {{dailyTimeAvailabilities.day}}</span>
+                <!-- <div class="day_intervals"></div> -->
+                <ng-template
+                    *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay : dailyTimeAvailabilities} "></ng-template>
+                <!-- <button class="add_more" (click)="onAddTimeInterval(dailyTimeAvailabilities)">
+                    <i class="fa-solid fa-plus"></i> Add
+                </button> -->
+
+                <!-- <table>
                     <tr>
                         <td valign="top" style="width:15px">
                             <input type="checkbox" id="dailyTimeAvailabilities.day" name="dailyTimeAvailabilities.day"
@@ -132,11 +146,11 @@
 
                     </tr>
                 </table>
-                <hr>
+                <hr> -->
             </div>
         </div>
-        <div class="weekly_overrides_date_container">
-            <h3>Time overrides in date</h3>
+        <div class="overrides_dates">
+            <h2 class="sub_title">Time overrides in date</h2>
             <button (click)="onOpenCalendarModal('modal-override-dates')">Override date intervals</button>
 
             <div *ngFor="let dailyTimeAvailabilities of availabilityOverrides;let index=index">
@@ -154,27 +168,31 @@
             </div>
         </div>
     </div>
-    <div *ngIf="viewMode==='monthly'" class="monthly_calendar_container">
+    <div *ngIf="viewMode==='monthly'" class="monthly_view_container">
         <div class="header">
-            <div class="title">
-                <span>{{monthNames[selectedMonth]}} {{selectedYear}}</span>
-            </div>
-            <div class="navigation">
-                <input [disabled]="isCurrentMonth" type="button" (click)="onClickPreviousMonth($event)" value="<">
-                <input type="button" (click)="onClickNextMonth($event)" value=">">
+            <h1>{{monthNames[selectedMonth]}} {{selectedYear}}</h1>
+            <div class="calendar_nav">
+                <button [disabled]="isCurrentMonth" (click)="onClickPreviousMonth($event)"><i
+                        class="fa-solid fa-angle-left"></i></button>
+                <button (click)="onClickNextMonth($event)"><i class="fa-solid fa-angle-right"></i></button>
+                <!-- <input [disabled]="isCurrentMonth" type="button" (click)="onClickPreviousMonth($event)" value="<">
+                <input type="button" (click)="onClickNextMonth($event)" value=">"> -->
             </div>
         </div>
         <div class="daysInMonth">
-            <div class="weekday-name" *ngFor="let day of weekDays;let index=index;">
-                {{day}}
+            <div class="weekday_heading" *ngFor="let day of weekDays;let index=index;">
+                <span class="weekday_name">{{day}}</span>
             </div>
-            <div [ngClass]="dayItem.isPastDate?'past_day_calendar':''"
-                (click)="!dayItem.isPastDate? onClickDayInMonthView($event):''"
+            <button [disabled]="dayItem.isPastDate" (click)="!dayItem.isPastDate? onClickDayInMonthView($event):''"
                 (mouseleave)="onRemoveActionButtonFromCalendarDay($event)" class="dayInMonth-item"
+                
                 *ngFor="let dayItem of availabilityInMonth; let index=index">
-                <span> {{dayItem.day}} </span>
-                <div class="weekly_intervals">
-                    <span *ngFor="let item of dayItem.intervals">
+                <div class="heading">
+                    <div class="weekday_name"> {{dayItem.day}} </div>
+                    <div><i class="fa fa-angle-left"></i></div>
+                </div>
+                <div role="button" class="weekly_intervals">
+                    <span role="button" *ngFor="let item of dayItem.intervals">
                         {{item.startTime}} - {{item.endTime}}
                     </span>
                 </div>
@@ -185,35 +203,41 @@
                     <input (click)="onResetToWeeklyHours(dayItem)" *ngIf="dayItem.isOverride" type="button"
                         value='Reset to weekly hours'>
                 </div>
-            </div>
+            </button>
         </div>
     </div>
 
 
 </form>
-<mm-modal id="modal-override-dates">
-    <h3>Date overrides</h3>
+<mm-modal id="modal-override-dates" title="Date overrride intervals"
+(cancelEvent)="onCloseCalendarModal()"
+(confirmEvent)="onApplyCalendarDateChanges()"
+>
     <app-calender (handlerDateClick)="onHandledCalendarClicked($event)"
         [selectedDates]="selectedDatesFromCalender"></app-calender>
-    <div class="override-time-intervals" *ngIf="selecteDateOverride">
+    <div class="override_date_intervals" *ngIf="selecteDateOverride">
         <ng-template
             *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay : selecteDateOverride} "></ng-template>
     </div>
-    <div class="override-toolbar">
+    <!-- <div class="override-toolbar">
         <button (click)="onCloseCalendarModal()">Cancel</button>
         <button (click)="onApplyCalendarDateChanges()">Apply</button>
-    </div>
+    </div> -->
 </mm-modal>
-<mm-modal id="modal-override-day">
-    <h3>{{selectedDayInWeek}} availability</h3>
-    <div class="override-time-intervals" *ngIf="selecteDateOverride">
+<mm-modal id="modal-override-day" 
+title="{{selectedDayInWeek}} availability"
+(cancelEvent)="onCloseWeekdayConfigureModal()"
+(confirmEvent)="onApplyWeekDayChanges()"
+>
+    <!-- <h3>{{selectedDayInWeek}} availability</h3> -->
+    <div class="override_date_intervals" *ngIf="selecteDateOverride">
         <ng-template
             *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay : selecteDateOverride} "></ng-template>
     </div>
-    <div class="override-toolbar">
+    <!-- <div class="override-toolbar">
         <button (click)="onCloseWeekdayConfigureModal()">Cancel</button>
         <button (click)="onApplyWeekDayChanges()">Apply</button>
-    </div>
+    </div> -->
 </mm-modal>
 <!-- <div class="modal-override-dates">
     <h3>Date overrides</h3>
@@ -240,15 +264,28 @@
     </div>
 </div> -->
 <ng-template #timeInvervalsInDayTemplate let-timeInvervalsInDay="timeInvervalsInDay">
-    <div class="daily_time_interval_container">
-        <div class="interval_list_grid">
-            <div *ngIf="!timeInvervalsInDay.isAvailable ">
-                <span>Not available</span>
-            </div>
+    <div class="intervals">
+        <div *ngIf="!timeInvervalsInDay.isAvailable ">
+            <div class="interval_item">Not available</div>
+        </div>
 
-            <div *ngIf="timeInvervalsInDay.isAvailable">
-                <div *ngFor="let timeInterval of timeInvervalsInDay.intervals; let i=index">
-                    <table>
+        <div *ngIf="timeInvervalsInDay.isAvailable">
+            <div class="interval_item" *ngFor="let timeInterval of timeInvervalsInDay.intervals; let i=index">
+                <input type="text" [id]="'startTime_'+[timeInvervalsInDay.day]+''+i"
+                    [name]="'startTime_'+[timeInvervalsInDay.day]+''+i" list="time_slots"
+                    [(ngModel)]="timeInterval.startTime" required
+                    (focusout)="onLostFocus($event,i,false,timeInvervalsInDay)">
+                -
+                <input type="text" list="time_slots" [(ngModel)]="timeInterval.endTime"
+                    [id]="'endTime_'+[timeInvervalsInDay.day]+''+i" [name]="'endTime_'+[timeInvervalsInDay.day]+''+i"
+                    required (focusout)="onLostFocus($event,i,true,timeInvervalsInDay)">
+                <button class="delete_interval" (click)="onRemoveTimeInterval(i,timeInvervalsInDay)"><i
+                        class="fa fa-trash" aria-hidden="true"></i> Delete</button>
+                <!-- <input type="button" value="Delete" class="delete_interval"
+                    (click)="onRemoveTimeInterval(i,timeInvervalsInDay)" /> -->
+                <div *ngIf="timeInterval.errorMessage">
+                    {{timeInterval.errorMessage}}</div>
+                <!-- <table>
                         <tr>
                             <td>
                                 <input type="text" [id]="'startTime_'+[timeInvervalsInDay.day]+''+i"
@@ -272,10 +309,13 @@
                             <td colspan="3" *ngIf="timeInterval.errorMessage" colspan="3">
                                 {{timeInterval.errorMessage}}</td>
                         </tr>
-                    </table>
-                </div>
+                    </table> -->
             </div>
         </div>
-        <input type="button" class="add_more_item" value="Add (+)" (click)="onAddTimeInterval(timeInvervalsInDay)" />
+        <button (click)="onAddTimeInterval(timeInvervalsInDay)" class="add_more_item"><i class="fa-thin fa-plus"></i>
+            Add
+        </button>
+
+        <!-- <input type="button" class="add_more_item" value="Add (+)" (click)="onAddTimeInterval(timeInvervalsInDay)" /> -->
     </div>
 </ng-template>

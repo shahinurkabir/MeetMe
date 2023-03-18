@@ -21,6 +21,7 @@ export class AvailabilityComponent implements OnInit {
 
   editName: string = "";
   selectedAvailability: IAvailability | undefined;
+  showToolBox:boolean=false;
   constructor(
     private availabilityService: AvailabilityService,
     private modalService: ModalService
@@ -36,6 +37,13 @@ export class AvailabilityComponent implements OnInit {
     this.timeAvailabilityComponent?.prepareWeeklyViewData();
     this.timeAvailabilityComponent?.prepareMonthlyViewData();
 
+  }
+
+  onClickGear() {
+    this.showToolBox=!this.showToolBox;
+  }
+  onCloseGrearMenu(e:any) {
+    this.showToolBox=!this.showToolBox;
   }
   onClickEditName(id: string) {
     this.editName = this.selectedAvailability?.name!
@@ -56,6 +64,10 @@ export class AvailabilityComponent implements OnInit {
       error: (error) => { console.log(error) },
       complete: () => { this.modalService.close() }
     });
+  }
+
+  onCancelEdit() {
+    this.modalService.close();
   }
   onClone(id: string) {
     let command: CloneAvailabilityCommand = {

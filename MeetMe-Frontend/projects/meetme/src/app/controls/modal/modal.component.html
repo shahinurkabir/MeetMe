@@ -1,5 +1,13 @@
 <div class="mm-modal">
     <div class="mm-modal-body">
-        <ng-content></ng-content>
+        <div class="mm-modal-header">{{title}}</div>
+        <div class="body-content">
+            <ng-content style="width: 100%;"></ng-content>
+        </div>
+
+        <div class="mm-modal-footer">
+            <button class="btn " (click)="onCancel()">Cancel</button>
+            <button class="btn btn-primary" (click)="onConfirm()">OK</button>
+        </div>
     </div>
 </div>

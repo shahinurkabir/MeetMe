@@ -1,0 +1,37 @@
+.divider {
+    width: 104%;
+    left: -20px;
+    position: relative;
+    padding: 0 0 10px 0;
+}
+.divider hr{
+    border-width: 1px;
+    border-color:white rgb(244, 237, 237);
+}
+.overview {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.overview .toolbox {
+    display: flex;
+    flex-flow: column;
+    position: absolute;
+    top: 30px;
+    right: 1px;
+    width: 140px;
+    background-color: whitesmoke;
+    padding: 7px;
+    border: 1px solid lightgray;
+}
+.overview .gear {
+    cursor: pointer;
+}
+.overview .gear i {
+    font-size: 26px
+}
+.overview .gear i:hover {
+    color:gray;
+}

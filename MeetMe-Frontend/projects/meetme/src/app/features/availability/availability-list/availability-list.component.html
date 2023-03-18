@@ -1,13 +1,25 @@
-<h2>Availability</h2>
-<div>
-    <input class="text-ellipsis" *ngFor="let item of listAvailability;let index=index" type="button" [value]="item.name"
+<h1 class="page_title">Your schedules</h1>
+<span>you can create new shedule and mange or update existing schedules</span>
+<div class="schedule_list">
+    <input class="text-ellipsis" [ngClass]="item.id==selectedItem_Id?'selected_item':''"
+        *ngFor="let item of listAvailability;let index=index" type="button" [value]="item.name"
         (click)="onSelectItem(item)">
     <input class="text-ellipsis" type="button" value="+ New Availability" (click)="onShowAddNewModal()">
 </div>
-<HR>
 
-<mm-modal id="new-availability-modal">
-    <h1>New Availability</h1>
-    <input type="text" placeholder="name" [(ngModel)]="newAvailabilityName">
-    <input type="button" value="OK" (click)="onAddNew()">
+
+<mm-modal id="new-availability-modal" title="New Availability" (cancelEvent)="onCancelAdd()"
+    (confirmEvent)="onAddNew()">
+    <div>
+        <div class="form-group">
+            <label for="shceduleName">Schedule Name</label>
+            <div class="form-control">
+                <input type="text" #name="ngModel" [(ngModel)]="newAvailabilityName">
+                <!-- <input type="text" #name="ngModel" required [(ngModel)]="model.name" name="name"> -->
+                <div *ngIf=" name.invalid" class="invalid-feedback">
+                    <div>Name is required</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </mm-modal>

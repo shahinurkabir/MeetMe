@@ -31,6 +31,7 @@ namespace MeetMe.Application.Availabilities.Commands.Clone
                 Id = newId,
                 Name = cloneName,
                 OwnerId = applicationUserInfo.UserId,
+                TimeZoneId=originalModel.TimeZoneId,
                 Details = originalModel.Details.Select(e =>
                 {
                     return new AvailabilityDetail

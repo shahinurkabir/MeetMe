@@ -43,8 +43,8 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   constructor(
     private timeZoneService: TimeZoneService,
-    private modalService:ModalService
-    ) {
+    private modalService: ModalService
+  ) {
     this.loadTimeZoneList();
   }
   ngAfterViewInit(): void {
@@ -257,7 +257,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   }
 
-  onOpenCalendarModal(modalName:string,defaultDate?: Date) {
+  onOpenCalendarModal(modalName: string, defaultDate?: Date) {
     this.calendarComponent.resetSelection(defaultDate);
     this.modalService.open(modalName)
     //toggleModalDialog(this.calendarModalEl);
@@ -301,7 +301,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     this.selecteDateOverride = this.availabilityOverrides[index];
     let selectedDate = new Date(this.selecteDateOverride.day);
     //this.calendarComponent.resetSelection(selectedDate);
-    this.onOpenCalendarModal('modal-override-dates',selectedDate);
+    this.onOpenCalendarModal('modal-override-dates', selectedDate);
   }
   onEditAvailabilityForDate(calendarDay: ICalendarDay) {
 
@@ -312,7 +312,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     };
     let selectedDate = new Date(this.selecteDateOverride.day);
     //this.calendarComponent.resetSelection(selectedDate);
-    this.onOpenCalendarModal('modal-override-dates',selectedDate);
+    this.onOpenCalendarModal('modal-override-dates', selectedDate);
   }
 
   onEditAvailabilityForWeekDay(calendarDay: ICalendarDay) {
@@ -364,7 +364,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   getAvailability(): IAvailability | undefined {
     this.availability?.details.splice(0, 100);
-    this.availability?.timeZoneId != this.selectedTimeZoneId;
+    this.availability!.timeZoneId = this.selectedTimeZoneId;
     this.availabilityInWeek.filter(e => e.isAvailable).forEach(weekday => {
       weekday.intervals.forEach(intervalITem => {
         let item: IAvailabilityDetails = {
@@ -452,7 +452,11 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   onClickDayInMonthView(event: any) {
     let element = event.target.querySelector(".action_buttons");
-    element.classList.toggle("is_open");
+    if (!element) { // if clicked happend inner html element
+      element = event.target.parentElement.parentElement.querySelector(".action_buttons")
+    }
+    if (element)
+      element.classList.toggle("is_open");
   }
 
   onRemoveActionButtonFromCalendarDay(event: any) {

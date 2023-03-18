@@ -1,13 +1,111 @@
-.weekly_container {
+.weekday_name {
+    font-weight: bold;
+}
+
+.section_overview {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0 15px 0;
+}
+
+.section_overview .toggle_interval {
+    display: flex;
+}
+
+.weekday_heading {
+    font-weight: bold;
+    height: 40px;
+    text-align: center;
+    background-color: white;
+    padding: 10px 0;
+    // border-bottom: 1px solid lightgray;
+
+}
+
+.toggle_interval .toggle_interval_button {
+    border: 1px solid lightgray;
+    background-color: white;
+    box-shadow: 1px solid cornflowerblue;
+    box-shadow: 0px 5px 5px rgb(0 0 0 / 5%);
+}
+
+.weekly_availability {
     display: flex;
     width: 100%;
+    border: 1px solid lightgray;
 }
-.weekly_container .weekly_days_container {
+
+.weekly_availability .weekly_days {
     width: 60%;
+    padding: 15px;
 }
-.weekly_container .weekly_overrides_date_container {
+
+.weekly_availability .weekly_days .weekly_day {
+    display: flex;
+    align-items: flex-start;
+    border-bottom: 1px solid rgb(244, 225, 225);
+    padding: 10px 0;
+}
+
+.weekly_availability .weekly_days .weekly_day:last-child {
+    border-bottom: none;
+}
+
+.weekly_availability .weekly_days .weekly_day .weekday_name {
+    width: 120px;
+}
+
+.intervals {
+    width: 100%;
+    position: relative;
+    min-height: 30px;
+}
+
+.intervals .interval_item {
+    width: 80%;
+    padding-bottom: 10px;
+}
+
+.intervals .interval_item input[type=text] {
+    width: 35%;
+    border-radius: 5px;
+    // height: 40px;
+    // padding: 5px 3px;
+}
+
+.interval_item .delete_interval {
+    margin-left: 10px;
+    border-radius: 5px;
+    // height: 40px;
+    // padding: 5px 3px;
+}
+
+.intervals .add_more_item {
+    margin-left: 15px;
+    border-radius: 5px;
+    top: 0;
+    right: 15px;
+    position: absolute
+}
+
+.override_date_intervals {
+    width: 370px;
+}
+
+.interval_list_grid .interval_list_grid_item {
+    padding-bottom: 7px;
+}
+
+.interval_list_grid input[type=text] {
+    width: 150px;
+}
+
+.weekly_availability .overrides_dates {
     width: 40%;
+    padding: 15px;
+    border-left: 1px solid lightgray;
 }
+
 .modal-override-dates {
     //position: absolute;
     //width: 400px;
@@ -34,7 +132,8 @@
 .modal-override-dates.is-open {
     visibility: visible;
 }
-.modal-override-day{
+
+.modal-override-day {
     position: absolute;
     width: 400px;
     left: 40%;
@@ -44,25 +143,34 @@
     background-color: wheat;
     padding: 10px 8px;
 }
+
 .modal-override-day.is-open {
     visibility: visible;
 }
-.monthly_calendar_container {
 
-}
-.monthly_calendar_container .header {
+.monthly_view_container {}
+
+.monthly_view_container .header {
     display: flex;
     justify-content: space-between;
-    align-items: start;
-    padding: 15px 0px;
-    margin: 10px 0px;
-    background-color: lightgray;
+    align-items: center;
+    // padding: 15px 0px;
     font-size: 15px;
 
 }
+
+.monthly_view_container .header .calendar_nav button {
+    padding: 2px 10px;
+}
+
+.monthly_view_container .header .calendar_nav i {
+    font-size: 25px;
+}
+
 .daysInMonth {
     display: flex;
     flex-wrap: wrap;
+    border: 1px solid lightgray;
 }
 
 .daysInMonth>* {
@@ -72,17 +180,33 @@
 }
 
 .daysInMonth .dayInMonth-item {
-    border-bottom: 1px solid gray;
-    border-right: 1px solid gray;
+    border-bottom: 1px solid white;
+    border-right: 1px solid white;
+    background-color: white;
     padding: 7px 5px;
     position: relative;
     height: 120px;
+    display: flex;
+    flex-direction: column;
     // margin: 1px;
 }
-.dayInMonth-item:hover {
-    background-color:rgb(218, 218, 239);
-    border:1px solid blueviolet
+
+.daysInMonth .dayInMonth-item .heading {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 5px 3px 10px 5px;
 }
+
+.daysInMonth .dayInMonth-item:hover:not([disabled]) {
+    background-color: rgb(218, 218, 239);
+    border:2px solid blue;
+}
+
+.daysInMonth .dayInMonth-item:hover:disabled {
+    cursor: default;
+}
+
 .daysInMonth .dayInMonth-item:nth-child(1) {
     border-top: 1px solid greenyellow;
 }
@@ -101,4 +225,8 @@
 
 .daysInMonth .dayInMonth-item .action_buttons.is_open {
     display: block;
+}
+
+button {
+    cursor: pointer;
 }

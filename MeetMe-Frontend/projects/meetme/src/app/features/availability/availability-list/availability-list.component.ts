@@ -15,6 +15,8 @@ export class AvailabilityListComponent implements OnInit {
   @Output() itemSelected = new EventEmitter<IAvailability>();
   listAvailability: IAvailability[] = [];
   newAvailabilityName: string = "";
+  selectedItem_Id: string | undefined;
+
   constructor(
     private availabilityService: AvailabilityService,
     private modalService: ModalService
@@ -30,16 +32,15 @@ export class AvailabilityListComponent implements OnInit {
 
   }
 
-  onSelectItem(availability: IAvailability) {
+  onSelectItem(availability?: IAvailability) {
+    this.selectedItem_Id = availability?.id;
     this.itemSelected.emit(availability);
   }
   loadList() {
     this.availabilityService.getList().subscribe({
       next: response => {
         this.listAvailability = response;
-        if (response.length>0){
-          this.onSelectItem(response[0]);
-        }
+        this.selectedItem()
       },
       error: (error) => {
         console.log(error);
@@ -48,7 +49,22 @@ export class AvailabilityListComponent implements OnInit {
     })
 
   }
-  
+
+  selectedItem() {
+    if (this.listAvailability.length == 0) {
+      this.onSelectItem(undefined)
+      return;
+    }
+    if (this.selectedItem_Id != undefined) {
+      let itemToSelect = this.listAvailability.find(e => e.id);
+      if (itemToSelect) {
+        this.onSelectItem(itemToSelect)
+        return;
+      }
+    }
+    this.onSelectItem(this.listAvailability[0]);
+  }
+
   onAddNew() {
     let offset = new Date().getTimezoneOffset() / -60;
     let command: CreateAvailabilityCommand = {
@@ -58,11 +74,18 @@ export class AvailabilityListComponent implements OnInit {
 
     this.availabilityService.addNew(command).subscribe({
       next: response => {
+        this.selectedItem_Id = response;
         this.loadList()
       },
       error: (error) => { console.log(error) },
-      complete: () => { this.modalService.close() }
+      complete: () => {
+        this.newAvailabilityName = "";
+        this.modalService.close()
+      }
     });
 
+  }
+  onCancelAdd() {
+    this.modalService.close();
   }
 }

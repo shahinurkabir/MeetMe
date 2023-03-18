@@ -1,19 +1,22 @@
 <app-availability-list #listAvailabilityComponent (itemSelected)="onSelected($event)"></app-availability-list>
-
-<div>
-    <h2>{{selectedAvailability?.name}}</h2>
-    <div>
-        <a href="javascript:void(0)" (click)="onClickEditName(selectedAvailability?.id!)">Edit Name</a>
-        <a href="javascript:void(0)" (click)="onClone(selectedAvailability?.id!)">Clone</a>
-        <!-- <a href="javascript:void(0)" (click)="onDefault(selectedAvailability?.id!)">Set as default</a> -->
-        <a href="javascript:void(0)" (click)="onDelete(selectedAvailability?.id!)">Delete</a>
-    </div>
+<div class="divider">
+    <hr>
+</div>
+<div class="overview">
+    <h1 class="page_title">{{selectedAvailability?.name}}</h1>
+    <ul (mouseleave)="onCloseGrearMenu($event)"  *ngIf="showToolBox" class="dropdown_menu_container" >
+        <li (click)="onClickEditName(selectedAvailability?.id!)"><i class="fa fa-pen"></i><span>Edit Name</span></li>
+        <li (click)="onClone(selectedAvailability?.id!)"><i class="fa fa-clone"></i><span>Clone</span></li>
+        <li (click)="onDelete(selectedAvailability?.id!)"><i class="fa fa-trash"></i><span>Delete</span></li>
+        <!-- <li><a href="javascript:void(0)" (click)="onDefault(selectedAvailability?.id!)">Set as default</a></li> -->
+    </ul>
+    <span class="gear" (click)="onClickGear()">
+        <i class="fa-solid fa-gear"></i>
+    </span>
 </div>
 <app-time-availability #availabilityComponent></app-time-availability>
 <input type="button" value="Save" (click)="onSave($event)">
 
-<mm-modal id="edit-name-modal">
-    <h1>Edit Schedule Name</h1>
+<mm-modal id="edit-name-modal" title="Edit Schedule Name" (confirmEvent)="onEditName()" (cancelEvent)="onCancelEdit()">
     <input type="text" placeholder="name" [(ngModel)]="editName">
-    <input type="button" value="OK" (click)="onEditName()">
 </mm-modal>
