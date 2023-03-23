@@ -1,6 +1,7 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { NgFor } from '@angular/common';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { CloneAvailabilityCommand } from '../../commands/cloneAvailabilityCommand';
-import { CreateAvailabilityCommand } from '../../commands/createAvailabilityCommand';
 import { DeleteAvailabilityCommand, SetDefaultAvailabilityCommand } from '../../commands/deleteAvailabilityCommand';
 import { EditAvailabilityCommand } from '../../commands/editAvailabilityCommand';
 import { EditAvailabilityNameCommand } from '../../commands/editAvailabilityNameCommand';
@@ -18,10 +19,11 @@ import { AvailabilityListComponent } from './availability-list/availability-list
 export class AvailabilityComponent implements OnInit {
   @ViewChild("availabilityComponent", { static: true }) timeAvailabilityComponent: TimeAvailabilityComponent | undefined;
   @ViewChild("listAvailabilityComponent", { static: true }) listAvailabilityComponent: AvailabilityListComponent | undefined;
+  @ViewChild(NgForm) editNameForm: NgForm | undefined;
 
   editName: string = "";
   selectedAvailability: IAvailability | undefined;
-  showToolBox:boolean=false;
+  showActionMenubarYN: boolean = false;
   constructor(
     private availabilityService: AvailabilityService,
     private modalService: ModalService
@@ -39,20 +41,26 @@ export class AvailabilityComponent implements OnInit {
 
   }
 
-  onClickGear() {
-    this.showToolBox=!this.showToolBox;
+  onOpenActionMenu() {
+    this.showActionMenubarYN = !this.showActionMenubarYN;
   }
-  onCloseGrearMenu(e:any) {
-    this.showToolBox=!this.showToolBox;
+  onCloseActionMenu(e: any) {
+    this.showActionMenubarYN = !this.showActionMenubarYN;
   }
+
   onClickEditName(id: string) {
+    this.resetForm(this.editNameForm);
     this.editName = this.selectedAvailability?.name!
     this.modalService.open('edit-name-modal');
   }
-  onClickDelete(id: string) {
 
+  onEditName(e: any) {
+    this.editNameForm?.onSubmit(e)
   }
-  onEditName() {
+
+  onEditNameFormSubmit(frm: NgForm) {
+    if (frm.invalid) return;
+
     let command: EditAvailabilityNameCommand = {
       id: this.selectedAvailability?.id!,
       name: this.editName,
@@ -66,9 +74,10 @@ export class AvailabilityComponent implements OnInit {
     });
   }
 
-  onCancelEdit() {
+  onCloseModal() {
     this.modalService.close();
   }
+
   onClone(id: string) {
     let command: CloneAvailabilityCommand = {
       id: id
@@ -82,6 +91,7 @@ export class AvailabilityComponent implements OnInit {
       }
     })
   }
+
   onSave(event: any) {
     event.preventDefault();
     let availability = this.timeAvailabilityComponent?.getAvailability();
@@ -97,17 +107,22 @@ export class AvailabilityComponent implements OnInit {
       console.log(response);
     });
   }
-
-  onDelete(id: string) {
+  
+  onClickDelete() {
+    this.modalService.open('delete-availability-modal')
+  }
+  onDelete(e: any) {
     let command: DeleteAvailabilityCommand = {
-      id: id
+      id: this.selectedAvailability?.id!
     };
 
     this.availabilityService.delete(command).subscribe({
       next: response => { this.listAvailabilityComponent?.loadList(); },
-      error: (error) => { console.log(error) }
+      error: (error) => { console.log(error) },
+      complete: () => { this.modalService.close() }
     })
   }
+
   onDefault(id: string) {
     let command: SetDefaultAvailabilityCommand = {
       id: id
@@ -117,5 +132,10 @@ export class AvailabilityComponent implements OnInit {
       next: response => { this.listAvailabilityComponent?.loadList() },
       error: (error) => { console.log(error) }
     })
+  }
+
+  private resetForm(frm: NgForm | undefined) {
+    frm?.form.markAsPristine();
+    frm?.resetForm();
   }
 }

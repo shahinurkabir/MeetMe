@@ -1,7 +1,7 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { CloneAvailabilityCommand } from '../../../commands/cloneAvailabilityCommand';
+import { NgFor } from '@angular/common';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { CreateAvailabilityCommand } from '../../../commands/createAvailabilityCommand';
-import { EditAvailabilityNameCommand } from '../../../commands/editAvailabilityNameCommand';
 import { ModalService } from '../../../controls/modal/modalService';
 import { IAvailability } from '../../../models/IAvailability';
 import { AvailabilityService } from '../../../services/availability.service';
@@ -16,6 +16,7 @@ export class AvailabilityListComponent implements OnInit {
   listAvailability: IAvailability[] = [];
   newAvailabilityName: string = "";
   selectedItem_Id: string | undefined;
+  @ViewChild(NgForm) frmAddAvailability: NgForm | undefined;
 
   constructor(
     private availabilityService: AvailabilityService,
@@ -28,6 +29,7 @@ export class AvailabilityListComponent implements OnInit {
 
   }
   onShowAddNewModal() {
+    this.resetForm(this.frmAddAvailability);
     this.modalService.open('new-availability-modal')
 
   }
@@ -65,7 +67,14 @@ export class AvailabilityListComponent implements OnInit {
     this.onSelectItem(this.listAvailability[0]);
   }
 
-  onAddNew() {
+  onAddNew(e: any) {
+    this.frmAddAvailability?.onSubmit(e);
+
+  }
+  onSubmit(frm: NgForm) {
+
+    if (frm.invalid) return;
+
     let offset = new Date().getTimezoneOffset() / -60;
     let command: CreateAvailabilityCommand = {
       name: this.newAvailabilityName,
@@ -87,5 +96,9 @@ export class AvailabilityListComponent implements OnInit {
   }
   onCancelAdd() {
     this.modalService.close();
+  }
+  private resetForm(frm: NgForm | undefined) {
+    frm?.form.markAsPristine();
+    frm?.resetForm();
   }
 }

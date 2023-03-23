@@ -18,7 +18,6 @@
     text-align: center;
     background-color: white;
     padding: 10px 0;
-    // border-bottom: 1px solid lightgray;
 
 }
 
@@ -37,23 +36,24 @@
 }
 
 .weekly_availability .weekly_days {
-    width: 60%;
+    width: 65%;
     padding: 15px;
 }
 
 .weekly_availability .weekly_days .weekly_day {
     display: flex;
     align-items: flex-start;
-    border-bottom: 1px solid rgb(244, 225, 225);
+    border-top: 1px solid rgb(244, 225, 225);
     padding: 10px 0;
-}
-
-.weekly_availability .weekly_days .weekly_day:last-child {
-    border-bottom: none;
 }
 
 .weekly_availability .weekly_days .weekly_day .weekday_name {
     width: 120px;
+}
+
+.weekly_availability .weekly_days .weekly_day .weekday_name :checked {
+    top: 2px;
+    position: relative;
 }
 
 .intervals {
@@ -70,15 +70,11 @@
 .intervals .interval_item input[type=text] {
     width: 35%;
     border-radius: 5px;
-    // height: 40px;
-    // padding: 5px 3px;
 }
 
 .interval_item .delete_interval {
     margin-left: 10px;
     border-radius: 5px;
-    // height: 40px;
-    // padding: 5px 3px;
 }
 
 .intervals .add_more_item {
@@ -87,6 +83,14 @@
     top: 0;
     right: 15px;
     position: absolute
+}
+
+.intervals .add_more_item i {
+    font-size: 18px;
+}
+
+.intervals .add_more_item i:hover {
+    opacity: .7;
 }
 
 .override_date_intervals {
@@ -102,23 +106,47 @@
 }
 
 .weekly_availability .overrides_dates {
-    width: 40%;
+    width: 35%;
     padding: 15px;
     border-left: 1px solid lightgray;
 }
 
+.weekly_availability .overrides_dates .btn_open_calendar {
+    width: 100%;
+    background-color: azure;
+    color: blue;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.weekly_availability .overrides_dates .timeinterval_overrides {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px 20px;
+    border-top: 1px solid lightgray;
+    position: relative;
+    width: 109%;
+    left: -15px;
+    cursor: pointer;
+}
+
+.weekly_availability .overrides_dates .timeinterval_overrides:hover {
+    background-color: azure;
+}
+
+.weekly_availability .overrides_dates .timeinterval_overrides:last-child {
+    border-bottom: 1px solid lightgray;
+}
+
+.weekly_availability .overrides_dates .timeinterval_overrides .timeslots {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
 .modal-override-dates {
-    //position: absolute;
-    //width: 400px;
-    /* min-height: 400px; */
-    //left: 40%;
-    //top: 25%;
-    //visibility: hidden;
-    /* display: flex;
-    justify-content: center;
-    align-items: center; */
-    //  z-index: 100;
-    //background-color: red;
 
     position: absolute;
     width: 400px;
@@ -195,6 +223,7 @@
 .daysInMonth .dayInMonth-item.override_interval {
     border-top: 2px solid blue;
 }
+
 .daysInMonth .dayInMonth-item .heading {
     display: flex;
     justify-content: space-between;
@@ -248,8 +277,6 @@
 .dropdown_menu li i {
     padding-right: 10px;
 }
-
-// end drop down menu
 
 .daysInMonth .dayInMonth-item .action_buttons.is_open {
     display: block;

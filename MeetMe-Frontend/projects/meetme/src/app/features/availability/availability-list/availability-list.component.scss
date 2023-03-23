@@ -7,12 +7,12 @@
     margin-right: 10px;
 }
 .selected_item{
-    color:blue
+    color:blue;
+    border: 1px solid lightgray;
+    background-color: white;
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.05);
 }
 .schedule_list{
     margin: 16px 0 7px 0;
 }
 
-.divider {
-    // margin: 0 0 30px 0;
-}

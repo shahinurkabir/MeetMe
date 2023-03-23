@@ -14,6 +14,7 @@ namespace MeetMe.Core.Persistence.Interface
 
         Task<Availability> GetScheduleById(Guid id);
         Task<List<Availability>> GetScheduleListByUserId(Guid userId);
+        Task<bool> EditName (Guid id ,string nameToUpdate );
 
        // Task<AppointmentSchedule> GetScheduleListByRuleId(Guid ruleId);
     }

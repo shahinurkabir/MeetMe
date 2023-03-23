@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataProvider.EntityFramework.Repositories
 {
-    public class AvailabilityRepository:IAvailabilityRepository
+    public class AvailabilityRepository : IAvailabilityRepository
     {
         private readonly BookingDbContext bookingDbContext;
 
@@ -66,6 +66,20 @@ namespace DataProvider.EntityFramework.Repositories
                 .Where(e => e.Id == ruleId).FirstOrDefaultAsync();
 
             return scheduleRule;
+        }
+
+        public async Task<bool> EditName(Guid id, string nameToUpdate)
+        {
+            var entity = await bookingDbContext.Set<Availability>().FindAsync(id);
+
+            if (entity == null) return false;
+
+            entity.Name = nameToUpdate;
+
+            await bookingDbContext.SaveChangesAsync();
+            
+            return true;
+
         }
     }
 }

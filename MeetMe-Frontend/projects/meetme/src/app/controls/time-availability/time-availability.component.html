@@ -105,10 +105,10 @@
                 {{timeZoneItem.name}}</option>
         </select>
         <div class="toggle_interval">
-            <button [ngClass]="viewMode==='list'?'toggle_interval_button':''" (click)="onToggleView('list')">List
-                view</button>
-            <button [ngClass]="viewMode==='monthly'?'toggle_interval_button':''"
-                (click)="onToggleView('monthly')">Monthly view</button>
+            <button [ngClass]="viewMode==='list'?'toggle_interval_button':''" (click)="onToggleView('list')">
+                <i class="fa-solid fa-list"></i> List view</button>
+            <button [ngClass]="viewMode==='monthly'?'toggle_interval_button':''" (click)="onToggleView('monthly')"> <i
+                    class="fa-solid fa-calendar-week"></i> Calendar view</button>
         </div>
     </div>
     <div *ngIf="viewMode==='list'" class="weekly_availability">
@@ -120,51 +120,28 @@
                         name="dailyTimeAvailabilities.day" [checked]="dailyTimeAvailabilities.isAvailable"
                         (click)="onWeekdaySelection(dailyTimeAvailabilities)">
                     {{dailyTimeAvailabilities.day}}</span>
-                <!-- <div class="day_intervals"></div> -->
                 <ng-template
                     *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay : dailyTimeAvailabilities} "></ng-template>
-                <!-- <button class="add_more" (click)="onAddTimeInterval(dailyTimeAvailabilities)">
-                    <i class="fa-solid fa-plus"></i> Add
-                </button> -->
 
-                <!-- <table>
-                    <tr>
-                        <td valign="top" style="width:15px">
-                            <input type="checkbox" id="dailyTimeAvailabilities.day" name="dailyTimeAvailabilities.day"
-                                [checked]="dailyTimeAvailabilities.isAvailable"
-                                (click)="onWeekdaySelection(dailyTimeAvailabilities)"
-                                >
-                        </td>
-                        <td valign="top" style="width:150px">
-                            <div>{{dailyTimeAvailabilities.day}}</div>
-                        </td>
-                        <td>
-
-                            <ng-template
-                                *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay : dailyTimeAvailabilities} "></ng-template>
-                        </td>
-
-                    </tr>
-                </table>
-                <hr> -->
             </div>
         </div>
         <div class="overrides_dates">
-            <h2 class="sub_title">Time overrides in date</h2>
-            <button (click)="onOpenCalendarModal('modal-override-dates')">Override date intervals</button>
 
-            <div *ngFor="let dailyTimeAvailabilities of availabilityOverrides;let index=index">
-                <div class="timeinterval_overrides">
-                    <div>{{dailyTimeAvailabilities.day}}</div>
-                    <div class="timeslots">
-                        <div *ngFor="let timeSlot of dailyTimeAvailabilities.intervals; let index=index">
-                            <span>{{timeSlot.startTime}}- {{timeSlot.endTime}}</span>
-                        </div>
+            <h2 class="sub_title">Add date overrides</h2>
+            <button class="btn_open_calendar" (click)="onOpenCalendarModal('modal-override-dates')">
+                Add a date override</button>
+
+            <div class="timeinterval_overrides" (click)="onEditAvailabilityForOverrideDate(index)"
+                *ngFor="let dailyTimeAvailabilities of availabilityOverrides;let index=index">
+                <div>{{dailyTimeAvailabilities.day}}</div>
+                <div class="timeslots">
+                    <div *ngFor="let timeSlot of dailyTimeAvailabilities.intervals; let index=index">
+                        <span>{{timeSlot.startTime}}- {{timeSlot.endTime}}</span>
                     </div>
-                    <input type="button" value="remove" (click)="onRemoveOverrideData(index)">
-                    <input type="button" value="edit" (click)="onEditAvailabilityForOverrideDate(index)">
                 </div>
-                <hr>
+                <!-- <button (click)="onRemoveOverrideData(index)">Remove</button> -->
+                <span (click)="onRemoveOverrideData(index)"><i class="fa fa-trash"></i></span>
+                <!-- <button (click)="onEditAvailabilityForOverrideDate(index)">Edit</button> -->
             </div>
         </div>
     </div>
@@ -201,7 +178,8 @@
                         {{item.startTime}} - {{item.endTime}}
                     </span>
                     <div *ngIf="dayItem.intervals.length>3">
-                       <strong> + {{dayItem.intervals.length-3}} more item {{dayItem.intervals.length-3>1?'s':''}}</strong>
+                        <strong> + {{dayItem.intervals.length-3}} more item
+                            {{dayItem.intervals.length-3>1?'s':''}}</strong>
                     </div>
                 </div>
                 <div class="action_buttons">
@@ -285,9 +263,10 @@
                 <input type="text" list="time_slots" [(ngModel)]="timeInterval.endTime"
                     [id]="'endTime_'+[timeInvervalsInDay.day]+''+i" [name]="'endTime_'+[timeInvervalsInDay.day]+''+i"
                     required (focusout)="onLostFocus($event,i,true,timeInvervalsInDay)">
-                <button class="delete_interval" (click)="onRemoveTimeInterval(i,timeInvervalsInDay)"><i
-                        class="fa fa-trash" aria-hidden="true"></i> Delete</button>
-                <!-- <input type="button" value="Delete" class="delete_interval"
+                <!-- <button class="delete_interval" (click)="onRemoveTimeInterval(i,timeInvervalsInDay)"><i
+                        class="fa fa-trash" aria-hidden="true"></i> Delete</button> -->
+                    <span class="btn" (click)="onRemoveTimeInterval(i,timeInvervalsInDay)"><i class="fa fa-trash"></i></span>
+                        <!-- <input type="button" value="Delete" class="delete_interval"
                     (click)="onRemoveTimeInterval(i,timeInvervalsInDay)" /> -->
                 <div *ngIf="timeInterval.errorMessage">
                     {{timeInterval.errorMessage}}</div>
@@ -318,9 +297,10 @@
                     </table> -->
             </div>
         </div>
-        <button (click)="onAddTimeInterval(timeInvervalsInDay)" class="add_more_item"><i class="fa-thin fa-plus"></i>
+        <!-- <button (click)="onAddTimeInterval(timeInvervalsInDay)" class="add_more_item"><i class="fa-thin fa-plus"></i>
             Add
-        </button>
+        </button> -->
+        <span  (click)="onAddTimeInterval(timeInvervalsInDay)" class="btn add_more_item"><i class="fa fa-plus"></i></span>
 
         <!-- <input type="button" class="add_more_item" value="Add (+)" (click)="onAddTimeInterval(timeInvervalsInDay)" /> -->
     </div>

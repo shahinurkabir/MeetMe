@@ -3,11 +3,9 @@
     left: -20px;
     position: relative;
     padding: 0 0 10px 0;
+    border-bottom: 2px solid lightgray;
 }
-.divider hr{
-    border-width: 1px;
-    border-color:white rgb(244, 237, 237);
-}
+
 .overview {
     display: flex;
     justify-content: space-between;
@@ -15,51 +13,36 @@
     position: relative;
 }
 
-.overview .toolbox {
-    display: flex;
-    flex-flow: column;
-    position: absolute;
-    top: 30px;
-    right: 1px;
-    width: 140px;
-    background-color: whitesmoke;
-    padding: 7px;
-    border: 1px solid lightgray;
-}
-.overview .gear {
+.overview .action_menu_openner {
     cursor: pointer;
 }
-.overview .gear i {
-    font-size: 26px
-}
-.overview .gear i:hover {
-    color:gray;
+
+.overview .action_menu_openner i:hover {
+    color: gray;
 }
 
-//Drop down menu
-.availibility_item_toolbar {
+.action_menu {
     list-style-type: none;
     display: flex;
     flex-flow: column;
     position: absolute;
     top: 41px;
     right: 0;
-    background-color: whitesmoke;
+    background-color: white;
     border: 1px solid lightgray;
     padding: 7px 20px;
 
 }
 
-
-.availibility_item_toolbar li {
+.action_menu li {
     padding: 10px;
     cursor: pointer;
 }
-.availibility_item_toolbar li:hover {
+
+.action_menu li:hover {
     opacity: .7;
 }
-.availibility_item_toolbar li i {
-padding-right: 10px;
-}
 
-// end drop down menu
+.action_menu li i {
+    padding-right: 10px;
+}
