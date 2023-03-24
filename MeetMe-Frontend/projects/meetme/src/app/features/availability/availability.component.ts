@@ -67,7 +67,7 @@ export class AvailabilityComponent implements OnInit {
     };
     this.availabilityService.editName(command).subscribe({
       next: response => {
-        this.listAvailabilityComponent?.loadList()
+        this.listAvailabilityComponent?.loadData(this.selectedAvailability?.id)
       },
       error: (error) => { console.log(error) },
       complete: () => { this.modalService.close() }
@@ -84,7 +84,7 @@ export class AvailabilityComponent implements OnInit {
     };
 
     this.availabilityService.clone(command).subscribe({
-      next: response => { this.listAvailabilityComponent?.loadList(); },
+      next: response => { this.listAvailabilityComponent?.loadData(response); },
       error: (error) => {
         // todo display error
         console.log(error);
@@ -117,7 +117,7 @@ export class AvailabilityComponent implements OnInit {
     };
 
     this.availabilityService.delete(command).subscribe({
-      next: response => { this.listAvailabilityComponent?.loadList(); },
+      next: response => { this.listAvailabilityComponent?.loadData(undefined); },
       error: (error) => { console.log(error) },
       complete: () => { this.modalService.close() }
     })
@@ -129,7 +129,7 @@ export class AvailabilityComponent implements OnInit {
     };
 
     this.availabilityService.setDefault(command).subscribe({
-      next: response => { this.listAvailabilityComponent?.loadList() },
+      next: response => { this.listAvailabilityComponent?.loadData(this.selectedAvailability?.id) },
       error: (error) => { console.log(error) }
     })
   }

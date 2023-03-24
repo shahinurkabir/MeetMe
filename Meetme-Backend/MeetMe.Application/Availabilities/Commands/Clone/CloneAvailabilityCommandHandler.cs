@@ -24,7 +24,7 @@ namespace MeetMe.Application.Availabilities.Commands.Clone
 
             var originalModel = await availabilityRepository.GetScheduleById(request.Id);
 
-            var cloneName = $"Clone of {originalModel.Name}";
+            var cloneName = $"{originalModel.Name} [ Clone ]";
 
             var cloneModel = new Availability
             {

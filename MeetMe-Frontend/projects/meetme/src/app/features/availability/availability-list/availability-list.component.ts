@@ -22,7 +22,7 @@ export class AvailabilityListComponent implements OnInit {
     private availabilityService: AvailabilityService,
     private modalService: ModalService
   ) {
-    this.loadList();
+    this.loadData(undefined);
   }
 
   ngOnInit(): void {
@@ -38,11 +38,11 @@ export class AvailabilityListComponent implements OnInit {
     this.selectedItem_Id = availability?.id;
     this.itemSelected.emit(availability);
   }
-  loadList() {
+  loadData(displayItem_Id: string | undefined) {
     this.availabilityService.getList().subscribe({
       next: response => {
         this.listAvailability = response;
-        this.selectedItem()
+        this.setDisplayItem(displayItem_Id)
       },
       error: (error) => {
         console.log(error);
@@ -52,19 +52,15 @@ export class AvailabilityListComponent implements OnInit {
 
   }
 
-  selectedItem() {
-    if (this.listAvailability.length == 0) {
-      this.onSelectItem(undefined)
-      return;
+  setDisplayItem(selectedItem: string | undefined) {
+    let itemToDisplay: IAvailability | undefined;
+    if (selectedItem != undefined) {
+      itemToDisplay = this.listAvailability.find(e => e.id == selectedItem);
     }
-    if (this.selectedItem_Id != undefined) {
-      let itemToSelect = this.listAvailability.find(e => e.id);
-      if (itemToSelect) {
-        this.onSelectItem(itemToSelect)
-        return;
-      }
+    if (itemToDisplay == undefined && this.listAvailability.length > 0) {
+      itemToDisplay = this.listAvailability[0];
     }
-    this.onSelectItem(this.listAvailability[0]);
+    this.onSelectItem(itemToDisplay);
   }
 
   onAddNew(e: any) {
@@ -83,8 +79,8 @@ export class AvailabilityListComponent implements OnInit {
 
     this.availabilityService.addNew(command).subscribe({
       next: response => {
-        this.selectedItem_Id = response;
-        this.loadList()
+        //this.selectedItem_Id = response;
+        this.loadData(response)
       },
       error: (error) => { console.log(error) },
       complete: () => {
