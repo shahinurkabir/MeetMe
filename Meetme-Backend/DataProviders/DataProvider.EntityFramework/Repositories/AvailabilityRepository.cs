@@ -52,9 +52,7 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<List<Availability>> GetScheduleListByUserId(Guid userId)
         {
-            var list = await bookingDbContext.Set<Availability>()
-                .Include(e => e.Details)
-                .Where(e => e.OwnerId == userId).ToListAsync();
+            var list = await GetAvailabilityList(userId);
 
             return list;
         }
@@ -77,9 +75,36 @@ namespace DataProvider.EntityFramework.Repositories
             entity.Name = nameToUpdate;
 
             await bookingDbContext.SaveChangesAsync();
-            
+
             return true;
 
+        }
+        public async Task<bool> SetDefault(Guid id, Guid userId)
+        {
+            var listAvailabilityForUser = await GetAvailabilityList(userId);
+
+            var entity = listAvailabilityForUser.FirstOrDefault(e => e.Id == id);
+
+            if (entity == null) return false;
+
+            //Reset 
+            listAvailabilityForUser.ForEach(e => e.IsDefault = false);
+
+            entity.IsDefault = true;
+
+            await bookingDbContext.SaveChangesAsync();
+
+            return true;
+
+        }
+
+        private async Task<List<Availability>> GetAvailabilityList(Guid userId)
+        {
+            var list = await bookingDbContext.Set<Availability>()
+                .Include(e => e.Details)
+                .Where(e => e.OwnerId == userId).ToListAsync();
+
+            return list;
         }
     }
 }

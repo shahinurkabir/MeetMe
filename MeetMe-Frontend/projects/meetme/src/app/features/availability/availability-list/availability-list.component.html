@@ -1,9 +1,11 @@
 <h1 class="page_title">Your available times</h1>
 <span>you can create and manage existing schedules</span>
 <div class="schedule_list">
-    <button class="text-ellipsis" [ngClass]="item.id==selectedItem_Id?'selected_item':''"
+    <button class="schedule-item text-ellipsis" [ngClass]="item.id==selectedItem_Id?'selected_item':''"
         *ngFor="let item of listAvailability;let index=index" (click)="onSelectItem(item)">
+        <i class="fa-sharp fa-solid fa-calendar-days"></i>
         {{item.name}}
+            <i *ngIf="item?.isDefault"  class="fa-sharp fa-solid fa-star"></i> 
     </button>
     <button (click)="onShowAddNewModal()" class="text-ellipsis">+ New Availability</button>
 </div>

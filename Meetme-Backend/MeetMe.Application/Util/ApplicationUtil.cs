@@ -163,22 +163,21 @@ namespace MeetMe.Application.Util
         }
 
 
-        public static List<EventTypeAvailabilityDetail> GetDefaultWeeklySchedule(Guid eventTypeId)
+        public static List<AvailabilityDetail> GetDefaultWeeklySchedule(Guid availabilityId)
         {
             var dayStartInMinutes = TimeSpan.Parse(Constants.Events.MEETING_FROM_TIMESPAN).TotalMinutes;
             var dayEndINMinutes = TimeSpan.Parse(Constants.Events.MEETING_TO_TIMESPAN).TotalMinutes;
 
-            var listWeekDaysConfig = new List<EventTypeAvailabilityDetail>();
+            var listWeekDaysConfig = new List<AvailabilityDetail>();
 
             short stepId = 0;
             foreach (KeyValuePair<int, string> weekDay in Constants.WeekDays)
             {
-                listWeekDaysConfig.Add(new EventTypeAvailabilityDetail
+                listWeekDaysConfig.Add(new AvailabilityDetail
                 {
-                    Id = Guid.NewGuid(),
-                    AvailabilityId= eventTypeId,
-                    Type = Constants.Events.SCHEDULE_DATETYPE_WEEKDAY,
-                    Day = weekDay.Value,
+                    AvailabilityId= availabilityId,
+                    DayType = Constants.Events.SCHEDULE_DATETYPE_WEEKDAY,
+                    Value = weekDay.Value,
                     From = dayStartInMinutes,
                     To = dayEndINMinutes,
                     StepId=stepId
@@ -214,18 +213,17 @@ namespace MeetMe.Application.Util
             return questions;
         }
 
-        public static EventTypeAvailability GetDefaultAvailability(Guid eventTypeId, int timeZoneId)
+        public static Availability GetDefaultAvailability(Guid availabilityId,string name, int timeZoneId,bool isCustom, Guid ownerId)
         {
-            var availability = new EventTypeAvailability
+            var availability = new Availability
             {
-                Id = eventTypeId,
+                Id = availabilityId,
+                Name=name,
                 TimeZoneId=timeZoneId,
-                DateForwardKind = Constants.Events.ForwandDateKInd.Moving.ToString(),
-                ForwardDuration = Constants.Events.ForwardDuration,
-                Duration = Constants.Events.MeetingDuration,
-                BufferTimeBefore = Constants.Events.BufferTimeDuration,
-                BufferTimeAfter = Constants.Events.BufferTimeDuration,
-                AvailabilityDetails =GetDefaultWeeklySchedule(eventTypeId)
+                OwnerId=ownerId,
+                Details =GetDefaultWeeklySchedule(availabilityId),  
+                IsCustom=isCustom,
+                IsDefault=true
             };
 
             return availability;

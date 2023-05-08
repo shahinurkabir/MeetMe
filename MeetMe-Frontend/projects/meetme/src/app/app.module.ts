@@ -24,6 +24,7 @@ import { EventTypeComponent } from './features/event-types/event-type/eventtype.
 import { AvailabilityListComponent } from './features/availability/availability-list/availability-list.component';
 import { ModalComponent } from './controls/modal/modal.component';
 import { MyOffClickDirective } from './directives/myOffClickDirective';
+import { CallbackPipe } from './pipes/callback-pipe';
 
 @NgModule({
     declarations: [
@@ -43,7 +44,8 @@ import { MyOffClickDirective } from './directives/myOffClickDirective';
         EventInfoUpdateComponent,
         AvailabilityListComponent,
         ModalComponent,
-        MyOffClickDirective
+        MyOffClickDirective,
+        CallbackPipe
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },

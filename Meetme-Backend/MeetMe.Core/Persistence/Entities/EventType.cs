@@ -19,6 +19,16 @@ namespace MeetMe.Core.Persistence.Entities
         public string Slug { get; set; } = null!;
         public string EventColor { get; set; }=null!;
         public bool ActiveYN { get; set; }
+        public int TimeZoneId { get; set; }
+        public string DateForwardKind { get; set; } = null!;
+        public int? ForwardDuration { get; set; }
+        public DateTime? DateFrom { get; set; }
+        public DateTime? DateTo { get; set; }
+        public int Duration { get; set; }
+        public int BufferTimeBefore { get; set; }
+        public int BufferTimeAfter { get; set; }
+        public string? CustomAvailability { get; set; }
+        public Guid? AvailabilityId { get; set; }
         public Guid CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

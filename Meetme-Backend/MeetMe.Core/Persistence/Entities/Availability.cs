@@ -11,6 +11,7 @@ namespace MeetMe.Core.Persistence.Entities
         public Guid OwnerId { get; set; }
         public int TimeZoneId { get; set; }
         public bool IsCustom { get; set; }
+        public bool IsDefault { get; set; }
         public List<AvailabilityDetail> Details { get; set; }
         public Availability()
         {

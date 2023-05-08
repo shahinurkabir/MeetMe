@@ -107,14 +107,13 @@
     <div class="form-group">
 
         <label for="meetingDuration">Duration:</label>
-        <select id="meetingDuration" name="meetingDuration" class="form-control"
-             [(ngModel)]="model.meetingDuration">
+        <select id="meetingDuration" name="meetingDuration" class="form-control" [(ngModel)]="model.meetingDuration">
             <option [value]="meetingDuration.value" *ngFor="let meetingDuration of meetingDurations">
                 {{meetingDuration.text}}</option>
         </select>
 
     </div>
-    <h2>Time Intervals</h2>
+    <!-- <h2>Time Intervals</h2>
     <p>
         <label for="timeZoneData">Time Zone:</label>
         <select id="timeZoneData" name="timeZoneData" required class="form-control" [(ngModel)]="model.timeZoneId">
@@ -139,46 +138,12 @@
                             <div>{{dailyTimeAvailabilities.day}}</div>
                         </td>
                         <td>
-                            <!-- <div *ngIf="!dailyTimeAvailabilities.isAvailable ">
-                                Not available
-                            </div>
-
-                            <div *ngIf="dailyTimeAvailabilities.isAvailable">
-                                <div *ngFor="let timeInterval of dailyTimeAvailabilities.intervals; let i=index">
-                                    <table>
-                                        <tr>
-                                            <td style="width: 70px;">
-                                                <input type="text"
-                                                    [id]="'startTime_'+[dailyTimeAvailabilities.day]+''+i"
-                                                    [name]="'startTime_'+[dailyTimeAvailabilities.day]+''+i"
-                                                    list="time_slots" [(ngModel)]="timeInterval.startTime" required
-                                                    (focusout)="onLostFocus($event,i,false,dailyTimeAvailabilities)">
-                                            </td>
-                                            <td>-</td>
-                                            <td style="width: 70px;">
-                                                <input type="text" list="time_slots" [(ngModel)]="timeInterval.endTime"
-                                                    [id]="'endTime_'+[dailyTimeAvailabilities.day]+''+i"
-                                                    [name]="'endTime_'+[dailyTimeAvailabilities.day]+''+i" required
-                                                    (focusout)="onLostFocus($event,i,true,dailyTimeAvailabilities)">
-                                            </td>
-                                            <td><input type="button" value="Delete"
-                                                    (click)="onRemoveTimeInterval(i,dailyTimeAvailabilities)" /></td>
-
-                                        </tr>
-                                        <tr>
-                                            <td colspan="3" *ngIf="timeInterval.errorMessage" colspan="3">
-                                                {{timeInterval.errorMessage}}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div> -->
+                            
 
                             <ng-template
                                 *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay : dailyTimeAvailabilities} "></ng-template>
                         </td>
-                        <!-- <td valign="top" style="width: 100px;">
-                            <input type="button" value="Add" (click)="onAddTimeInterval(dailyTimeAvailabilities)" />
-                        </td> -->
+                        
                     </tr>
                 </table>
                 <hr>
@@ -203,12 +168,31 @@
         </div>
 
 
+    </div> -->
+    <button (click)="onClickExistingHours($event)">Existing Working Hours</button>
+    <button (click)="onClickCustomHour($event)">Custom Working hour</button>
+    <app-time-availability [style.display]="isExistingHours==false?'block':'none'" #availabilityComponent></app-time-availability>
+    <div [style.display]="isExistingHours?'block':'none'">
+        <label for="availability">Availability:</label>
+        <select id="availability" (change)="onChangeAvailability()" name="meetingDuration" class="form-control" [(ngModel)]="selectedAvailability">
+            <option [ngValue]="availabilityItem" *ngFor="let availabilityItem of listOfAvailability">
+                {{availabilityItem.name}}</option>
+        </select>
+        <app-time-availability viewMode="readonly" #availabilityExistingComponent></app-time-availability>
+        <div *ngIf="selectedAvailability">
+            <!-- <div class="weekly_day" *ngFor="let dailyTimeAvailabilities of selectedAvailability.details">
+                <span class="weekday_name">
+                    {{dailyTimeAvailabilities.value}}</span>
+                <ng-template
+                    *ngTemplateOutlet="timeInvervalsInDayTemplateReadOnly; context: {timeInvervalsInDay : selectedAvailability} "></ng-template>
+            </div> -->
+        </div>
     </div>
     <div>
         <button type="submit" class="btn btn-success" [disabled]="!formAvailability.form.valid">Submit</button>
     </div>
 </form>
-
+<!-- 
 <div class="modal-override-dates">
     <h3>Date overrides</h3>
     <app-calender (handlerDateClick)="onDateClicked($event)" [selectedDates]="selectedDatesFromCalender"></app-calender>
@@ -262,3 +246,21 @@
         <input type="button" class="add_more_item" value="Add (+)" (click)="onAddTimeInterval(timeInvervalsInDay)" />
     </div>
 </ng-template>
+
+
+<ng-template #timeInvervalsInDayTemplateReadOnly let-timeInvervalsInDay="timeInvervalsInDay">
+    <div class="intervals">
+        <div *ngIf="!timeInvervalsInDay.isAvailable ">
+            <div class="interval_item">Not available</div>
+        </div>
+
+        <div *ngIf="timeInvervalsInDay.isAvailable">
+            <div class="interval_item" *ngFor="let timeInterval of timeInvervalsInDay.intervals; let i=index">
+                <span>{{timeInterval.startTime}} - {{timeInterval.endTime}}</span>
+
+            </div>
+        </div>
+
+
+    </div>
+</ng-template> -->

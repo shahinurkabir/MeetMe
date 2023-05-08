@@ -2,33 +2,44 @@
 <div class="divider">
 </div>
 <div class="overview">
-    <h1 class="page_title">{{selectedAvailability?.name}}</h1>
+    <div>
+        <h1 class="page_title">{{selectedAvailability?.name}}</h1>
+        <span *ngIf="selectedAvailability?.isDefault">
+            <i style="color:orange;" class="fa-sharp fa-solid fa-star"></i> default schedule</span>
+       
+    </div>
     <span class="action_menu_openner" (click)="onOpenActionMenu()">
         <i class="fa-solid fa-gear"></i>
     </span>
-
     <ul (mouseleave)="onCloseActionMenu($event)" *ngIf="showActionMenubarYN" class="action_menu">
         <li (click)="onClickEditName(selectedAvailability?.id!)"><i class="fa fa-pen"></i><span>Edit Name</span></li>
         <li (click)="onClone(selectedAvailability?.id!)"><i class="fa fa-clone"></i><span>Clone</span></li>
+        <li *ngIf="!selectedAvailability?.isDefault" (click)="onDefault(selectedAvailability?.id!)">
+            <i class="fa fa-star"></i><span>Default</span>
+        </li>
         <li (click)="onClickDelete()"><i class="fa fa-trash"></i><span>Delete</span></li>
         <!-- <li><a href="javascript:void(0)" (click)="onDefault(selectedAvailability?.id!)">Set as default</a></li> -->
     </ul>
 </div>
+
+
 <app-time-availability #availabilityComponent></app-time-availability>
 <input type="button" value="Save" (click)="onSave($event)">
 
-<mm-modal id="edit-name-modal" title="Edit Schedule Name" (confirmEvent)="onEditName($event)" (cancelEvent)="onCloseModal()">
+<mm-modal id="edit-name-modal" title="Edit Schedule Name" (confirmEvent)="onEditName($event)"
+    (cancelEvent)="onCloseModal()">
     <form class="single-column" #frmEdit="ngForm" (ngSubmit)="onEditNameFormSubmit(frmEdit)">
         <div class="form-group">
             <label>Schedule Name</label>
-            <input #name="ngModel" name="name" [ngClass]="frmEdit.submitted && name.invalid?'is-invalid':''" class="form-control"
-                type="text" [(ngModel)]="editName" required>
+            <input #name="ngModel" name="name" [ngClass]="frmEdit.submitted && name.invalid?'is-invalid':''"
+                class="form-control" type="text" [(ngModel)]="editName" required>
             <div *ngIf="frmEdit.submitted && name.invalid" class="invalid-feedback">
                 Schedule name is required.
             </div>
         </div>
     </form>
 </mm-modal>
-<mm-modal id="delete-availability-modal" title="Delete Schedule- {{selectedAvailability?.name}}" (confirmEvent)="onDelete($event)" (cancelEvent)="onCloseModal()">
+<mm-modal id="delete-availability-modal" title="Delete Schedule- {{selectedAvailability?.name}}"
+    (confirmEvent)="onDelete($event)" (cancelEvent)="onCloseModal()">
     <h2>Are you sure want to delete?</h2>
 </mm-modal>

@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { day_of_week, default_endTime_Minutes, default_meeting_buffertime, default_meeting_duration, default_meeting_forward_Duration_inDays, default_startTime_minutes, meeting_day_type_date, meeting_day_type_weekday, month_of_year } from 'projects/meetme/src/app/constants/default-data';
-import { EventTypeAvailability, EventAvailabilityDetailItem, TimeZoneData } from 'projects/meetme/src/app/models/eventtype';
+import { TimeAvailabilityComponent } from 'projects/meetme/src/app/controls/time-availability/time-availability.component';
+import { IAvailability } from 'projects/meetme/src/app/models/IAvailability';
+import { EventTypeAvailability, EventAvailabilityDetailItem, TimeZoneData, EventType } from 'projects/meetme/src/app/models/eventtype';
 import { ListItem } from 'projects/meetme/src/app/models/list-item';
+import { AvailabilityService } from 'projects/meetme/src/app/services/availability.service';
 import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.service';
 import { TimeZoneService } from 'projects/meetme/src/app/services/timezone.service';
 import { convertToDays } from 'projects/meetme/src/app/utilities/functions';
@@ -22,23 +25,50 @@ export class EventAvailabilityComponent implements OnInit {
   selecteDateOverrideIntervals: ITimeIntervalInDay | undefined;
   dateOverrideAvailability: ITimeIntervalInDay[] = [];
   selectedDatesFromCalender: { [id: string]: string } = {};
-
+  isExistingHours: boolean = true;
+  listOfAvailability: IAvailability[] = [];
+  selectedAvailability: IAvailability | undefined
+  eventType: EventType = {
+    id: "", name: "",
+    description: "",
+    eventColor: "",
+    ownerId: '',
+    activeYN: true,
+    location: '',
+    slug: ''
+  };
+  
+  @ViewChild("availabilityExistingComponent", { static: true }) timeAvailabilityExisting: TimeAvailabilityComponent | undefined;
+  @ViewChild("availabilityComponent", { static: true }) timeAvailabilityComponent: TimeAvailabilityComponent | undefined;
   constructor(
     private eventTypeService: EventTypeService,
     private timeZoneService: TimeZoneService,
+    private availabilityService: AvailabilityService,
     private route: ActivatedRoute
   ) {
 
+    //this.timeAvailabilityExinting?.viewMode="readonly"
+    this.loadAvailabilityList();
     this.subscribeParamentRouteParams();
     this.initMeetingDurationAndTypes();
-    this.loadTimeZoneList();
+    //this.loadTimeZoneList();
+
 
   };
-
+  loadEventTypeDetail(id: string) {
+    this.eventTypeService.getById(id).subscribe(response => {
+      this.eventType = response;
+      console.log(this.eventType);
+    })
+  }
   subscribeParamentRouteParams() {
     this.route.parent?.params.subscribe((params) => {
       this.eventTypeId = params["id"];
-      this.loadDataFromServer(this.eventTypeId);
+      this.loadEventTypeDetail(this.eventTypeId);
+      this.loadEventAvailability(this.eventTypeId);
+
+
+
 
     });
   }
@@ -50,6 +80,10 @@ export class EventAvailabilityComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //this.timeAvailabilityComponent?.setAvailability();
+    this.timeAvailabilityComponent?.prepareWeeklyViewData();
+    this.timeAvailabilityComponent?.prepareMonthlyViewData();
+
   }
 
   onAddTimeInterval(timeInteralsInDay: ITimeIntervalInDay) {
@@ -90,8 +124,8 @@ export class EventAvailabilityComponent implements OnInit {
     this.validateOverlapIntervals(dailyTimeAvailabilities);
 
   }
- 
-  loadDataFromServer(id: string) {
+
+  loadEventAvailability(id: string) {
     this.eventTypeService.getEventAvailability(id).subscribe(response => {
       console.log(response);
       this.timeAvailability = response;
@@ -108,6 +142,13 @@ export class EventAvailabilityComponent implements OnInit {
     }
 
     this.updateTimeIntervalData();
+  }
+
+  loadAvailabilityList() {
+    this.availabilityService.getList().subscribe(response => {
+     // if (response.length > 0) this.selectedAvailability = response[0];
+      this.listOfAvailability = response;
+    })
   }
 
   updateTimeIntervalData() {
@@ -138,7 +179,7 @@ export class EventAvailabilityComponent implements OnInit {
     })
   }
 
-  
+
   onLostFocus(e: Event, index: number, isEndTime: boolean, dailyTimeAvailabilities: ITimeIntervalInDay) {
     let htmlElement = e.target as HTMLInputElement;
     let timeValue = htmlElement.value;
@@ -259,7 +300,7 @@ export class EventAvailabilityComponent implements OnInit {
     });
 
   }
-  
+
   onToggleCalendarModal(event: any) {
     event.preventDefault();
     this.toggleModalBackDrop();
@@ -296,11 +337,11 @@ export class EventAvailabilityComponent implements OnInit {
     this.onToggleCalendarModal(event);
 
   }
-  
+
   removeOverrideData(index: number) {
     this.dateOverrideAvailability.splice(index, 1);
   }
-  
+
   onDateClicked(selectedDates: { [id: string]: string }) {
 
     //this.selectedDatesFromCalender = selectedDates
@@ -314,7 +355,7 @@ export class EventAvailabilityComponent implements OnInit {
   toggleBodyScrollY() {
     document.body.classList.toggle('is-modal-open')
   }
-  
+
   toggleModalBackDrop() {
     document.querySelector('#modal-backdrop')?.classList.toggle('is-open')
   }
@@ -416,6 +457,18 @@ export class EventAvailabilityComponent implements OnInit {
       availabilityDetails: [],
     };
     return item;
+  }
+  onClickExistingHours(e: any) {
+    this.isExistingHours = true;
+    e.preventDefault();
+  }
+  onClickCustomHour(e: any) {
+    this.isExistingHours = false;
+    e.preventDefault();
+  }
+  onChangeAvailability() {
+    console.log("Changing availability");
+    this.timeAvailabilityExisting?.setAvailability(this.selectedAvailability);
   }
   private initMeetingDurationAndTypes() {
     this.meetingDurations.push({ text: "15 min", value: "15" });

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { day_of_week, default_endTime_Minutes, default_startTime_minutes, meeting_day_type_date, meeting_day_type_weekday, month_of_year } from '../../constants/default-data';
 import { TimeZoneData } from '../../models/eventtype';
 import { IAvailability } from '../../models/IAvailability';
@@ -20,7 +20,8 @@ import { ModalService } from '../modal/modalService';
 export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   availability: IAvailability | undefined;
-  timeZoneList: TimeZoneData[] = [];
+  timeZoneList: any[] = [];
+  filterTimeZoneList: any[] = [];
   weekDays = day_of_week;
   monthNames = month_of_year
   meetingDurations: ListItem[] = [];
@@ -30,7 +31,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   availabilityOverrides: ITimeIntervalInDay[] = [];
   selecteDateOverride: ITimeIntervalInDay | undefined;
   selectedDatesFromCalender: { [id: string]: string } = {};
-  viewMode: string = "list";
+  //viewMode: string = "list";
   calendarModalEl: Element | null = null;
   dayConfigureModalEl: Element | null = null;
   selectedMonth: number = 0
@@ -38,9 +39,12 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   selectedYearMonth: string = "";
   selectedDayInWeek: string = "";
   isCurrentMonth: boolean = false;
-  selectedTimeZoneId: number = -1;
+  selectedTimeZone: any |undefined;
+  timeZoneNameFilterText:string="";
+  
   @ViewChild(CalendarComponent) calendarComponent!: CalendarComponent;
-
+  @ViewChild('countryContainer') countryContainer: ElementRef | undefined;
+  @Input() viewMode:string="list";
   constructor(
     private timeZoneService: TimeZoneService,
     private modalService: ModalService
@@ -62,12 +66,16 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   }
   loadTimeZoneList() {
     this.timeZoneService.getList().subscribe(res => {
+      console.log(res)
       this.timeZoneList = res;
+      this.filterTimeZoneList=res;
     })
   }
-  setAvailability(availability: IAvailability) {
+  setAvailability(availability?: IAvailability) {
     this.availability = availability;
-    this.selectedTimeZoneId = availability.timeZoneId;
+    this.selectedTimeZone= this.timeZoneList.find(e=>e.id== availability?.timeZoneId);
+     this.prepareWeeklyViewData();
+     this.prepareMonthlyViewData();
   }
   prepareWeeklyViewData() {
 
@@ -364,7 +372,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   getAvailability(): IAvailability | undefined {
     this.availability?.details.splice(0, 100);
-    this.availability!.timeZoneId = this.selectedTimeZoneId;
+    this.availability!.timeZoneId = 1;//this.selectedTimeZone?.id!; TODO: have to refactor code later
     this.availabilityInWeek.filter(e => e.isAvailable).forEach(weekday => {
       weekday.intervals.forEach(intervalITem => {
         let item: IAvailabilityDetails = {
@@ -536,6 +544,24 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     //toggleModalDialog(this.dayConfigureModalEl)
     this.modalService.close();
     this.prepareMonthlyViewData();
+  }
+  onToggleCountryDropdownBox() {
+    this.countryContainer?.nativeElement.classList.toggle('active');
+  }
+
+  onFilterTimeZoneChanged(event: any) {
+    if (this.timeZoneNameFilterText.trim() !== '')
+      this.filterTimeZoneList = this.timeZoneList
+                                    .filter(e => e.displayName.toLowerCase()
+                                    .indexOf(this.timeZoneNameFilterText.toLowerCase()) > -1)
+    else
+      this.filterTimeZoneList = this.timeZoneList;
+
+  }
+  onSelectTimeZone(timeZoneItem:TimeZoneData) {
+    this.selectedTimeZone=timeZoneItem;
+    this.timeZoneNameFilterText="";
+    this.onToggleCountryDropdownBox();
   }
 
 }

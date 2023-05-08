@@ -4,6 +4,7 @@ export interface IAvailability {
     id: string,
     name: string,
     ownerId: string,
-    timeZoneId: number
+    timeZoneId: number,
+    isDefault:boolean,
     details: Array<IAvailabilityDetails>
 }

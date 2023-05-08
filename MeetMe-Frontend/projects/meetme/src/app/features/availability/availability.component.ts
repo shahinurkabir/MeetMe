@@ -36,8 +36,8 @@ export class AvailabilityComponent implements OnInit {
     this.selectedAvailability = availability;
     this.selectedAvailability = Object.assign({}, availability);
     this.timeAvailabilityComponent?.setAvailability(this.selectedAvailability!);
-    this.timeAvailabilityComponent?.prepareWeeklyViewData();
-    this.timeAvailabilityComponent?.prepareMonthlyViewData();
+    // this.timeAvailabilityComponent?.prepareWeeklyViewData();
+    // this.timeAvailabilityComponent?.prepareMonthlyViewData();
 
   }
 

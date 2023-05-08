@@ -5,12 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeetMe.Application.Availabilities.Commands.EditName
+namespace MeetMe.Application.Availabilities.Commands.SetDefault
 {
-    public class SetDefaultCommand:IRequest<bool>
+    public class SetDefaultAvailabilityCommand:IRequest<bool>
     {
         public Guid Id  { get; set; }
-        public string Name { get; set; } = null!;
     }
 
 }

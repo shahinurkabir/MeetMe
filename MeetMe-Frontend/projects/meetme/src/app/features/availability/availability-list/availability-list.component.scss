@@ -1,4 +1,32 @@
-.text-ellipsis{
+.schedule-item {
+    position: relative;
+}
+.schedule-item i.fa-calendar-days{
+    padding: 0 4px 0 0;
+}
+
+.schedule-item i.fa-star {
+    position: absolute;
+    //color: orange;
+    font-size: 8px;
+    left: 27px;
+    top: 17px;
+
+}
+
+.schedule-item.selected_item {
+    border: 1px solid lightgray;
+    background-color: white;
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.05);
+}
+.schedule-item.selected_item i.fa-calendar-days{
+    color: dodgerblue;
+}
+
+.schedule-item.selected_item i.fa-star{
+    color: orange;
+}
+.text-ellipsis {
     max-width: 160px;
     min-width: 140px;
     white-space: nowrap;
@@ -6,13 +34,8 @@
     text-overflow: ellipsis;
     margin-right: 10px;
 }
-.selected_item{
-    color:blue;
-    border: 1px solid lightgray;
-    background-color: white;
-    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.05);
-}
-.schedule_list{
+
+
+.schedule_list {
     margin: 16px 0 7px 0;
 }
-

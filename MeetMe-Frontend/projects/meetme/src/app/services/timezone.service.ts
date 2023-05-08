@@ -16,11 +16,11 @@ export class TimeZoneService extends DataService {
   }
 
   
-  getList(): Observable<Array<TimeZoneData>> {
+  getList(): Observable<Array<any>> {
     //let headers = {};
    // this.setHeaders(headers);
     let url = `${this.timeZoneURI}`
-    return this.http.get<Array<TimeZoneData>>(url);
+    return this.http.get<Array<any>>(url);
   }
 
   getByName(name: string): Observable<TimeZoneData> {

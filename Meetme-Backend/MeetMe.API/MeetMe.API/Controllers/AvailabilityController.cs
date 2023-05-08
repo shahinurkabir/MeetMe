@@ -8,6 +8,7 @@ using MeetMe.Application.Availabilities.Queries;
 using MeetMe.Application.Availabilities.Commands.EditName;
 using MeetMe.Application.Availabilities.Commands.Clone;
 using MeetMe.Application.Availabilities.Commands.Delete;
+using MeetMe.Application.Availabilities.Commands.SetDefault;
 
 namespace MeetMe.API.Controllers
 {
@@ -57,7 +58,7 @@ namespace MeetMe.API.Controllers
 
         [HttpPost]
         [Route("{id}/EditName")]
-        public async Task<bool> EditName(Guid id, EditAvailabilityNameCommand editAvailabilityNameCommand)
+        public async Task<bool> EditName(Guid id, SetDefaultCommand editAvailabilityNameCommand)
         {
             var result = await mediator.Send(editAvailabilityNameCommand);
 
@@ -88,6 +89,14 @@ namespace MeetMe.API.Controllers
         public async Task<bool> DeleteAvailability(Guid id, DeleteAvailabilityCommand  deleteAvailabilityCommand)
         {
             var result = await mediator.Send(deleteAvailabilityCommand);
+
+            return result;
+        }
+        [HttpPost]
+        [Route("{id}/default")]
+        public async Task<bool> SetDefault(Guid id, SetDefaultAvailabilityCommand  setDefaultAvailabilityCommand)
+        {
+            var result = await mediator.Send(setDefaultAvailabilityCommand);
 
             return result;
         }
