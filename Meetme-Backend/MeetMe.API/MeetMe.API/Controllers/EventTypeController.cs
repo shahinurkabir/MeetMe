@@ -86,7 +86,7 @@ namespace MeetMe.API.Controllers
 
         [HttpGet]
         [Route("{id}/availability")]
-        public async Task<EventTypeAvailability> GetEventAvailabilityDetail(Guid id)
+        public async Task<List<EventTypeAvailabilityDetail>> GetEventAvailabilityDetail(Guid id)
         {
             var queryCommand = new GetEventTypeAvailabilityDetailQuery { EvnetTypeId = id };
 

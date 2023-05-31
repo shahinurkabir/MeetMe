@@ -6,20 +6,22 @@ namespace MeetMe.Core.Persistence.Entities
     public class EventTypeAvailabilityDetail
     {
         public Guid Id { get; set; }
-        public Guid AvailabilityId { get; set; }
+        public Guid? EventTypeId { get; set; }
 
         /// <summary>
         /// D:Date
         /// W:Weekday
         /// </summary>
-        public string Type { get; set; } = null!;
-        public string? Day { get; set; }
-        public string? Date { get; set; }
+        public string DayType { get; set; } = null!;
+        public string? Value { get; set; }
         public short StepId { get; set; }
         public double From { get; set; }
         public double To { get; set; }
 
+        //[JsonIgnore]
+        //public EventTypeAvailability Availability { get; set; } 
+
         [JsonIgnore]
-        public EventTypeAvailability Availability { get; set; } 
+        public EventType EventType { get; set; }
     }
 }

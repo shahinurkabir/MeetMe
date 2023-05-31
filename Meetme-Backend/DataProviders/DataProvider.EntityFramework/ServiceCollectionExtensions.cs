@@ -22,6 +22,7 @@ namespace DataProvider.EntityFramework
             services.AddScoped<IPersistenceProvider, PersistenceProviderEF>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
+            services.AddScoped<IEventTypeAvailabilityDetailRepository, EventTypeAvailabilityDetailRepository>();
 
             return services;
 

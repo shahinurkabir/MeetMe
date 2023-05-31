@@ -14,6 +14,7 @@ namespace DataProvider.EntityFramework.EntityConfigurations
             builder.ToTable("EventType");
             builder.HasKey(e => e.Id);
             builder.Property(b => b.Name).IsRequired();
+            
 
 
         }

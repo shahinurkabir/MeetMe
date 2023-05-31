@@ -37,31 +37,38 @@ namespace MeetMe.Application.EventTypes.Create
 
         public async Task<Guid> Handle(CreateEventTypeCommand request, CancellationToken cancellationToken)
         {
-            var newId = Guid.NewGuid();
+            var newEventTypeId = Guid.NewGuid();
 
-            var ownerId = applicationUser.UserId;
+            var listOfAvailabilities = await availabilityRepository.GetScheduleListByUserId(applicationUser.UserId);
 
-            var listOfAvailabilities = await availabilityRepository.GetScheduleListByUserId(ownerId);
-
-            if (listOfAvailabilities == null || !listOfAvailabilities.Any()) throw new CustomException("There is no availability configured yet.");
+            if (listOfAvailabilities == null || !listOfAvailabilities.Any())
+                throw new CustomException("There is no availability configured yet.");
 
             var defaultAvailability = listOfAvailabilities.Count(e => e.IsDefault) > 0
                 ? listOfAvailabilities.First(e => e.IsDefault)
                 : listOfAvailabilities.First();
 
-
-            EventType eventTypeInfo = ConvertToEntity(newId, defaultAvailability.Id, defaultAvailability.TimeZoneId, request);
+            EventType eventTypeInfo = ConvertToEntity(newEventTypeId, defaultAvailability, request);
 
             var listOfDefaultQuestions = Util.ApplicationUtil.GetDefaultQuestion();
 
             eventTypeInfo.Questions = listOfDefaultQuestions;
 
-            await eventTypeRepository.AddNewEventType(eventTypeInfo);
+            try
+            {
 
-            return await Task.FromResult(newId);
+            await eventTypeRepository.AddNewEventType(eventTypeInfo);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return await Task.FromResult(newEventTypeId);
         }
 
-        private EventType ConvertToEntity(Guid newId, Guid availabilityId, int timeZoneId, CreateEventTypeCommand request)
+        private EventType ConvertToEntity(Guid newId, Availability availability, CreateEventTypeCommand request)
         {
             return new EventType
             {
@@ -73,19 +80,35 @@ namespace MeetMe.Application.EventTypes.Create
                 Slug = request.Slug,
                 Location = request.Location,
                 ActiveYN = false,
-                TimeZoneId = timeZoneId,
-                AvailabilityId = availabilityId,
+                TimeZoneId = availability.TimeZoneId,
+                AvailabilityId = availability.Id,
                 DateForwardKind = Constants.Events.ForwandDateKInd.Moving,
                 ForwardDuration = Constants.Events.ForwardDuration,
                 Duration = Constants.Events.MeetingDuration,
                 BufferTimeBefore = Constants.Events.BufferTimeDuration,
                 BufferTimeAfter = Constants.Events.BufferTimeDuration,
                 CreatedBy = applicationUser.UserId,
-                CreatedAt = dateTimeService.GetCurrentTimeUtc
+                CreatedAt = dateTimeService.GetCurrentTimeUtc,
+                EventTypeAvailabilityDetails = AvailabilityToEventAvailability(newId, availability.Details)
             };
         }
 
+        public static List<EventTypeAvailabilityDetail> AvailabilityToEventAvailability(Guid eventTypeId, List<AvailabilityDetail> availabilityDetails)
+        {
+            var eventAvailabilityList = availabilityDetails.Select(e => new EventTypeAvailabilityDetail
+            {
+                Id = Guid.NewGuid(),
+                EventTypeId = eventTypeId,
+                DayType = e.DayType,
+                Value = e.Value,
+                From = e.From,
+                To = e.To,
+                StepId = e.StepId
+            }).ToList();
 
+            return eventAvailabilityList;
+
+        }
 
     }
 }

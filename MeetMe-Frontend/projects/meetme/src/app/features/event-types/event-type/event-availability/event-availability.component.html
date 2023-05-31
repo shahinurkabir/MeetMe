@@ -171,23 +171,20 @@
     </div> -->
     <button (click)="onClickExistingHours($event)">Existing Working Hours</button>
     <button (click)="onClickCustomHour($event)">Custom Working hour</button>
-    <app-time-availability [style.display]="isExistingHours==false?'block':'none'" #availabilityComponent></app-time-availability>
+
+
     <div [style.display]="isExistingHours?'block':'none'">
         <label for="availability">Availability:</label>
-        <select id="availability" (change)="onChangeAvailability()" name="meetingDuration" class="form-control" [(ngModel)]="selectedAvailability">
+        <select id="availability" (change)="onChangeAvailability()" name="availability" class="form-control"
+            [(ngModel)]="selectedAvailability">
             <option [ngValue]="availabilityItem" *ngFor="let availabilityItem of listOfAvailability">
                 {{availabilityItem.name}}</option>
         </select>
-        <app-time-availability viewMode="readonly" #availabilityExistingComponent></app-time-availability>
-        <div *ngIf="selectedAvailability">
-            <!-- <div class="weekly_day" *ngFor="let dailyTimeAvailabilities of selectedAvailability.details">
-                <span class="weekday_name">
-                    {{dailyTimeAvailabilities.value}}</span>
-                <ng-template
-                    *ngTemplateOutlet="timeInvervalsInDayTemplateReadOnly; context: {timeInvervalsInDay : selectedAvailability} "></ng-template>
-            </div> -->
-        </div>
+        <app-time-availability #availabilityExistingComponent viewMode="readonly"></app-time-availability>
+
     </div>
+    <app-time-availability #availabilityComponent
+        [style.display]="isExistingHours==false?'block':'none'"></app-time-availability>
     <div>
         <button type="submit" class="btn btn-success" [disabled]="!formAvailability.form.valid">Submit</button>
     </div>

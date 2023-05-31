@@ -25,6 +25,9 @@ import { AvailabilityListComponent } from './features/availability/availability-
 import { ModalComponent } from './controls/modal/modal.component';
 import { MyOffClickDirective } from './directives/myOffClickDirective';
 import { CallbackPipe } from './pipes/callback-pipe';
+import { DistributionComponent } from './distribution/distribution/distribution.component';
+import { NameComponent } from './distribution/cards/name/name.component';
+import { AddressComponent } from './distribution/cards/address/address.component';
 
 @NgModule({
     declarations: [
@@ -45,7 +48,10 @@ import { CallbackPipe } from './pipes/callback-pipe';
         AvailabilityListComponent,
         ModalComponent,
         MyOffClickDirective,
-        CallbackPipe
+        CallbackPipe,
+        DistributionComponent,
+        NameComponent,
+        AddressComponent
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },

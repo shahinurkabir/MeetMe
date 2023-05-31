@@ -6,6 +6,7 @@ using MeetMe.Application.Services;
 using MeetMe.Caching.InMemory;
 using MeetMe.Core.Interface;
 using MeetMe.Core.Interface.Caching;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,10 +15,36 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "MeetMe API", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
 
 
-var connectionString=builder.Configuration.GetConnectionString("BookingDB");
+var connectionString = builder.Configuration.GetConnectionString("BookingDB");
 
 builder.Services.AddControllers();
 builder.Services.AddMemoryCache();
@@ -43,6 +70,7 @@ builder.Services.AddScoped<IDateTimeService, DateTimeService>();
 builder.Services.RegisterApplicationDependency();
 builder.Services.RegisterInfraDependency(connectionString);
 
+
 builder.Services.AddCors(e => e.AddPolicy("AllowAll",
              builder =>
              {
@@ -66,6 +94,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseAuthorization();
 

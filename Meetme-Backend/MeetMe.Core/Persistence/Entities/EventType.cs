@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace MeetMe.Core.Persistence.Entities
 {
@@ -28,15 +29,20 @@ namespace MeetMe.Core.Persistence.Entities
         public int BufferTimeBefore { get; set; }
         public int BufferTimeAfter { get; set; }
         public string? CustomAvailability { get; set; }
+        
         public Guid? AvailabilityId { get; set; }
         public Guid CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public Guid? UpdatedBy { get; set; }
 
+        [JsonIgnore]
         public List<EventTypeQuestion> Questions { get; set; }
+        [JsonIgnore]
+        public List<EventTypeAvailabilityDetail>  EventTypeAvailabilityDetails { get; set; }
 
-        public EventTypeAvailability EventTypeAvailability { get; set; }
+        //[JsonIgnore]
+        //public Availability Availability { set; get; }
 
     }
 

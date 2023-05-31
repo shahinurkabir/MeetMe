@@ -11,6 +11,7 @@ import { LoginComponent } from './features/users/login/login.component';
 import { WorkinghoursComponent } from './features/workinghours/workinghours.component';
 import { AuthGuard } from './gurads/auth-gurad';
 import { HomeComponent } from './home/home.component';
+import { DistributionComponent } from './distribution/distribution/distribution.component';
 
 const routes: Routes = [
   // {
@@ -40,7 +41,8 @@ const routes: Routes = [
 
     ]
   }
-
+  ,
+  {path:"distribution",component:DistributionComponent}
 ];
 // { path: "", component: EventTypeListComponent },
 //   { path: "new", component: EventInfoNewComponent },
