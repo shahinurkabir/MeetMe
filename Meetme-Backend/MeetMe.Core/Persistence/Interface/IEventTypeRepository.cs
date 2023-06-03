@@ -8,11 +8,11 @@ namespace MeetMe.Core.Persistence.Interface
     public interface IEventTypeRepository
     {
         Task AddNewEventType(EventType eventTypeInfo);
-       // Task<bool> AddNewEventTypeScheduleRule(EventTypeScheduleInfo scheduleRule);
+        // Task<bool> AddNewEventTypeScheduleRule(EventTypeScheduleInfo scheduleRule);
 
         Task<List<EventType>> GetEventTypeList();
         Task<List<EventType>> GetEventTypeListByUserId(Guid userId);
-       // Task<bool> SlugUsedYN(string slug, Guid userId);
+        // Task<bool> SlugUsedYN(string slug, Guid userId);
         Task<EventType> GetEventTypeById(Guid eventTypeId);
         //Task<EventTypeScheduleInfo> GetEventTypeScheduleById(Guid eventTypeId);
 
@@ -21,7 +21,9 @@ namespace MeetMe.Core.Persistence.Interface
         //Task<bool> UpdateSchedule(EventTypeScheduleInfo scheduleRule);
 
         Task UpdateEventType(EventType eventTypeInfo);
-        
+
     }
+   
+
 
 }

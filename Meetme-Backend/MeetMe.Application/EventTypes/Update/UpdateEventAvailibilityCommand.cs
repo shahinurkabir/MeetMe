@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using MeetMe.Core.Exceptions;
+using MeetMe.Core.Interface;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using System;
@@ -24,44 +25,70 @@ namespace MeetMe.Application.EventTypes.Update
         public int TimeZoneId { get; set; }
         public Guid? AvailabilityId { get; set; }
 
-        public List<AvailabilityDetailItem>? AvailabilityDetails { get; set; }
+        public List<AvailabilityDetail>? CustomAvailabilityDetails { get; set; }
     }
 
-    public class AvailabilityDetailItem
-    {
-        /// <summary>
-        /// D:Date
-        /// W:Weekday
-        /// </summary>
-        public string DayType { get; set; } = null!;
-        public string? Value { get; set; }
-        public short StepId { get; set; }
-        public double From { get; set; }
-        public double To { get; set; }
-
-    }
     public class UpdateAvailabilityCommandHandler : IRequestHandler<UpdateEventAvailabilityCommand, bool>
     {
         private readonly IEventTypeRepository eventTypeRepository;
+        private readonly IAvailabilityRepository availabilityRepository;
+        private readonly IUserInfo loginUser;
 
-        public UpdateAvailabilityCommandHandler(IEventTypeRepository eventTypeRepository)
+        public UpdateAvailabilityCommandHandler(
+            IEventTypeRepository eventTypeRepository,
+            IAvailabilityRepository availabilityRepository,
+            IUserInfo loginUser
+
+            )
         {
             this.eventTypeRepository = eventTypeRepository;
+            this.availabilityRepository = availabilityRepository;
+            this.loginUser = loginUser;
         }
         public async Task<bool> Handle(UpdateEventAvailabilityCommand request, CancellationToken cancellationToken)
         {
 
-            var eventType = await eventTypeRepository.GetEventTypeById(request.Id);
-            if (eventType == null) throw new CustomException("Event Type is not found.");
+                var eventTypeEntity = await eventTypeRepository.GetEventTypeById(request.Id);
+                if (eventTypeEntity == null) throw new CustomException("Event Type is not found.");
 
-            UpdateFields(eventType, request);
+                if (request.CustomAvailabilityDetails != null &&
+                    request.CustomAvailabilityDetails.Any()
+                 )
+                {
+                    var customAvailabilityId = Guid.NewGuid();
 
-            await eventTypeRepository.UpdateEventType(eventType);
+                    await CreateCustomAvailabilityEntity(request, customAvailabilityId);
 
-            return await Task.FromResult(true);
+                    request.AvailabilityId = customAvailabilityId;
+
+                }
+
+                await UpdateEventTypeFields(eventTypeEntity, request);
+
+                return await Task.FromResult(true);
+
         }
 
-        private static void UpdateFields(EventType eventType, UpdateEventAvailabilityCommand request)
+        private async Task CreateCustomAvailabilityEntity(UpdateEventAvailabilityCommand request, Guid customAvailabilityId)
+        {
+            request.CustomAvailabilityDetails?.ForEach(e => e.AvailabilityId = customAvailabilityId);
+
+            var availability = new Availability
+            {
+                Id = customAvailabilityId,
+                Name = "Custom availability for EventType " + request.Id,
+                OwnerId = loginUser.UserId,
+                TimeZoneId = request.TimeZoneId,
+                IsDefault = false,
+                IsCustom = true,
+                Details = request.CustomAvailabilityDetails?.ToList()
+            };
+
+            _ = await availabilityRepository.AddSchedule(availability);
+
+        }
+       
+        private async Task UpdateEventTypeFields(EventType eventType, UpdateEventAvailabilityCommand request)
         {
 
             eventType.DateForwardKind = request.DateForwardKind;
@@ -72,15 +99,9 @@ namespace MeetMe.Application.EventTypes.Update
             eventType.BufferTimeBefore = request.BufferTimeBefore;
             eventType.BufferTimeAfter = request.BufferTimeAfter;
             eventType.TimeZoneId = request.TimeZoneId;
-            eventType.CustomAvailability = CustomAvailabilityData(request.AvailabilityDetails);
+            eventType.AvailabilityId = request.AvailabilityId;
 
-        }
-        private static string? CustomAvailabilityData(List<AvailabilityDetailItem>? eventTypeAvailabilityDetails)
-        {
-            if (eventTypeAvailabilityDetails == null || !eventTypeAvailabilityDetails.Any()) return null;
-
-            string jsonString = JsonSerializer.Serialize(eventTypeAvailabilityDetails);
-            return jsonString;
+            await eventTypeRepository.UpdateEventType(eventType);
         }
 
     }

@@ -1,10 +1,6 @@
 ﻿using MeetMe.Core.Interface;
 using MeetMe.Core.Persistence.Entities;
 using MediatR;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using MeetMe.Core;
 using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Exceptions;
 using MeetMe.Core.Constant;
@@ -54,16 +50,7 @@ namespace MeetMe.Application.EventTypes.Create
 
             eventTypeInfo.Questions = listOfDefaultQuestions;
 
-            try
-            {
-
             await eventTypeRepository.AddNewEventType(eventTypeInfo);
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
 
             return await Task.FromResult(newEventTypeId);
         }
