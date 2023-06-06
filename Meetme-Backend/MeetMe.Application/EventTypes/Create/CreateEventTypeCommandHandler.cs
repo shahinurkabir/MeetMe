@@ -57,6 +57,8 @@ namespace MeetMe.Application.EventTypes.Create
 
         private EventType ConvertToEntity(Guid newId, Availability availability, CreateEventTypeCommand request)
         {
+            var listScheduleDetails = CopyScheduleItemFromAvailabilityDetails(newId, availability.Details);
+
             return new EventType
             {
                 Id = newId,
@@ -76,11 +78,11 @@ namespace MeetMe.Application.EventTypes.Create
                 BufferTimeAfter = Constants.Events.BufferTimeDuration,
                 CreatedBy = applicationUser.UserId,
                 CreatedAt = dateTimeService.GetCurrentTimeUtc,
-                EventTypeAvailabilityDetails = AvailabilityToEventAvailability(newId, availability.Details)
+                EventTypeAvailabilityDetails = listScheduleDetails
             };
         }
 
-        public static List<EventTypeAvailabilityDetail> AvailabilityToEventAvailability(Guid eventTypeId, List<AvailabilityDetail> availabilityDetails)
+        private List<EventTypeAvailabilityDetail> CopyScheduleItemFromAvailabilityDetails(Guid eventTypeId, List<AvailabilityDetail> availabilityDetails)
         {
             var eventAvailabilityList = availabilityDetails.Select(e => new EventTypeAvailabilityDetail
             {
@@ -96,6 +98,5 @@ namespace MeetMe.Application.EventTypes.Create
             return eventAvailabilityList;
 
         }
-
     }
 }

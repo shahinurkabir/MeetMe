@@ -1,3 +1,6 @@
+import { IAvailability } from "./IAvailability";
+import { IAvailabilityDetails } from "./IAvailabilityDetails";
+
 export interface EventType {
     id: string,
     name: string,
@@ -7,6 +10,7 @@ export interface EventType {
     slug: string,
     activeYN: boolean,
     ownerId: string
+    availabilityId:string
 }
 
 export interface CreateEventTypeCommand {
@@ -28,9 +32,9 @@ export interface EventTypeAvailability {
     duration: number,
     bufferTimeBefore: number,
     bufferTimeAfter: number,
-    baseScheduleId?: string,
+    availabilityId?: string,
     timeZoneId: number
-    availabilityDetails: Array<EventAvailabilityDetailItem>
+    availability: IAvailability
 }
 
 export interface EventAvailabilityDetailItem {
@@ -39,9 +43,8 @@ export interface EventAvailabilityDetailItem {
     /// D:Date
     /// W:Weekday
     /// </summary>
-    type: string,
-    day?: string,
-    date?: string,
+    dayType: string,
+    value?: string,
     stepId: number,
     from: number,
     to: number

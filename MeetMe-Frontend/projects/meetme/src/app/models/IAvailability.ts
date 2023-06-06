@@ -6,5 +6,6 @@ export interface IAvailability {
     ownerId: string,
     timeZoneId: number,
     isDefault:boolean,
-    details: Array<IAvailabilityDetails>
+    details: Array<IAvailabilityDetails>,
+    isCustom:boolean
 }

@@ -11,6 +11,7 @@ namespace MeetMe.Core.Persistence.Entities
         public EventType()
         {
             Questions = new List<EventTypeQuestion>();
+            EventTypeAvailabilityDetails = new List<EventTypeAvailabilityDetail>();
         }
         public Guid Id { get; set; }
         public Guid OwnerId { get; set; }

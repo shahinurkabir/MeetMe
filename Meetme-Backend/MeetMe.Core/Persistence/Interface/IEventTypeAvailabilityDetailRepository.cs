@@ -10,5 +10,7 @@ namespace MeetMe.Core.Persistence.Interface
     public interface IEventTypeAvailabilityDetailRepository
     {
         Task<List<EventTypeAvailabilityDetail>> GetEventTypeAvailabilityDetailByEventId(Guid eventTypeId);
+        Task RemoveItems(List<EventTypeAvailabilityDetail> itemsToRemove);
+        Task InsertItems(List<EventTypeAvailabilityDetail> itemsToInsert);
     }
 }

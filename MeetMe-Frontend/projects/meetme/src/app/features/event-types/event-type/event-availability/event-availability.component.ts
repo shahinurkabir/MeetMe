@@ -10,7 +10,7 @@ import { AvailabilityService } from 'projects/meetme/src/app/services/availabili
 import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.service';
 import { TimeZoneService } from 'projects/meetme/src/app/services/timezone.service';
 import { convertToDays } from 'projects/meetme/src/app/utilities/functions';
-import { ObjectUnsubscribedError } from 'rxjs';
+import { ObjectUnsubscribedError, Observable, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-event-availability',
@@ -20,12 +20,9 @@ import { ObjectUnsubscribedError } from 'rxjs';
 export class EventAvailabilityComponent implements OnInit {
   timeZoneList: TimeZoneData[] = [];
   eventTypeId: string = "";
-  //weeklyTimeAvailabilities: ITimeIntervalInDay[] = [];
   eventTypeAvailability: EventTypeAvailability | undefined;
   model: model = this.getDefaultModel();
   meetingDurations: ListItem[] = [];
-//  selecteDateOverrideIntervals: ITimeIntervalInDay | undefined;
-  //dateOverrideAvailability: ITimeIntervalInDay[] = [];
   selectedDatesFromCalender: { [id: string]: string } = {};
   isExistingHours: boolean = true;
   listOfAvailability: IAvailability[] = [];
@@ -39,7 +36,8 @@ export class EventAvailabilityComponent implements OnInit {
     ownerId: '',
     activeYN: true,
     location: '',
-    slug: ''
+    slug: '',
+    availabilityId: ''
   };
 
   @ViewChild("availabilityExistingComponent", { static: true }) timeAvailabilityExisting: TimeAvailabilityComponent | undefined;
@@ -51,7 +49,6 @@ export class EventAvailabilityComponent implements OnInit {
     private route: ActivatedRoute
   ) {
 
-    //this.timeAvailabilityExinting?.viewMode="readonly"
     this.createCustomAvailabilityModel();
     this.loadAvailabilityList();
     this.subscribeParamentRouteParams();
@@ -66,17 +63,34 @@ export class EventAvailabilityComponent implements OnInit {
       console.log(this.eventType);
     })
   }
+
+  loadData(eventTypeId: string): Observable<[IAvailability[], EventType]> {
+
+    return forkJoin([this.availabilityService.getList(),
+    this.eventTypeService.getById(this.eventTypeId)]);
+  }
+
   subscribeParamentRouteParams() {
     this.route.parent?.params.subscribe((params) => {
       this.eventTypeId = params["id"];
 
-      this.loadEventTypeDetail(this.eventTypeId);
-      this.loadEventAvailability(this.eventTypeId);
+      this.loadData(this.eventTypeId).subscribe(responses => {
+        this.listOfAvailability = responses[0];
+        this.eventType = responses[1];
 
-
-
+        this.selectedAvailability = this.listOfAvailability.find(e => e.id = this.eventType.availabilityId);
+        this.updateWorkingHourFields();
+      });
 
     });
+  };
+
+  updateWorkingHourFields() {
+    if (this.isExistingHours) {
+      this.timeAvailabilityExisting?.setAvailability(this.selectedAvailability)
+    } else {
+      this.timeAvailabilityComponent?.setAvailability(this.customAvailability)
+    }
   }
 
   loadTimeZoneList() {
@@ -89,6 +103,125 @@ export class EventAvailabilityComponent implements OnInit {
     //this.timeAvailabilityComponent?.setAvailability();
     //this.timeAvailabilityComponent?.prepareWeeklyViewData();
     //this.timeAvailabilityComponent?.prepareMonthlyViewData();
+
+  }
+
+
+
+  loadEventAvailability(id: string) {
+    this.eventTypeService.getEventAvailability(id).subscribe(response => {
+      console.log(response);
+      this.eventTypeAvailability = response;
+      this.loadDataCompleted();
+    });
+  }
+
+  loadDataCompleted() {
+    if (this.eventTypeAvailability)
+      this.model.meetingDuration = this.eventTypeAvailability.duration;
+
+    if (this.eventTypeAvailability?.forwardDuration) {
+      this.model.forwardDurationInDays = convertToDays(this.eventTypeAvailability.forwardDuration)
+    }
+
+  }
+
+  loadAvailabilityList() {
+    this.availabilityService.getList().subscribe(response => {
+
+      this.listOfAvailability = response;
+
+      if (response.length > 0) {
+        this.selectedAvailability = response[1];
+      }
+    })
+  }
+
+
+  createCustomAvailabilityModel() {
+    let availability: IAvailability = {
+      id: '',
+      name: "",
+      ownerId: "",
+      timeZoneId: 0,
+      isDefault: false,
+      details: [],
+      isCustom: true
+    };
+
+    day_of_week.forEach(day => {
+      let availabilityDetailItem: IAvailabilityDetails = {
+        dayType: meeting_day_type_weekday,
+        value: day,
+        from: default_startTime_minutes,
+        to: default_endTime_Minutes,
+        stepId: 0
+      }
+      availability.details.push(availabilityDetailItem);
+    });
+
+    this.customAvailability = availability;
+
+    console.log("Custom Availability Model");
+    console.log(this.customAvailability);
+  }
+  onSubmit(form: any) {
+
+    if (form.invalid) return;
+
+    let timeAvalabilityDetails: IAvailabilityDetails[] = [];
+    let availability: IAvailability | undefined;
+    if (this.isExistingHours) {
+      availability = this.timeAvailabilityExisting?.getAvailability();
+    }
+    else {
+      availability = this.timeAvailabilityComponent?.getAvailability();
+    }
+
+    // for (let dailyTimeAvailabilities of this.weeklyTimeAvailabilities) {
+
+    //   for (let timeInterval of dailyTimeAvailabilities.intervals) {
+    //     timeAvalabilityDetails.push(
+    //       {
+    //         type: "weekday",
+    //         stepId: 0,
+    //         day: dailyTimeAvailabilities.day,
+    //         from: timeInterval.startTimeInMinute,
+    //         to: timeInterval.endTimeInMinute,
+    //       });
+    //   }
+    // }
+    // overrides intervals
+    // for f(let timeIntervalInDate of this.dateOverrideAvailability) {
+    //   for (let timeInterval of timeIntervalInDate.intervals) {
+    //     timeAvalabilityDetails.push(
+    //       {
+    //         type: "date",
+    //         stepId: 0,
+    //         date: timeIntervalInDate.day,
+    //         from: timeInterval.startTimeInMinute,
+    //         to: timeInterval.endTimeInMinute,
+    //       });
+    //   }
+    // }
+
+    // let forwardDuration = parseInt(this.model.forwardDurationInDays.toString()) * (24 * 60);
+
+    let eventTypeAvailability: EventTypeAvailability = {
+      id: this.eventTypeId,
+      duration: this.model.meetingDuration,
+      dateForwardKind: "moving",
+      forwardDuration: this.model.forwardDurationInDays,
+      bufferTimeBefore: this.model.bufferTimeBefore,
+      bufferTimeAfter: this.model.bufferTimeAfter,
+      timeZoneId: this.model.timeZoneId,
+      availabilityId: this.model.availabilityId,
+      availability: availability!
+    };
+
+    this.eventTypeService.updateAvailability(eventTypeAvailability).subscribe(response => {
+      alert("Data saved successfully.")
+    });
 
   }
 
@@ -130,38 +263,6 @@ export class EventAvailabilityComponent implements OnInit {
   //   this.validateOverlapIntervals(dailyTimeAvailabilities);
 
   // }
-
-  loadEventAvailability(id: string) {
-    this.eventTypeService.getEventAvailability(id).subscribe(response => {
-      console.log(response);
-      this.eventTypeAvailability = response;
-      this.loadDataCompleted();
-    });
-  }
-
-  loadDataCompleted() {
-    if (this.eventTypeAvailability)
-      this.model.meetingDuration = this.eventTypeAvailability.duration;
-
-    if (this.eventTypeAvailability?.forwardDuration) {
-      this.model.forwardDurationInDays = convertToDays(this.eventTypeAvailability.forwardDuration)
-    }
-    
-    if (this.model)
-    this.updateTimeIntervalData();
-  }
-
-  loadAvailabilityList() {
-    this.availabilityService.getList().subscribe(response => {
-      
-      this.listOfAvailability = response;
-
-      if (response.length > 0) {
-        this.selectedAvailability = response[0];
-      }
-    })
-  }
-
   // updateTimeIntervalData() {
 
   //   this.resetTimeIntervals();
@@ -259,84 +360,6 @@ export class EventAvailabilityComponent implements OnInit {
   //   this.validateOverlapIntervals(dailyTimeAvailabilities)
 
   // }
-  createCustomAvailabilityModel() {
-    let availability: IAvailability = {
-      id: '',
-      name: "",
-      ownerId: "",
-      timeZoneId: 0,
-      isDefault: false,
-      details: []
-    };
-
-    day_of_week.forEach(day => {
-      let availabilityDetailItem: IAvailabilityDetails = {
-        dayType: meeting_day_type_weekday,
-        value: day,
-        from: default_startTime_minutes,
-        to: default_endTime_Minutes,
-        stepId: 0
-      }
-      availability.details.push(availabilityDetailItem);
-    });
-
-    this.customAvailability=availability;
-
-    console.log("Custom Availability Model");
-    console.log(this.customAvailability);
-  }
-  onSubmit(form: any) {
-
-    if (form.invalid) return;
-
-    let timeAvalabilityDetails: EventAvailabilityDetailItem[] = [];
-
-    for (let dailyTimeAvailabilities of this.weeklyTimeAvailabilities) {
-
-      for (let timeInterval of dailyTimeAvailabilities.intervals) {
-        timeAvalabilityDetails.push(
-          {
-            type: "weekday",
-            stepId: 0,
-            day: dailyTimeAvailabilities.day,
-            from: timeInterval.startTimeInMinute,
-            to: timeInterval.endTimeInMinute,
-          });
-      }
-    }
-    // overrides intervals
-    for (let timeIntervalInDate of this.dateOverrideAvailability) {
-      for (let timeInterval of timeIntervalInDate.intervals) {
-        timeAvalabilityDetails.push(
-          {
-            type: "date",
-            stepId: 0,
-            date: timeIntervalInDate.day,
-            from: timeInterval.startTimeInMinute,
-            to: timeInterval.endTimeInMinute,
-          });
-      }
-    }
-
-    let forwardDuration = parseInt(this.model.forwardDurationInDays.toString()) * (24 * 60);
-
-    let eventTypeAvailability: EventTypeAvailability = {
-      id: this.eventTypeId,
-      duration: this.model.meetingDuration,
-      dateForwardKind: "moving",
-      forwardDuration: forwardDuration,
-      bufferTimeBefore: this.model.bufferTimeBefore,
-      bufferTimeAfter: this.model.bufferTimeAfter,
-      timeZoneId: this.model.timeZoneId,
-      availabilityDetails: timeAvalabilityDetails
-    };
-
-    this.eventTypeService.updateAvailability(eventTypeAvailability).subscribe(response => {
-      alert("Data saved successfully.")
-    });
-
-  }
-
   // onToggleCalendarModal(event: any) {
   //   event.preventDefault();
   //   this.toggleModalBackDrop();
@@ -500,12 +523,14 @@ export class EventAvailabilityComponent implements OnInit {
   }
   onClickCustomHour(e: any) {
     this.isExistingHours = false;
-    this.timeAvailabilityComponent?.setAvailability(this.customAvailability);
+    //this.timeAvailabilityComponent?.setAvailability(this.customAvailability);
+    this.updateWorkingHourFields();
     e.preventDefault();
   }
-  
+
   onChangeAvailability() {
-    this.timeAvailabilityExisting?.setAvailability(this.selectedAvailability);
+    this.updateWorkingHourFields();
+    //this.timeAvailabilityExisting?.setAvailability(this.selectedAvailability);
   }
 
   // private setCustomHours() {
@@ -543,6 +568,6 @@ interface model {
   bufferTimeAfter: number,
   bufferTimeBefore: number,
   timeZoneId: number,
-  AvailabilityId?:number,
+  availabilityId?: string,
   availabilityDetails: [],
 }

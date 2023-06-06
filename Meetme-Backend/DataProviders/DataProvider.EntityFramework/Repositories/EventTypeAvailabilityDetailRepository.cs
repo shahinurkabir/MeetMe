@@ -25,5 +25,19 @@ namespace DataProvider.EntityFramework.Repositories
             return entity;
         }
 
+        public async Task InsertItems(List<EventTypeAvailabilityDetail> itemsToInsert)
+        {
+            await bookingDbContext.Set<EventTypeAvailabilityDetail>().AddRangeAsync(itemsToInsert);
+
+            await bookingDbContext.SaveChangesAsync();
+
+        }
+
+        public async Task RemoveItems(List<EventTypeAvailabilityDetail> itemsToRemove)
+        {
+            bookingDbContext.Set<EventTypeAvailabilityDetail>().RemoveRange(itemsToRemove);
+
+            await bookingDbContext.SaveChangesAsync();
+        }
     }
 }

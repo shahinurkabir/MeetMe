@@ -15,7 +15,8 @@ export class EventInfoNewComponent implements OnInit {
     ownerId: '',
     activeYN: true,
     location: '',
-    slug: ''
+    slug: '',
+    availabilityId:''
   };
   constructor(private location: Location) { }
 

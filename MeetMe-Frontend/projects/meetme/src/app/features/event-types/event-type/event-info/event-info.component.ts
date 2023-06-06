@@ -19,7 +19,8 @@ export class EventInfoComponent implements OnInit {
     ownerId: '',
     activeYN: true,
     location: '',
-    slug: ''
+    slug: '',
+    availabilityId:''
   };
   @Output() dataSavedEvent = new EventEmitter();
   @Output() cancelEvent = new EventEmitter();

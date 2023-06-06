@@ -16,7 +16,8 @@ export class EventInfoUpdateComponent implements OnInit {
     ownerId: '',
     activeYN: true,
     location: '',
-    slug: ''
+    slug: '',
+    availabilityId:''
   };
   constructor(private eventTypeService: EventTypeService,
     private route: ActivatedRoute) {
