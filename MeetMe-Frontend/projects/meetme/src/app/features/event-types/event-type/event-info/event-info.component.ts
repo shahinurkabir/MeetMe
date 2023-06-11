@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CreateEventTypeCommand, EventType, UpdateEventCommand } from 'projects/meetme/src/app/models/eventtype';
+import { ICreateEventTypeCommand, EventType, IUpdateEventCommand } from 'projects/meetme/src/app/models/eventtype';
 import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.service';
 
 @Component({
@@ -13,14 +13,21 @@ import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.ser
 export class EventInfoComponent implements OnInit {
   submitted = false;
   @Input() model: EventType = {
-    id: "", name: "",
+    id: "",
+    name: "",
     description: "",
+    duration: 0,
     eventColor: "",
     ownerId: '',
     activeYN: true,
     location: '',
     slug: '',
-    availabilityId:''
+    availabilityId: '',
+    forwardDuration: 0,
+    dateForwardKind: 'moving',
+    bufferTimeAfter: 0,
+    bufferTimeBefore: 0,
+    timeZoneId: 1
   };
   @Output() dataSavedEvent = new EventEmitter();
   @Output() cancelEvent = new EventEmitter();
@@ -56,7 +63,7 @@ export class EventInfoComponent implements OnInit {
 
   private handleAddNew() {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    let command: CreateEventTypeCommand = {
+    let command: ICreateEventTypeCommand = {
       name: this.model.name,
       description: this.model.description,
       slug: this.model.slug,
@@ -74,7 +81,7 @@ export class EventInfoComponent implements OnInit {
   }
 
   private handleUpdate() {
-    let command: UpdateEventCommand = {
+    let command: IUpdateEventCommand = {
       id: this.model.id,
       name: this.model.name,
       description: this.model.description,

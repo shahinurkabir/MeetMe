@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { CreateEventTypeCommand, EventType, EventTypeAvailability, IEventTypeQuestion, IUpdateEventQuestionCommand, TimeZoneData, UpdateEventCommand } from '../models/eventtype';
+import { ICreateEventTypeCommand, EventType, IUpdateEventAvailabilityCommand, IEventTypeQuestion, IUpdateEventQuestionCommand, TimeZoneData, IUpdateEventCommand } from '../models/eventtype';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { DataService } from './data.service';

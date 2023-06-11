@@ -25,7 +25,8 @@ namespace MeetMe.Application.EventTypes.Update
         public int TimeZoneId { get; set; }
         public Guid? AvailabilityId { get; set; }
 
-        public Availability Availability { get; set; } = null!;
+        public List<EventAvailabilityDetailItemDto> AvailabilityDetails { get; set; } = null!;
+
 
     }
 
@@ -33,21 +34,18 @@ namespace MeetMe.Application.EventTypes.Update
     {
         private readonly IEventTypeRepository eventTypeRepository;
         private readonly IEventTypeAvailabilityDetailRepository eventTypeAvailabilityDetailRepository;
-        private readonly IEventTypeAvailabilityDetailRepository typeAvailabilityDetailRepository;
-        private readonly IAvailabilityRepository availabilityRepository;
         private readonly IUserInfo loginUser;
 
-        public UpdateAvailabilityCommandHandler(
+        public UpdateAvailabilityCommandHandler
+        (
             IEventTypeRepository eventTypeRepository,
             IEventTypeAvailabilityDetailRepository eventTypeAvailabilityDetailRepository,
-            IAvailabilityRepository availabilityRepository,
             IUserInfo loginUser
 
-            )
+        )
         {
             this.eventTypeRepository = eventTypeRepository;
             this.eventTypeAvailabilityDetailRepository = eventTypeAvailabilityDetailRepository;
-            this.availabilityRepository = availabilityRepository;
             this.loginUser = loginUser;
         }
 
@@ -55,40 +53,26 @@ namespace MeetMe.Application.EventTypes.Update
         {
 
             var eventTypeEntity = await eventTypeRepository.GetEventTypeById(request.Id);
-            
+
             if (eventTypeEntity == null) throw new CustomException("Event Type is not found.");
 
-            var listScheduleItem=await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityDetailByEventId(eventTypeEntity.Id);
+            var listScheduleItem = await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityDetailByEventId(eventTypeEntity.Id);
+
             if (listScheduleItem != null && listScheduleItem.Any())
             {
                 await eventTypeAvailabilityDetailRepository.RemoveItems(listScheduleItem);
             }
-            //if (request.CustomAvailabilityDetails != null &&
-            //    request.CustomAvailabilityDetails.Any()
-            // )
-            //{
-            //    var customAvailabilityId = Guid.NewGuid();
-
-            //    await CreateCustomAvailabilityEntity(request, customAvailabilityId);
-
-            //    request.AvailabilityId = customAvailabilityId;
-
-            //}
 
             await UpdateEventTypeFields(eventTypeEntity, request);
 
-            var listScheduleDetails = CopyScheduleItemFromAvailabilityDetails(eventTypeEntity.Id, request.Availability.Details);
-
-            await eventTypeAvailabilityDetailRepository.InsertItems(listScheduleDetails);
+            await UpdateEventAvailabilityDetails(eventTypeEntity.Id, request.AvailabilityDetails);
 
             return await Task.FromResult(true);
 
         }
 
-
         private async Task UpdateEventTypeFields(EventType eventType, UpdateEventAvailabilityCommand request)
         {
-            
 
             eventType.DateForwardKind = request.DateForwardKind;
             eventType.ForwardDuration = request.ForwardDuration;
@@ -103,7 +87,7 @@ namespace MeetMe.Application.EventTypes.Update
             await eventTypeRepository.UpdateEventType(eventType);
         }
 
-        private List<EventTypeAvailabilityDetail> CopyScheduleItemFromAvailabilityDetails(Guid eventTypeId, List<AvailabilityDetail> availabilityDetails)
+        private async Task UpdateEventAvailabilityDetails(Guid eventTypeId, List<EventAvailabilityDetailItemDto> availabilityDetails)
         {
             var eventAvailabilityList = availabilityDetails.Select(e => new EventTypeAvailabilityDetail
             {
@@ -116,27 +100,11 @@ namespace MeetMe.Application.EventTypes.Update
                 StepId = e.StepId
             }).ToList();
 
-            return eventAvailabilityList;
+            await eventTypeAvailabilityDetailRepository.InsertItems(eventAvailabilityList);
+
 
         }
-        //private async Task CreateCustomAvailabilityEntity(UpdateEventAvailabilityCommand request, Guid customAvailabilityId)
-        //{
-        //    request.CustomAvailabilityDetails?.ForEach(e => e.AvailabilityId = customAvailabilityId);
 
-        //    var availability = new Availability
-        //    {
-        //        Id = customAvailabilityId,
-        //        Name = "Custom availability for EventType " + request.Id,
-        //        OwnerId = loginUser.UserId,
-        //        TimeZoneId = request.TimeZoneId,
-        //        IsDefault = false,
-        //        IsCustom = true,
-        //        Details = request.CustomAvailabilityDetails?.ToList()
-        //    };
-
-        //    _ = await availabilityRepository.AddSchedule(availability);
-
-        //}
     }
 
 

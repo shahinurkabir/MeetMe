@@ -9,14 +9,21 @@ import { EventType } from 'projects/meetme/src/app/models/eventtype';
 })
 export class EventInfoNewComponent implements OnInit {
   model: EventType = {
-    id: "", name: "",
+    id: "",
+    name: "",
     description: "",
+    duration: 0,
     eventColor: "",
     ownerId: '',
     activeYN: true,
     location: '',
     slug: '',
-    availabilityId:''
+    availabilityId: '',
+    forwardDuration: 0,
+    dateForwardKind: 'moving',
+    bufferTimeAfter: 0,
+    bufferTimeBefore: 0,
+    timeZoneId: 1
   };
   constructor(private location: Location) { }
 

@@ -10,10 +10,19 @@ export interface EventType {
     slug: string,
     activeYN: boolean,
     ownerId: string
-    availabilityId:string
+    availabilityId:string,
+    forwardDuration?:number,
+    dateForwardKind: string,
+    dateFrom?: Date,
+    dateTo?: Date,
+    duration: number,
+    bufferTimeBefore: number,
+    bufferTimeAfter: number,
+    timeZoneId: number
+    
 }
 
-export interface CreateEventTypeCommand {
+export interface ICreateEventTypeCommand {
     name: string;
     description?: string;
     location?: string;
@@ -23,7 +32,7 @@ export interface CreateEventTypeCommand {
     activeYN: boolean;
 }
 
-export interface EventTypeAvailability {
+export interface IUpdateEventAvailabilityCommand {
     id: string,
     dateForwardKind: string,
     forwardDuration?: number,
@@ -34,10 +43,10 @@ export interface EventTypeAvailability {
     bufferTimeAfter: number,
     availabilityId?: string,
     timeZoneId: number
-    availability: IAvailability
+    availabilityDetails: Array<EventAvailabilityDetailItemDto>
 }
 
-export interface EventAvailabilityDetailItem {
+export interface EventAvailabilityDetailItemDto {
 
     /// <summary>
     /// D:Date
@@ -50,7 +59,7 @@ export interface EventAvailabilityDetailItem {
     to: number
 }
 
-export interface UpdateEventCommand {
+export interface IUpdateEventCommand {
     id: string,
     name: string,
     description?: string,

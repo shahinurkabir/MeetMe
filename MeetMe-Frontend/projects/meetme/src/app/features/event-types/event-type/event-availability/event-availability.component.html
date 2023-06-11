@@ -100,14 +100,14 @@
     </datalist>
     <div class="form-group">
         <label for="name">Data Range - in future*</label>
-        <input type="text" class="form-control" id="forwardDuration" required [(ngModel)]="model.forwardDurationInDays"
+        <input type="text" class="form-control" id="forwardDuration" required [(ngModel)]="forwardDurationInDays"
             name="forwardDuration">
     </div>
 
     <div class="form-group">
 
         <label for="meetingDuration">Duration:</label>
-        <select id="meetingDuration" name="meetingDuration" class="form-control" [(ngModel)]="model.meetingDuration">
+        <select id="meetingDuration" name="meetingDuration" class="form-control" [(ngModel)]="model.duration">
             <option [value]="meetingDuration.value" *ngFor="let meetingDuration of meetingDurations">
                 {{meetingDuration.text}}</option>
         </select>

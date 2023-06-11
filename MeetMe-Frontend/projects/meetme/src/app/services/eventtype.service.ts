@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { CreateEventTypeCommand, EventType, EventTypeAvailability, IEventTypeQuestion, IUpdateEventQuestionCommand, UpdateEventCommand } from '../models/eventtype';
+import { ICreateEventTypeCommand, EventType, IUpdateEventAvailabilityCommand, IEventTypeQuestion, IUpdateEventQuestionCommand, IUpdateEventCommand } from '../models/eventtype';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { DataService } from './data.service';
@@ -28,7 +28,7 @@ export class EventTypeService extends DataService {
     let url = `${this.eventTypeURI}/${id}`
     return this.http.get<EventType>(url);
   }
-  addNew(command: CreateEventTypeCommand): Observable<string> {
+  addNew(command: ICreateEventTypeCommand): Observable<string> {
     // let headers = {};
     // this.setHeaders(headers);
     let url = `${this.eventTypeURI}`
@@ -37,7 +37,7 @@ export class EventTypeService extends DataService {
 
   }
 
-  update(updateEventType: UpdateEventCommand): Observable<boolean> {
+  update(updateEventType: IUpdateEventCommand): Observable<boolean> {
     // let headers = {};
     // this.setHeaders(headers);
     let url = `${this.eventTypeURI}/${updateEventType.id}`;
@@ -47,20 +47,20 @@ export class EventTypeService extends DataService {
 
   }
 
-  getEventAvailability(eventTypeId: string): Observable<EventTypeAvailability> {
+  getEventAvailability(eventTypeId: string): Observable<IUpdateEventAvailabilityCommand> {
     // let headers = {};
     // this.setHeaders(headers);
     let url = `${this.eventTypeURI}/${eventTypeId}/availability`
-    return this.http.get<EventTypeAvailability>(url);
+    return this.http.get<IUpdateEventAvailabilityCommand>(url);
   }
 
-  updateAvailability(availabilityDetail: EventTypeAvailability): Observable<boolean> {
+  updateAvailability(availabilityDetail: IUpdateEventAvailabilityCommand): Observable<boolean> {
     // let headers = {};
     // this.setHeaders(headers);
     let url = `${this.eventTypeURI}/${availabilityDetail.id}/availability`;
     //let body = JSON.stringify(availabilityDetail);
 
-    return this.http.post<boolean>(url, availabilityDetail);
+    return this.doPost(url, availabilityDetail);
 
   }
 

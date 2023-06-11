@@ -10,14 +10,21 @@ import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.ser
 })
 export class EventInfoUpdateComponent implements OnInit {
   model: EventType = {
-    id: "", name: "",
+    id: "",
+    name: "",
     description: "",
+    duration: 0,
     eventColor: "",
     ownerId: '',
     activeYN: true,
     location: '',
     slug: '',
-    availabilityId:''
+    availabilityId: '',
+    forwardDuration: 0,
+    dateForwardKind: 'moving',
+    bufferTimeAfter: 0,
+    bufferTimeBefore: 0,
+    timeZoneId: 1
   };
   constructor(private eventTypeService: EventTypeService,
     private route: ActivatedRoute) {
