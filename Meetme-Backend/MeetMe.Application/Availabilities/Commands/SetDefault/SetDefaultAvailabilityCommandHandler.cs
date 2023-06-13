@@ -17,7 +17,7 @@ namespace MeetMe.Application.Availabilities.Commands.SetDefault
         public async Task<bool> Handle(SetDefaultAvailabilityCommand request, CancellationToken cancellationToken)
         {
             
-            await availabilityRepository.SetDefault(request.Id, userInfo.UserId);
+            await availabilityRepository.SetDefault(request.Id, userInfo.Id);
 
             return true;
             

@@ -63,10 +63,10 @@ export class AvailabilityListComponent implements OnInit {
     this.onSelectItem(itemToDisplay);
   }
 
-  onAddNew(e: any) {
+  onConfirmToAdd(e: any) {
     this.frmAddAvailability?.onSubmit(e);
-
   }
+
   onSubmit(frm: NgForm) {
 
     if (frm.invalid) return;
@@ -79,7 +79,6 @@ export class AvailabilityListComponent implements OnInit {
 
     this.availabilityService.addNew(command).subscribe({
       next: response => {
-        //this.selectedItem_Id = response;
         this.loadData(response)
       },
       error: (error) => { console.log(error) },

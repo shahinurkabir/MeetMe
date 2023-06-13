@@ -30,7 +30,7 @@ namespace MeetMe.Application.Availabilities.Commands.Clone
             {
                 Id = newId,
                 Name = cloneName,
-                OwnerId = applicationUserInfo.UserId,
+                OwnerId = applicationUserInfo.Id,
                 TimeZoneId=originalModel.TimeZoneId,
                 Details = originalModel.Details.Select(e =>
                 {

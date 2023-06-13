@@ -29,7 +29,7 @@ namespace MeetMe.API.Controllers
         [Route("")]
         public async Task<List<Availability>> GetList()
         {
-            var queryCommand = new AvailabilityListQuery { UserId = applicationUserInfo.UserId };
+            var queryCommand = new AvailabilityListQuery { UserId = applicationUserInfo.Id };
 
             var result = await mediator.Send(queryCommand);
 

@@ -6,10 +6,11 @@ namespace MeetMe.Core.Interface
 {
     public interface IUserInfo
     {
-        public Guid UserId { get; set; }
-        public string UserName { get; set; }
+        public Guid Id { get; set; }
+        public string UserId { get; set; }
         public string Email { get; set; }
-        public string TimeZoneId { get; set; }
+        public string BaseURI { get; set; } 
+        public int TimeZoneId { get; set; }
 
     }
 }

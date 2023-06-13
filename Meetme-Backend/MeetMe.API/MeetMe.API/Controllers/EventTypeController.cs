@@ -26,7 +26,7 @@ namespace MeetMe.API.Controllers
         [Route("")]
         public async Task<List<EventType>> GetList()
         {
-            var eventTypeListQuery = new GetEventTypeListQuery { OwnerId = loginUser.UserId };
+            var eventTypeListQuery = new GetEventTypeListQuery { OwnerId = loginUser.Id };
 
             var result = await mediator.Send(eventTypeListQuery);
 

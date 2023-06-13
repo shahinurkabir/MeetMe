@@ -8,12 +8,14 @@ import {
 } from '@angular/common/http';
 import { catchError, Observable, of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth-service';
 
 @Injectable()
 export class HttpRequestInterceptor implements HttpInterceptor {
 
   constructor(
     private router: Router,
+    private auth: AuthService
   ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -21,7 +23,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       setHeaders: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        //'Authorization': `bearer ${this.auth.getToken()}`
+        'Authorization': `bearer ${this.auth.accessToken}`
 
       }
     });
@@ -30,7 +32,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
   }
   private handleAuthError(err: HttpErrorResponse): Observable<any> {
     if (err.status === 401 || err.status === 403) {
-      this.router.navigateByUrl(`/auth/login`);
+      this.router.navigateByUrl(`/login`);
       return of(err.message);
     }
     else if (err.status === 400) {

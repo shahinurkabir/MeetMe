@@ -18,13 +18,12 @@
             <i class="fa fa-star"></i><span>Default</span>
         </li>
         <li (click)="onClickDelete()"><i class="fa fa-trash"></i><span>Delete</span></li>
-        <!-- <li><a href="javascript:void(0)" (click)="onDefault(selectedAvailability?.id!)">Set as default</a></li> -->
     </ul>
 </div>
 
 
-<app-time-availability #availabilityComponent></app-time-availability>
-<input type="button" value="Save" (click)="onSave($event)">
+<app-time-availability  #availabilityComponent></app-time-availability>
+<input type="button" value="Save" (click)="onSubmit($event)">
 
 <mm-modal id="edit-name-modal" title="Edit Schedule Name" (confirmEvent)="onEditName($event)"
     (cancelEvent)="onCloseModal()">

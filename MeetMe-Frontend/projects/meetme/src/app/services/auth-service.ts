@@ -69,5 +69,14 @@ export class AuthService {
         }
         return true;
     }
-
+    get  accessToken():string {
+        var data = this.getTokenData();
+        if (data && data.token && data.expiredAt) {
+            let expiryTime = parseInt(data.expiredAt);
+            let isExpired = (Math.floor((new Date).getTime() / 1000) > expiryTime)
+            if (!isExpired)
+                return data.token;
+        }
+        return "";
+    }
 }

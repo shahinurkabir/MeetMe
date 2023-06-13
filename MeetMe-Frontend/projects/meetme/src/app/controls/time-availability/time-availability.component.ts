@@ -20,18 +20,16 @@ import { ModalService } from '../modal/modalService';
 export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   availability: IAvailability | undefined;
-  timeZoneList: any[] = [];
-  filterTimeZoneList: any[] = [];
+  timeZoneList: TimeZoneData[] = [];
+  filterTimeZoneList: TimeZoneData[] = [];
   weekDays = day_of_week;
   monthNames = month_of_year
   meetingDurations: ListItem[] = [];
-  //availabilityList: EventAvailabilityDetailItem[] = [];
   availabilityInWeek: ITimeIntervalInDay[] = [];
   availabilityInMonth: ICalendarDay[] = [];
   availabilityOverrides: ITimeIntervalInDay[] = [];
   selecteDateOverride: ITimeIntervalInDay | undefined;
   selectedDatesFromCalender: { [id: string]: string } = {};
-  //viewMode: string = "list";
   calendarModalEl: Element | null = null;
   dayConfigureModalEl: Element | null = null;
   selectedMonth: number = 0
@@ -39,18 +37,20 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   selectedYearMonth: string = "";
   selectedDayInWeek: string = "";
   isCurrentMonth: boolean = false;
-  selectedTimeZone: any |undefined;
-  timeZoneNameFilterText:string="";
-  
+  selectedTimeZone: any | undefined;
+  timeZoneNameFilterText: string = "";
+
   @ViewChild(CalendarComponent) calendarComponent!: CalendarComponent;
   @ViewChild('countryContainer') countryContainer: ElementRef | undefined;
-  @Input() viewMode:string="list";
+  @Input() viewMode: string = "list";
+
   constructor(
     private timeZoneService: TimeZoneService,
     private modalService: ModalService
   ) {
     this.loadTimeZoneList();
   }
+
   ngAfterViewInit(): void {
   }
 
@@ -60,26 +60,31 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     let currentDate = new Date();
     this.selectedYear = currentDate.getFullYear();
     this.selectedMonth = currentDate.getMonth();
-    // this.prepareWeeklyViewData();
-    // this.prepareMonthlyViewData();
 
   }
+
   loadTimeZoneList() {
     this.timeZoneService.getList().subscribe(res => {
       console.log(res)
       this.timeZoneList = res;
-      this.filterTimeZoneList=res;
+      this.filterTimeZoneList = res;
+      if (this.availability?.timeZoneId)
+        this.selectedTimeZone = this.timeZoneList.find(e => e.id == this.availability?.timeZoneId);
     })
   }
+
   setAvailability(availability?: IAvailability) {
+
     this.availability = availability;
-    this.selectedTimeZone= this.timeZoneList.find(e=>e.id== availability?.timeZoneId);
-     this.prepareWeeklyViewData();
-     this.prepareMonthlyViewData();
+    this.selectedTimeZone = this.timeZoneList.find(e => e.id == availability?.timeZoneId);
+    this.prepareWeeklyViewData();
+    this.prepareMonthlyViewData();
   }
   prepareWeeklyViewData() {
 
     this.resetWeeklyTimeIntervals();
+
+    if (!this.availability?.details) return;
 
     let timeAvailabilityInWeek = this.availability?.details
       .filter(e => e.dayType === meeting_day_type_weekday);
@@ -268,15 +273,14 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   onOpenCalendarModal(modalName: string, defaultDate?: Date) {
     this.calendarComponent.resetSelection(defaultDate);
     this.modalService.open(modalName)
-    //toggleModalDialog(this.calendarModalEl);
 
   }
   onCloseCalendarModal() {
     this.selecteDateOverride = undefined;
     this.selectedDatesFromCalender = {};
     this.modalService.close()
-    //toggleModalDialog(this.calendarModalEl);
   }
+
   onApplyCalendarDateChanges() {
 
     for (let date in this.selectedDatesFromCalender) {
@@ -308,9 +312,9 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   onEditAvailabilityForOverrideDate(index: number) {
     this.selecteDateOverride = this.availabilityOverrides[index];
     let selectedDate = new Date(this.selecteDateOverride.day);
-    //this.calendarComponent.resetSelection(selectedDate);
     this.onOpenCalendarModal('modal-override-dates', selectedDate);
   }
+
   onEditAvailabilityForDate(calendarDay: ICalendarDay) {
 
     let cloneIntervals = calendarDay.intervals.slice();
@@ -319,7 +323,6 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
       day: calendarDay.dateString, isAvailable: true, intervals: cloneIntervals
     };
     let selectedDate = new Date(this.selecteDateOverride.day);
-    //this.calendarComponent.resetSelection(selectedDate);
     this.onOpenCalendarModal('modal-override-dates', selectedDate);
   }
 
@@ -331,7 +334,6 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
     this.selectedDayInWeek = calendarDay.weekDay;
 
-    //toggleModalDialog(this.dayConfigureModalEl);
     this.modalService.open('modal-override-day')
   }
 
@@ -372,7 +374,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   getAvailability(): IAvailability | undefined {
     this.availability?.details.splice(0, 100);
-    this.availability!.timeZoneId = 1;//this.selectedTimeZone?.id!; TODO: have to refactor code later
+    this.availability!.timeZoneId = this.selectedTimeZone?.id!;
     this.availabilityInWeek.filter(e => e.isAvailable).forEach(weekday => {
       weekday.intervals.forEach(intervalITem => {
         let item: IAvailabilityDetails = {
@@ -400,6 +402,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
     return this.availability;
   }
+
   private getTimeIntervalItem(fromTimeInMinute: number, endTimeInMinute: number): ITimeInterval {
     let item: ITimeInterval = {
       startTimeInMinute: fromTimeInMinute,
@@ -505,6 +508,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   getDay(date: string) {
     return new Date(date).getDate()
   }
+
   getTimeIntervalsByDay(dateString: string): ITimeInterval[] | undefined {
     let date = new Date(dateString);
     let weekDay = day_of_week[date.getDay()];
@@ -512,6 +516,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     let intervalsInDay = Object.assign({}, this.availabilityInWeek.find(e => e.day == weekDay));
     return intervalsInDay?.intervals;
   }
+
   getOverrideIntervalsByDate(dateString: string): ITimeInterval[] | undefined {
     let intervalInDate = this.availabilityOverrides.find(e => e.day == dateString);
 
@@ -524,24 +529,25 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     calendarDay.intervals = timeIntervalInDay!;
     this.removeDayFromOverrrideList(calendarDay.dateString);
   }
+
   removeDayFromOverrrideList(dateString: string) {
     let dateIndex = this.availabilityOverrides.findIndex(e => e.day == dateString);
     if (dateIndex != -1) {
       this.availabilityOverrides.splice(dateIndex, 1);
     }
   }
+
   onCloseWeekdayConfigureModal() {
     //toggleModalDialog(this.dayConfigureModalEl)
     this.modalService.close();
   }
+
   onApplyWeekDayChanges() {
     let date = new Date(this.selecteDateOverride?.day!);
     let weekDayName = day_of_week[date.getDay()];
     let weekDayInvevals = this.availabilityInWeek.find(e => e.day == weekDayName);
     let intervals = this.selecteDateOverride?.intervals.slice()!
     weekDayInvevals!.intervals = intervals;
-
-    //toggleModalDialog(this.dayConfigureModalEl)
     this.modalService.close();
     this.prepareMonthlyViewData();
   }
@@ -552,15 +558,15 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   onFilterTimeZoneChanged(event: any) {
     if (this.timeZoneNameFilterText.trim() !== '')
       this.filterTimeZoneList = this.timeZoneList
-                                    .filter(e => e.displayName.toLowerCase()
-                                    .indexOf(this.timeZoneNameFilterText.toLowerCase()) > -1)
+        .filter(e => e.name.toLowerCase()
+          .indexOf(this.timeZoneNameFilterText.toLowerCase()) > -1)
     else
       this.filterTimeZoneList = this.timeZoneList;
 
   }
-  onSelectTimeZone(timeZoneItem:TimeZoneData) {
-    this.selectedTimeZone=timeZoneItem;
-    this.timeZoneNameFilterText="";
+  onSelectTimeZone(timeZoneItem: TimeZoneData) {
+    this.selectedTimeZone = timeZoneItem;
+    this.timeZoneNameFilterText = "";
     this.onToggleCountryDropdownBox();
   }
 

@@ -92,7 +92,7 @@ export class AvailabilityComponent implements OnInit {
     })
   }
 
-  onSave(event: any) {
+  onSubmit(event: any) {
     event.preventDefault();
     let availability = this.timeAvailabilityComponent?.getAvailability();
 
@@ -103,8 +103,10 @@ export class AvailabilityComponent implements OnInit {
       details: availability?.details!
     }
 
-    this.availabilityService.edit(command).subscribe(response => {
-      console.log(response);
+    this.availabilityService.edit(command).subscribe({
+      next: response => { this.listAvailabilityComponent?.loadData(this.selectedAvailability?.id); },
+      error: (error) => { console.log(error) },
+      complete: () => { this.modalService.close() }
     });
   }
   

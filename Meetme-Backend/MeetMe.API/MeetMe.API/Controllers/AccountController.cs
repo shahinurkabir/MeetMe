@@ -1,9 +1,11 @@
 ﻿using MeetMe.API.Models;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using static MeetMe.Core.Constant.Constants;
 
 namespace MeetMe.API.Controllers
 {
@@ -20,11 +22,12 @@ namespace MeetMe.API.Controllers
             this.configuration = configuration;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("token")]
         public async Task<TokenResponse?> GetToken(TokenRequest tokenRequest)
         {
-            var userEntity = await userRepository.GetByName(tokenRequest.UserId);
+            var userEntity = await userRepository.GetById(tokenRequest.UserId);
 
             if (userEntity == null || userEntity.Password != tokenRequest.Password) return null; 
 
@@ -37,9 +40,11 @@ namespace MeetMe.API.Controllers
         {
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name,user.Name),
-                new Claim(ClaimTypes.Email,user.Email),
-                new Claim(ClaimTypes.Sid,user.Id.ToString()),
+                new Claim(ClaimTypeName.Id,user.Id.ToString()),
+                new Claim(ClaimTypeName.UserId,user.Name),
+                new Claim(ClaimTypeName.Email,user.Email),
+                new Claim(ClaimTypeName.BaseURI,user.BaseURI),
+                new Claim(ClaimTypeName.TimeZoneId,user.TimeZoneId.ToString()),
             };
 
             var tokenResponse=new JwtTokenHandler(configuration).CreateToken(claims);

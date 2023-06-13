@@ -44,6 +44,14 @@ namespace MeetMe.Core.Constant
 
         }
 
+        public static class ClaimTypeName { 
+            public const string Id = "Id";
+            public  const string UserId = "UserId";
+            public const string Email = "Email";
+            public const string BaseURI = "BaseURI";
+            public const string TimeZoneId = "TimeZoneId";
+
+        }
 
     }
 }

@@ -8,16 +8,37 @@ namespace MeetMe.API.Models
 {
     public class ApplicationUser : IUserInfo
     {
-        public ApplicationUser()
+        public ApplicationUser(IHttpContextAccessor httpContextAccessor)
         {
-            UserId = Guid.Parse("6DD70EC9-80BE-41B6-88C4-D9E596B730A8");
-            UserName = "Shahinur Kabir Mondo";
-            Email = "kmondol@julyservices.com";
-            TimeZoneId = "Bangladesh Standard Time";
+            //UserId = Guid.Parse("6DD70EC9-80BE-41B6-88C4-D9E596B730A8");
+            //UserName = "Shahinur Kabir Mondol";
+            //Email = "kmondol@julyservices.com";
+            //TimeZoneId = "Bangladesh Standard Time";
+
+            httpContextAccessor.HttpContext?.User.Claims.ToList().ForEach(x =>
+            {
+                if (x.Type == "Id")
+                {
+                    Id =Guid.Parse( x.Value);
+                }
+                if (x.Type == "UserId")
+                {
+                    UserId = x.Value;
+                }
+                if (x.Type == "Email")
+                {
+                    Email = x.Value;
+                }
+                if (x.Type == "TimeZoneId")
+                {
+                    TimeZoneId = int.Parse(x.Value);
+                }
+            });
         }
-        public Guid UserId { get; set; }
-        public string UserName { get; set; }
-        public string Email { get; set; }
-        public string TimeZoneId { get; set; }
+        public Guid Id { get; set; }
+        public string UserId { get; set; } = null!;
+        public string Email { get; set; } = null!;
+        public string BaseURI { get; set; } = null!;
+        public int TimeZoneId { get; set; }
     }
 }

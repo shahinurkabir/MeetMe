@@ -1,14 +1,9 @@
 ﻿using MediatR;
+using MeetMe.Application.EventTypes.Dtos;
 using MeetMe.Core.Exceptions;
 using MeetMe.Core.Interface;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MeetMe.Application.EventTypes.Update
 {

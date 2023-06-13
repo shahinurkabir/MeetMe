@@ -18,17 +18,10 @@ namespace DataProvider.EntityFramework.Repositories
             this.bookingDbContext = bookingDbContext;
         }
 
-        public async Task<User?> GetById(Guid id)
-        {
-            var entity = this.bookingDbContext.Set<User>().Find(id);
-
-            return await Task.FromResult(entity);
-        }
-
-        public async Task<User?> GetByName(string name)
+        public async Task<User?> GetById(string userId)
         {
             var user = await this.bookingDbContext.Set<User>()
-                .FirstOrDefaultAsync(x => x.Name==name);
+                .FirstOrDefaultAsync(x => x.Name== userId);
 
             return user;
         }

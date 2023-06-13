@@ -32,7 +32,7 @@ namespace MeetMe.Application.EventTypes.Create
 
         private async Task<bool> CheckNotUsed(CreateEventTypeCommand command, CancellationToken cancellationToken)
         {
-            var listEvents = await eventTypeRepository.GetEventTypeListByUserId(applicationUser.UserId);
+            var listEvents = await eventTypeRepository.GetEventTypeListByUserId(applicationUser.Id);
 
             var isUsed = listEvents.Count(e =>
             e.Slug.Equals(command.Slug, StringComparison.InvariantCultureIgnoreCase)) > 0;

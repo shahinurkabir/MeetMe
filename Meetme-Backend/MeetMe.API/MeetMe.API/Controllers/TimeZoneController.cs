@@ -20,10 +20,10 @@ namespace MeetMe.API.Controllers
         }
         [HttpGet]
         [Route("")]
-        public async Task<List<TimeZoneInfo>> GetList()
+        public async Task<List<TimeZoneData>> GetList()
         {
-            var result = await Task.FromResult(TimeZoneInfo.GetSystemTimeZones());
-            //var result = await timeZoneDataRepository.;GetTimeZoneList();
+           // var result = await Task.FromResult(TimeZoneInfo.GetSystemTimeZones());
+            var result = await timeZoneDataRepository.GetTimeZoneList();
             return result.ToList();
         }
 

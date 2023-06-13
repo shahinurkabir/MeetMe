@@ -42,7 +42,7 @@ namespace MeetMe.Application.EventTypes.Update
 
             if (entity == null) throw new CustomException("Event Type not found");
 
-            if (entity.OwnerId != applicationUser.UserId) throw new CustomException("Event Type not found");
+            if (entity.OwnerId != applicationUser.Id) throw new CustomException("Event Type not found");
 
             entity.Name = request.Name;
             entity.EventColor = request.EventColor;
@@ -80,7 +80,7 @@ namespace MeetMe.Application.EventTypes.Update
 
         private async Task<bool> CheckNotUsed(UpdateInfoCommand command, CancellationToken cancellationToken)
         {
-            var listEvents = await eventTypeRepository.GetEventTypeListByUserId(applicationUser.UserId);
+            var listEvents = await eventTypeRepository.GetEventTypeListByUserId(applicationUser.Id);
 
             var isUsed = listEvents.Count(e =>
             e.Id != command.Id &&

@@ -1,4 +1,4 @@
-﻿namespace MeetMe.Application.EventTypes.Update
+﻿namespace MeetMe.Application.EventTypes.Dtos
 {
     public class EventAvailabilityDetailItemDto
     {

@@ -12,18 +12,7 @@
 
 
 <mm-modal id="new-availability-modal" title="New Availability" (cancelEvent)="onCancelAdd()"
-    (confirmEvent)="onAddNew($event)">
-    <!-- <div>
-        <div class="form-group">
-            <label for="shceduleName">Schedule Name</label>
-            <div class="form-control">
-                <input type="text" #name="ngModel" [(ngModel)]="newAvailabilityName">
-                <div *ngIf=" name.invalid" class="invalid-feedback">
-                    <div>Name is required</div>
-                </div>
-            </div>
-        </div>
-    </div> -->
+    (confirmEvent)="onConfirmToAdd($event)">
     <form class="single-column" #frmAddAvailability="ngForm" (ngSubmit)="onSubmit(frmAddAvailability)">
         <div class="form-group">
             <label>Schedule Name</label>

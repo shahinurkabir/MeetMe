@@ -13,6 +13,7 @@ namespace MeetMe.Core.Persistence.Entities
         public string Password { get; set; } = null!;
         public string Email { get; set; }=null!;
         public string BaseURI { get; set; } = null!;
+        public int TimeZoneId { get; set; }
 
     }
 }

@@ -35,7 +35,7 @@ namespace MeetMe.Application.EventTypes.Create
         {
             var newEventTypeId = Guid.NewGuid();
 
-            var listOfAvailabilities = await availabilityRepository.GetScheduleListByUserId(applicationUser.UserId);
+            var listOfAvailabilities = await availabilityRepository.GetScheduleListByUserId(applicationUser.Id);
 
             if (listOfAvailabilities == null || !listOfAvailabilities.Any())
                 throw new CustomException("There is no availability configured yet.");
@@ -63,7 +63,7 @@ namespace MeetMe.Application.EventTypes.Create
             {
                 Id = newId,
                 Name = request.Name,
-                OwnerId = applicationUser.UserId,
+                OwnerId = applicationUser.Id,
                 Description = request.Descripton,
                 EventColor = request.EventColor,
                 Slug = request.Slug,
@@ -76,7 +76,7 @@ namespace MeetMe.Application.EventTypes.Create
                 Duration = Constants.Events.MeetingDuration,
                 BufferTimeBefore = Constants.Events.BufferTimeDuration,
                 BufferTimeAfter = Constants.Events.BufferTimeDuration,
-                CreatedBy = applicationUser.UserId,
+                CreatedBy = applicationUser.Id,
                 CreatedAt = dateTimeService.GetCurrentTimeUtc,
                 EventTypeAvailabilityDetails = listScheduleDetails
             };
