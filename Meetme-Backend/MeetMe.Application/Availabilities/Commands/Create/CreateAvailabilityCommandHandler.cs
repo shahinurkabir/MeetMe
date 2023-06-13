@@ -24,7 +24,6 @@ namespace MeetMe.Application.Availabilities.Commands.Create
         }
         public async Task<Guid> Handle(CreateAvailabilityCommand request, CancellationToken cancellationToken)
         {
-            var userTimeZone=await GetUserTimeZoneData(request);
 
             var newId = Guid.NewGuid();
 
@@ -33,7 +32,7 @@ namespace MeetMe.Application.Availabilities.Commands.Create
                 Id = newId,
                 Name = request.Name,
                 OwnerId = applicationUserInfo.Id,
-                TimeZoneId = userTimeZone.Id,
+                TimeZoneId = applicationUserInfo.TimeZoneId,
                 IsDefault = false,
                 Details=GetDefaultWeeklySchedule(newId)
             };
