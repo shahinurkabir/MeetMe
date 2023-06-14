@@ -1,11 +1,12 @@
-﻿using System;
+﻿using MeetMe.Core.Interface;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 
 namespace MeetMe.Core.Persistence.Entities
 {
-    public class EventType
+    public class EventType:ISoftDelete
     {
 
         public EventType()
@@ -21,6 +22,7 @@ namespace MeetMe.Core.Persistence.Entities
         public string Slug { get; set; } = null!;
         public string EventColor { get; set; }=null!;
         public bool ActiveYN { get; set; }
+        public bool IsDeleted { get; set; }
         public int TimeZoneId { get; set; }
         public string DateForwardKind { get; set; } = null!;
         public int? ForwardDuration { get; set; }

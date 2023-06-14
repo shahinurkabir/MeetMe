@@ -42,7 +42,7 @@ const routes: Routes = [
     ]
   }
   ,
-  {path:"distribution",component:DistributionComponent}
+  {path:"account-settings",loadChildren:()=>import("./features/acccount-settings/account-settings.module").then(m=>m.AccountSettingsModule),canActivate:[AuthGuard]},
 ];
 // { path: "", component: EventTypeListComponent },
 //   { path: "new", component: EventInfoNewComponent },

@@ -106,10 +106,10 @@ namespace MeetMe.API.Controllers
         }
 
         [HttpPut]
-        [Route("{id}/activate")]
-        public async Task<bool> Activate(Guid id)
+        [Route("{id}/toggleActive")]
+        public async Task<bool> ToggleActive(Guid id)
         {
-            var command = new ActivateEventTypeCommand(id);
+            var command = new ToggleEventTypeStatusCommand(id);
 
             var result = await mediator.Send(command);
 
@@ -117,10 +117,20 @@ namespace MeetMe.API.Controllers
         }
 
         [HttpPut]
-        [Route("{id}/deactivate")]
-        public async Task<bool> Deactivate(Guid id)
+        [Route("{id}/clone")]
+        public async Task<Guid> Clone(Guid id)
         {
-            var command = new DeactivateEventTypeCommand(id);
+            var command = new CloneEventTypeCommand(id);
+
+            var result = await mediator.Send(command);
+
+            return result;
+        }
+        [HttpPut]
+        [Route("{id}/delete")]
+        public async Task<bool> Delete(Guid id)
+        {
+            var command = new DeleteEventTypeCommand(id);
 
             var result = await mediator.Send(command);
 

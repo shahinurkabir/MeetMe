@@ -10,7 +10,7 @@ namespace DataProvider.EntityFramework.EntityConfigurations
         {
             builder.ToTable("Users");
             builder.HasKey(e => e.Id);
-            builder.Property(b => b.Name).IsRequired();
+            builder.Property(b => b.UserID).IsRequired();
 
 
         }

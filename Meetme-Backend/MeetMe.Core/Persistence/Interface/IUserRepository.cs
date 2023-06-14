@@ -6,6 +6,7 @@ namespace MeetMe.Core.Persistence.Interface
     {
         Task<List<User>> GetList();
         Task<User?> GetById(string userId);
-
+        Task<User?> GetByBaseURI(string URI);
+        Task Update(User userEntity);
     }
 }

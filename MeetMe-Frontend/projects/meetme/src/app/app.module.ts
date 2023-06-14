@@ -51,7 +51,8 @@ import { AddressComponent } from './distribution/cards/address/address.component
         CallbackPipe,
         DistributionComponent,
         NameComponent,
-        AddressComponent
+        AddressComponent,
+        
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },

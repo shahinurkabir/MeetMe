@@ -98,3 +98,6 @@ export interface TimeZoneData {
     offsetMinutes: number;
   }
   
+export interface IToggleEventTypeStatusCommand {
+    id: string,
+}

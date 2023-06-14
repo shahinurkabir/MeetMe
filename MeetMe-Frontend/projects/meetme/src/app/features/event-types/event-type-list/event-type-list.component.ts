@@ -41,4 +41,21 @@ export class EventTypeListComponent implements OnInit {
   onAddNew() {
     this.router.navigate(['event-types','new']);
   }
+
+  onToggleActive(eventType: EventType) {
+    this.eventTypeService.toggleActive(eventType.id).subscribe(response => {
+      eventType.activeYN = !eventType.activeYN;
+    })
+  }
+  onClone(eventType: EventType) {
+    this.eventTypeService.clone(eventType.id).subscribe(response => {
+      let url='event-types/'+response;
+      this.router.navigate([url]);
+    })
+  }
+  onDelete(eventType: EventType) {
+    this.eventTypeService.delete(eventType.id).subscribe(response => {
+      this.loadEventTypes();
+    })
+  }
 }

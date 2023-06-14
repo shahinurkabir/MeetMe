@@ -18,7 +18,15 @@
 
         </article>
         <div class="footer">
-            <button class="button">OFF</button>
+            <button class="button"  (click)="onToggleActive(item)">
+               {{item.activeYN? 'OFF' : 'ON'}}
+            </button>
+            <button class="button"  (click)="onClone(item)">
+                Clone
+             </button>
+             <button class="button"  (click)="onDelete(item)">
+                Delete
+             </button>
             <button class="button">Preview</button>
         </div>
     </div>

@@ -10,10 +10,6 @@ namespace MeetMe.API.Models
     {
         public ApplicationUser(IHttpContextAccessor httpContextAccessor)
         {
-            //UserId = Guid.Parse("6DD70EC9-80BE-41B6-88C4-D9E596B730A8");
-            //UserName = "Shahinur Kabir Mondol";
-            //Email = "kmondol@julyservices.com";
-            //TimeZoneId = "Bangladesh Standard Time";
 
             httpContextAccessor.HttpContext?.User.Claims.ToList().ForEach(x =>
             {
