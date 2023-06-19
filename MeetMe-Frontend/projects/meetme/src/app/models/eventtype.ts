@@ -94,8 +94,9 @@ export interface TimeZoneData {
     name: string;
     countryName: string;
     countryCode: string;
-    cffset: string;
+    offset: string;
     offsetMinutes: number;
+    currentTime: string;
   }
   
 export interface IToggleEventTypeStatusCommand {

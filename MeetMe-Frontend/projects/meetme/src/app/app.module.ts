@@ -28,6 +28,9 @@ import { CallbackPipe } from './pipes/callback-pipe';
 import { DistributionComponent } from './distribution/distribution/distribution.component';
 import { NameComponent } from './distribution/cards/name/name.component';
 import { AddressComponent } from './distribution/cards/address/address.component';
+import { EventTypeCalendarComponent } from './features/eventtype-calendar/eventtype-calendar.component';
+import { TimezoneControlComponent } from './controls/timezone-control/timezone-control.component';
+import { TestComponentComponent } from './test-component/test-component.component';
 
 @NgModule({
     declarations: [
@@ -52,6 +55,10 @@ import { AddressComponent } from './distribution/cards/address/address.component
         DistributionComponent,
         NameComponent,
         AddressComponent,
+        CalendarComponent,
+        EventTypeCalendarComponent,
+        TimezoneControlComponent,
+        TestComponentComponent
         
     ],
     providers: [

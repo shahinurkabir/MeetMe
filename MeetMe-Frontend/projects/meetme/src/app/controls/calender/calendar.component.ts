@@ -3,13 +3,15 @@ import { day_of_week, month_of_year } from '../../constants/default-data';
 import { date } from '../../utils/functions/date-functions';
 
 @Component({
-  selector: 'app-calender',
+  selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
 export class CalendarComponent implements OnInit {
   @Output() handlerDateClick = new EventEmitter()
+  @Output() handlerMonthChange = new EventEmitter();
   @Input() selectedDates: { [id: string]: string | undefined } = {};
+  @Input() allowMultipleSelection: boolean = true;
   selectedMonth: number = 0
   selectedYear: number = 2023
   selectedYearMonth: string = "";
@@ -51,7 +53,7 @@ export class CalendarComponent implements OnInit {
     }
 
     this.updateCalendar(this.selectedYear, this.selectedMonth);
-
+    
   }
 
   updateCalendar(yearNo: number, monthNo: number) {
@@ -63,7 +65,7 @@ export class CalendarComponent implements OnInit {
     for (let i = 0; i < 7; i++) {
       let weekDays: IDay[] = [];
       for (let j = 0; j < 6; j++) {
-        weekDays.push({ dayNo: 0, isSelected: false, date: "",isPastDate:false })
+        weekDays.push({ dayNo: 0, isSelected: false, date: "", isPastDate: false })
       }
       this.days_in_month[i] = weekDays;
     }
@@ -78,7 +80,7 @@ export class CalendarComponent implements OnInit {
       let weekDay = currentDate.getDay();
       let dayNo = i + 1
       let shortDateString = this.getShortDateString(dayNo);
-      let isPastDate =date.isDayPast(currentDate)
+      let isPastDate = date.isDayPast(currentDate)
       this.days_in_month[weekNo][weekDay] = { dayNo: dayNo, date: shortDateString, isPastDate: isPastDate, isSelected: false };
 
       if (weekDay == 6) {
@@ -88,24 +90,39 @@ export class CalendarComponent implements OnInit {
       currentDate.setDate(currentDate.getDate() + 1)
 
     }
+
+    this.handlerMonthChange.emit({year:this.selectedYear,month:this.selectedMonth});
   }
 
   onClickDay(weekDay: IDay) {
 
-    weekDay.isSelected = !weekDay.isSelected;
-
-    if (this.selectedDates[weekDay.date])
-      this.selectedDates[weekDay.date] = undefined
-    else
+    if (!this.allowMultipleSelection) {
+      for (let week in this.days_in_month) {
+        let listDaysInWeek = this.days_in_month[week];
+        listDaysInWeek.forEach(day => day.isSelected = false);
+      }
+      weekDay.isSelected = true;
+      this.selectedDates={};
       this.selectedDates[weekDay.date] = weekDay.date;
+    }
+    else {
+      weekDay.isSelected = !weekDay.isSelected;
+
+      if (this.selectedDates[weekDay.date])
+        delete this.selectedDates[weekDay.date];
+      //TODO this.selectedDates[weekDay.date] = undefined
+      else
+        this.selectedDates[weekDay.date] = weekDay.date;
+    }
+
 
     this.handlerDateClick.emit(this.selectedDates);
   }
 
   isCurrentMonth(): boolean {
     let date = new Date();
-    return this.selectedYear == date.getFullYear() 
-    && this.selectedMonth == date.getMonth();
+    return this.selectedYear == date.getFullYear()
+      && this.selectedMonth == date.getMonth();
   }
 
   resetSelection(defaultDate?: Date) {
@@ -139,12 +156,13 @@ export class CalendarComponent implements OnInit {
   private getShortDateString(dayNo: number): string {
 
     let shortMonth = month_of_year[this.selectedMonth].substring(0, 3);
-
-    let date = `${this.selectedYear}-${shortMonth}-${dayNo}`;
+    let dayNoString ="0"+ dayNo.toString();
+    dayNoString=dayNoString.substring(dayNoString.length-2,dayNoString.length);
+    let date = `${this.selectedYear}-${shortMonth}-${dayNoString}`;
 
     return date;
   }
-  
+
 }
 interface IDay {
   dayNo: number,

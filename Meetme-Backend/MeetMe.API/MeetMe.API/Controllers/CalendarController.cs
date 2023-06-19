@@ -13,30 +13,32 @@ namespace MeetMe.API.Controllers
     {
         [AllowAnonymous]
         [HttpGet]
-        [Route("")]
-        public async Task<List<CalendarDay>> GetList()
+        [Route("GetList")]
+        public async Task<List<EventTimeAvailability>> GetList(string timezone,string from, string to)
         {
-            var from = "01-jan-2023 03:00 AM";
-            var to = "31-jan-2023";
+            //var from = "01-Jun-2023";
+            //var to = "30-Jun-2023";
+            var calendarTimeZone = "Bangladesh Standard Time";
             var bufferTime = 15;
             var meetingDuration = 30;
 
             var scheduleList = new List<AvailabilityDetails>() {
-                                new AvailabilityDetails { ValueType="weekday", Value="Sunday", StartFrom= 540, EndAt= 1300 },
-                                new AvailabilityDetails { ValueType="weekday", Value="Tuesday", StartFrom= 600, EndAt= 900 },
-                                new AvailabilityDetails { ValueType="date", Value="01-Jan-2023", StartFrom= 660, EndAt= 720 },
+                                new AvailabilityDetails { ValueType="weekday", Value="Sunday", StartFrom= 540, EndAt= 1020 },
+                                new AvailabilityDetails { ValueType="weekday", Value="Tuesday", StartFrom= 700, EndAt= 1020 },
+                                new AvailabilityDetails { ValueType="weekday", Value="Wednesday", StartFrom= 540, EndAt= 1020 },
+                               // new AvailabilityDetails { ValueType="date", Value="01-Jan-2023", StartFrom= 660, EndAt= 720 },
                             };
-            var result = GetCalendarTimeSlots(from, to, bufferTime, meetingDuration, scheduleList);
+            var result = GetCalendarTimeSlots(timezone, calendarTimeZone, from, to, bufferTime, meetingDuration, scheduleList);
 
             return await Task.FromResult(result);
         }
 
 
-        List<CalendarDay> GetCalendarTimeSlots(string dateFrom, string dateTo, int bufferTime, int meetingDuration, List<AvailabilityDetails> scheduleList)
+        List<EventTimeAvailability> GetCalendarTimeSlots( string timezoneUser,string timezoneCalendar, string dateFrom, string dateTo, int bufferTime, int meetingDuration, List<AvailabilityDetails> scheduleList)
         {
-            var result = new List<CalendarDay>();
-            var userTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Fiji Standard Time");
-            var calendarTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Bangladesh Standard Time");
+            var result = new List<EventTimeAvailability>();
+            var userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timezoneUser);
+            var calendarTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timezoneCalendar);
             var userTimeZoneOffset = userTimeZone.GetUtcOffset(DateTime.UtcNow);
             var serverTimeOffset = TimeZoneInfo.Local.GetUtcOffset(DateTime.UtcNow);
 
@@ -83,12 +85,12 @@ namespace MeetMe.API.Controllers
                     }
                     var timeSlots = GenerateTimeSlotForDate(scheduleDate, bufferTime, meetingDuration, dayStartFromInMinutes, dayEndFromINMinutes, userTimeZone);
 
-                    var calendarDay = new CalendarDay
+                    var eventAvailability = new EventTimeAvailability
                     {
-                        Date = scheduleDate.ToString("yyyy-MM-dd"),
-                        Spots = timeSlots.ToList()
+                        Date = scheduleDate.ToString("yyyy-MMM-dd"),
+                        Slots = timeSlots.ToList()
                     };
-                    result.Add(calendarDay);
+                    result.Add(eventAvailability);
                 }
 
                 scheduleDate = scheduleDate.AddDays(1);
@@ -100,7 +102,7 @@ namespace MeetMe.API.Controllers
 
 
 
-        IEnumerable<DateTimeOffset> GenerateTimeSlotForDate(
+        IEnumerable<TimeSlot> GenerateTimeSlotForDate(
             DateTimeOffset calenderDate,
             double bufferTimeInMinute,
             int meetingDuration,
@@ -113,8 +115,7 @@ namespace MeetMe.API.Controllers
 
             while (dayStartTime <= dayEndTime)
             {
-                //yield return TimeZoneInfo.ConvertTime(dayStartTime, destnationTimeZone);
-                yield return dayStartTime;
+                yield return new TimeSlot { StartAt = TimeZoneInfo.ConvertTime(dayStartTime, destnationTimeZone) };
                 dayStartTime = dayStartTime.AddMinutes(meetingDuration).AddMinutes(bufferTimeInMinute); ;
 
             }
@@ -129,6 +130,19 @@ namespace MeetMe.API.Controllers
             public double EndAt { get; set; }
         }
 
+        public class EventTimeAvailability
+        {
+            public EventTimeAvailability()
+            {
+                Slots=new List<TimeSlot>();
+            }
+            public string Date { get; set; } = null!;
+            public List<TimeSlot> Slots { get; set; } = null!;
+        }
+        public class TimeSlot
+        {
+            public DateTimeOffset StartAt { get; set; }
+        }
         public class CalendarDay
         {
             public string Date { get; set; } = null!;

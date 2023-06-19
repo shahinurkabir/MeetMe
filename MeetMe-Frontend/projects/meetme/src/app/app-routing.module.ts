@@ -11,7 +11,9 @@ import { LoginComponent } from './features/users/login/login.component';
 import { WorkinghoursComponent } from './features/workinghours/workinghours.component';
 import { AuthGuard } from './gurads/auth-gurad';
 import { HomeComponent } from './home/home.component';
-import { DistributionComponent } from './distribution/distribution/distribution.component';
+import { CalendarComponent } from './controls/calender/calendar.component';
+import { EventTypeCalendarComponent } from './features/eventtype-calendar/eventtype-calendar.component';
+import { TestComponentComponent } from './test-component/test-component.component';
 
 const routes: Routes = [
   // {
@@ -43,6 +45,8 @@ const routes: Routes = [
   }
   ,
   {path:"account-settings",loadChildren:()=>import("./features/acccount-settings/account-settings.module").then(m=>m.AccountSettingsModule),canActivate:[AuthGuard]},
+  {path:"calendar", component:EventTypeCalendarComponent,canActivate:[AuthGuard]},
+  {path:"test",component:TestComponentComponent}
 ];
 // { path: "", component: EventTypeListComponent },
 //   { path: "new", component: EventInfoNewComponent },

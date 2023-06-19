@@ -1,0 +1,18 @@
+<p>calendar works!</p>
+<div class="container">
+    <div>
+        <app-timezone-control #timezoneControl [selectedTimeZone]="selectedTimeZone"
+            (dataLoaded)="onLoadedTimezoneData($event)"
+            (selectionChanged)="onChangedTimezone($event)"></app-timezone-control>
+        <div class="calendar">
+            <app-calendar (handlerDateClick)="onHandledCalendarClicked($event)"
+                (handlerMonthChange)="onHandledMonthChange($event)" [allowMultipleSelection]="false"></app-calendar>
+        </div>
+        
+    </div>
+    <div class="appointments">
+        <div *ngFor="let slot of day?.slots">
+            <button>{{slot.startAtTimeOnly}}</button>
+        </div>
+    </div>
+</div>

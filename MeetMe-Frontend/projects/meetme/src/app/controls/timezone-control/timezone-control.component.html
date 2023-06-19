@@ -1,0 +1,23 @@
+<div class="wrapper" #timezoneContainer>
+    <div class="select-btn" (click)="onToggleCountryDropdownBox()">
+        <span *ngIf="!selectedTimeZone">Select Country</span>
+        <span *ngIf="selectedTimeZone!==null">{{selectedTimeZone?.name}} ( {{ selectedTimeZone?.currentTime}} )</span>
+        <i class="fa fa-angle-down"></i>
+    </div>
+    <div class="content">
+        <div class="search">
+            <i class="fa fa-search"></i>
+            <input spellcheck="false" type="text" [(ngModel)]="timeZoneNameFilterText" placeholder="Search"
+                name="filterTimeZone" (input)="onFilterTimeZoneChanged($event)">
+        </div>
+        <ul class="options">
+            <li [ngClass]="{'selected':selectedTimeZone && timeZoneItem.name==selectedTimeZone.name}"
+                *ngFor="let timeZoneItem of filterTimeZoneList" (click)="onSelectTimeZone(timeZoneItem)">
+                <div class="timezone-currenttime-wrapper">
+                    <div class="timezone" >{{timeZoneItem.name}} </div>
+                    <div class="current-time">{{timeZoneItem.currentTime}}</div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
