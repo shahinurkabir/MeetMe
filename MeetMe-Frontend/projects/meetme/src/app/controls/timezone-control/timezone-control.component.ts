@@ -1,26 +1,31 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { TimeZoneService } from '../../services/timezone.service';
 import { TimeZoneData } from '../../models/eventtype';
+import { Observable, interval } from 'rxjs';
 
 @Component({
   selector: 'app-timezone-control',
   templateUrl: './timezone-control.component.html',
   styleUrls: ['./timezone-control.component.scss']
 })
-export class TimezoneControlComponent implements OnInit {
+export class TimezoneControlComponent implements OnInit,OnDestroy {
   @Output() dataLoaded = new EventEmitter()
   @Output() selectionChanged = new EventEmitter<TimeZoneData>();
+  @Output() hourFormatChanged = new EventEmitter<boolean>();
   @Input() selectedTimeZone: TimeZoneData | undefined;
   @ViewChild('timezoneContainer') timezoneContainer: ElementRef | undefined;
 
   timeZoneList: TimeZoneData[] = [];
   filterTimeZoneList: TimeZoneData[] = [];
   timeZoneNameFilterText: string = "";
+  is24HourFormat: boolean = false;
+  interval: any;
 
-  constructor(
-    private timeZoneService: TimeZoneService,
-  ) {
+  constructor(private timeZoneService: TimeZoneService) {
+  
     this.loadTimeZoneList();
+    this.interval = interval(1000).subscribe(val => this.updateTimeZoneLocalTime());
+    
   }
 
 
@@ -28,18 +33,14 @@ export class TimezoneControlComponent implements OnInit {
   }
 
   loadTimeZoneList() {
-    // this.timeZoneService.getList().subscribe(res => {
-    //   this.timeZoneList = res;
-    //   this.filterTimeZoneList = res;
-    //   this.dataLoaded.emit("Loaded Time Zone List");
-    // })
+  
     this.aryIannaTimeZones.forEach(e => {
       let timeZoneItem: TimeZoneData = {
         id: 0, name: e,
         countryCode: "",
         countryName: " ", offset: "",
         offsetMinutes: 0,
-        currentTime: this.getLocalTime(e, new Date(),true),//new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: e }),
+        currentTime: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: e }),
       }
       this.timeZoneList.push(timeZoneItem);
       this.filterTimeZoneList.push(timeZoneItem);
@@ -53,17 +54,11 @@ export class TimezoneControlComponent implements OnInit {
     this.onToggleCountryDropdownBox();
     this.selectionChanged.emit(timeZoneItem);
   }
+
   onToggleCountryDropdownBox() {
     this.timezoneContainer?.nativeElement.classList.toggle('active');
   }
-  getLocalTime(timeZoneName: string, date: Date,  is24HourFormat: boolean = false) {
-    if (timeZoneName == "") return "";
-    if (!is24HourFormat)
-      return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: timeZoneName });
-    else
-      return date.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: timeZoneName });
-
-  }
+  
   onFilterTimeZoneChanged(event: any) {
     if (this.timeZoneNameFilterText.trim() !== '')
       this.filterTimeZoneList = this.timeZoneList
@@ -77,6 +72,24 @@ export class TimezoneControlComponent implements OnInit {
   setTimeZone(timeZoneName: string) {
     this.selectedTimeZone = this.timeZoneList.find(e => e.name == timeZoneName);
     this.selectionChanged.emit(this.selectedTimeZone);
+  }
+
+  updateTimeZoneLocalTime() {
+    this.timeZoneList.forEach(e => {
+      if (!this.is24HourFormat)
+        e.currentTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: e.name });
+      else
+        e.currentTime = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: e.name });
+    });
+  }
+
+  onChangeHourFormat(e:any) {
+    this.is24HourFormat = e.target.checked;
+    this.updateTimeZoneLocalTime();
+    this.hourFormatChanged.emit(this.is24HourFormat);
+  }
+  ngOnDestroy(): void {
+    this.interval.unsubscribe();
   }
 
   aryIannaTimeZones = [
@@ -429,5 +442,5 @@ export class TimezoneControlComponent implements OnInit {
     'Pacific/Apia',
     'Africa/Johannesburg'
   ];
-
+  
 }

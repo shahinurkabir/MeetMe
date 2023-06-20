@@ -25,9 +25,9 @@ namespace MeetMe.API.Models
                 {
                     Email = x.Value;
                 }
-                if (x.Type == "TimeZoneId")
+                if (x.Type == "TimeZone")
                 {
-                    TimeZoneId = int.Parse(x.Value);
+                    TimeZone = x.Value;
                 }
             });
         }
@@ -35,6 +35,6 @@ namespace MeetMe.API.Models
         public string UserId { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string BaseURI { get; set; } = null!;
-        public int TimeZoneId { get; set; }
+        public string TimeZone { get; set; }
     }
 }

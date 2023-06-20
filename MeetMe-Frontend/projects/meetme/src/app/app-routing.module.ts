@@ -45,7 +45,7 @@ const routes: Routes = [
   }
   ,
   {path:"account-settings",loadChildren:()=>import("./features/acccount-settings/account-settings.module").then(m=>m.AccountSettingsModule),canActivate:[AuthGuard]},
-  {path:"calendar", component:EventTypeCalendarComponent,canActivate:[AuthGuard]},
+  {path:"appointment/:id/:slug", component:EventTypeCalendarComponent,canActivate:[AuthGuard]},
   {path:"test",component:TestComponentComponent}
 ];
 // { path: "", component: EventTypeListComponent },

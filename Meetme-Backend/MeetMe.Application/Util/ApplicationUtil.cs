@@ -213,13 +213,13 @@ namespace MeetMe.Application.Util
             return questions;
         }
 
-        public static Availability GetDefaultAvailability(Guid availabilityId,string name, int timeZoneId,bool isCustom, Guid ownerId)
+        public static Availability GetDefaultAvailability(Guid availabilityId,string name, string timeZone,bool isCustom, Guid ownerId)
         {
             var availability = new Availability
             {
                 Id = availabilityId,
                 Name=name,
-                TimeZoneId=timeZoneId,
+                TimeZone=timeZone,
                 OwnerId=ownerId,
                 Details =GetDefaultWeeklySchedule(availabilityId),  
                 IsCustom=isCustom,

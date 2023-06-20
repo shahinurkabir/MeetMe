@@ -1,17 +1,12 @@
 .container {
     display: flex;
-    //flex-direction: column;
-   
-    
 }
-.calendar {
-    flex-basis: 0;
+.calendar-container {
+  flex: 1;
 }
 .appointments {
-    flex-basis: 0;
+  flex:1
 }
-
-
 // Custom Select Box
 ::selection{
     color: #fff;
@@ -118,5 +113,21 @@
     background: #f2f2f2;
   }
 
-  
-  
+  .appointments {
+    flex-basis: 0;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  }
+  .appointments button {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    display: block;
+  }

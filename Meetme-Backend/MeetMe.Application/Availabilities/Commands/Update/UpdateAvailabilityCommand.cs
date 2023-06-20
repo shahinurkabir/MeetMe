@@ -13,7 +13,7 @@ namespace MeetMe.Application.Availabilities.Commands.Update
         }
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
-        public int TimeZoneId { get; set; }
+        public string TimeZone { get; set; }
         public List<AvailabilityDetail> Details { get; set; }
     }
 

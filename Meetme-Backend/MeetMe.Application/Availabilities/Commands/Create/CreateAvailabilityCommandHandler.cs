@@ -32,7 +32,7 @@ namespace MeetMe.Application.Availabilities.Commands.Create
                 Id = newId,
                 Name = request.Name,
                 OwnerId = applicationUserInfo.Id,
-                TimeZoneId = applicationUserInfo.TimeZoneId,
+                TimeZone = applicationUserInfo.TimeZone,
                 IsDefault = false,
                 Details=GetDefaultWeeklySchedule(newId)
             };

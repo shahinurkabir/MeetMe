@@ -27,7 +27,9 @@
              <button class="button"  (click)="onDelete(item)">
                 Delete
              </button>
-            <button class="button">Preview</button>
+            <a [routerLink]="['/appointment',item.id,item.slug]" >
+                Preview
+              </a>
         </div>
     </div>
 </div>

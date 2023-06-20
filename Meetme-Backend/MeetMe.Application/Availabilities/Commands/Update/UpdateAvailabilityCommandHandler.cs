@@ -25,7 +25,7 @@ namespace MeetMe.Application.Availabilities.Commands.Update
             var listScheduleRuleItems = GetDetailItems(request, entity.Id);
 
             entity.Name = request.Name;
-            entity.TimeZoneId = request.TimeZoneId;
+            entity.TimeZone = request.TimeZone;
             entity.Details = listScheduleRuleItems;
 
             _ = await availabilityRepository.UpdateSchedule(entity);

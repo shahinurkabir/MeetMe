@@ -23,7 +23,7 @@ namespace MeetMe.Core.Persistence.Entities
         public string EventColor { get; set; }=null!;
         public bool ActiveYN { get; set; }
         public bool IsDeleted { get; set; }
-        public int TimeZoneId { get; set; }
+        public string TimeZone { get; set; }
         public string DateForwardKind { get; set; } = null!;
         public int? ForwardDuration { get; set; }
         public DateTime? DateFrom { get; set; }

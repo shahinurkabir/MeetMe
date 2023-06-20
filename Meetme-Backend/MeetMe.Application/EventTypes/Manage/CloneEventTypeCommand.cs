@@ -71,7 +71,7 @@ namespace MeetMe.Application.EventTypes.Manage
                 Description = eventType.Description,
                 ForwardDuration = eventType.ForwardDuration,
                 Location = eventType.Location,
-                TimeZoneId = eventType.TimeZoneId,
+                TimeZone = eventType.TimeZone,
                 DateFrom = eventType.DateFrom,
                 DateTo = eventType.DateTo,
                 CreatedAt = dateTimeService.GetCurrentTime,

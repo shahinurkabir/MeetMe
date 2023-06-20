@@ -69,7 +69,7 @@ namespace MeetMe.Application.EventTypes.Create
                 Slug = request.Slug,
                 Location = request.Location,
                 ActiveYN = false,
-                TimeZoneId = availability.TimeZoneId,
+                TimeZone = availability.TimeZone,
                 AvailabilityId = availability.Id,
                 DateForwardKind = Constants.Events.ForwandDateKInd.Moving,
                 ForwardDuration = Constants.Events.ForwardDuration,

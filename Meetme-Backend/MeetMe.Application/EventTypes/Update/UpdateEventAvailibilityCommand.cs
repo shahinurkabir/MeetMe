@@ -17,7 +17,7 @@ namespace MeetMe.Application.EventTypes.Update
         public int Duration { get; set; }
         public int BufferTimeBefore { get; set; }
         public int BufferTimeAfter { get; set; }
-        public int TimeZoneId { get; set; }
+        public string TimeZone { get; set; }
         public Guid? AvailabilityId { get; set; }
 
         public List<EventAvailabilityDetailItemDto> AvailabilityDetails { get; set; } = null!;
@@ -76,7 +76,7 @@ namespace MeetMe.Application.EventTypes.Update
             eventType.DateTo = request.DateTo;
             eventType.BufferTimeBefore = request.BufferTimeBefore;
             eventType.BufferTimeAfter = request.BufferTimeAfter;
-            eventType.TimeZoneId = request.TimeZoneId;
+            eventType.TimeZone = request.TimeZone;
             eventType.AvailabilityId = request.AvailabilityId;
 
             await eventTypeRepository.UpdateEventType(eventType);
