@@ -71,7 +71,11 @@ namespace MeetMe.Application.EventTypes.Calendar
 
         }
 
-        private List<EventTimeCalendar> GetCalendarTimeSlots(string timezoneUser, string timezoneCalendar, string dateFrom, string dateTo, int bufferTime, int meetingDuration, List<AvailabilityDetailDto> scheduleList)
+        private List<EventTimeCalendar> GetCalendarTimeSlots(
+            string timezoneUser, string timezoneCalendar, 
+            string dateFrom, string dateTo, int bufferTime, 
+            int meetingDuration, List<AvailabilityDetailDto> scheduleList
+            )
         {
             var result = new List<EventTimeCalendar>();
             var userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timezoneUser);

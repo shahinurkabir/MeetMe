@@ -12,26 +12,26 @@ export class CalendarComponent implements OnInit {
   @Output() handlerMonthChange = new EventEmitter();
   @Input() selectedDates: { [id: string]: string | undefined } = {};
   @Input() allowMultipleSelection: boolean = true;
+  @Input() minDate: Date | undefined = undefined;
+  @Input() maxDate: Date | undefined = undefined;
   selectedMonth: number = 0
   selectedYear: number = 2023
   selectedYearMonth: string = "";
   weekDays = day_of_week;
   days_in_month: { [weekNo: string]: IDay[] } = {};
+  timeZoneMame: string | undefined = undefined;
 
-
-  constructor() { }
+  constructor() {
+    this.timeZoneMame = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    let localDate = new Date(new Date().toLocaleString("en-US", { timeZone: this.timeZoneMame }));
+    this.resetYearMonthFromDate(localDate);
+    this.updateCalendar();
+   }
 
   ngOnInit(): void {
-    this.init();
+    //this.resetCalendar();
   }
-  init() {
-    let currentDate = new Date();
-    this.selectedYear = currentDate.getFullYear();
-    this.selectedMonth = currentDate.getMonth();
-    this.selectedDates = {};
-    this.updateCalendar(this.selectedYear, this.selectedMonth);
 
-  }
   onNextMonth() {
     if (this.selectedMonth + 1 > 11) {
       this.selectedMonth = 0;
@@ -40,7 +40,7 @@ export class CalendarComponent implements OnInit {
     else {
       this.selectedMonth++;
     }
-    this.updateCalendar(this.selectedYear, this.selectedMonth);
+    this.updateCalendar();
   }
 
   onPreviousMonth() {
@@ -52,12 +52,12 @@ export class CalendarComponent implements OnInit {
       this.selectedMonth--;
     }
 
-    this.updateCalendar(this.selectedYear, this.selectedMonth);
-    
+    this.updateCalendar();
+
   }
 
-  updateCalendar(yearNo: number, monthNo: number) {
-    let currentDate = new Date(yearNo, monthNo, 1);
+  updateCalendar() {
+    let calendarDay = new Date(this.selectedYear, this.selectedMonth, 1, 23, 59, 59, 999);
 
     this.selectedYearMonth = month_of_year[this.selectedMonth] + " " + this.selectedYear;
     this.days_in_month = {};
@@ -65,33 +65,37 @@ export class CalendarComponent implements OnInit {
     for (let i = 0; i < 7; i++) {
       let weekDays: IDay[] = [];
       for (let j = 0; j < 6; j++) {
-        weekDays.push({ dayNo: 0, isSelected: false, date: "", isPastDate: false })
+        weekDays.push({ dayNo: 0, isSelected: false, date: "", isPastDate: false, isCurrentDate: false })
       }
       this.days_in_month[i] = weekDays;
     }
 
-    currentDate.setDate(1);
+    calendarDay.setDate(1);
 
     let weekNo = 0;
 
+    let currentDate = this.getCurrentDateByTimeZone();
+    let currentTimeByTimeZone = currentDate.getTime();
+
     for (let i = 0; i < 31; i++) {
 
-      if (currentDate.getDate() < i) break;
-      let weekDay = currentDate.getDay();
+      if (calendarDay.getDate() < i) break;
+      let weekDay = calendarDay.getDay();
       let dayNo = i + 1
       let shortDateString = this.getShortDateString(dayNo);
-      let isPastDate = date.isDayPast(currentDate)
-      this.days_in_month[weekNo][weekDay] = { dayNo: dayNo, date: shortDateString, isPastDate: isPastDate, isSelected: false };
+      let isPastDate = currentTimeByTimeZone > calendarDay.getTime(); // date.isDayPast(calendarDay)
+      let isCurrentDate = currentDate.getDate() == calendarDay.getDate() ;
+      this.days_in_month[weekNo][weekDay] = { dayNo: dayNo, date: shortDateString, isPastDate: isPastDate, isSelected: false, isCurrentDate: isCurrentDate };
 
       if (weekDay == 6) {
         weekNo += 1
       }
 
-      currentDate.setDate(currentDate.getDate() + 1)
+      calendarDay.setDate(calendarDay.getDate() + 1)
 
     }
 
-    this.handlerMonthChange.emit({year:this.selectedYear,month:this.selectedMonth});
+    this.handlerMonthChange.emit({ year: this.selectedYear, month: this.selectedMonth });
   }
 
   onClickDay(weekDay: IDay) {
@@ -102,7 +106,7 @@ export class CalendarComponent implements OnInit {
         listDaysInWeek.forEach(day => day.isSelected = false);
       }
       weekDay.isSelected = true;
-      this.selectedDates={};
+      this.selectedDates = {};
       this.selectedDates[weekDay.date] = weekDay.date;
     }
     else {
@@ -120,44 +124,55 @@ export class CalendarComponent implements OnInit {
   }
 
   isCurrentMonth(): boolean {
-    let date = new Date();
-    return this.selectedYear == date.getFullYear()
-      && this.selectedMonth == date.getMonth();
+    let currentTimeByTimeZone = this.getCurrentDateByTimeZone();
+    return this.selectedYear == currentTimeByTimeZone.getFullYear()
+      && this.selectedMonth == currentTimeByTimeZone.getMonth();
   }
 
-  resetSelection(defaultDate?: Date) {
+  resetCalendar(defaultDate?: Date) {
 
-    this.selectedDates = {};
-    let defaultDayNo: number | undefined = undefined;
-
-    if (defaultDate) {
-      this.selectedYear = defaultDate.getFullYear();
-      this.selectedMonth = defaultDate.getMonth();
-      defaultDayNo = defaultDate.getDate();
-      this.updateCalendar(this.selectedYear, this.selectedMonth);
+    if (!defaultDate) {
+      let currentDate = this.getCurrentDateByTimeZone();
+      this.resetYearMonthFromDate(currentDate);
+      this.updateCalendar();
     }
     else {
-      this.init();
-    }
+      this.selectedYear = defaultDate.getFullYear();
+      this.selectedMonth = defaultDate.getMonth();
+      let defaultDayNo = defaultDate.getDate();
+
+      this.updateCalendar();
 
 
-    for (let week in this.days_in_month) {
-      let listDaysInWeek = this.days_in_month[week];
-      listDaysInWeek.forEach(day => day.isSelected = (day.dayNo == defaultDayNo!));
-    }
+      for (let week in this.days_in_month) {
+        let listDaysInWeek = this.days_in_month[week];
+        listDaysInWeek.forEach(day => day.isSelected = (day.dayNo == defaultDayNo!));
+      }
 
-    if (defaultDayNo) {
       let date = this.getShortDateString(defaultDayNo);
       this.selectedDates[date] = date;
       this.handlerDateClick.emit(this.selectedDates);
     }
   }
-
+  resetTimeZone(timezone: string) {
+    this.timeZoneMame = timezone;
+    let localDate = this.getCurrentDateByTimeZone();
+    this.resetYearMonthFromDate(localDate);
+    this.updateCalendar();
+  }
+  resetYearMonthFromDate(date: Date) {
+    this.selectedYear = date.getFullYear();
+    this.selectedMonth = date.getMonth();
+    this.selectedDates = {};
+  }
+  private getCurrentDateByTimeZone(): Date {
+    return new Date(new Date().toLocaleString("en-US", { timeZone: this.timeZoneMame }));
+  }
   private getShortDateString(dayNo: number): string {
 
     let shortMonth = month_of_year[this.selectedMonth].substring(0, 3);
-    let dayNoString ="0"+ dayNo.toString();
-    dayNoString=dayNoString.substring(dayNoString.length-2,dayNoString.length);
+    let dayNoString = "0" + dayNo.toString();
+    dayNoString = dayNoString.substring(dayNoString.length - 2, dayNoString.length);
     let date = `${this.selectedYear}-${shortMonth}-${dayNoString}`;
 
     return date;
@@ -169,4 +184,5 @@ interface IDay {
   date: string,
   isPastDate: boolean,
   isSelected: boolean
+  isCurrentDate: boolean
 }

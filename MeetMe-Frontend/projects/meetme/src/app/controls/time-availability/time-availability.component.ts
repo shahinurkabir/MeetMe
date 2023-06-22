@@ -271,7 +271,9 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   }
 
   onOpenCalendarModal(modalName: string, defaultDate?: Date) {
-    this.calendarComponent.resetSelection(defaultDate);
+
+    this.calendarComponent.resetCalendar(defaultDate);
+
     this.modalService.open(modalName)
 
   }

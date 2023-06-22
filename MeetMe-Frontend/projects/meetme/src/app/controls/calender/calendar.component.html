@@ -22,6 +22,7 @@
                         <button [disabled]="weekDay.isPastDate" class="day" *ngIf="weekDay.dayNo>0"
                             [ngClass]="[weekDay.isSelected?'selected':'']" (click)="onClickDay(weekDay)">
                             <span>{{weekDay.dayNo}}</span>
+                            <div [ngClass]="[weekDay.isCurrentDate?'current_date':'']" ></div>
                         </button>
                     </td>
                 </tr>

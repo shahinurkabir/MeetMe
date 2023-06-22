@@ -1,12 +1,12 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CalendarComponent } from '../../controls/calender/calendar.component';
 import { BookingService } from '../../services/booking.service';
 import { IEventTimeAvailability } from '../../models/calendar';
 import { TimeZoneData } from '../../models/eventtype';
-import { TimeZoneService } from '../../services/timezone.service';
 import { TimezoneControlComponent } from '../../controls/timezone-control/timezone-control.component';
 import { convertTimeZoneLocalTime } from '../../utilities/time.extensions';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { concat } from 'rxjs';
 
 @Component({
   selector: 'app-event-type-calendar',
@@ -14,8 +14,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./eventtype-calendar.component.scss']
 })
 export class EventTypeCalendarComponent implements OnInit, OnDestroy {
-  @ViewChild(CalendarComponent) calendarComponent!: CalendarComponent;
-  //@ViewChild('timezoneContainer') timezoneContainer: ElementRef | undefined;
+  @ViewChild(CalendarComponent, { static: true }) calendarComponent!: CalendarComponent;
   @ViewChild("timezoneControl", { static: true }) timezoneControl: TimezoneControlComponent | undefined;
   days: IEventTimeAvailability[] = [];
   day: IEventTimeAvailability | undefined;
@@ -24,99 +23,85 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   selectedMonth: number = 0;
   is24HourFormat: boolean = false;
   eventTypeId: string = "";
-  localTimeZoneName: string = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  timeZoneName: string = "";
+  selectedDate: string = "";
 
   constructor(
     private bookingService: BookingService,
-    //private timeZoneService: TimeZoneService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.route.params.subscribe(params => {
       this.eventTypeId = params["id"];
-
     });
-
   }
 
   ngOnInit(): void {
-    // this.loadTimeZoneList();
-    //this.loadCalendar();
-    //this.calendarComponent.resetSelection();
+    this.timeZoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    
+    this.calendarComponent.resetCalendar();
   }
 
   ngViewAfterInit() {
   }
 
   onHandledCalendarClicked(e: any) {
-    console.log(e);
+    console.log(`day changed ${e}`);
+
     if (Object.keys(e).length == 0) return;
 
-    let lastDate = Object.keys(e)[Object.keys(e).length - 1];
+    this.selectedDate = Object.keys(e)[Object.keys(e).length - 1];
+    this.showAvailableTimeSlotsInDay();
 
-    this.day = this.days.find(e => e.date == lastDate);
+    this.addParamDate();
+    //this.day = this.days.find(e => e.date == this.selectedDate);
   }
 
   onHandledMonthChange(e: any) {
+
+    console.log(`month changed ${e}`);
     this.selectedYear = e.year;
     this.selectedMonth = e.month;
-
-    this.loadBookingCalendarData();
+    this.addParamMonth();
+    this.loadEventCalendarData();
   }
 
-  loadBookingCalendarData() {
+  loadEventCalendarData() {
 
     let daysInMonth = new Date(this.selectedYear, this.selectedMonth + 1, 0).getDate();
+    
     let fromDate = this.selectedYear + "-" + (this.selectedMonth + 1) + "-01";
     let toDate = this.selectedYear + "-" + (this.selectedMonth + 1) + "-" + daysInMonth;
-    let timezone = this.localTimeZoneName;
 
-    if (this.selectedTimeZone)
-      timezone = this.selectedTimeZone.name;
+    let currentDate = new Date(new Date().toLocaleString("en-US", { timeZone: this.timeZoneName }));
+    let isCurrentMonth = currentDate.getMonth() == this.selectedMonth && currentDate.getFullYear() == this.selectedYear;
+    if (isCurrentMonth) {
+       fromDate = this.selectedYear + "-" + (this.selectedMonth + 1) +"-"+currentDate.getDate();
+    }
 
-    this.bookingService.getList(this.eventTypeId, timezone, fromDate, toDate).subscribe((data) => {
+    this.bookingService.getList(this.eventTypeId, this.timeZoneName, fromDate, toDate).subscribe((data) => {
       this.days = data;
       this.updateTimeLocalTime();
-      this.day = this.days[0];
+      //this.day = this.days[0];
+      this.showAvailableTimeSlotsInDay();
 
     });
   }
 
-  // loadTimeZoneList() {
-  //   this.timeZoneService.getList().subscribe(res => {
-  //     console.log(res)
-  //     this.timeZoneList = res;
-  //     this.filterTimeZoneList = res;
-  //   })
-  // }
-
-  // onToggleCountryDropdownBox() {
-  //   this.timezoneContainer?.nativeElement.classList.toggle('active');
-  // }
-
-  // onFilterTimeZoneChanged(event: any) {
-  //   if (this.timeZoneNameFilterText.trim() !== '')
-  //     this.filterTimeZoneList = this.timeZoneList
-  //       .filter(e => e.name.toLowerCase()
-  //         .indexOf(this.timeZoneNameFilterText.toLowerCase()) > -1)
-  //   else
-  //     this.filterTimeZoneList = this.timeZoneList;
-
-  // }
-  // onSelectTimeZone(timeZoneItem: TimeZoneData) {
-  //   this.selectedTimeZone = timeZoneItem;
-  //   this.timeZoneNameFilterText = "";
-  //  // this.onToggleCountryDropdownBox();
-  //   this.loadEventTimeAvailability();
-
-  // }
+  showAvailableTimeSlotsInDay() {
+    this.day = this.days.find(e => e.date == this.selectedDate);
+  }
   onLoadedTimezoneData(e: any) {
     console.log(e);
-    //this.timezoneControl?.setTimeZone(this.defaultTimeZone);
   }
   onChangedTimezone(e: TimeZoneData) {
     console.log(e);
     this.selectedTimeZone = e;
-    this.updateTimeLocalTime();
+    this.timeZoneName = e.name;
+    let localDate = new Date(new Date().toLocaleString("en-US", { timeZone: this.timeZoneName }));
+    this.calendarComponent.resetTimeZone(this.timeZoneName);
+    //this.calendarComponent.resetCalendar();
+    //this.updateTimeLocalTime();
   }
 
   onChangedHourFormat(is24HourFormat: boolean) {
@@ -129,6 +114,34 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       day.slots.forEach((slot) => {
         slot.startAtTimeOnly = convertTimeZoneLocalTime(new Date(slot.startAt), this.is24HourFormat, this.selectedTimeZone?.name!);
       });
+    });
+  }
+  addParamMonth() {
+    // changes the route without moving from the current view or
+    // triggering a navigation event,
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        month: `${this.selectedYear}-${this.selectedMonth}`,
+      },
+      queryParamsHandling: 'merge',
+      // preserve the existing query params in the route
+      skipLocationChange: false
+      // do not trigger navigation
+    });
+  }
+  addParamDate() {
+    // changes the route without moving from the current view or
+    // triggering a navigation event,
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        date: this.selectedDate
+      },
+      queryParamsHandling: 'merge',
+      // preserve the existing query params in the route
+      skipLocationChange: false
+      // do not trigger navigation
     });
   }
   ngOnDestroy(): void {

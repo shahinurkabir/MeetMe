@@ -15,6 +15,7 @@
 
 }
 .calendar_control .day{
+    position: relative;
     height: 45px;
     width: 45px;
     border-radius: 50%;
@@ -26,4 +27,17 @@
 .calendar_control .day.selected{
     background-color: blue;
     color:white
+}
+
+.calendar_control  .day .current_date{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    margin-top: 13px;
+    border-radius: 50%;
+    background-color: currentColor;
+    transform: translate(-50%,-50%);
+
 }
