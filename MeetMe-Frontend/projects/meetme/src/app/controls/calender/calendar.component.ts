@@ -8,6 +8,7 @@ import { date } from '../../utils/functions/date-functions';
   styleUrls: ['./calendar.component.scss']
 })
 export class CalendarComponent implements OnInit {
+  
   @Output() handlerDateClick = new EventEmitter()
   @Output() handlerMonthChange = new EventEmitter();
   @Input() selectedDates: { [id: string]: string | undefined } = {};
@@ -31,7 +32,11 @@ export class CalendarComponent implements OnInit {
   ngOnInit(): void {
     //this.resetCalendar();
   }
-
+  moveTo(selectedYear: number, selectedMonth: number) {
+    this.selectedYear = selectedYear;
+    this.selectedMonth = selectedMonth;
+    this.updateCalendar();
+  }
   onNextMonth() {
     if (this.selectedMonth + 1 > 11) {
       this.selectedMonth = 0;
@@ -65,7 +70,7 @@ export class CalendarComponent implements OnInit {
     for (let i = 0; i < 7; i++) {
       let weekDays: IDay[] = [];
       for (let j = 0; j < 6; j++) {
-        weekDays.push({ dayNo: 0, isSelected: false, date: "", isPastDate: false, isCurrentDate: false })
+        weekDays.push({ dayNo: 0, isSelected: false, date: "", isDisabled: false, isCurrentDate: false })
       }
       this.days_in_month[i] = weekDays;
     }
@@ -83,9 +88,9 @@ export class CalendarComponent implements OnInit {
       let weekDay = calendarDay.getDay();
       let dayNo = i + 1
       let shortDateString = this.getShortDateString(dayNo);
-      let isPastDate = currentTimeByTimeZone > calendarDay.getTime(); // date.isDayPast(calendarDay)
-      let isCurrentDate = currentDate.getDate() == calendarDay.getDate() ;
-      this.days_in_month[weekNo][weekDay] = { dayNo: dayNo, date: shortDateString, isPastDate: isPastDate, isSelected: false, isCurrentDate: isCurrentDate };
+      let isPastDate =  currentTimeByTimeZone > calendarDay.getTime(); // date.isDayPast(calendarDay)
+      let isCurrentDate =this.isCurrentMonth() && currentDate.getDate() == calendarDay.getDate() ;
+      this.days_in_month[weekNo][weekDay] = { dayNo: dayNo, date: shortDateString, isDisabled: isPastDate, isSelected: false, isCurrentDate: isCurrentDate };
 
       if (weekDay == 6) {
         weekNo += 1
@@ -114,7 +119,6 @@ export class CalendarComponent implements OnInit {
 
       if (this.selectedDates[weekDay.date])
         delete this.selectedDates[weekDay.date];
-      //TODO this.selectedDates[weekDay.date] = undefined
       else
         this.selectedDates[weekDay.date] = weekDay.date;
     }
@@ -165,6 +169,16 @@ export class CalendarComponent implements OnInit {
     this.selectedMonth = date.getMonth();
     this.selectedDates = {};
   }
+  disableDays(days: number[]) {
+    for (let week in this.days_in_month) {
+      let listDaysInWeek = this.days_in_month[week];
+      listDaysInWeek.forEach(day => {
+        if (day.dayNo > 0 && days.indexOf(day.dayNo) > -1) {
+          day.isDisabled = true;
+        }
+      });
+    }
+  }
   private getCurrentDateByTimeZone(): Date {
     return new Date(new Date().toLocaleString("en-US", { timeZone: this.timeZoneMame }));
   }
@@ -182,7 +196,7 @@ export class CalendarComponent implements OnInit {
 interface IDay {
   dayNo: number,
   date: string,
-  isPastDate: boolean,
+  isDisabled: boolean,
   isSelected: boolean
-  isCurrentDate: boolean
+  isCurrentDate: boolean,
 }

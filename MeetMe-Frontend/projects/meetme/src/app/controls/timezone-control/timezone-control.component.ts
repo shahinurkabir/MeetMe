@@ -1,7 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { TimeZoneService } from '../../services/timezone.service';
 import { TimeZoneData } from '../../models/eventtype';
-import { Observable, interval } from 'rxjs';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-timezone-control',
@@ -20,16 +19,14 @@ export class TimezoneControlComponent implements OnInit,OnDestroy {
   timeZoneNameFilterText: string = "";
   is24HourFormat: boolean = false;
   interval: any;
-
-  constructor(private timeZoneService: TimeZoneService) {
-  
-    this.loadTimeZoneList();
-    this.interval = interval(1000).subscribe(val => this.updateTimeZoneLocalTime());
+  timeZoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  constructor() {
     
   }
 
-
   ngOnInit(): void {
+    this.loadTimeZoneList();
+    this.interval = interval(1000).subscribe(val => this.updateTimeZoneLocalTime());
   }
 
   loadTimeZoneList() {
@@ -45,17 +42,19 @@ export class TimezoneControlComponent implements OnInit,OnDestroy {
       this.timeZoneList.push(timeZoneItem);
       this.filterTimeZoneList.push(timeZoneItem);
     });
+    this.selectedTimeZone = this.timeZoneList.find(e => e.name == this.timeZoneName);
+    this.dataLoaded.emit("TimeZoneListLoaded");
   }
 
   onSelectTimeZone(timeZoneItem: TimeZoneData) {
     this.selectedTimeZone = timeZoneItem;
     this.timeZoneNameFilterText = "";
     this.filterTimeZoneList = this.timeZoneList;
-    this.onToggleCountryDropdownBox();
+    this.onToggleTimeZoneBox();
     this.selectionChanged.emit(timeZoneItem);
   }
 
-  onToggleCountryDropdownBox() {
+  onToggleTimeZoneBox() {
     this.timezoneContainer?.nativeElement.classList.toggle('active');
   }
   
@@ -88,6 +87,7 @@ export class TimezoneControlComponent implements OnInit,OnDestroy {
     this.updateTimeZoneLocalTime();
     this.hourFormatChanged.emit(this.is24HourFormat);
   }
+
   ngOnDestroy(): void {
     this.interval.unsubscribe();
   }

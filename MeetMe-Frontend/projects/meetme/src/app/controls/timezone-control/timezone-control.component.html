@@ -1,5 +1,5 @@
 <div class="wrapper" #timezoneContainer>
-    <div class="select-btn" (click)="onToggleCountryDropdownBox()">
+    <div class="select-btn" (click)="onToggleTimeZoneBox()">
         <span *ngIf="!selectedTimeZone">Select Country</span>
         <span *ngIf="selectedTimeZone!==null">{{selectedTimeZone?.name}} - {{ selectedTimeZone?.currentTime}} </span>
         <i class="fa fa-angle-down"></i>

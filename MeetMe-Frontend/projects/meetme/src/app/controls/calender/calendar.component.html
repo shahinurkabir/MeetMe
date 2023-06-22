@@ -19,7 +19,7 @@
             <tbody>
                 <tr *ngFor="let daysInSlot of days_in_month |keyvalue; let index=index">
                     <td *ngFor="let weekDay of  daysInSlot.value">
-                        <button [disabled]="weekDay.isPastDate" class="day" *ngIf="weekDay.dayNo>0"
+                        <button [disabled]="weekDay.isDisabled" class="day" *ngIf="weekDay.dayNo>0"
                             [ngClass]="[weekDay.isSelected?'selected':'']" (click)="onClickDay(weekDay)">
                             <span>{{weekDay.dayNo}}</span>
                             <div [ngClass]="[weekDay.isCurrentDate?'current_date':'']" ></div>
