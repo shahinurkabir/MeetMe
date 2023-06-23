@@ -37,35 +37,34 @@ namespace MeetMe.Application.EventTypes.Calendar
         }
         public async Task<List<EventTimeCalendar>> Handle(EventTimeCalendarCommand request, CancellationToken cancellationToken)
         {
-            var listAvailability = new List<AvailabilityDetailDto>();
             var eventTypeEntity = await eventTypeRepository.GetEventTypeById(request.EventTypeId);
             var calendarTimeZone = eventTypeEntity.TimeZone;
             var bufferTime = eventTypeEntity.BufferTimeAfter;
             var meetingDuration = eventTypeEntity.Duration;
-            var availabilityId = eventTypeEntity.AvailabilityId;
 
-            if (availabilityId.HasValue)
-            {
-                listAvailability = (await availabilityRepository.GetScheduleById(availabilityId.Value)).Details.Select(e => new AvailabilityDetailDto
-                {
-                    DayType = e.DayType,
-                    Value = e.Value,
-                    StartFrom = e.From,
-                    EndAt = e.To
-                }).ToList();
-            }
-            else
-            {
-                listAvailability = (await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityDetailByEventId(eventTypeEntity.Id)).Select(e => new AvailabilityDetailDto
-                {
-                    DayType = e.DayType,
-                    Value = e.Value,
-                    StartFrom = e.From,
-                    EndAt = e.To
-                }).ToList();
-            }
+            //if (availabilityId.HasValue)
+            //{
+            //    listAvailability = (await availabilityRepository.GetScheduleById(availabilityId.Value)).Details.Select(e => new AvailabilityDetailDto
+            //    {
+            //        DayType = e.DayType,
+            //        Value = e.Value,
+            //        StartFrom = e.From,
+            //        EndAt = e.To
+            //    }).ToList();
+            //}
+            //else
+            //{
+            //    listAvailability = (await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityDetailByEventId(eventTypeEntity.Id)).Select(e => new AvailabilityDetailDto
+            //    {
+            //        DayType = e.DayType,
+            //        Value = e.Value,
+            //        StartFrom = e.From,
+            //        EndAt = e.To
+            //    }).ToList();
+            //}
+            var availabilityList = await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityDetailByEventId(eventTypeEntity.Id);
 
-            var eventTimeCalendarDetails = GetCalendarTimeSlots(request.TimeZone, calendarTimeZone, request.FromDate, request.ToDate, bufferTime, meetingDuration, listAvailability);
+            var eventTimeCalendarDetails = GetCalendarTimeSlots(request.TimeZone, calendarTimeZone, request.FromDate, request.ToDate, bufferTime, meetingDuration, availabilityList);
 
             return eventTimeCalendarDetails;
 
@@ -74,7 +73,7 @@ namespace MeetMe.Application.EventTypes.Calendar
         private List<EventTimeCalendar> GetCalendarTimeSlots(
             string timezoneUser, string timezoneCalendar, 
             string dateFrom, string dateTo, int bufferTime, 
-            int meetingDuration, List<AvailabilityDetailDto> scheduleList
+            int meetingDuration, List<EventTypeAvailabilityDetail> scheduleList
             )
         {
             var result = new List<EventTimeCalendar>();
@@ -110,13 +109,13 @@ namespace MeetMe.Application.EventTypes.Calendar
 
                     if (availabilityCustom != null)
                     {
-                        dayStartFromInMinutes = availabilityCustom.StartFrom;
-                        dayEndFromINMinutes = availabilityCustom.EndAt;
+                        dayStartFromInMinutes = availabilityCustom.From;
+                        dayEndFromINMinutes = availabilityCustom.To;
                     }
                     else if (availability != null)
                     {
-                        dayStartFromInMinutes = availability.StartFrom;
-                        dayEndFromINMinutes = availability.EndAt;
+                        dayStartFromInMinutes = availability.From;
+                        dayEndFromINMinutes = availability.To;
                     }
                     var timeSlots = GenerateTimeSlotForDate(scheduleDate, bufferTime, meetingDuration, dayStartFromInMinutes, dayEndFromINMinutes, userTimeZone);
 

@@ -11,21 +11,18 @@ namespace MeetMe.Application.EventTypes.Create
     {
         private readonly IAvailabilityRepository availabilityRepository;
         private readonly IEventTypeRepository eventTypeRepository;
-        private readonly ITimeZoneDataRepository timeZoneDataRepository;
         private readonly IUserInfo applicationUser;
         private readonly IDateTimeService dateTimeService;
 
         public CreateEventTypeCommandHandler(
             IAvailabilityRepository availabilityRepository,
             IEventTypeRepository eventTypeRepository,
-            ITimeZoneDataRepository timeZoneDataRepository,
             IUserInfo applicationUser,
             IDateTimeService dateTimeService
             )
         {
             this.availabilityRepository = availabilityRepository;
             this.eventTypeRepository = eventTypeRepository;
-            this.timeZoneDataRepository = timeZoneDataRepository;
             this.applicationUser = applicationUser;
             this.dateTimeService = dateTimeService;
         }

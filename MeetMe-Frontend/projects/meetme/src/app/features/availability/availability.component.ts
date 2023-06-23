@@ -1,15 +1,12 @@
 import { NgFor } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { CloneAvailabilityCommand } from '../../commands/cloneAvailabilityCommand';
-import { DeleteAvailabilityCommand, SetDefaultAvailabilityCommand } from '../../commands/deleteAvailabilityCommand';
-import { EditAvailabilityCommand } from '../../commands/editAvailabilityCommand';
-import { EditAvailabilityNameCommand } from '../../commands/editAvailabilityNameCommand';
 import { ModalService } from '../../controls/modal/modalService';
 import { TimeAvailabilityComponent } from '../../controls/time-availability/time-availability.component';
-import { IAvailability } from '../../models/IAvailability';
 import { AvailabilityService } from '../../services/availability.service';
 import { AvailabilityListComponent } from './availability-list/availability-list.component';
+import { IEditAvailabilityNameCommand, ICloneAvailabilityCommand, IEditAvailabilityCommand, IDeleteAvailabilityCommand, ISetDefaultAvailabilityCommand } from '../../interfaces/availability-commands';
+import { IAvailability } from '../../interfaces/availability-interfaces';
 
 @Component({
   selector: 'app-availability',
@@ -36,8 +33,6 @@ export class AvailabilityComponent implements OnInit {
     this.selectedAvailability = availability;
     this.selectedAvailability = Object.assign({}, availability);
     this.timeAvailabilityComponent?.setAvailability(this.selectedAvailability!);
-    // this.timeAvailabilityComponent?.prepareWeeklyViewData();
-    // this.timeAvailabilityComponent?.prepareMonthlyViewData();
 
   }
 
@@ -61,7 +56,7 @@ export class AvailabilityComponent implements OnInit {
   onEditNameFormSubmit(frm: NgForm) {
     if (frm.invalid) return;
 
-    let command: EditAvailabilityNameCommand = {
+    let command: IEditAvailabilityNameCommand = {
       id: this.selectedAvailability?.id!,
       name: this.editName,
     };
@@ -79,7 +74,7 @@ export class AvailabilityComponent implements OnInit {
   }
 
   onClone(id: string) {
-    let command: CloneAvailabilityCommand = {
+    let command: ICloneAvailabilityCommand = {
       id: id
     };
 
@@ -96,10 +91,10 @@ export class AvailabilityComponent implements OnInit {
     event.preventDefault();
     let availability = this.timeAvailabilityComponent?.getAvailability();
 
-    let command: EditAvailabilityCommand = {
+    let command: IEditAvailabilityCommand = {
       id: availability?.id!,
       name: availability?.name!,
-      timeZoneId: availability?.timeZoneId!,
+      timeZone: availability?.timeZone!,
       details: availability?.details!
     }
 
@@ -114,7 +109,7 @@ export class AvailabilityComponent implements OnInit {
     this.modalService.open('delete-availability-modal')
   }
   onDelete(e: any) {
-    let command: DeleteAvailabilityCommand = {
+    let command: IDeleteAvailabilityCommand = {
       id: this.selectedAvailability?.id!
     };
 
@@ -126,7 +121,7 @@ export class AvailabilityComponent implements OnInit {
   }
 
   onDefault(id: string) {
-    let command: SetDefaultAvailabilityCommand = {
+    let command: ISetDefaultAvailabilityCommand = {
       id: id
     };
 

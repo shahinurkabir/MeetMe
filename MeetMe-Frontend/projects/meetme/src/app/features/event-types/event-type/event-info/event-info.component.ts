@@ -1,7 +1,8 @@
 import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ICreateEventTypeCommand, EventType, IUpdateEventCommand } from 'projects/meetme/src/app/models/eventtype';
+import { ICreateEventTypeCommand, IUpdateEventCommand } from 'projects/meetme/src/app/interfaces/event-type-commands';
+import { IEventType } from 'projects/meetme/src/app/interfaces/event-type-interfaces';
 import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.service';
 
 @Component({
@@ -12,7 +13,7 @@ import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.ser
 })
 export class EventInfoComponent implements OnInit {
   submitted = false;
-  @Input() model: EventType = {
+  @Input() model: IEventType = {
     id: "",
     name: "",
     description: "",
@@ -27,7 +28,7 @@ export class EventInfoComponent implements OnInit {
     dateForwardKind: 'moving',
     bufferTimeAfter: 0,
     bufferTimeBefore: 0,
-    timeZoneId: 1
+    timeZone: ""
   };
   @Output() dataSavedEvent = new EventEmitter();
   @Output() cancelEvent = new EventEmitter();

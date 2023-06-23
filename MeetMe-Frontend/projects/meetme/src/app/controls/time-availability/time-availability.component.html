@@ -100,12 +100,8 @@
 
     <h3>Time Zone</h3>
     <div *ngIf="viewMode!='readonly'" class="section_overview">
-        <!-- <select id="timeZoneData" name="timeZoneData" required class="form-control" [(ngModel)]="selectedTimeZoneId">
-            <option value="">Select</option>
-            <option [value]="timeZoneItem.id" *ngFor="let timeZoneItem of timeZoneList">
-                {{timeZoneItem.name}}</option>
-        </select> -->
-        <div class="wrapper" #countryContainer>
+        
+        <!-- <div class="wrapper" #countryContainer>
             <div class="select-btn" (click)="onToggleCountryDropdownBox()">
                 <span *ngIf="!selectedTimeZone">Select Country</span>
                 <span *ngIf="selectedTimeZone!==null">{{selectedTimeZone?.name}}</span>
@@ -122,7 +118,13 @@
                         {{timeZoneItem.name}}</li>
                 </ul>
             </div>
-        </div>
+        </div> -->
+        <app-timezone-control #timezoneControl [selectedTimeZone]="selectedTimeZone"
+        
+        (selectionChanged)="onSelectTimeZone($event)"
+        
+        ></app-timezone-control>
+
         <div class="toggle_interval">
             <button [ngClass]="viewMode==='list'?'toggle_interval_button':''" (click)="onToggleView('list')">
                 <i class="fa-solid fa-list"></i> List view</button>

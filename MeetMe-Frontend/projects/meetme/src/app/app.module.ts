@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { WorkinghoursComponent } from './features/workinghours/workinghours.component';
+//import { WorkinghoursComponent } from './features/workinghours/workinghours.component';
 import { RouterModule } from '@angular/router';
 import { HttpRequestInterceptor } from './interceptors/http-interceptor';
 import { LoginComponent } from './features/users/login/login.component';
@@ -36,7 +36,7 @@ import { TestComponentComponent } from './test-component/test-component.componen
     declarations: [
         AppComponent,
         HomeComponent,
-        WorkinghoursComponent,
+        //WorkinghoursComponent,
         LoginComponent,
         AvailabilityComponent,
         TimeAvailabilityComponent,

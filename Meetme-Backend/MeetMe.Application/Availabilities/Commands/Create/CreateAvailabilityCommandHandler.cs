@@ -9,17 +9,14 @@ namespace MeetMe.Application.Availabilities.Commands.Create
     public class CreateAvailabilityCommandHandler : IRequestHandler<CreateAvailabilityCommand, Guid>
     {
         private readonly IAvailabilityRepository availabilityRepository;
-        private readonly ITimeZoneDataRepository timeZoneDataRepository;
         private readonly IUserInfo applicationUserInfo;
 
         public CreateAvailabilityCommandHandler(
             IAvailabilityRepository availabilityRepository, 
-            ITimeZoneDataRepository timeZoneDataRepository,
             IUserInfo applicationUserInfo
             )
         {
             this.availabilityRepository = availabilityRepository;
-            this.timeZoneDataRepository = timeZoneDataRepository;
             this.applicationUserInfo = applicationUserInfo;
         }
         public async Task<Guid> Handle(CreateAvailabilityCommand request, CancellationToken cancellationToken)
@@ -43,16 +40,16 @@ namespace MeetMe.Application.Availabilities.Commands.Create
 
         }
 
-        private async Task<TimeZoneData> GetUserTimeZoneData(CreateAvailabilityCommand request)
-        {
-            var offsetInMinutes = request.timeZoneOffset / 60;
-            var listTimeZone = await timeZoneDataRepository.GetTimeZoneList();
-            var timeZoneData = listTimeZone.FirstOrDefault(e => e.OffsetMinutes == offsetInMinutes);
-            if (timeZoneData == null)
-                timeZoneData = listTimeZone.First(e => e.Id == 1); // UTC timezone
+        //private async Task<TimeZoneData> GetUserTimeZoneData(CreateAvailabilityCommand request)
+        //{
+        //    var offsetInMinutes = request.timeZoneOffset / 60;
+        //    var listTimeZone = await timeZoneDataRepository.GetTimeZoneList();
+        //    var timeZoneData = listTimeZone.FirstOrDefault(e => e.OffsetMinutes == offsetInMinutes);
+        //    if (timeZoneData == null)
+        //        timeZoneData = listTimeZone.First(e => e.Id == 1); // UTC timezone
 
-            return timeZoneData;
-        }
+        //    return timeZoneData;
+        //}
 
         public static List<AvailabilityDetail> GetDefaultWeeklySchedule(Guid availabilityId)
         {

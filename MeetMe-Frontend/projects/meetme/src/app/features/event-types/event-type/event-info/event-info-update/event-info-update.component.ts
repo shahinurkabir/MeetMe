@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { EventType } from 'projects/meetme/src/app/models/eventtype';
+import { IEventType } from 'projects/meetme/src/app/interfaces/event-type-interfaces';
 import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.ser
   styleUrls: ['./event-info-update.component.scss']
 })
 export class EventInfoUpdateComponent implements OnInit {
-  model: EventType = {
+  model: IEventType = {
     id: "",
     name: "",
     description: "",
@@ -24,7 +24,7 @@ export class EventInfoUpdateComponent implements OnInit {
     dateForwardKind: 'moving',
     bufferTimeAfter: 0,
     bufferTimeBefore: 0,
-    timeZoneId: 1
+    timeZone: ""
   };
   constructor(private eventTypeService: EventTypeService,
     private route: ActivatedRoute) {

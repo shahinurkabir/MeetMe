@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { EventType } from 'projects/meetme/src/app/models/eventtype';
+import { IEventType } from 'projects/meetme/src/app/interfaces/event-type-interfaces';
 
 @Component({
   selector: 'app-event-info-new',
@@ -8,7 +8,7 @@ import { EventType } from 'projects/meetme/src/app/models/eventtype';
   styleUrls: ['./event-info-new.component.scss']
 })
 export class EventInfoNewComponent implements OnInit {
-  model: EventType = {
+  model: IEventType = {
     id: "",
     name: "",
     description: "",
@@ -23,7 +23,7 @@ export class EventInfoNewComponent implements OnInit {
     dateForwardKind: 'moving',
     bufferTimeAfter: 0,
     bufferTimeBefore: 0,
-    timeZoneId: 1
+    timeZone: ""
   };
   constructor(private location: Location) { }
 

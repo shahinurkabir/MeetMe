@@ -1,10 +1,10 @@
 import { NgFor } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { CreateAvailabilityCommand } from '../../../commands/createAvailabilityCommand';
 import { ModalService } from '../../../controls/modal/modalService';
-import { IAvailability } from '../../../models/IAvailability';
 import { AvailabilityService } from '../../../services/availability.service';
+import { ICreateAvailabilityCommand } from '../../../interfaces/availability-commands';
+import { IAvailability } from '../../../interfaces/availability-interfaces';
 
 @Component({
   selector: 'app-availability-list',
@@ -72,9 +72,8 @@ export class AvailabilityListComponent implements OnInit {
     if (frm.invalid) return;
 
     let offset = new Date().getTimezoneOffset() / -60;
-    let command: CreateAvailabilityCommand = {
+    let command: ICreateAvailabilityCommand = {
       name: this.newAvailabilityName,
-      timeZoneOffset: offset
     };
 
     this.availabilityService.addNew(command).subscribe({

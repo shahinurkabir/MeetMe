@@ -17,7 +17,7 @@ namespace MeetMe.Application.EventTypes.Update
         public int Duration { get; set; }
         public int BufferTimeBefore { get; set; }
         public int BufferTimeAfter { get; set; }
-        public string TimeZone { get; set; }
+        public string TimeZone { get; set; } = null!;
         public Guid? AvailabilityId { get; set; }
 
         public List<EventAvailabilityDetailItemDto> AvailabilityDetails { get; set; } = null!;

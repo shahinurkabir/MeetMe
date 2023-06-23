@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CalendarComponent } from '../../controls/calender/calendar.component';
 import { BookingService } from '../../services/booking.service';
-import { IEventTimeAvailability } from '../../models/calendar';
-import { TimeZoneData } from '../../models/eventtype';
+import { IEventTimeAvailability } from '../../interfaces/calendar';
+import { TimeZoneData } from '../../interfaces/event-type-interfaces';
 import { TimezoneControlComponent } from '../../controls/timezone-control/timezone-control.component';
 import { convertTimeZoneLocalTime } from '../../utilities/time.extensions';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IAvailability } from '../../models/IAvailability';
 
 @Component({
   selector: 'app-event-type-calendar',

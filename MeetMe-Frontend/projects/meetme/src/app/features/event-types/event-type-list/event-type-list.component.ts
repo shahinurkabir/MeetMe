@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { EventType } from '../../../models/eventtype';
+import { IEventType } from '../../../interfaces/event-type-interfaces';
 import { EventTypeService } from '../../../services/eventtype.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { EventTypeService } from '../../../services/eventtype.service';
 })
 export class EventTypeListComponent implements OnInit {
 
-  listEventTypes: EventType[] = [];
+  listEventTypes: IEventType[] = [];
   constructor(private eventTypeService: EventTypeService,
     private router:Router
     ) { }
@@ -42,18 +42,18 @@ export class EventTypeListComponent implements OnInit {
     this.router.navigate(['event-types','new']);
   }
 
-  onToggleActive(eventType: EventType) {
+  onToggleActive(eventType: IEventType) {
     this.eventTypeService.toggleActive(eventType.id).subscribe(response => {
       eventType.activeYN = !eventType.activeYN;
     })
   }
-  onClone(eventType: EventType) {
+  onClone(eventType: IEventType) {
     this.eventTypeService.clone(eventType.id).subscribe(response => {
       let url='event-types/'+response;
       this.router.navigate([url]);
     })
   }
-  onDelete(eventType: EventType) {
+  onDelete(eventType: IEventType) {
     this.eventTypeService.delete(eventType.id).subscribe(response => {
       this.loadEventTypes();
     })

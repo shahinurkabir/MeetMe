@@ -8,7 +8,7 @@ import { EventInfoUpdateComponent } from './features/event-types/event-type/even
 import { EventQuestionComponent } from './features/event-types/event-type/event-question/event-question.component';
 import { EventTypeComponent } from './features/event-types/event-type/eventtype.component';
 import { LoginComponent } from './features/users/login/login.component';
-import { WorkinghoursComponent } from './features/workinghours/workinghours.component';
+//import { WorkinghoursComponent } from './features/workinghours/workinghours.component';
 import { AuthGuard } from './gurads/auth-gurad';
 import { HomeComponent } from './home/home.component';
 import { CalendarComponent } from './controls/calender/calendar.component';
@@ -26,7 +26,7 @@ const routes: Routes = [
   { path: "login", component: LoginComponent },
   { path: 'availability', component: AvailabilityComponent, canActivate: [AuthGuard] },
   { path: "event-types", loadChildren: () => import("./features/event-types/event-type.module").then(m => m.EventTypeModule), canActivate: [AuthGuard] },
-  { path: "working-hours", component: WorkinghoursComponent, canActivate: [AuthGuard] },
+ // { path: "working-hours", component: WorkinghoursComponent, canActivate: [AuthGuard] },
   {
     path: "event-types", children: [
       { path: "", component: EventTypeListComponent },

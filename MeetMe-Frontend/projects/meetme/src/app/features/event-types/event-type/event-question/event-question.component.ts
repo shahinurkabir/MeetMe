@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IEventTypeQuestion, IUpdateEventQuestionCommand } from 'projects/meetme/src/app/models/eventtype';
+import { IUpdateEventQuestionCommand } from 'projects/meetme/src/app/interfaces/event-type-commands';
+import { IEventTypeQuestion } from 'projects/meetme/src/app/interfaces/event-type-interfaces';
 import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.service';
 
 @Component({

@@ -9,45 +9,45 @@ using System.Threading.Tasks;
 
 namespace DataProvider.EntityFramework.Repositories
 {
-    public class EventAvailabilityRepository : IEventAvailabilityRepository
-    {
-        private readonly BookingDbContext bookingDbContext;
+    //public class EventAvailabilityRepository : IEventAvailabilityRepository
+    //{
+    //    private readonly BookingDbContext bookingDbContext;
 
-        public EventAvailabilityRepository(BookingDbContext bookingDbContext)
-        {
-            this.bookingDbContext = bookingDbContext;
-        }
+    //    public EventAvailabilityRepository(BookingDbContext bookingDbContext)
+    //    {
+    //        this.bookingDbContext = bookingDbContext;
+    //    }
 
-        public async Task<EventTypeAvailability> GetEventAvailabilityById(Guid eventTypeId)
-        {
-            var result = await bookingDbContext.Set<EventTypeAvailability>()
-                .Include(e => e.AvailabilityDetails)
-                .FirstOrDefaultAsync(e => e.Id == eventTypeId)
-                                ;
+    //    public async Task<EventTypeAvailability> GetEventAvailabilityById(Guid eventTypeId)
+    //    {
+    //        var result = await bookingDbContext.Set<EventTypeAvailability>()
+    //            .Include(e => e.AvailabilityDetails)
+    //            .FirstOrDefaultAsync(e => e.Id == eventTypeId)
+    //                            ;
 
-            return result;
-        }
+    //        return result;
+    //    }
 
-        public async Task ResetAvailability(EventTypeAvailability eventTypeAvailability)
-        {
-            var eventTypeId = eventTypeAvailability.Id;
+    //    public async Task ResetAvailability(EventTypeAvailability eventTypeAvailability)
+    //    {
+    //        var eventTypeId = eventTypeAvailability.Id;
             
-            var entity = await bookingDbContext.Set<EventTypeAvailability>()
-                .Include(e => e.AvailabilityDetails)
-                .FirstOrDefaultAsync(e => e.Id == eventTypeId);
+    //        var entity = await bookingDbContext.Set<EventTypeAvailability>()
+    //            .Include(e => e.AvailabilityDetails)
+    //            .FirstOrDefaultAsync(e => e.Id == eventTypeId);
 
-            if (entity != null)
-            {
-                bookingDbContext.RemoveRange(entity.AvailabilityDetails);
+    //        if (entity != null)
+    //        {
+    //            bookingDbContext.RemoveRange(entity.AvailabilityDetails);
 
-                bookingDbContext.Remove(entity);
-            }
+    //            bookingDbContext.Remove(entity);
+    //        }
 
-            await bookingDbContext.AddAsync(eventTypeAvailability);
+    //        await bookingDbContext.AddAsync(eventTypeAvailability);
 
-            await bookingDbContext.SaveChangesAsync();
+    //        await bookingDbContext.SaveChangesAsync();
 
-        }
+    //    }
 
-    }
+    //}
 }

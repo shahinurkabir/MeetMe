@@ -1,14 +1,14 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, EventType } from '@angular/router';
 import { day_of_week, default_endTime_Minutes, default_meeting_buffertime, default_meeting_duration, default_meeting_forward_Duration_inDays, default_startTime_minutes, meeting_day_type_date, meeting_day_type_weekday, month_of_year } from 'projects/meetme/src/app/constants/default-data';
 import { TimeAvailabilityComponent } from 'projects/meetme/src/app/controls/time-availability/time-availability.component';
-import { IAvailability } from 'projects/meetme/src/app/models/IAvailability';
-import { IAvailabilityDetails } from 'projects/meetme/src/app/models/IAvailabilityDetails';
-import { IUpdateEventAvailabilityCommand, EventAvailabilityDetailItemDto, TimeZoneData, EventType } from 'projects/meetme/src/app/models/eventtype';
-import { ListItem } from 'projects/meetme/src/app/models/list-item';
+import { IAvailability, IAvailabilityDetails } from 'projects/meetme/src/app/interfaces/availability-interfaces';
+import { IUpdateEventAvailabilityCommand } from 'projects/meetme/src/app/interfaces/event-type-commands';
+import { TimeZoneData, EventAvailabilityDetailItemDto, IEventType } from 'projects/meetme/src/app/interfaces/event-type-interfaces';
+import { ListItem } from 'projects/meetme/src/app/interfaces/list-item';
 import { AvailabilityService } from 'projects/meetme/src/app/services/availability.service';
 import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.service';
-import { TimeZoneService } from 'projects/meetme/src/app/services/timezone.service';
+//import { TimeZoneService } from 'projects/meetme/src/app/services/timezone.service';
 import { convertToDays } from 'projects/meetme/src/app/utilities/functions';
 import { ObjectUnsubscribedError, Observable, forkJoin } from 'rxjs';
 
@@ -29,7 +29,7 @@ export class EventAvailabilityComponent implements OnInit {
   selectedAvailability: IAvailability | undefined
   customAvailability: IAvailability | undefined;
 
-  model: EventType = {
+  model: IEventType = {
     id: "",
     name: "",
     description: "",
@@ -44,7 +44,7 @@ export class EventAvailabilityComponent implements OnInit {
     dateForwardKind: 'moving',
     bufferTimeAfter: 0,
     bufferTimeBefore: 0,
-    timeZoneId: 1
+    timeZone: ""
   };
   forwardDurationInDays: number = 30;
 
@@ -52,17 +52,13 @@ export class EventAvailabilityComponent implements OnInit {
   @ViewChild("availabilityComponent", { static: true }) timeAvailabilityComponent: TimeAvailabilityComponent | undefined;
   constructor(
     private eventTypeService: EventTypeService,
-    private timeZoneService: TimeZoneService,
     private availabilityService: AvailabilityService,
     private route: ActivatedRoute
   ) {
 
     this.initMeetingDurationAndTypes();
     this.createCustomAvailabilityModel();
-    //this.loadAvailabilityList();
     this.subscribeRouteParams();
-    this.loadTimeZoneList();
-
 
   };
 
@@ -81,7 +77,7 @@ export class EventAvailabilityComponent implements OnInit {
     });
   };
 
-  loadData(eventTypeId: string): Observable<[IAvailability[], EventType]> {
+  loadData(eventTypeId: string): Observable<[IAvailability[], IEventType]> {
 
     return forkJoin([this.availabilityService.getList(),
     this.eventTypeService.getById(this.eventTypeId)]);
@@ -95,21 +91,20 @@ export class EventAvailabilityComponent implements OnInit {
     }
   }
 
-  loadTimeZoneList() {
-    this.timeZoneService.getList().subscribe(res => {
-      this.timeZoneList = res;
-    })
-  }
-
-
-  loadDataCompleted(responses: [IAvailability[], EventType]) {
+  loadDataCompleted(responses: [IAvailability[], IEventType]) {
     this.listOfAvailability = responses[0];
     this.model = responses[1];;
 
     if (this.model.forwardDuration != null) {
       this.forwardDurationInDays = convertToDays(this.model.forwardDuration);
     }
-    this.selectedAvailability = this.listOfAvailability.find(e => e.id == this.model.availabilityId);
+    if (this.model.availabilityId == null) {
+      this.isExistingHours = false;
+    }
+    else {
+      this.isExistingHours = true;
+      this.selectedAvailability = this.listOfAvailability.find(e => e.id == this.model.availabilityId);
+    }
     this.initTimeAvailabilityComponent();
   }
 
@@ -118,7 +113,7 @@ export class EventAvailabilityComponent implements OnInit {
       id: '',
       name: "",
       ownerId: "",
-      timeZoneId: 0,
+      timeZone: "",
       isDefault: false,
       details: [],
       isCustom: true
@@ -167,8 +162,8 @@ export class EventAvailabilityComponent implements OnInit {
       forwardDuration: this.forwardDurationInDays * 24 * 60,
       bufferTimeBefore: this.model.bufferTimeBefore,
       bufferTimeAfter: this.model.bufferTimeAfter,
-      timeZoneId: this.model.timeZoneId,
-      availabilityId: this.selectedAvailability?.id,
+      timeZone: this.model.timeZone,
+      availabilityId: this.isExistingHours?this.selectedAvailability?.id:undefined,
       availabilityDetails: availabilityDetails!
     };
 
@@ -224,7 +219,7 @@ interface model {
   forwardDurationInDays: number,
   bufferTimeAfter: number,
   bufferTimeBefore: number,
-  timeZoneId: number,
+  timeZone: string,
   availabilityId?: string,
   availabilityDetails: [],
 }

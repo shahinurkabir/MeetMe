@@ -1,16 +1,15 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { day_of_week, default_endTime_Minutes, default_startTime_minutes, meeting_day_type_date, meeting_day_type_weekday, month_of_year } from '../../constants/default-data';
-import { TimeZoneData } from '../../models/eventtype';
-import { IAvailability } from '../../models/IAvailability';
-import { IAvailabilityDetails } from '../../models/IAvailabilityDetails';
-import { ITimeInterval } from '../../models/ITimeInterval';
-import { ITimeIntervalInDay } from '../../models/ITimeIntervalInDay';
-import { ListItem } from '../../models/list-item';
-import { TimeZoneService } from '../../services/timezone.service';
+import { TimeZoneData } from '../../interfaces/event-type-interfaces';
+import { ListItem } from '../../interfaces/list-item';
+//import { TimeZoneService } from '../../services/timezone.service';
 import { toggleModalDialog } from '../../utilities/functions';
 import { date } from '../../utils/functions/date-functions';
 import { CalendarComponent } from '../calender/calendar.component';
 import { ModalService } from '../modal/modalService';
+import { ListOfTimeZone } from '../../constants/timezone-data';
+import { IAvailability, IAvailabilityDetails } from '../../interfaces/availability-interfaces';
+import { ITimeIntervalInDay, ITimeInterval } from '../../interfaces/ITimeIntervalInDay';
 
 @Component({
   selector: 'app-time-availability',
@@ -20,8 +19,8 @@ import { ModalService } from '../modal/modalService';
 export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   availability: IAvailability | undefined;
-  timeZoneList: TimeZoneData[] = [];
-  filterTimeZoneList: TimeZoneData[] = [];
+  timeZoneList:TimeZoneData[]= ListOfTimeZone;
+  filterTimeZoneList:TimeZoneData[]= ListOfTimeZone;
   weekDays = day_of_week;
   monthNames = month_of_year
   meetingDurations: ListItem[] = [];
@@ -43,12 +42,11 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   @ViewChild(CalendarComponent) calendarComponent!: CalendarComponent;
   @ViewChild('countryContainer') countryContainer: ElementRef | undefined;
   @Input() viewMode: string = "list";
-
   constructor(
-    private timeZoneService: TimeZoneService,
+    //private timeZoneService: TimeZoneService,
     private modalService: ModalService
   ) {
-    this.loadTimeZoneList();
+    //this.loadTimeZoneList();
   }
 
   ngAfterViewInit(): void {
@@ -63,20 +61,20 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   }
 
-  loadTimeZoneList() {
-    this.timeZoneService.getList().subscribe(res => {
-      console.log(res)
-      this.timeZoneList = res;
-      this.filterTimeZoneList = res;
-      if (this.availability?.timeZoneId)
-        this.selectedTimeZone = this.timeZoneList.find(e => e.id == this.availability?.timeZoneId);
-    })
-  }
+  // loadTimeZoneList() {
+  //   this.timeZoneService.getList().subscribe(res => {
+  //     console.log(res)
+  //     this.timeZoneList = res;
+  //     this.filterTimeZoneList = res;
+  //     if (this.availability?.timeZone)
+  //       this.selectedTimeZone = this.timeZoneList.find(e => e.name == this.availability?.timeZone);
+  //   })
+  // }
 
   setAvailability(availability?: IAvailability) {
 
     this.availability = availability;
-    this.selectedTimeZone = this.timeZoneList.find(e => e.id == availability?.timeZoneId);
+    this.selectedTimeZone = this.timeZoneList.find(e => e.name == availability?.timeZone);
     this.prepareWeeklyViewData();
     this.prepareMonthlyViewData();
   }
@@ -376,7 +374,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   getAvailability(): IAvailability | undefined {
     this.availability?.details.splice(0, 100);
-    this.availability!.timeZoneId = this.selectedTimeZone?.id!;
+    this.availability!.timeZone = this.selectedTimeZone?.name!;
     this.availabilityInWeek.filter(e => e.isAvailable).forEach(weekday => {
       weekday.intervals.forEach(intervalITem => {
         let item: IAvailabilityDetails = {
@@ -540,7 +538,6 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   }
 
   onCloseWeekdayConfigureModal() {
-    //toggleModalDialog(this.dayConfigureModalEl)
     this.modalService.close();
   }
 

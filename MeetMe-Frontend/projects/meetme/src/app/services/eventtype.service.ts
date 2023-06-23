@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { ICreateEventTypeCommand, EventType, IUpdateEventAvailabilityCommand, IEventTypeQuestion, IUpdateEventQuestionCommand, IUpdateEventCommand } from '../models/eventtype';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { DataService } from './data.service';
+import { ICreateEventTypeCommand, IUpdateEventCommand, IUpdateEventAvailabilityCommand, IUpdateEventQuestionCommand } from '../interfaces/event-type-commands';
+import { IEventType, IEventTypeQuestion } from '../interfaces/event-type-interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -15,14 +16,14 @@ export class EventTypeService extends DataService {
     super(http)
   }
 
-  getList(): Observable<Array<EventType>> {
+  getList(): Observable<Array<IEventType>> {
     let url = `${this.eventTypeURI}`
-    return this.http.get<Array<EventType>>(url);
+    return this.http.get<Array<IEventType>>(url);
   }
 
-  getById(id: string): Observable<EventType> {
+  getById(id: string): Observable<IEventType> {
     let url = `${this.eventTypeURI}/${id}`
-    return this.http.get<EventType>(url);
+    return this.http.get<IEventType>(url);
   }
   addNew(command: ICreateEventTypeCommand): Observable<string> {
     let url = `${this.eventTypeURI}`

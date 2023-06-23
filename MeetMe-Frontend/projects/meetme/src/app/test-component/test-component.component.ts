@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { TimeZoneData } from '../models/eventtype';
+import { TimeZoneData } from '../interfaces/event-type-interfaces';
 import { TimezoneControlComponent } from '../controls/timezone-control/timezone-control.component';
 
 @Component({

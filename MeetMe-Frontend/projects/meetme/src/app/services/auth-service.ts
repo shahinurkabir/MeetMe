@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { ICreateEventTypeCommand, EventType, IUpdateEventAvailabilityCommand, IEventTypeQuestion, IUpdateEventQuestionCommand, IUpdateEventCommand } from '../models/eventtype';
+import { HttpClient } from '@angular/common/http'
 import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { DataService } from './data.service';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Injectable({
     providedIn: 'root'

@@ -3,7 +3,7 @@ import { DataService } from "./data.service";
 import { environment } from "../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { IEventTimeAvailability } from "../models/calendar";
+import { IEventTimeAvailability } from "../interfaces/calendar";
 
 @Injectable({
     providedIn: 'root'

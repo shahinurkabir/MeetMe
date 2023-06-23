@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace MeetMe.Core.Persistence.Interface
 {
-    public interface ITimeZoneDataRepository
-    {
-        Task<List<TimeZoneData>> GetTimeZoneList();
-        Task<TimeZoneData?> TimeZoneDataById(int id);
-        Task<TimeZoneData?> GetTimeZoneByName(string name);
+    //public interface ITimeZoneDataRepository
+    //{
+    //    Task<List<TimeZoneData>> GetTimeZoneList();
+    //    Task<TimeZoneData?> TimeZoneDataById(int id);
+    //    Task<TimeZoneData?> GetTimeZoneByName(string name);
 
-    }
+    //}
 }
