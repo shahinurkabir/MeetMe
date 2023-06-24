@@ -20,7 +20,7 @@ namespace MeetMe.Application.Availabilities.Commands.Update
 
             var entity = await availabilityRepository.GetById(request.Id);
 
-            if (entity == null) throw new Core.Exceptions.CustomException("Invalid schedule provided.");
+            if (entity == null) throw new Core.Exceptions.MeetMeException("Invalid schedule provided.");
 
             var listScheduleRuleItems = GetDetailItems(request, entity.Id);
 

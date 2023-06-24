@@ -6,12 +6,7 @@ namespace MeetMe.Core.Constant
 {
     public class Enums
     {
-        public enum DateForwardKind
-        {
-            Moving = 10,
-            DateRange = 20,
-            Forever = 30
-        }
+        
 
         public enum QuestionType
         {

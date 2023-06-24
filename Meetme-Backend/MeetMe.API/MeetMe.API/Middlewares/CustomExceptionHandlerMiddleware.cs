@@ -50,14 +50,14 @@ namespace MeetMe.API.Middlewares
             exception switch
             {
                 ValidationException => StatusCodes.Status400BadRequest,
-                CustomException => StatusCodes.Status400BadRequest,
+                MeetMeException => StatusCodes.Status400BadRequest,
                 _ => StatusCodes.Status500InternalServerError
             };
         private static string GetTitle(Exception exception) =>
             exception switch
             {
                 ValidationException => "One or more validation errors occurred.",
-                CustomException => string.IsNullOrEmpty(exception.Message) ? "Application Processing Error." : exception.Message,
+                MeetMeException => string.IsNullOrEmpty(exception.Message) ? "Application Processing Error." : exception.Message,
                 _ => "Server Error"
             };
         private static IReadOnlyDictionary<string, string[]> GetErrors(Exception exception)

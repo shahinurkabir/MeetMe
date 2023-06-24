@@ -36,7 +36,7 @@ namespace MeetMe.Application.EventTypes.Update
             var eventTypeEntity = await eventTypeRepository.GetEventTypeById(request.EventTypeId);
 
             if (eventTypeEntity == null)
-                throw new Core.Exceptions.CustomException("Invalid event");
+                throw new Core.Exceptions.MeetMeException("Invalid event");
 
             var listQuestionEntities = ConvertToEventTypeQuestions(request);
 

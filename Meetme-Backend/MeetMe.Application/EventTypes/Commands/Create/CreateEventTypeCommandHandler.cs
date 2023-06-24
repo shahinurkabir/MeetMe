@@ -35,7 +35,7 @@ namespace MeetMe.Application.EventTypes.Commands.Create
             var listOfAvailabilities = await availabilityRepository.GetListByUserId(applicationUser.Id);
 
             if (listOfAvailabilities == null || !listOfAvailabilities.Any())
-                throw new CustomException("There is no availability configured yet.");
+                throw new MeetMeException("There is no availability configured yet.");
 
             var defaultAvailability = listOfAvailabilities.Count(e => e.IsDefault) > 0
                 ? listOfAvailabilities.First(e => e.IsDefault)

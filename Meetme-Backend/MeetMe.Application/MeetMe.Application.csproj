@@ -37,7 +37,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MeetMe.Core\MeetMe.Core.csproj" />
-    <ProjectReference Include="..\MeetMe.Util\MeetMe.Util.csproj" />
   </ItemGroup>
 
 </Project>

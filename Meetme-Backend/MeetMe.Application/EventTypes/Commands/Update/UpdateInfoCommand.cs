@@ -40,9 +40,9 @@ namespace MeetMe.Application.EventTypes.Update
         {
             var entity = await eventTypeRepository.GetEventTypeById(request.Id);
 
-            if (entity == null) throw new CustomException("Event Type not found");
+            if (entity == null) throw new MeetMeException("Event Type not found");
 
-            if (entity.OwnerId != applicationUser.Id) throw new CustomException("Event Type not found");
+            if (entity.OwnerId != applicationUser.Id) throw new MeetMeException("Event Type not found");
 
             entity.Name = request.Name;
             entity.EventColor = request.EventColor;

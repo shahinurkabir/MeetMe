@@ -34,7 +34,7 @@ namespace MeetMe.Application.AccountSettings
         {
             var userEntity = await userRepository.GetById(userInfo.UserId);
             if (userEntity == null)
-                throw new CustomException("User not found");
+                throw new MeetMeException("User not found");
 
             userEntity.TimeZoneId = request.TimeZone;
             userEntity.DateFormat = request.DateFormat;

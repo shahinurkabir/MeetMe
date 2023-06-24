@@ -49,7 +49,7 @@ namespace MeetMe.Application.EventTypes.Update
 
             var eventTypeEntity = await eventTypeRepository.GetEventTypeById(request.Id);
 
-            if (eventTypeEntity == null) throw new CustomException("Event Type is not found.");
+            if (eventTypeEntity == null) throw new MeetMeException("Event Type is not found.");
 
             var listScheduleItem = await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityDetailByEventId(eventTypeEntity.Id);
 

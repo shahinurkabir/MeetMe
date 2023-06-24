@@ -1,9 +1,5 @@
 ﻿using MediatR;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using MeetMe.Core.Persistence.Interface;
-using MeetMe.Core.Dtos;
 
 namespace MeetMe.Application.Availabilities.Commands.Delete
 {

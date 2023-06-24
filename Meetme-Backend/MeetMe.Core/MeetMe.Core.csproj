@@ -8,12 +8,11 @@
 
   <ItemGroup>
     <Compile Remove="Interface\Persistence\**" />
+    <Compile Remove="Interface\Services\**" />
     <EmbeddedResource Remove="Interface\Persistence\**" />
+    <EmbeddedResource Remove="Interface\Services\**" />
     <None Remove="Interface\Persistence\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Interface\Services\" />
+    <None Remove="Interface\Services\**" />
   </ItemGroup>
 
 </Project>

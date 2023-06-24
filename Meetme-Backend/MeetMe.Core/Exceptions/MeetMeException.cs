@@ -4,9 +4,9 @@ using System.Text;
 
 namespace MeetMe.Core.Exceptions
 {
-    public  class CustomException : Exception
+    public  class MeetMeException : Exception
     {
-        public CustomException(string message) : base(message: message)
+        public MeetMeException(string message) : base(message: message)
         {
 
         }
