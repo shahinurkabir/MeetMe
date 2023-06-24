@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, Input, OnInit, Output, ViewChild 
 import { day_of_week, default_endTime_Minutes, default_startTime_minutes, meeting_day_type_date, meeting_day_type_weekday, month_of_year } from '../../constants/default-data';
 import { TimeZoneData } from '../../interfaces/event-type-interfaces';
 import { ListItem } from '../../interfaces/list-item';
-import { date } from '../../utils/functions/date-functions';
+import { date } from '../../utilities/date-functions';
 import { CalendarComponent } from '../calender/calendar.component';
 import { ModalService } from '../modal/modalService';
 import { ListOfTimeZone } from '../../constants/timezone-data';
