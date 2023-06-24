@@ -61,7 +61,7 @@ namespace MeetMe.Application.EventTypes.Commands.Create
                 Id = newId,
                 Name = request.Name,
                 OwnerId = applicationUser.Id,
-                Description = request.Descripton,
+                Description = request.Description,
                 EventColor = request.EventColor,
                 Slug = request.Slug,
                 Location = request.Location,

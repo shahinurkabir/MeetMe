@@ -31,7 +31,7 @@ export class EventInfoNewComponent implements OnInit {
   }
 
   onSaved(response:any) {
-    console.log(response);
+    console.log(`Data saved ${response}`);
     this.location.back();
   }
   onCancelled() {

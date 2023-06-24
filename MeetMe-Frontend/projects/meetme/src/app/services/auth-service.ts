@@ -19,7 +19,7 @@ export class AuthService {
 
     logout() {
         localStorage.removeItem(this.TOKEN_KEY);
-        this.router.navigate([`login`]);
+        this.router.navigateByUrl(`auth/login`);
     }
 
     onLogin(loginInfo: { userId: string, password: string }): Observable<any> {

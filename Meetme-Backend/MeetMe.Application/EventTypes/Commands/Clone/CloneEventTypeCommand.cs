@@ -45,7 +45,7 @@ namespace MeetMe.Application.EventTypes.Manage
 
             var newEventTypeId = Guid.NewGuid();
 
-            var cloneEventTypeEntity=CloneEventType(eventType, newEventTypeId);
+            var cloneEventTypeEntity = CloneEventType(eventType, newEventTypeId);
 
             await eventTypeRepository.AddNewEventType(cloneEventTypeEntity);
 
@@ -57,8 +57,8 @@ namespace MeetMe.Application.EventTypes.Manage
             var cloneEventType = new EventType
             {
                 Id = newEventTypeId,
-                Name = $"{eventType.Name} (clone)" ,
-                Slug =$"{eventType.Name}-clone",
+                Name = $"{eventType.Name} (clone)",
+                Slug = $"{eventType.Name}-clone",
                 ActiveYN = eventType.ActiveYN,
                 OwnerId = eventType.OwnerId,
                 AvailabilityId = eventType.AvailabilityId,
@@ -77,21 +77,22 @@ namespace MeetMe.Application.EventTypes.Manage
                 CreatedAt = dateTimeService.GetCurrentTime,
                 CreatedBy = applicationUserInfo.Id,
                 UpdatedAt = dateTimeService.GetCurrentTimeUtc,
+            };
 
-                EventTypeAvailabilityDetails = eventType.EventTypeAvailabilityDetails.Select(e =>
-                {
-                    return new EventTypeAvailabilityDetail
-                    {
-                        EventTypeId = eventType.Id,
-                        DayType = e.DayType,
-                        Value = e.Value,
-                        From = e.From,
-                        To = e.To,
-                        StepId = e.StepId
-                    };
-                }).ToList(),
+            cloneEventType.EventTypeAvailabilityDetails.AddRange(eventType.EventTypeAvailabilityDetails.Select(e =>
+               {
+                   return new EventTypeAvailabilityDetail
+                   {
+                       EventTypeId = eventType.Id,
+                       DayType = e.DayType,
+                       Value = e.Value,
+                       From = e.From,
+                       To = e.To,
+                       StepId = e.StepId
+                   };
+               }).ToList());
 
-                Questions = eventType.Questions.Select(e =>
+            cloneEventType.Questions.AddRange(eventType.Questions.Select(e =>
                 {
                     return new MeetMe.Core.Persistence.Entities.EventTypeQuestion
                     {
@@ -106,8 +107,9 @@ namespace MeetMe.Application.EventTypes.Manage
                         OtherOptionYN = e.OtherOptionYN,
                     };
                 }).ToList()
+                );
 
-            };
+
 
             return cloneEventType;
         }

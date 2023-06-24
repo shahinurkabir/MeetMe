@@ -11,7 +11,7 @@
             <button class="button" (click)="onEdit(item.id)">Edit</button>
         </div>
         <div class="time-location">
-            <span>Duration {{15}} minutes </span>
+            <span>Duration {{item.duration}} minutes </span>
         </div>
         <hr>
         <article>{{item.description}}
@@ -27,7 +27,7 @@
              <button class="button"  (click)="onDelete(item)">
                 Delete
              </button>
-            <a [routerLink]="['/appointment',item.id,item.slug]" >
+            <a [routerLink]="['/booking/appointment',item.id,item.slug]" >
                 Preview
               </a>
         </div>

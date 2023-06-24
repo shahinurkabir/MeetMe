@@ -27,6 +27,9 @@ import { CallbackPipe } from './pipes/callback-pipe';
 import { EventTypeCalendarComponent } from './features/eventtype-calendar/eventtype-calendar.component';
 import { TimezoneControlComponent } from './controls/timezone-control/timezone-control.component';
 import { TestComponentComponent } from './test-component/test-component.component';
+import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
+import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
+import { BookingLayoutComponent } from './layouts/booking-layout/booking-layout.component';
 
 @NgModule({
     declarations: [
@@ -50,7 +53,10 @@ import { TestComponentComponent } from './test-component/test-component.componen
         CalendarComponent,
         EventTypeCalendarComponent,
         TimezoneControlComponent,
-        TestComponentComponent
+        TestComponentComponent,
+        AuthLayoutComponent,
+        AdminLayoutComponent,
+        BookingLayoutComponent
         
     ],
     providers: [

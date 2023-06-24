@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import  {Location} from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { IEventType } from 'projects/meetme/src/app/interfaces/event-type-interfaces';
 import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.service';
@@ -26,8 +27,11 @@ export class EventInfoUpdateComponent implements OnInit {
     bufferTimeBefore: 0,
     timeZone: "",
   };
-  constructor(private eventTypeService: EventTypeService,
-    private route: ActivatedRoute) {
+  constructor(
+    private eventTypeService: EventTypeService,
+    private route: ActivatedRoute,
+    private location: Location
+    ) {
 
     this.route.parent?.params.subscribe((params) => {
 
@@ -47,10 +51,11 @@ export class EventInfoUpdateComponent implements OnInit {
     })
   }
   onSaved(response: any) {
-    console.log(response);
+    console.log(`Data saved ${response}`);
+    this.location.back();
   }
   onCancelled() {
-    //this.location.back();
+    this.location.back();
   }
 
 }

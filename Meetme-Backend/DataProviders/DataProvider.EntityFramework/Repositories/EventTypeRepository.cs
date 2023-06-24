@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataProvider.EntityFramework.Repositories
 {
-    public class EventTypeRepository:IEventTypeRepository
+    public class EventTypeRepository : IEventTypeRepository
     {
         private readonly BookingDbContext bookingDbContext;
 
@@ -28,7 +28,11 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<EventType> GetEventTypeById(Guid eventTypeId)
         {
-            var entity = await bookingDbContext.Set<EventType>().FindAsync(eventTypeId);
+            var entity = await bookingDbContext.Set<EventType>()
+                .Where(e => e.Id == eventTypeId)
+                .Include(e => e.EventTypeAvailabilityDetails)
+                .Include(e => e.Questions).FirstAsync();
+
             return entity;
         }
 
