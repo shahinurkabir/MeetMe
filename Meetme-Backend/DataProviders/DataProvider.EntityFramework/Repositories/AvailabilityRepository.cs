@@ -28,14 +28,17 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<bool> UpdateSchedule(Availability scheduleRule)
         {
-            var listScheduleLineItem = await bookingDbContext.Set<AvailabilityDetail>().Where(e => e.AvailabilityId == scheduleRule.Id).ToListAsync();
+            var listScheduleLineItem = await bookingDbContext.Set<AvailabilityDetail>()
+                                      .Where(e => e.AvailabilityId == scheduleRule.Id).ToListAsync();
 
             bookingDbContext.RemoveRange(listScheduleLineItem);
 
             bookingDbContext.Update(scheduleRule);
 
             // update time schedule of all event type availability those are related to this schedule rule
-            var listEventType = await bookingDbContext.Set<EventType>().Where(e => e.AvailabilityId == scheduleRule.Id).Include(e => e.EventTypeAvailabilityDetails).ToListAsync();
+            var listEventType = await bookingDbContext.Set<EventType>()
+                               .Where(e => e.AvailabilityId == scheduleRule.Id)
+                               .Include(e => e.EventTypeAvailabilityDetails).ToListAsync();
 
             foreach (var eventTypeItem in listEventType)
             {
@@ -61,9 +64,11 @@ namespace DataProvider.EntityFramework.Repositories
             entity.IsDeleted = true;
 
             // detach all event type availability those are related to this schedule rule
-            var listEventType = await bookingDbContext.Set<EventType>().Where(e => e.AvailabilityId == entity.Id).ToListAsync();
-            foreach (var eventTypeItem in listEventType) { eventTypeItem.AvailabilityId = null;}
-         
+            var listEventType = await bookingDbContext.Set<EventType>()
+                               .Where(e => e.AvailabilityId == entity.Id).ToListAsync();
+
+            foreach (var eventTypeItem in listEventType) { eventTypeItem.AvailabilityId = null; }
+
             await bookingDbContext.SaveChangesAsync();
 
             return Task.FromResult(true).Result;
@@ -126,6 +131,6 @@ namespace DataProvider.EntityFramework.Repositories
             return list;
         }
 
-        
+
     }
 }
