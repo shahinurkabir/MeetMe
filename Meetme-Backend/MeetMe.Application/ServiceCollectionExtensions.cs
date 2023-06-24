@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using MediatR.Extensions.FluentValidation.AspNetCore;
-using MeetMe.Application.EventTypes.Create;
+using MeetMe.Application.EventTypes.Commands.Create;
 using Microsoft.Extensions.DependencyInjection;
 namespace MeetMe.Application
 {

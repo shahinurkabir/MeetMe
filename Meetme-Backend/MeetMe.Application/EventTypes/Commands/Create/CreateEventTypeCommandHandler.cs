@@ -5,7 +5,7 @@ using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Exceptions;
 using MeetMe.Core.Constant;
 
-namespace MeetMe.Application.EventTypes.Create
+namespace MeetMe.Application.EventTypes.Commands.Create
 {
     public class CreateEventTypeCommandHandler : IRequestHandler<CreateEventTypeCommand, Guid>
     {
@@ -43,7 +43,7 @@ namespace MeetMe.Application.EventTypes.Create
 
             EventType eventTypeInfo = ConvertToEntity(newEventTypeId, defaultAvailability, request);
 
-            var listOfDefaultQuestions = Util.ApplicationUtil.GetDefaultQuestion();
+            var listOfDefaultQuestions =GetDefaultQuestion();
 
             eventTypeInfo.Questions = listOfDefaultQuestions;
 
@@ -94,6 +94,31 @@ namespace MeetMe.Application.EventTypes.Create
 
             return eventAvailabilityList;
 
+        }
+
+        private  List<EventTypeQuestion> GetDefaultQuestion()
+        {
+            var questions = new List<EventTypeQuestion>()
+            {
+                new EventTypeQuestion
+                {
+                    Name="Name",
+                    QuestionType=Enums.QuestionType.Text.ToString(),
+                    ActiveYN=true,
+                    DisplayOrder=1 ,
+                    RequiredYN=true,
+                },
+                 new EventTypeQuestion
+                {
+                    Name="Email",
+                    QuestionType=Enums.QuestionType.Text.ToString(),
+                    ActiveYN=true,
+                    DisplayOrder=2 ,
+                    RequiredYN=true,
+                }
+            };
+
+            return questions;
         }
     }
 }

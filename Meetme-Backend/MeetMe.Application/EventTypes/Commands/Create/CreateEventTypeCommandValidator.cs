@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Interface;
 
-namespace MeetMe.Application.EventTypes.Create
+namespace MeetMe.Application.EventTypes.Commands.Create
 {
     public class CreateCreateEventTypeCommandValidator : AbstractValidator<CreateEventTypeCommand>
     {

@@ -8,14 +8,23 @@
 
   <ItemGroup>
     <Compile Remove="Bookings\**" />
+    <Compile Remove="Calendar\**" />
+    <Compile Remove="Commands\**" />
     <Compile Remove="EventTypes\Queries\TimeSpots\**" />
     <Compile Remove="EventTypes\Schedule\**" />
+    <Compile Remove="ScheduleRules\**" />
     <EmbeddedResource Remove="Bookings\**" />
+    <EmbeddedResource Remove="Calendar\**" />
+    <EmbeddedResource Remove="Commands\**" />
     <EmbeddedResource Remove="EventTypes\Queries\TimeSpots\**" />
     <EmbeddedResource Remove="EventTypes\Schedule\**" />
+    <EmbeddedResource Remove="ScheduleRules\**" />
     <None Remove="Bookings\**" />
+    <None Remove="Calendar\**" />
+    <None Remove="Commands\**" />
     <None Remove="EventTypes\Queries\TimeSpots\**" />
     <None Remove="EventTypes\Schedule\**" />
+    <None Remove="ScheduleRules\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,13 +33,6 @@
     <PackageReference Include="MediatR.Extensions.FluentValidation.AspNetCore" Version="2.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Calendar\" />
-    <Folder Include="Commands\" />
-    <Folder Include="ScheduleRules\Dtos\" />
-    <Folder Include="ScheduleRules\Extensions\" />
   </ItemGroup>
 
   <ItemGroup>

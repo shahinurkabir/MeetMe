@@ -1,13 +1,7 @@
 ﻿using MediatR;
-using MeetMe.Application.Dtos;
 using MeetMe.Application.EventTypes.Calendar.Dtos;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MeetMe.Application.EventTypes.Calendar
 {

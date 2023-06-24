@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using MeetMe.Application.EventTypes.Create;
 using MeetMe.Application.EventTypes.Manage;
 using MeetMe.Application.EventTypes.Queries;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Application.EventTypes.Update;
 using MeetMe.Core.Interface;
+using MeetMe.Application.EventTypes.Commands.Create;
 
 namespace MeetMe.API.Controllers
 {
