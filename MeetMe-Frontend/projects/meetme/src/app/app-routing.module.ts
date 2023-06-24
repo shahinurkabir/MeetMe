@@ -48,17 +48,7 @@ const routes: Routes = [
   {path:"appointment/:id/:slug", component:EventTypeCalendarComponent,canActivate:[AuthGuard]},
   {path:"test",component:TestComponentComponent}
 ];
-// { path: "", component: EventTypeListComponent },
-//   { path: "new", component: EventInfoNewComponent },
-//   {
-//     path: ":id", component: EventTypeComponent,
-//     children: [
-//       { path: "", pathMatch: "full", redirectTo: "info" },
-//       { path: "info", component: EventInfoUpdateComponent },
-//       { path: "availability", component: EventAvailabilityComponent },
-//       { path: "question", component: EventQuestionComponent }
-//     ]
-//   }
+
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]

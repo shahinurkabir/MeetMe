@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-//import { WorkinghoursComponent } from './features/workinghours/workinghours.component';
 import { RouterModule } from '@angular/router';
 import { HttpRequestInterceptor } from './interceptors/http-interceptor';
 import { LoginComponent } from './features/users/login/login.component';
@@ -25,9 +24,6 @@ import { AvailabilityListComponent } from './features/availability/availability-
 import { ModalComponent } from './controls/modal/modal.component';
 import { MyOffClickDirective } from './directives/myOffClickDirective';
 import { CallbackPipe } from './pipes/callback-pipe';
-import { DistributionComponent } from './distribution/distribution/distribution.component';
-import { NameComponent } from './distribution/cards/name/name.component';
-import { AddressComponent } from './distribution/cards/address/address.component';
 import { EventTypeCalendarComponent } from './features/eventtype-calendar/eventtype-calendar.component';
 import { TimezoneControlComponent } from './controls/timezone-control/timezone-control.component';
 import { TestComponentComponent } from './test-component/test-component.component';
@@ -36,7 +32,6 @@ import { TestComponentComponent } from './test-component/test-component.componen
     declarations: [
         AppComponent,
         HomeComponent,
-        //WorkinghoursComponent,
         LoginComponent,
         AvailabilityComponent,
         TimeAvailabilityComponent,
@@ -52,9 +47,6 @@ import { TestComponentComponent } from './test-component/test-component.componen
         ModalComponent,
         MyOffClickDirective,
         CallbackPipe,
-        DistributionComponent,
-        NameComponent,
-        AddressComponent,
         CalendarComponent,
         EventTypeCalendarComponent,
         TimezoneControlComponent,
