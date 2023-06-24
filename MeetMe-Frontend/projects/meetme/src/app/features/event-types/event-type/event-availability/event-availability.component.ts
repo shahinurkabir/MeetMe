@@ -4,7 +4,7 @@ import { day_of_week, default_endTime_Minutes, default_meeting_buffertime, defau
 import { TimeAvailabilityComponent } from 'projects/meetme/src/app/controls/time-availability/time-availability.component';
 import { IAvailability, IAvailabilityDetails } from 'projects/meetme/src/app/interfaces/availability-interfaces';
 import { IUpdateEventAvailabilityCommand } from 'projects/meetme/src/app/interfaces/event-type-commands';
-import { TimeZoneData, EventAvailabilityDetailItemDto, IEventType } from 'projects/meetme/src/app/interfaces/event-type-interfaces';
+import { TimeZoneData, IEventAvailabilityDetailItemDto, IEventType } from 'projects/meetme/src/app/interfaces/event-type-interfaces';
 import { ListItem } from 'projects/meetme/src/app/interfaces/list-item';
 import { AvailabilityService } from 'projects/meetme/src/app/services/availability.service';
 import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.service';
@@ -27,6 +27,7 @@ export class EventAvailabilityComponent implements OnInit {
   isExistingHours: boolean = true;
   listOfAvailability: IAvailability[] = [];
   selectedAvailability: IAvailability | undefined
+  eventAvailabilityDetails: IEventAvailabilityDetailItemDto[] = [];
   customAvailability: IAvailability | undefined;
 
   model: IEventType = {
@@ -44,7 +45,7 @@ export class EventAvailabilityComponent implements OnInit {
     dateForwardKind: 'moving',
     bufferTimeAfter: 0,
     bufferTimeBefore: 0,
-    timeZone: ""
+    timeZone: "",
   };
   forwardDurationInDays: number = 30;
 
@@ -57,7 +58,7 @@ export class EventAvailabilityComponent implements OnInit {
   ) {
 
     this.initMeetingDurationAndTypes();
-    this.createCustomAvailabilityModel();
+    //this.createCustomAvailabilityModel();
     this.subscribeRouteParams();
 
   };
@@ -77,10 +78,13 @@ export class EventAvailabilityComponent implements OnInit {
     });
   };
 
-  loadData(eventTypeId: string): Observable<[IAvailability[], IEventType]> {
+  loadData(eventTypeId: string): Observable<[IAvailability[],IEventType, IEventAvailabilityDetailItemDto[]]> {
 
-    return forkJoin([this.availabilityService.getList(),
-    this.eventTypeService.getById(this.eventTypeId)]);
+    return forkJoin([
+      this.availabilityService.getList(),
+      this.eventTypeService.getById(eventTypeId),
+      this.eventTypeService.getEventAvailability(this.eventTypeId)
+    ]);
   }
 
   initTimeAvailabilityComponent() {
@@ -91,15 +95,19 @@ export class EventAvailabilityComponent implements OnInit {
     }
   }
 
-  loadDataCompleted(responses: [IAvailability[], IEventType]) {
+  loadDataCompleted(responses: [IAvailability[],IEventType, IEventAvailabilityDetailItemDto[]]) {
     this.listOfAvailability = responses[0];
-    this.model = responses[1];;
+    this.model = responses[1];
+    this.eventAvailabilityDetails = responses[2];
 
     if (this.model.forwardDuration != null) {
       this.forwardDurationInDays = convertToDays(this.model.forwardDuration);
     }
+
+
     if (this.model.availabilityId == null) {
       this.isExistingHours = false;
+      this.customAvailability = this.convertEventToTimeSchedule(this.model.timeZone, this.eventAvailabilityDetails )
     }
     else {
       this.isExistingHours = true;
@@ -108,30 +116,68 @@ export class EventAvailabilityComponent implements OnInit {
     this.initTimeAvailabilityComponent();
   }
 
-  createCustomAvailabilityModel() {
+  // createCustomAvailabilityModel() {
+  //   let availability: IAvailability = {
+  //     id: '',
+  //     name: "",
+  //     ownerId: "",
+  //     timeZone: "",
+  //     isDefault: false,
+  //     details: [],
+  //     isCustom: true
+  //   };
+
+  //   day_of_week.forEach(day => {
+  //     let availabilityDetailItem: IAvailabilityDetails = {
+  //       dayType: meeting_day_type_weekday,
+  //       value: day,
+  //       from: default_startTime_minutes,
+  //       to: default_endTime_Minutes,
+  //       stepId: 0
+  //     }
+  //     availability.details.push(availabilityDetailItem);
+  //   });
+
+  //   this.customAvailability = availability;
+
+  // }
+
+  convertEventToTimeSchedule(timeZone: string, eventTimeAvailabilityDetails?: IEventAvailabilityDetailItemDto[]): IAvailability {
     let availability: IAvailability = {
       id: '',
       name: "",
       ownerId: "",
-      timeZone: "",
+      timeZone: timeZone,
       isDefault: false,
       details: [],
       isCustom: true
     };
 
-    day_of_week.forEach(day => {
-      let availabilityDetailItem: IAvailabilityDetails = {
-        dayType: meeting_day_type_weekday,
-        value: day,
-        from: default_startTime_minutes,
-        to: default_endTime_Minutes,
-        stepId: 0
-      }
-      availability.details.push(availabilityDetailItem);
-    });
-
-    this.customAvailability = availability;
-
+    if (eventTimeAvailabilityDetails == undefined) {
+      day_of_week.forEach(day => {
+        let availabilityDetailItem: IAvailabilityDetails = {
+          dayType: meeting_day_type_weekday,
+          value: day,
+          from: default_startTime_minutes,
+          to: default_endTime_Minutes,
+          stepId: 0
+        }
+        availability.details.push(availabilityDetailItem);
+      });
+    }
+    else {
+      eventTimeAvailabilityDetails.forEach(detail => {
+        let availabilityDetailItem: IAvailabilityDetails = {
+          dayType: detail.dayType,
+          value: detail.value,
+          from: detail.from,
+          to: detail.to,
+          stepId: detail.stepId
+        }
+        availability.details.push(availabilityDetailItem);
+      });
+    }
+    return availability;
   }
 
   onSubmit(form: any) {
@@ -149,7 +195,7 @@ export class EventAvailabilityComponent implements OnInit {
 
     if (availability == undefined) return;
 
-    let availabilityDetails: EventAvailabilityDetailItemDto[] = [];
+    let availabilityDetails: IEventAvailabilityDetailItemDto[] = [];
 
     availability.details.forEach(detail => {
       availabilityDetails.push({ dayType: detail.dayType, value: detail.value, from: detail.from, to: detail.to, stepId: detail.stepId });
@@ -163,7 +209,7 @@ export class EventAvailabilityComponent implements OnInit {
       bufferTimeBefore: this.model.bufferTimeBefore,
       bufferTimeAfter: this.model.bufferTimeAfter,
       timeZone: this.model.timeZone,
-      availabilityId: this.isExistingHours?this.selectedAvailability?.id:undefined,
+      availabilityId: this.isExistingHours ? this.selectedAvailability?.id : undefined,
       availabilityDetails: availabilityDetails!
     };
 
@@ -212,14 +258,14 @@ export class EventAvailabilityComponent implements OnInit {
 
 }
 
-interface model {
-  id: string,
-  meetingDuration: number,
-  dateForwardKind: string,
-  forwardDurationInDays: number,
-  bufferTimeAfter: number,
-  bufferTimeBefore: number,
-  timeZone: string,
-  availabilityId?: string,
-  availabilityDetails: [],
-}
+// interface model {
+//   id: string,
+//   meetingDuration: number,
+//   dateForwardKind: string,
+//   forwardDurationInDays: number,
+//   bufferTimeAfter: number,
+//   bufferTimeBefore: number,
+//   timeZone: string,
+//   availabilityId?: string,
+//   availabilityDetails: [],
+// }

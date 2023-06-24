@@ -13,12 +13,14 @@ export class TimezoneControlComponent implements OnInit,OnDestroy {
   @Output() selectionChanged = new EventEmitter<TimeZoneData>();
   @Output() hourFormatChanged = new EventEmitter<boolean>();
   @Input() selectedTimeZone: TimeZoneData | undefined;
+  @Input()showHourFormatChangeOption: boolean = false;
   @ViewChild('timezoneContainer') timezoneContainer: ElementRef | undefined;
   @ViewChild('searchTimeZone') searchTimeZone: ElementRef|undefined;
   timeZoneList: TimeZoneData[] = [];
   filterTimeZoneList: TimeZoneData[] = [];
   timeZoneNameFilterText: string = "";
   is24HourFormat: boolean = false;
+  
   interval: any;
   timeZoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
   constructor() {

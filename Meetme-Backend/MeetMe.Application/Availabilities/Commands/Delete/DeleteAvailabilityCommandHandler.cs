@@ -18,11 +18,11 @@ namespace MeetMe.Application.Availabilities.Commands.Delete
 
         public async Task<bool> Handle(DeleteAvailabilityCommand request, CancellationToken cancellationToken)
         {
-            var model = await availabilityRepository.GetScheduleById(request.Id);
+            var entity = await availabilityRepository.GetById(request.Id);
 
-            if (model == null) throw new Exception("Invalid rule id provided");
+            if (entity == null) throw new Exception("Invalid rule id provided");
 
-            var result = await availabilityRepository.DeleteSchedule(request.Id);
+            var result = await availabilityRepository.DeleteSchedule(entity);
 
             return true;
         }

@@ -16,7 +16,7 @@ export interface IEventType {
     bufferTimeBefore: number,
     bufferTimeAfter: number,
     timeZone: string
-
+    
 }
 
 export interface IEventTypeQuestionList {
@@ -40,14 +40,14 @@ export interface TimeZoneData {
     currentTime: string;
 }
 
-export interface EventAvailabilityDetailItemDto {
+export interface IEventAvailabilityDetailItemDto {
 
     /// <summary>
     /// D:Date
     /// W:Weekday
     /// </summary>
     dayType: string,
-    value?: string,
+    value: string,
     stepId: number,
     from: number,
     to: number

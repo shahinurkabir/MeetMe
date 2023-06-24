@@ -33,31 +33,50 @@ namespace DataProvider.EntityFramework.Repositories
             bookingDbContext.RemoveRange(listScheduleLineItem);
 
             bookingDbContext.Update(scheduleRule);
+
+            // update time schedule of all event type availability those are related to this schedule rule
+            var listEventType = await bookingDbContext.Set<EventType>().Where(e => e.AvailabilityId == scheduleRule.Id).Include(e => e.EventTypeAvailabilityDetails).ToListAsync();
+
+            foreach (var eventTypeItem in listEventType)
+            {
+                eventTypeItem.EventTypeAvailabilityDetails.Clear();
+                eventTypeItem.EventTypeAvailabilityDetails.AddRange(scheduleRule.Details.Select(e => new EventTypeAvailabilityDetail
+                {
+                    EventTypeId = eventTypeItem.Id,
+                    DayType = e.DayType,
+                    Value = e.Value,
+                    From = e.From,
+                    To = e.To,
+                    StepId = e.StepId,
+                }));
+            }
+
             bookingDbContext.SaveChanges();
+
             return await Task.FromResult(true);
         }
 
-        public async Task<bool> DeleteSchedule(Guid ruleId)
+        public async Task<bool> DeleteSchedule(Availability entity)
         {
-            var entity = await bookingDbContext.Set<Availability>().FindAsync(ruleId);
-            var listScheduleLineItem = await bookingDbContext.Set<AvailabilityDetail>().Where(e => e.AvailabilityId == ruleId).ToListAsync();
+            entity.IsDeleted = true;
 
-            bookingDbContext.RemoveRange(listScheduleLineItem);
+            // detach all event type availability those are related to this schedule rule
+            var listEventType = await bookingDbContext.Set<EventType>().Where(e => e.AvailabilityId == entity.Id).ToListAsync();
+            foreach (var eventTypeItem in listEventType) { eventTypeItem.AvailabilityId = null;}
+         
+            await bookingDbContext.SaveChangesAsync();
 
-            bookingDbContext.Remove(entity);
-            bookingDbContext.SaveChanges();
-
-            return await Task.FromResult(true);
+            return Task.FromResult(true).Result;
         }
 
-        public async Task<List<Availability>> GetScheduleListByUserId(Guid userId)
+        public async Task<List<Availability>> GetListByUserId(Guid userId)
         {
             var list = await GetAvailabilityList(userId);
 
             return list;
         }
 
-        public async Task<Availability> GetScheduleById(Guid ruleId)
+        public async Task<Availability> GetById(Guid ruleId)
         {
             var scheduleRule = await bookingDbContext.Set<Availability>()
                 .Include(e => e.Details)
@@ -106,5 +125,7 @@ namespace DataProvider.EntityFramework.Repositories
 
             return list;
         }
+
+        
     }
 }

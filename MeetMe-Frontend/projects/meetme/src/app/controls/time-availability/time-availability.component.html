@@ -98,27 +98,9 @@
         <option value="12:00pm"></option>
     </datalist>
 
-    <h3>Time Zone</h3>
+    <h3>Time Zone <span *ngIf="viewMode=='readonly'">{{availability?.timeZone}} </span></h3>
     <div *ngIf="viewMode!='readonly'" class="section_overview">
         
-        <!-- <div class="wrapper" #countryContainer>
-            <div class="select-btn" (click)="onToggleCountryDropdownBox()">
-                <span *ngIf="!selectedTimeZone">Select Country</span>
-                <span *ngIf="selectedTimeZone!==null">{{selectedTimeZone?.name}}</span>
-                <i class="fa fa-angle-down"></i>
-            </div>
-            <div class="content">
-                <div class="search">
-                    <i class="fa fa-search"></i>
-                    <input spellcheck="false" type="text" [(ngModel)]="timeZoneNameFilterText" placeholder="Search"
-                        name="filterTimeZone" (input)="onFilterTimeZoneChanged($event)">
-                </div>
-                <ul class="options">
-                    <li *ngFor="let timeZoneItem of filterTimeZoneList" (click)="onSelectTimeZone(timeZoneItem)">
-                        {{timeZoneItem.name}}</li>
-                </ul>
-            </div>
-        </div> -->
         <app-timezone-control #timezoneControl [selectedTimeZone]="selectedTimeZone"
         
         (selectionChanged)="onSelectTimeZone($event)"
@@ -175,9 +157,6 @@
                 <ng-template
                     *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay : dailyTimeAvailabilities} "></ng-template>
 
-                <!-- <ng-template
-                    *ngTemplateOutlet="timeInvervalsInDayTemplateReadOnly; context: {timeInvervalsInDay : dailyTimeAvailabilities} "></ng-template> -->
-
             </div>
         </div>
         <div class="overrides_dates">
@@ -207,8 +186,6 @@
                 <button [disabled]="isCurrentMonth" (click)="onClickPreviousMonth($event)"><i
                         class="fa-solid fa-angle-left"></i></button>
                 <button (click)="onClickNextMonth($event)"><i class="fa-solid fa-angle-right"></i></button>
-                <!-- <input [disabled]="isCurrentMonth" type="button" (click)="onClickPreviousMonth($event)" value="<">
-                <input type="button" (click)="onClickNextMonth($event)" value=">"> -->
             </div>
         </div>
         <div class="daysInMonth">

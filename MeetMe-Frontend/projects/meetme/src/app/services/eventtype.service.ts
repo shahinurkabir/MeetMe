@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { DataService } from './data.service';
 import { ICreateEventTypeCommand, IUpdateEventCommand, IUpdateEventAvailabilityCommand, IUpdateEventQuestionCommand } from '../interfaces/event-type-commands';
-import { IEventType, IEventTypeQuestion } from '../interfaces/event-type-interfaces';
+import { IEventAvailabilityDetailItemDto, IEventType, IEventTypeQuestion } from '../interfaces/event-type-interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -39,9 +39,9 @@ export class EventTypeService extends DataService {
 
   }
 
-  getEventAvailability(eventTypeId: string): Observable<IUpdateEventAvailabilityCommand> {
+  getEventAvailability(eventTypeId: string): Observable<Array<IEventAvailabilityDetailItemDto>> {
     let url = `${this.eventTypeURI}/${eventTypeId}/availability`
-    return this.http.get<IUpdateEventAvailabilityCommand>(url);
+    return this.http.get<Array<IEventAvailabilityDetailItemDto>>(url);
   }
 
   updateAvailability(availabilityDetail: IUpdateEventAvailabilityCommand): Observable<boolean> {

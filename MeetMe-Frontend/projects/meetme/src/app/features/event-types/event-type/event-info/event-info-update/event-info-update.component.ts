@@ -24,7 +24,7 @@ export class EventInfoUpdateComponent implements OnInit {
     dateForwardKind: 'moving',
     bufferTimeAfter: 0,
     bufferTimeBefore: 0,
-    timeZone: ""
+    timeZone: "",
   };
   constructor(private eventTypeService: EventTypeService,
     private route: ActivatedRoute) {

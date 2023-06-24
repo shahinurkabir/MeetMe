@@ -22,7 +22,7 @@ namespace MeetMe.Application.Availabilities.Commands.Clone
         {
             var newId = Guid.NewGuid();
 
-            var originalModel = await availabilityRepository.GetScheduleById(request.Id);
+            var originalModel = await availabilityRepository.GetById(request.Id);
 
             var cloneName = $"{originalModel.Name} [ Clone ]";
 

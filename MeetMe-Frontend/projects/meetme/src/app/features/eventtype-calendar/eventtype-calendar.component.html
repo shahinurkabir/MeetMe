@@ -1,7 +1,7 @@
 <p>calendar works!</p>
 <div class="container">
     <div class="calendar-container">
-        <app-timezone-control #timezoneControl [selectedTimeZone]="selectedTimeZone"
+        <app-timezone-control #timezoneControl [selectedTimeZone]="selectedTimeZone" [showHourFormatChangeOption]="true"
             (dataLoaded)="onLoadedTimezoneData($event)"
             (selectionChanged)="onChangedTimezone($event)"
             (hourFormatChanged)="onChangedHourFormat($event)"

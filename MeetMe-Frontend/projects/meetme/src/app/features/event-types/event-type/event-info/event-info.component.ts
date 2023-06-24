@@ -28,7 +28,7 @@ export class EventInfoComponent implements OnInit {
     dateForwardKind: 'moving',
     bufferTimeAfter: 0,
     bufferTimeBefore: 0,
-    timeZone: ""
+    timeZone: "",
   };
   @Output() dataSavedEvent = new EventEmitter();
   @Output() cancelEvent = new EventEmitter();

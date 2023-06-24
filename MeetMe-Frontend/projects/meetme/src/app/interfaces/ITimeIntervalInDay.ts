@@ -10,3 +10,12 @@ export interface ITimeIntervalInDay {
     endTimeInMinute: number,
     errorMessage?: string
   }
+
+  export interface ITimeIntervalsInMonth {
+    day: number,
+    weekDay: string,
+    dateString: string,
+    isOverride: boolean;
+    intervals: ITimeInterval[],
+    isPastDate: boolean
+  }

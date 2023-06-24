@@ -22,7 +22,7 @@ namespace MeetMe.Application.Availabilities.Queries
         }
         public async Task<Availability> Handle(AvailabilityDetailQuery request, CancellationToken cancellationToken)
         {
-            var ruleInfo = await availabilityRepository.GetScheduleById(request.Id);
+            var ruleInfo = await availabilityRepository.GetById(request.Id);
 
             return ruleInfo;
         }

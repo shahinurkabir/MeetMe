@@ -17,6 +17,7 @@ export class AvailabilityListComponent implements OnInit {
   newAvailabilityName: string = "";
   selectedItem_Id: string | undefined;
   @ViewChild(NgForm) frmAddAvailability: NgForm | undefined;
+  timeZoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   constructor(
     private availabilityService: AvailabilityService,
@@ -71,9 +72,9 @@ export class AvailabilityListComponent implements OnInit {
 
     if (frm.invalid) return;
 
-    let offset = new Date().getTimezoneOffset() / -60;
     let command: ICreateAvailabilityCommand = {
       name: this.newAvailabilityName,
+      timeZone: this.timeZoneName
     };
 
     this.availabilityService.addNew(command).subscribe({

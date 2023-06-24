@@ -1,4 +1,4 @@
-import { EventAvailabilityDetailItemDto, IEventTypeQuestion } from "./event-type-interfaces";
+import { IEventAvailabilityDetailItemDto, IEventTypeQuestion } from "./event-type-interfaces";
 
 export interface ICreateEventTypeCommand {
     name: string;
@@ -21,7 +21,7 @@ export interface IUpdateEventAvailabilityCommand {
     bufferTimeAfter: number,
     availabilityId?: string,
     timeZone: string
-    availabilityDetails: Array<EventAvailabilityDetailItemDto>
+    availabilityDetails: Array<IEventAvailabilityDetailItemDto>
 }
 
 

@@ -23,7 +23,7 @@ namespace MeetMe.Application.Availabilities.Queries
         }
         public async Task<List<Availability>> Handle(AvailabilityListQuery request, CancellationToken cancellationToken)
         {
-            var list = await availabilityRepository.GetScheduleListByUserId(request.UserId);
+            var list = await availabilityRepository.GetListByUserId(request.UserId);
 
             return list;
         }

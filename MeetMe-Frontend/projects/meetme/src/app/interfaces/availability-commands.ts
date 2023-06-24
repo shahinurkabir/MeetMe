@@ -5,6 +5,7 @@ export interface ICloneAvailabilityCommand {
 }
 export interface ICreateAvailabilityCommand {
     name:string;
+    timeZone:string;
 }
 export interface IDeleteAvailabilityCommand {
     id:string;

@@ -2,14 +2,12 @@ import { AfterViewInit, Component, ElementRef, Input, OnInit, Output, ViewChild 
 import { day_of_week, default_endTime_Minutes, default_startTime_minutes, meeting_day_type_date, meeting_day_type_weekday, month_of_year } from '../../constants/default-data';
 import { TimeZoneData } from '../../interfaces/event-type-interfaces';
 import { ListItem } from '../../interfaces/list-item';
-//import { TimeZoneService } from '../../services/timezone.service';
-import { toggleModalDialog } from '../../utilities/functions';
 import { date } from '../../utils/functions/date-functions';
 import { CalendarComponent } from '../calender/calendar.component';
 import { ModalService } from '../modal/modalService';
 import { ListOfTimeZone } from '../../constants/timezone-data';
 import { IAvailability, IAvailabilityDetails } from '../../interfaces/availability-interfaces';
-import { ITimeIntervalInDay, ITimeInterval } from '../../interfaces/ITimeIntervalInDay';
+import { ITimeIntervalInDay, ITimeInterval, ITimeIntervalsInMonth } from '../../interfaces/ITimeIntervalInDay';
 
 @Component({
   selector: 'app-time-availability',
@@ -19,13 +17,13 @@ import { ITimeIntervalInDay, ITimeInterval } from '../../interfaces/ITimeInterva
 export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   availability: IAvailability | undefined;
-  timeZoneList:TimeZoneData[]= ListOfTimeZone;
-  filterTimeZoneList:TimeZoneData[]= ListOfTimeZone;
+  timeZoneList: TimeZoneData[] = ListOfTimeZone;
+  filterTimeZoneList: TimeZoneData[] = ListOfTimeZone;
   weekDays = day_of_week;
   monthNames = month_of_year
   meetingDurations: ListItem[] = [];
   availabilityInWeek: ITimeIntervalInDay[] = [];
-  availabilityInMonth: ICalendarDay[] = [];
+  availabilityInMonth: ITimeIntervalsInMonth[] = [];
   availabilityOverrides: ITimeIntervalInDay[] = [];
   selecteDateOverride: ITimeIntervalInDay | undefined;
   selectedDatesFromCalender: { [id: string]: string } = {};
@@ -43,10 +41,8 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   @ViewChild('countryContainer') countryContainer: ElementRef | undefined;
   @Input() viewMode: string = "list";
   constructor(
-    //private timeZoneService: TimeZoneService,
     private modalService: ModalService
   ) {
-    //this.loadTimeZoneList();
   }
 
   ngAfterViewInit(): void {
@@ -60,16 +56,6 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     this.selectedMonth = currentDate.getMonth();
 
   }
-
-  // loadTimeZoneList() {
-  //   this.timeZoneService.getList().subscribe(res => {
-  //     console.log(res)
-  //     this.timeZoneList = res;
-  //     this.filterTimeZoneList = res;
-  //     if (this.availability?.timeZone)
-  //       this.selectedTimeZone = this.timeZoneList.find(e => e.name == this.availability?.timeZone);
-  //   })
-  // }
 
   setAvailability(availability?: IAvailability) {
 
@@ -138,11 +124,17 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
       }
       let intervalsClone: ITimeInterval[] = [];
       intervalsInDay.forEach(e => {
-        let item: ITimeInterval = { startTime: e.startTime, startTimeInMinute: e.startTimeInMinute, endTime: e.endTime, endTimeInMinute: e.endTimeInMinute, errorMessage: e.errorMessage }
+        let item: ITimeInterval = {
+          startTime: e.startTime,
+          startTimeInMinute: e.startTimeInMinute,
+          endTime: e.endTime,
+          endTimeInMinute: e.endTimeInMinute,
+          errorMessage: e.errorMessage
+        }
         intervalsClone.push(item)
       });
       let isPastDate = date.isDayPast(dateIncremental);
-      let calendarDay: ICalendarDay = {
+      let calendarDay: ITimeIntervalsInMonth = {
         isOverride: isOverride,
         dateString: dateName,
         day: dateIncremental.getDate(),
@@ -315,7 +307,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     this.onOpenCalendarModal('modal-override-dates', selectedDate);
   }
 
-  onEditAvailabilityForDate(calendarDay: ICalendarDay) {
+  onEditAvailabilityForDate(calendarDay: ITimeIntervalsInMonth) {
 
     let cloneIntervals = calendarDay.intervals.slice();
 
@@ -326,7 +318,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     this.onOpenCalendarModal('modal-override-dates', selectedDate);
   }
 
-  onEditAvailabilityForWeekDay(calendarDay: ICalendarDay) {
+  onEditAvailabilityForWeekDay(calendarDay: ITimeIntervalsInMonth) {
 
     this.selecteDateOverride = {
       day: calendarDay.dateString, isAvailable: true, intervals: calendarDay.intervals.slice()
@@ -523,7 +515,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     return intervalInDate?.intervals
   }
 
-  onResetToWeeklyHours(calendarDay: ICalendarDay) {
+  onResetToWeeklyHours(calendarDay: ITimeIntervalsInMonth) {
     let timeIntervalInDay = this.getTimeIntervalsByDay(calendarDay.dateString);
     calendarDay.isOverride = false;
     calendarDay.intervals = timeIntervalInDay!;
@@ -571,11 +563,3 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
 }
 
-interface ICalendarDay {
-  day: number,
-  weekDay: string,
-  dateString: string,
-  isOverride: boolean;
-  intervals: ITimeInterval[],
-  isPastDate: boolean
-}

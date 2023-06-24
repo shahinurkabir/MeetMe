@@ -10,10 +10,10 @@ namespace MeetMe.Core.Persistence.Interface
     {
         Task<bool> AddSchedule(Availability scheduleRule);
         Task<bool> UpdateSchedule(Availability scheduleRule);
-        Task<bool> DeleteSchedule(Guid id);
+        Task<bool> DeleteSchedule(Availability scheduleRule);
 
-        Task<Availability> GetScheduleById(Guid id);
-        Task<List<Availability>> GetScheduleListByUserId(Guid userId);
+        Task<Availability> GetById(Guid id);
+        Task<List<Availability>> GetListByUserId(Guid userId);
         Task<bool> EditName (Guid id ,string nameToUpdate );
 
         Task<bool> SetDefault(Guid id, Guid userId);

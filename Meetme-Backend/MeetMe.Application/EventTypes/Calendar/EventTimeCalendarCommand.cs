@@ -42,26 +42,6 @@ namespace MeetMe.Application.EventTypes.Calendar
             var bufferTime = eventTypeEntity.BufferTimeAfter;
             var meetingDuration = eventTypeEntity.Duration;
 
-            //if (availabilityId.HasValue)
-            //{
-            //    listAvailability = (await availabilityRepository.GetScheduleById(availabilityId.Value)).Details.Select(e => new AvailabilityDetailDto
-            //    {
-            //        DayType = e.DayType,
-            //        Value = e.Value,
-            //        StartFrom = e.From,
-            //        EndAt = e.To
-            //    }).ToList();
-            //}
-            //else
-            //{
-            //    listAvailability = (await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityDetailByEventId(eventTypeEntity.Id)).Select(e => new AvailabilityDetailDto
-            //    {
-            //        DayType = e.DayType,
-            //        Value = e.Value,
-            //        StartFrom = e.From,
-            //        EndAt = e.To
-            //    }).ToList();
-            //}
             var availabilityList = await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityDetailByEventId(eventTypeEntity.Id);
 
             var eventTimeCalendarDetails = GetCalendarTimeSlots(request.TimeZone, calendarTimeZone, request.FromDate, request.ToDate, bufferTime, meetingDuration, availabilityList);

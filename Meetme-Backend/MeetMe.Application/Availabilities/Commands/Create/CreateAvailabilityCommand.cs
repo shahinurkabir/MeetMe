@@ -6,7 +6,7 @@ namespace MeetMe.Application.Availabilities.Commands.Create
     public class CreateAvailabilityCommand : IRequest<Guid>
     {
         public string Name { get; set; } = null!;
-        public decimal timeZoneOffset { get; set; }
+        public string timeZone { get; set; } = null!;
 
     }
     public class AvailabilityDetailDto

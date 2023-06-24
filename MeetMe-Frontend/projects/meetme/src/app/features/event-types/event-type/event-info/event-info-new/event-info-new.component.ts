@@ -23,7 +23,7 @@ export class EventInfoNewComponent implements OnInit {
     dateForwardKind: 'moving',
     bufferTimeAfter: 0,
     bufferTimeBefore: 0,
-    timeZone: ""
+    timeZone: "",
   };
   constructor(private location: Location) { }
 

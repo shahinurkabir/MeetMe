@@ -18,7 +18,7 @@ namespace MeetMe.Application.Availabilities.Commands.Update
         public async Task<bool> Handle(UpdateAvailabilityCommand request, CancellationToken cancellationToken)
         {
 
-            var entity = await availabilityRepository.GetScheduleById(request.Id);
+            var entity = await availabilityRepository.GetById(request.Id);
 
             if (entity == null) throw new Core.Exceptions.CustomException("Invalid schedule provided.");
 

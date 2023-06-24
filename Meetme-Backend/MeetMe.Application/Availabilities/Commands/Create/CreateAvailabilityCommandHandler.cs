@@ -29,8 +29,9 @@ namespace MeetMe.Application.Availabilities.Commands.Create
                 Id = newId,
                 Name = request.Name,
                 OwnerId = applicationUserInfo.Id,
-                TimeZone = applicationUserInfo.TimeZone,
+                TimeZone = request.timeZone,
                 IsDefault = false,
+                
                 Details=GetDefaultWeeklySchedule(newId)
             };
 
