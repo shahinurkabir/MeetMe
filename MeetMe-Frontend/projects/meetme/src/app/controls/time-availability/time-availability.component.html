@@ -107,10 +107,10 @@
         
         ></app-timezone-control>
 
-        <div class="toggle_interval">
-            <button [ngClass]="viewMode==='list'?'toggle_interval_button':''" (click)="onToggleView('list')">
+        <div class="toggle_view_container">
+            <button [ngClass]="viewMode==='list'?'toggle_button':''" (click)="onToggleView('list')">
                 <i class="fa-solid fa-list"></i> List view</button>
-            <button [ngClass]="viewMode==='monthly'?'toggle_interval_button':''" (click)="onToggleView('monthly')"> <i
+            <button [ngClass]="viewMode==='monthly'?'toggle_button':''" (click)="onToggleView('monthly')"> <i
                     class="fa-solid fa-calendar-week"></i> Calendar view</button>
         </div>
     </div>

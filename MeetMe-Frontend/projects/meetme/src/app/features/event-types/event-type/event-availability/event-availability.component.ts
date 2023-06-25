@@ -24,7 +24,7 @@ export class EventAvailabilityComponent implements OnInit {
   //model: model = this.getDefaultModel();
   meetingDurations: ListItem[] = [];
   selectedDatesFromCalender: { [id: string]: string } = {};
-  isExistingHours: boolean = true;
+  isCustomAvailability: boolean = false;
   listOfAvailability: IAvailability[] = [];
   selectedAvailability: IAvailability | undefined
   eventAvailabilityDetails: IEventAvailabilityDetailItemDto[] = [];
@@ -49,8 +49,8 @@ export class EventAvailabilityComponent implements OnInit {
   };
   forwardDurationInDays: number = 30;
 
-  @ViewChild("availabilityExistingComponent", { static: true }) timeAvailabilityExisting: TimeAvailabilityComponent | undefined;
-  @ViewChild("availabilityComponent", { static: true }) timeAvailabilityComponent: TimeAvailabilityComponent | undefined;
+  @ViewChild("timeAvailabilityControlCustom", { static: true }) timeAvailabilityControlCustom: TimeAvailabilityComponent | undefined;
+  @ViewChild("timeAvailabilityControl", { static: true }) timeAvailabilityControl: TimeAvailabilityComponent | undefined;
   constructor(
     private eventTypeService: EventTypeService,
     private availabilityService: AvailabilityService,
@@ -58,7 +58,6 @@ export class EventAvailabilityComponent implements OnInit {
   ) {
 
     this.initMeetingDurationAndTypes();
-    //this.createCustomAvailabilityModel();
     this.subscribeRouteParams();
 
   };
@@ -78,7 +77,7 @@ export class EventAvailabilityComponent implements OnInit {
     });
   };
 
-  loadData(eventTypeId: string): Observable<[IAvailability[],IEventType, IEventAvailabilityDetailItemDto[]]> {
+  loadData(eventTypeId: string): Observable<[IAvailability[], IEventType, IEventAvailabilityDetailItemDto[]]> {
 
     return forkJoin([
       this.availabilityService.getList(),
@@ -87,62 +86,37 @@ export class EventAvailabilityComponent implements OnInit {
     ]);
   }
 
-  initTimeAvailabilityComponent() {
-    if (this.isExistingHours) {
-      this.timeAvailabilityExisting?.setAvailability(this.selectedAvailability)
+  showTimeAvailabilityControl() {
+    if (this.isCustomAvailability) {
+      this.timeAvailabilityControlCustom?.setAvailability(this.customAvailability)
     } else {
-      this.timeAvailabilityComponent?.setAvailability(this.customAvailability)
+      this.timeAvailabilityControl?.setAvailability(this.selectedAvailability)
     }
   }
 
-  loadDataCompleted(responses: [IAvailability[],IEventType, IEventAvailabilityDetailItemDto[]]) {
+  loadDataCompleted(responses: [IAvailability[], IEventType, IEventAvailabilityDetailItemDto[]]) {
     this.listOfAvailability = responses[0];
     this.model = responses[1];
     this.eventAvailabilityDetails = responses[2];
 
+    this.customAvailability = this.convertEventScheduleToAvailabilitySchedule(this.model.timeZone, this.eventAvailabilityDetails);
+
     if (this.model.forwardDuration != null) {
       this.forwardDurationInDays = convertToDays(this.model.forwardDuration);
     }
-
-
-    if (this.model.availabilityId == null) {
-      this.isExistingHours = false;
-      this.customAvailability = this.convertEventToTimeSchedule(this.model.timeZone, this.eventAvailabilityDetails )
+    if (this.model.availabilityId != null) {
+      this.isCustomAvailability = false;
+      this.selectedAvailability = this.listOfAvailability
+        .find(e => e.id == this.model.availabilityId);
     }
     else {
-      this.isExistingHours = true;
-      this.selectedAvailability = this.listOfAvailability.find(e => e.id == this.model.availabilityId);
+      this.isCustomAvailability = true;
     }
-    this.initTimeAvailabilityComponent();
+
+    this.showTimeAvailabilityControl();
   }
 
-  // createCustomAvailabilityModel() {
-  //   let availability: IAvailability = {
-  //     id: '',
-  //     name: "",
-  //     ownerId: "",
-  //     timeZone: "",
-  //     isDefault: false,
-  //     details: [],
-  //     isCustom: true
-  //   };
-
-  //   day_of_week.forEach(day => {
-  //     let availabilityDetailItem: IAvailabilityDetails = {
-  //       dayType: meeting_day_type_weekday,
-  //       value: day,
-  //       from: default_startTime_minutes,
-  //       to: default_endTime_Minutes,
-  //       stepId: 0
-  //     }
-  //     availability.details.push(availabilityDetailItem);
-  //   });
-
-  //   this.customAvailability = availability;
-
-  // }
-
-  convertEventToTimeSchedule(timeZone: string, eventTimeAvailabilityDetails?: IEventAvailabilityDetailItemDto[]): IAvailability {
+  convertEventScheduleToAvailabilitySchedule(timeZone: string, eventTimeAvailabilityDetails?: IEventAvailabilityDetailItemDto[]): IAvailability {
     let availability: IAvailability = {
       id: '',
       name: "",
@@ -186,11 +160,11 @@ export class EventAvailabilityComponent implements OnInit {
 
     let availability: IAvailability | undefined;
 
-    if (this.isExistingHours) {
-      availability = this.timeAvailabilityExisting?.getAvailability();
+    if (this.isCustomAvailability) {
+      availability = this.timeAvailabilityControlCustom?.getAvailability();
     }
     else {
-      availability = this.timeAvailabilityComponent?.getAvailability();
+      availability = this.timeAvailabilityControl?.getAvailability();
     }
 
     if (availability == undefined) return;
@@ -209,7 +183,8 @@ export class EventAvailabilityComponent implements OnInit {
       bufferTimeBefore: this.model.bufferTimeBefore,
       bufferTimeAfter: this.model.bufferTimeAfter,
       timeZone: this.model.timeZone,
-      availabilityId: this.isExistingHours ? this.selectedAvailability?.id : undefined,
+      availabilityId: this.isCustomAvailability
+        ? undefined : this.selectedAvailability?.id,
       availabilityDetails: availabilityDetails!
     };
 
@@ -220,32 +195,18 @@ export class EventAvailabilityComponent implements OnInit {
   }
 
 
-  // private getDefaultModel(): model {
-
-  //   let item: model = {
-  //     id: "",
-  //     meetingDuration: default_meeting_duration,
-  //     dateForwardKind: "Moving",
-  //     forwardDurationInDays: default_meeting_forward_Duration_inDays,
-  //     bufferTimeAfter: default_meeting_buffertime,
-  //     bufferTimeBefore: default_meeting_buffertime,
-  //     timeZoneId: 1,
-  //     availabilityDetails: [],
-  //   };
-  //   return item;
-  // }
   onClickExistingHours(e: any) {
-    this.isExistingHours = true;
+    this.isCustomAvailability = false;
     e.preventDefault();
   }
   onClickCustomHour(e: any) {
-    this.isExistingHours = false;
-    this.initTimeAvailabilityComponent();
+    this.isCustomAvailability = true;
+    this.showTimeAvailabilityControl();
     e.preventDefault();
   }
 
   onChangeAvailability() {
-    this.initTimeAvailabilityComponent();
+    this.showTimeAvailabilityControl();
   }
 
   private initMeetingDurationAndTypes() {

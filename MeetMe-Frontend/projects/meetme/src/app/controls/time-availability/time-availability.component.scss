@@ -8,7 +8,7 @@
     padding: 0 0 15px 0;
 }
 
-.section_overview .toggle_interval {
+.section_overview .toggle_view_container {
     display: flex;
 }
 
@@ -22,7 +22,7 @@
 }
 
 
-.toggle_interval .toggle_interval_button {
+.toggle_button {
     border: 1px solid lightgray;
     background-color: white;
     box-shadow: 1px solid cornflowerblue;
