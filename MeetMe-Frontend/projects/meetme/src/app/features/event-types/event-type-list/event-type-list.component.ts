@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IEventType } from '../../../interfaces/event-type-interfaces';
 import { EventTypeService } from '../../../services/eventtype.service';
+import { ModalService } from '../../../controls/modal/modalService';
 
 @Component({
   selector: 'app-eventtype',
@@ -11,17 +12,25 @@ import { EventTypeService } from '../../../services/eventtype.service';
 export class EventTypeListComponent implements OnInit {
 
   listEventTypes: IEventType[] = [];
+  itemToDelete: IEventType | undefined;
   constructor(private eventTypeService: EventTypeService,
-    private router:Router
-    ) { }
+    private router: Router,
+    private modalService: ModalService
+  ) {
+    this.modalService.reset();
+  }
 
   ngOnInit(): void {
     this.loadEventTypes();
   }
 
   loadEventTypes() {
-    this.eventTypeService.getList().subscribe(response => {
-      this.listEventTypes = response
+    this.eventTypeService.getList().subscribe({
+      next: response => {
+        this.listEventTypes = response
+      },
+      error: (error) => { console.log(error) },
+      complete: () => { }
     })
   }
   onAddNewEventType() {
@@ -34,12 +43,12 @@ export class EventTypeListComponent implements OnInit {
       'border-left': `5px solid ${item.eventColor}`
     }
   }
-  onEdit(id:string) {
-    let url='/'+id;
-    this.router.navigate(['event-types',id]);
+  onEdit(id: string) {
+    let url = '/' + id;
+    this.router.navigate(['event-types', id]);
   }
   onAddNew() {
-    this.router.navigate(['event-types','new']);
+    this.router.navigate(['event-types', 'new']);
   }
 
   onToggleActive(eventType: IEventType) {
@@ -49,13 +58,26 @@ export class EventTypeListComponent implements OnInit {
   }
   onClone(eventType: IEventType) {
     this.eventTypeService.clone(eventType.id).subscribe(response => {
-      let url='event-types/'+response;
+      let url = 'event-types/' + response;
       this.router.navigate([url]);
     })
   }
   onDelete(eventType: IEventType) {
-    this.eventTypeService.delete(eventType.id).subscribe(response => {
-      this.loadEventTypes();
-    })
+    this.eventTypeService.delete(this.itemToDelete?.id!).subscribe(
+      {
+        next: response => {
+          this.loadEventTypes();
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { this.modalService.close() }
+      })
+  }
+  onClickDelete(itemToDelete: IEventType) {
+    this.itemToDelete = itemToDelete;
+    this.modalService.open('delete-eventtype-modal')
+  }
+
+  onCloseModal() {
+    this.modalService.close();
   }
 }

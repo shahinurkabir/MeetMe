@@ -2,6 +2,7 @@
 using MeetMe.Application.EventTypes.Calendar.Dtos;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
+using System.ComponentModel.DataAnnotations;
 
 namespace MeetMe.Application.EventTypes.Calendar
 {
@@ -38,38 +39,59 @@ namespace MeetMe.Application.EventTypes.Calendar
 
             var availabilityList = await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityDetailByEventId(eventTypeEntity.Id);
 
-            var eventTimeCalendarDetails = GetCalendarTimeSlots(request.TimeZone, calendarTimeZone, request.FromDate, request.ToDate, bufferTime, meetingDuration, availabilityList);
+            var userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(request.TimeZone);
+            var listSlots = GetCalendarTimeSlots(request.TimeZone, calendarTimeZone, request.FromDate, request.ToDate, bufferTime, meetingDuration, availabilityList);
 
-            return eventTimeCalendarDetails;
+           // var listSlots = eventTimeCalendarDetails.SelectMany(e => e.Slots).ToList();
+
+            listSlots.ForEach(e => e.StartAt = TimeZoneInfo.ConvertTime(e.StartAt, userTimeZone));
+
+            var listDatesGroup = listSlots.GroupBy(e => e.StartAt.DateTime.Date);
+
+            var result = new List<EventTimeCalendar>();
+
+            foreach (var dateGroup in listDatesGroup)
+            {
+                var date = dateGroup.Key;
+                var listDate = dateGroup.ToList();
+                listDate = listDate.Where(e => e.StartAt.DateTime.Date == date).ToList();
+
+                var eventTimeCalendar = new EventTimeCalendar
+                {
+                    Date = date.ToString("yyyy-MMM-dd"),  
+                    Slots = listDate
+                };
+                result.Add(eventTimeCalendar);
+            }
+            return result;
 
         }
 
-        private List<EventTimeCalendar> GetCalendarTimeSlots(
-            string timezoneUser, string timezoneCalendar, 
-            string dateFrom, string dateTo, int bufferTime, 
+        private List<TimeSlot> GetCalendarTimeSlots(
+            string timezoneUser, string timezoneCalendar,
+            string dateFrom, string dateTo, int bufferTime,
             int meetingDuration, List<EventTypeAvailabilityDetail> scheduleList
             )
         {
-            var result = new List<EventTimeCalendar>();
+            var result = new List<TimeSlot>();
             var userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timezoneUser);
             var calendarTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timezoneCalendar);
-            var userTimeZoneOffset = userTimeZone.GetUtcOffset(DateTime.UtcNow);
-            var serverTimeOffset = TimeZoneInfo.Local.GetUtcOffset(DateTime.UtcNow);
+            
+            var tempFromDate = DateTime.Parse(dateFrom);
+            var tempToDate = DateTime.Parse(dateTo);
 
-            var fromDateLocal = DateTimeOffset.Parse(dateFrom).Add(serverTimeOffset - userTimeZoneOffset);
+            var tempFromUTC = tempFromDate.ToUniversalTime();
+            var tempToUTC = tempToDate.ToUniversalTime();
 
-            var dateUtc = fromDateLocal.ToUniversalTime();
+            var dateFromUser = TimeZoneInfo.ConvertTime(tempFromDate, userTimeZone);
+            var dateToUser = TimeZoneInfo.ConvertTime(tempToDate, userTimeZone);
 
-            var fromDateUser = TimeZoneInfo.ConvertTime(fromDateLocal, userTimeZone);
-            var fromDateCalendar = TimeZoneInfo.ConvertTime(fromDateUser, calendarTimeZone).Add(serverTimeOffset - userTimeZoneOffset);
+            var dateFromCalendar = TimeZoneInfo.ConvertTime(dateFromUser, calendarTimeZone).AddDays(-1);
+            var dateToCalendar = TimeZoneInfo.ConvertTime(dateToUser, calendarTimeZone).AddDays(1);
 
+            var scheduleDate = dateFromCalendar;
 
-            var dayNumberInUserTimeZone = fromDateUser.Day;
-            var daysInMonthUserTimeZone = DateTime.DaysInMonth(fromDateUser.Year, fromDateUser.Month);
-
-            var scheduleDate = fromDateCalendar;
-
-            while (dayNumberInUserTimeZone <= daysInMonthUserTimeZone)
+            while (scheduleDate <= dateToCalendar)
             {
                 var weekDay = scheduleDate.DayOfWeek;
 
@@ -91,22 +113,18 @@ namespace MeetMe.Application.EventTypes.Calendar
                         dayStartFromInMinutes = availability.From;
                         dayEndFromINMinutes = availability.To;
                     }
-                    var timeSlots = GenerateTimeSlotForDate(scheduleDate, bufferTime, meetingDuration, dayStartFromInMinutes, dayEndFromINMinutes, userTimeZone);
+                    var timeSlots = GenerateTimeSlotForDate(scheduleDate, bufferTime, meetingDuration, dayStartFromInMinutes, dayEndFromINMinutes, userTimeZone).ToList();
 
-                    timeSlots = timeSlots.Where(x => x.StartAt >=DateTime.Now );
-                    timeSlots.ToList().ForEach(x => x.StartAt = TimeZoneInfo.ConvertTime(x.StartAt.DateTime, userTimeZone));
-
-                    var eventAvailability = new EventTimeCalendar
-                    {
-                        Date = scheduleDate.ToString("yyyy-MMM-dd"),
-                        Slots = timeSlots.ToList()
-                    };
-                    result.Add(eventAvailability);
+                    //var eventAvailability = new EventTimeCalendar
+                    //{
+                    //    Date = scheduleDate.ToString("yyyy-MMM-dd"),
+                    //    Slots = timeSlots.ToList()
+                    //};
+                    result.AddRange(timeSlots);
                 }
 
                 scheduleDate = scheduleDate.AddDays(1);
 
-                dayNumberInUserTimeZone++;
             }
             return result;
         }
@@ -122,7 +140,7 @@ namespace MeetMe.Application.EventTypes.Calendar
             var dayStartTime = DateTimeOffset.Parse(calenderDate.ToString("yyyy-MM-dd ")).AddMinutes(dayStartFromInMinutes);
             var dayEndTime = DateTimeOffset.Parse(calenderDate.ToString("yyyy-MM-dd ")).AddMinutes(dayEndInMinutes);
 
-            while (dayStartTime <= dayEndTime)
+            while (dayStartTime < dayEndTime)
             {
                 yield return new TimeSlot { StartAt = dayStartTime };
                 dayStartTime = dayStartTime.AddMinutes(meetingDuration).AddMinutes(bufferTimeInMinute); ;
