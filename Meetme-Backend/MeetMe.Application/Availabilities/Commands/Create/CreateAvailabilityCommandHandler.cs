@@ -3,6 +3,7 @@ using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Interface;
 using MeetMe.Core.Constant;
+using MeetMe.Core.Constants;
 
 namespace MeetMe.Application.Availabilities.Commands.Create
 {
@@ -54,18 +55,18 @@ namespace MeetMe.Application.Availabilities.Commands.Create
 
         public static List<AvailabilityDetail> GetDefaultWeeklySchedule(Guid availabilityId)
         {
-            var dayStartInMinutes = TimeSpan.Parse(Constants.Events.MEETING_FROM_TIMESPAN).TotalMinutes;
-            var dayEndINMinutes = TimeSpan.Parse(Constants.Events.MEETING_TO_TIMESPAN).TotalMinutes;
+            var dayStartInMinutes = TimeSpan.Parse(Events.MEETING_FROM_TIMESPAN).TotalMinutes;
+            var dayEndINMinutes = TimeSpan.Parse(Events.MEETING_TO_TIMESPAN).TotalMinutes;
 
             var listWeekDaysConfig = new List<AvailabilityDetail>();
 
             short stepId = 0;
-            foreach (KeyValuePair<int, string> weekDay in Constants.WeekDays)
+            foreach (KeyValuePair<int, string> weekDay in Events.WeekDays)
             {
                 listWeekDaysConfig.Add(new AvailabilityDetail
                 {
                     AvailabilityId = availabilityId,
-                    DayType = Constants.Events.SCHEDULE_DATETYPE_WEEKDAY,
+                    DayType = Events.SCHEDULE_DATETYPE_WEEKDAY,
                     Value = weekDay.Value,
                     From = dayStartInMinutes,
                     To = dayEndINMinutes,

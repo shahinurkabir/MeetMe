@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using MeetMe.Application.EventTypes.Calendar.Dtos;
+using MeetMe.Core.Constants;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using System.ComponentModel.DataAnnotations;
@@ -17,19 +18,17 @@ namespace MeetMe.Application.EventTypes.Calendar
     public class EventTimeCalendarCommandHandler : IRequestHandler<EventTimeCalendarCommand, List<EventTimeCalendar>>
     {
         private readonly IEventTypeRepository eventTypeRepository;
-        private readonly IAvailabilityRepository availabilityRepository;
         private readonly IEventTypeAvailabilityDetailRepository eventTypeAvailabilityDetailRepository;
 
         public EventTimeCalendarCommandHandler(
             IEventTypeRepository eventTypeRepository,
-            IAvailabilityRepository availabilityRepository,
             IEventTypeAvailabilityDetailRepository eventTypeAvailabilityDetailRepository
             )
         {
             this.eventTypeRepository = eventTypeRepository;
-            this.availabilityRepository = availabilityRepository;
             this.eventTypeAvailabilityDetailRepository = eventTypeAvailabilityDetailRepository;
         }
+
         public async Task<List<EventTimeCalendar>> Handle(EventTimeCalendarCommand request, CancellationToken cancellationToken)
         {
             var eventTypeEntity = await eventTypeRepository.GetEventTypeById(request.EventTypeId);
@@ -57,7 +56,7 @@ namespace MeetMe.Application.EventTypes.Calendar
 
                 var eventTimeCalendar = new EventTimeCalendar
                 {
-                    Date = date.ToString("yyyy-MMM-dd"),  
+                    Date = date.ToString("yyyy-MMM-dd"),
                     Slots = listDate
                 };
                 result.Add(eventTimeCalendar);
@@ -75,7 +74,7 @@ namespace MeetMe.Application.EventTypes.Calendar
             var result = new List<TimeSlot>();
             var userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timezoneUser);
             var calendarTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timezoneCalendar);
-            
+
             var tempFromDate = DateTime.Parse(dateFrom);
             var tempToDate = DateTime.Parse(dateTo);
 
@@ -94,27 +93,32 @@ namespace MeetMe.Application.EventTypes.Calendar
             {
                 var weekDay = scheduleDate.DayOfWeek;
 
-                var availability = scheduleList.FirstOrDefault(x => x.DayType == "weekday" && x.Value == weekDay.ToString());
-                var availabilityCustom = scheduleList.FirstOrDefault(x => x.DayType == "date" && DateTime.Parse(x.Value) == scheduleDate.Date);
+                var listScheduleTimesPerDay = scheduleList
+                                            .Where(x => x.DayType == Events.SCHEDULE_DATETYPE_WEEKDAY
+                                            && x.Value == weekDay.ToString())
+                                            .ToList();
+                var listScheduleTimesPerDate = scheduleList
+                                                .Where(x => x.DayType == Events.SCHEDULE_DATETYPE_DATE
+                                                && DateTime.Parse(x.Value) == scheduleDate.Date)
+                                                .ToList();
 
-                if (availability != null || availabilityCustom != null)
+                if (listScheduleTimesPerDate != null && listScheduleTimesPerDate.Any())
                 {
-                    var dayStartFromInMinutes = 0d;
-                    var dayEndFromINMinutes = 0d;
+                    listScheduleTimesPerDay = listScheduleTimesPerDate;
+                }
 
-                    if (availabilityCustom != null)
+                if (listScheduleTimesPerDay != null && listScheduleTimesPerDay.Any())
+                {
+                    foreach (var scheduleItem in listScheduleTimesPerDay)
                     {
-                        dayStartFromInMinutes = availabilityCustom.From;
-                        dayEndFromINMinutes = availabilityCustom.To;
+                        double dayStartFromInMinutes = scheduleItem.From;
+                        double dayEndFromInMinutes = scheduleItem.To;
+
+                        var timeSlots = GenerateTimeSlotForDate(scheduleDate, bufferTime, meetingDuration, dayStartFromInMinutes, dayEndFromInMinutes).ToList();
+
+                        result.AddRange(timeSlots);
                     }
-                    else if (availability != null)
-                    {
-                        dayStartFromInMinutes = availability.From;
-                        dayEndFromINMinutes = availability.To;
-                    }
-                    var timeSlots = GenerateTimeSlotForDate(scheduleDate, bufferTime, meetingDuration, dayStartFromInMinutes, dayEndFromINMinutes, userTimeZone).ToList();
-                    
-                    result.AddRange(timeSlots);
+
                 }
 
                 scheduleDate = scheduleDate.AddDays(1);
@@ -128,7 +132,7 @@ namespace MeetMe.Application.EventTypes.Calendar
              double bufferTimeInMinute,
              int meetingDuration,
              double dayStartFromInMinutes,
-             double dayEndInMinutes, TimeZoneInfo destnationTimeZone)
+             double dayEndInMinutes)
         {
 
             var dayStartTime = DateTimeOffset.Parse(calenderDate.ToString("yyyy-MM-dd ")).AddMinutes(dayStartFromInMinutes);

@@ -1,11 +1,10 @@
 ﻿using MeetMe.API.Models;
+using MeetMe.Core.Constants;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using static MeetMe.Core.Constant.Constants;
 
 namespace MeetMe.API.Controllers
 {

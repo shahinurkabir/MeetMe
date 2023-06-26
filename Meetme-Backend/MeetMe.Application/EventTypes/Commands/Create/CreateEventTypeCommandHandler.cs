@@ -4,6 +4,7 @@ using MediatR;
 using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Exceptions;
 using MeetMe.Core.Constant;
+using MeetMe.Core.Constants;
 
 namespace MeetMe.Application.EventTypes.Commands.Create
 {
@@ -68,11 +69,11 @@ namespace MeetMe.Application.EventTypes.Commands.Create
                 ActiveYN = false,
                 TimeZone = availability.TimeZone,
                 AvailabilityId = availability.Id,
-                DateForwardKind = Constants.Events.ForwandDateKInd.Moving,
-                ForwardDuration = Constants.Events.ForwardDuration,
-                Duration = Constants.Events.MeetingDuration,
-                BufferTimeBefore = Constants.Events.BufferTimeDuration,
-                BufferTimeAfter = Constants.Events.BufferTimeDuration,
+                DateForwardKind = Events.ForwandDateKInd.Moving,
+                ForwardDuration = Events.ForwardDuration,
+                Duration = Events.MeetingDuration,
+                BufferTimeBefore = Events.BufferTimeDuration,
+                BufferTimeAfter = Events.BufferTimeDuration,
                 CreatedBy = applicationUser.Id,
                 CreatedAt = dateTimeService.GetCurrentTimeUtc,
                 EventTypeAvailabilityDetails = listScheduleDetails,
