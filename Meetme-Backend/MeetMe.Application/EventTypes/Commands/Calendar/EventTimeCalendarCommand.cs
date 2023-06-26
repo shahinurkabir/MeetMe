@@ -42,7 +42,6 @@ namespace MeetMe.Application.EventTypes.Calendar
             var userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(request.TimeZone);
             var listSlots = GetCalendarTimeSlots(request.TimeZone, calendarTimeZone, request.FromDate, request.ToDate, bufferTime, meetingDuration, availabilityList);
 
-           // var listSlots = eventTimeCalendarDetails.SelectMany(e => e.Slots).ToList();
 
             listSlots.ForEach(e => e.StartAt = TimeZoneInfo.ConvertTime(e.StartAt, userTimeZone));
 
@@ -114,12 +113,7 @@ namespace MeetMe.Application.EventTypes.Calendar
                         dayEndFromINMinutes = availability.To;
                     }
                     var timeSlots = GenerateTimeSlotForDate(scheduleDate, bufferTime, meetingDuration, dayStartFromInMinutes, dayEndFromINMinutes, userTimeZone).ToList();
-
-                    //var eventAvailability = new EventTimeCalendar
-                    //{
-                    //    Date = scheduleDate.ToString("yyyy-MMM-dd"),
-                    //    Slots = timeSlots.ToList()
-                    //};
+                    
                     result.AddRange(timeSlots);
                 }
 
