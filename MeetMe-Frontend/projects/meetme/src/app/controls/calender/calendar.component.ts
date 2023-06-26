@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { day_of_week, month_of_year } from '../../constants/default-data';
+import { day_of_week, month_of_year } from '../../utilities/default-data';
 
 @Component({
   selector: 'app-calendar',

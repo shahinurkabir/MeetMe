@@ -37,10 +37,10 @@ namespace MeetMe.Core.Constants
     public static class ClaimTypeName
     {
         public const string Id = "Id";
-        public const string UserId = "UserId";
-        public const string Email = "Email";
-        public const string BaseURI = "BaseURI";
-        public const string TimeZoneId = "TimeZoneId";
+        public const string UserId = "user_id";
+        public const string Email = "user_email";
+        public const string BaseURI = "base_uri";
+        public const string TimeZone = "user_timezone";
 
     }
 

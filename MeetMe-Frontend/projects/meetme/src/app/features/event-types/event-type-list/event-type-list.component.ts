@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { IEventType } from '../../../interfaces/event-type-interfaces';
 import { EventTypeService } from '../../../services/eventtype.service';
 import { ModalService } from '../../../controls/modal/modalService';
+import { AuthService } from '../../../services/auth-service';
 
 @Component({
   selector: 'app-eventtype',
@@ -13,11 +14,16 @@ export class EventTypeListComponent implements OnInit {
 
   listEventTypes: IEventType[] = [];
   itemToDelete: IEventType | undefined;
-  constructor(private eventTypeService: EventTypeService,
+  baseUri: string = "";
+
+  constructor(
+    private eventTypeService: EventTypeService,
     private router: Router,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private authService: AuthService
   ) {
     this.modalService.reset();
+    this.baseUri = this.authService.baseUri;
   }
 
   ngOnInit(): void {

@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { TimeZoneData } from '../../interfaces/event-type-interfaces';
 import { interval } from 'rxjs';
-import {  ListOfTimeZone } from '../../constants/timezone-data';
+import {  ListOfTimeZone } from '../../utilities/timezone-data';
 
 @Component({
   selector: 'app-timezone-control',

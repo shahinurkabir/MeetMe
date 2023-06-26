@@ -43,7 +43,7 @@ namespace MeetMe.API.Controllers
                 new Claim(ClaimTypeName.UserId,user.UserID),
                 new Claim(ClaimTypeName.Email,user.Email),
                 new Claim(ClaimTypeName.BaseURI,user.BaseURI),
-                new Claim(ClaimTypeName.TimeZoneId,user.TimeZoneId.ToString()),
+                new Claim(ClaimTypeName.TimeZone,user.TimeZoneId.ToString()),
             };
 
             var tokenResponse=new JwtTokenHandler(configuration).CreateToken(claims);

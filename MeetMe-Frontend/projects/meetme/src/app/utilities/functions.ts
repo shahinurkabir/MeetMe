@@ -9,3 +9,19 @@ export function toggleModalDialog(el: Element|null) {
   document.body.classList.toggle('is-modal-open')
 }
 
+export function parseJwt (token:string) {
+  var base64Url = token.split('.')[1];
+  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload);
+}
+
+export function convertTimeZoneLocalTime(date: Date, is24HourFormat: boolean, timeZone: string): string {
+  if (!is24HourFormat)
+      return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: timeZone });
+  else
+      return date.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: timeZone });
+}

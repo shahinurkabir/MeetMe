@@ -8,10 +8,7 @@ import { EventInfoUpdateComponent } from './features/event-types/event-type/even
 import { EventQuestionComponent } from './features/event-types/event-type/event-question/event-question.component';
 import { EventTypeComponent } from './features/event-types/event-type/eventtype.component';
 import { LoginComponent } from './features/users/login/login.component';
-//import { WorkinghoursComponent } from './features/workinghours/workinghours.component';
 import { AuthGuard } from './gurads/auth-gurad';
-import { HomeComponent } from './home/home.component';
-import { CalendarComponent } from './controls/calender/calendar.component';
 import { EventTypeCalendarComponent } from './features/eventtype-calendar/eventtype-calendar.component';
 import { TestComponentComponent } from './test-component/test-component.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
@@ -19,7 +16,7 @@ import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component
 import { BookingLayoutComponent } from './layouts/booking-layout/booking-layout.component';
 
 const admin_Routes: Routes = [
-  { path: "", component: HomeComponent },
+  { path: "", redirectTo: "event-types", pathMatch: "full" },
   { path: "availability", component: AvailabilityComponent },
   {
     path: "event-types", children: [
@@ -48,7 +45,9 @@ const auth_Routes: Routes = [
 ];
 
 const booking_Routes: Routes = [
-  { path: "appointment/:id/:slug", component: EventTypeCalendarComponent }
+  { path: ":user/:slug", component: EventTypeCalendarComponent },
+  { path: "cancel/:id", component: EventTypeCalendarComponent },
+  { path: "reschedule/:id", component: EventTypeCalendarComponent },
 ]
 const routes: Routes = [
 

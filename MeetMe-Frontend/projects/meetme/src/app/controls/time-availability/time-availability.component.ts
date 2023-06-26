@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { day_of_week, default_endTime_Minutes, default_startTime_minutes, meeting_day_type_date, meeting_day_type_weekday, month_of_year } from '../../constants/default-data';
+import { day_of_week, default_endTime_Minutes, default_startTime_minutes, meeting_day_type_date, meeting_day_type_weekday, month_of_year } from '../../utilities/default-data';
 import { TimeZoneData } from '../../interfaces/event-type-interfaces';
 import { ListItem } from '../../interfaces/list-item';
 import { date } from '../../utilities/date-functions';
 import { CalendarComponent } from '../calender/calendar.component';
 import { ModalService } from '../modal/modalService';
-import { ListOfTimeZone } from '../../constants/timezone-data';
+import { ListOfTimeZone } from '../../utilities/timezone-data';
 import { IAvailability, IAvailabilityDetails } from '../../interfaces/availability-interfaces';
 import { ITimeIntervalInDay, ITimeInterval, ITimeIntervalsInMonth } from '../../interfaces/ITimeIntervalInDay';
 

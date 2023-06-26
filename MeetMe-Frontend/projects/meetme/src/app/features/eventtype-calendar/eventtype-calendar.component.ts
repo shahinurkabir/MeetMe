@@ -4,8 +4,8 @@ import { BookingService } from '../../services/booking.service';
 import { IEventTimeAvailability } from '../../interfaces/calendar';
 import { TimeZoneData } from '../../interfaces/event-type-interfaces';
 import { TimezoneControlComponent } from '../../controls/timezone-control/timezone-control.component';
-import { convertTimeZoneLocalTime } from '../../utilities/time.extensions';
 import { ActivatedRoute, Router } from '@angular/router';
+import { convertTimeZoneLocalTime } from '../../utilities/functions';
 
 @Component({
   selector: 'app-event-type-calendar',
@@ -23,8 +23,8 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   is24HourFormat: boolean = false;
   eventTypeId: string = "";
   timeZoneName: string = "";
-  selectedDate: string | null=null;
-  selectedYearMonth: string | null=null;
+  selectedDate: string | null = null;
+  selectedYearMonth: string | null = null;
   constructor(
     private bookingService: BookingService,
     private route: ActivatedRoute,
@@ -33,26 +33,27 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
     this.timeZoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    this.route.params.subscribe(params => {
-      this.eventTypeId = params["id"];
+    // this.route.params.subscribe(params => {
+    //   this.eventTypeId = params["id"];
 
-    });
+    // });
   }
 
   ngOnInit(): void {
     this.route.queryParams
-        this.selectedDate = this.route.snapshot.queryParamMap.get('date');
-        this.selectedYearMonth = this.route.snapshot.queryParamMap.get("month");
+    this.eventTypeId = this.route.snapshot.queryParamMap.get("id") ?? "";
+    this.selectedDate = this.route.snapshot.queryParamMap.get('date');
+    this.selectedYearMonth = this.route.snapshot.queryParamMap.get("month");
 
-        if (this.selectedYearMonth) {
-          let yearMonth = this.selectedYearMonth.split("-");
-          this.selectedYear = parseInt(yearMonth[0]);
-          this.selectedMonth = parseInt(yearMonth[1]) - 1;
-          this.calendarComponent.moveTo(this.selectedYear, this.selectedMonth);
-        }
-        else {
-          this.calendarComponent.resetCalendar();
-        }
+    if (this.selectedYearMonth) {
+      let yearMonth = this.selectedYearMonth.split("-");
+      this.selectedYear = parseInt(yearMonth[0]);
+      this.selectedMonth = parseInt(yearMonth[1]) - 1;
+      this.calendarComponent.moveTo(this.selectedYear, this.selectedMonth);
+    }
+    else {
+      this.calendarComponent.resetCalendar();
+    }
   }
 
   ngViewAfterInit() {
@@ -99,19 +100,19 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
     });
   }
-  disableNotAvailableDays(fromDate:string, toDate:string,avalableTimeSlots:IEventTimeAvailability[]) {
-    
+  disableNotAvailableDays(fromDate: string, toDate: string, avalableTimeSlots: IEventTimeAvailability[]) {
+
     let from = new Date(fromDate);
     let to = new Date(toDate);
-    let days:number[]=[];
+    let days: number[] = [];
     for (let index = from.getDate(); index <= to.getDate(); index++) {
       days.push(index);
     }
-    let daysHasData = avalableTimeSlots.map(e=>new Date(e.date).getDate());
+    let daysHasData = avalableTimeSlots.map(e => new Date(e.date).getDate());
     daysHasData.forEach((day) => {
       let index = days.indexOf(day);
-      if(index!=-1){
-        days.splice(index,1);
+      if (index != -1) {
+        days.splice(index, 1);
       }
     });
     if (days.length == 0) return;
