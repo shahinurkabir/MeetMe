@@ -32,7 +32,8 @@ export interface IEventTypeQuestion {
     otherOptionYN: boolean,
     activeYN: boolean,
     requiredYN: boolean,
-    displayOrder: number
+    displayOrder: number,
+    systemDefinedYN: boolean
 }
 
 export interface TimeZoneData {

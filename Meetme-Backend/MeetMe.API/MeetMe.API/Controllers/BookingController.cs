@@ -22,6 +22,7 @@ namespace MeetMe.API.Controllers
         }
 
 
+
         [AllowAnonymous]
         [HttpGet]
         [Route("calendar/event-type/{id}")]

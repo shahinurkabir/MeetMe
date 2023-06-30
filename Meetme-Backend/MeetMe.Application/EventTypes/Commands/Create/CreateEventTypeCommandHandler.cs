@@ -108,6 +108,7 @@ namespace MeetMe.Application.EventTypes.Commands.Create
                     ActiveYN=true,
                     DisplayOrder=1 ,
                     RequiredYN=true,
+                    SystemDefinedYN=true,
                 },
                  new EventTypeQuestion
                 {
@@ -116,6 +117,7 @@ namespace MeetMe.Application.EventTypes.Commands.Create
                     ActiveYN=true,
                     DisplayOrder=2 ,
                     RequiredYN=true,
+                    SystemDefinedYN=true,
                 }
             };
 

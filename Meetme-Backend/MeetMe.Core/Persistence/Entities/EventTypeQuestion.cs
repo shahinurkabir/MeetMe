@@ -13,6 +13,7 @@ namespace MeetMe.Core.Persistence.Entities
         public bool ActiveYN { get; set; }
         public bool RequiredYN { get; set; }
         public short DisplayOrder { get; set; }
+        public bool SystemDefinedYN { get; set; }
         public EventType? EventType { get; set; } 
     }
 }

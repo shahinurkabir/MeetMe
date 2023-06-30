@@ -25,3 +25,7 @@ export function convertTimeZoneLocalTime(date: Date, is24HourFormat: boolean, ti
   else
       return date.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: timeZone });
 }
+
+export function cloneObject<T>(a: T): T {
+  return JSON.parse(JSON.stringify(a));
+}

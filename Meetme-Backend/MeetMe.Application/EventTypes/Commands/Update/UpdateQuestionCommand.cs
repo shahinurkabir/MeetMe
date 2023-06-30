@@ -40,6 +40,8 @@ namespace MeetMe.Application.EventTypes.Update
 
             var listQuestionEntities = ConvertToEventTypeQuestions(request);
 
+            listQuestionEntities=listQuestionEntities.FindAll(x => x.SystemDefinedYN ==false);
+
             await eventQuestionRepository.ResetEventQuestions(listQuestionEntities);
 
             return true;
@@ -64,6 +66,7 @@ namespace MeetMe.Application.EventTypes.Update
                     RequiredYN = item.RequiredYN,
                     ActiveYN = item.ActiveYN,
                     DisplayOrder = displayOrder,
+                    SystemDefinedYN = item.SystemDefinedYN
                 };
 
                 listEntities.Add(questionEntity);

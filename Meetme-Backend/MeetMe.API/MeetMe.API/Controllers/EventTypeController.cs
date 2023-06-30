@@ -70,6 +70,7 @@ namespace MeetMe.API.Controllers
         public async Task<List<EventTypeQuestion>> GetQuestionList(Guid id)
         {
             var result = await mediator.Send(new GetEventTypeQuestionsQuery { EventTypeId = id });
+            result=result.OrderBy(x => x.DisplayOrder).ToList();
             return result;
         }
 

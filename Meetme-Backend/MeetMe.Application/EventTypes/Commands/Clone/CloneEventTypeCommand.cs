@@ -105,6 +105,7 @@ namespace MeetMe.Application.EventTypes.Manage
                         RequiredYN = e.RequiredYN,
                         Options = e.Options,
                         OtherOptionYN = e.OtherOptionYN,
+                        SystemDefinedYN = e.SystemDefinedYN
                     };
                 }).ToList()
                 );
