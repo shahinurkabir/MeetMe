@@ -1,4 +1,6 @@
-﻿using MeetMe.Core.Interface;
+﻿using MeetMe.Core.Constants;
+using MeetMe.Core.Interface;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,19 +15,19 @@ namespace MeetMe.API.Models
 
             httpContextAccessor.HttpContext?.User.Claims.ToList().ForEach(x =>
             {
-                if (x.Type == "Id")
+                if (x.Type == ClaimTypeName.Id)
                 {
                     Id =Guid.Parse( x.Value);
                 }
-                if (x.Type == "UserId")
+                if (x.Type == ClaimTypeName.UserId)
                 {
                     UserId = x.Value;
                 }
-                if (x.Type == "Email")
+                if (x.Type == ClaimTypeName.UserName)
                 {
-                    Email = x.Value;
+                    UserName = x.Value;
                 }
-                if (x.Type == "TimeZone")
+                if (x.Type ==ClaimTypeName.TimeZone)
                 {
                     TimeZone = x.Value;
                 }
@@ -33,8 +35,8 @@ namespace MeetMe.API.Models
         }
         public Guid Id { get; set; }
         public string UserId { get; set; } = null!;
-        public string Email { get; set; } = null!;
+        public string UserName { get; set; } = null!;
         public string BaseURI { get; set; } = null!;
-        public string TimeZone { get; set; }
+        public string TimeZone { get; set; }= null!;
     }
 }

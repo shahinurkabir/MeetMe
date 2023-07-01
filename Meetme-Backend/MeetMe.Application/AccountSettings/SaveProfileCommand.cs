@@ -12,33 +12,30 @@ using System.Threading.Tasks;
 
 namespace MeetMe.Application.AccountSettings
 {
-    public class SaveProfileCommand:IRequest<bool>
+    public class UpdateProfileCommand:IRequest<bool>
     {
-        public string Name { get; set; } = null!;
-        public int TimeZone { get; set; }
-        public string DateFormat { get; set; } = null!;
-        public string TimeFormat { get; set; } = null!;
+        public string UserName { get; set; } = null!;
+        public string TimeZone { get; set; }=null!;
+        
     }
 
-    public class SaveProfileCommandHandler : IRequestHandler<SaveProfileCommand, bool>
+    public class UpdateProfileCommandHandler : IRequestHandler<UpdateProfileCommand, bool>
     {
         private readonly IUserRepository userRepository;
         private readonly IUserInfo userInfo;
 
-        public SaveProfileCommandHandler(IUserRepository userRepository, IUserInfo userInfo)
+        public UpdateProfileCommandHandler(IUserRepository userRepository, IUserInfo userInfo)
         {
             this.userRepository = userRepository;
             this.userInfo = userInfo;
         }
-        public async Task<bool> Handle(SaveProfileCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
         {
-            var userEntity = await userRepository.GetById(userInfo.UserId);
+            var userEntity = await userRepository.GetByUserId(userInfo.UserId);
             if (userEntity == null)
                 throw new MeetMeException("User not found");
-
-            userEntity.TimeZoneId = request.TimeZone;
-            userEntity.DateFormat = request.DateFormat;
-            userEntity.TimeFormat= request.TimeFormat;
+            userEntity.UserName=request.UserName;
+            userEntity.TimeZone = request.TimeZone;
 
             await userRepository.Update(userEntity);
             
@@ -46,13 +43,11 @@ namespace MeetMe.Application.AccountSettings
 
         }
     }
-    public class SaveProfileCommandValidator : AbstractValidator<SaveProfileCommand> {
-        public SaveProfileCommandValidator()
+    public class UpdateProfileCommandValidator : AbstractValidator<UpdateProfileCommand> {
+        public UpdateProfileCommandValidator()
         {
+            RuleFor(m => m.UserName).NotEmpty().WithMessage("User name can not be empty");
             RuleFor(m => m.TimeZone).NotEmpty().WithMessage("TimeZone can not be empty");
-            RuleFor(m => m.DateFormat).NotEmpty().WithMessage("Date Format can not be empty");
-            RuleFor(m => m.TimeFormat).NotEmpty().WithMessage("Time Format can not be empty");
-
         }
     }
 

@@ -1,1 +1,34 @@
-<p>profile works!</p>
+<div class="page">
+    <form (ngSubmit)="onSubmit(formEventInfo)" #formEventInfo="ngForm">
+        <div class="form-group">
+            <label for="userName">Name</label>
+            <div class="form-control">
+                <input type="text" 
+                autocomplete="off" spellcheck="false" #userName="ngModel"
+                 required [(ngModel)]="model.userName"
+                    name="userName">
+                <div *ngIf="submitted && userName.invalid" class="invalid-feedback">
+                    <div>Name is required</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="meetingDuration">Time Zone:</label>
+            <div class="form-control">
+                <select id="timeZone" name="timeZone" #timeZone="ngModel"
+                 class="form-control" [(ngModel)]="model.timeZone">
+                    <option [value]="timeZoneItem.name" *ngFor="let timeZoneItem of timeZoneList">
+                        {{timeZoneItem.name}} - {{timeZoneItem.currentTime}}</option>
+                </select>
+                <div *ngIf="submitted && timeZone.invalid" class="invalid-feedback">
+                    <div>Time Zone is required</div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="page-footer">
+            <input type="button" class="btn btn-default" value="Cancel" (click)="onCancel($event)" />
+            <input type="submit" class="btn btn-primary" value="Submit">
+        </div>
+    </form>
+</div>

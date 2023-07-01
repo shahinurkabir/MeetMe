@@ -11,12 +11,8 @@ namespace MeetMe.Core.Persistence.Entities
         public Guid Id { get; set; }
         public string UserID { get; set; } = null!;
         public string Password { get; set; } = null!;
-        public string Email { get; set; }=null!;
         public string BaseURI { get; set; } = null!;
-        public int TimeZoneId { get; set; }
-        public string DateFormat { get; set; } = null!;
-        public string TimeFormat { get; set; } = null!;
-
-
+        public string TimeZone { get; set; } = null!;
+        public string UserName { get; set; } = null!;
     }
 }

@@ -11,7 +11,7 @@
     <div class="content">
         <div class="search">
             <i class="fa fa-search"></i>
-            <input spellcheck="false" type="text" [(ngModel)]="timeZoneNameFilterText" placeholder="Search"
+            <input spellcheck="false" autocomplete="off"  type="text" [(ngModel)]="timeZoneNameFilterText" placeholder="Search"
                 #searchTimeZone name="filterTimeZone" (input)="onFilterTimeZoneChanged($event)">
         </div>
         <ul class="options">

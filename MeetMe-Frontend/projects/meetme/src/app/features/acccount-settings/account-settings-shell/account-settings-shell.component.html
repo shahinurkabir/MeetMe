@@ -1,2 +1,11 @@
-<a routerLink="profile">Profile</a> | <a routerLink="link">Link</a>
-<router-outlet></router-outlet>
+<h1>Account Settings</h1>
+<div class="account-shell">
+  <div class="account-shell__sidebar">
+    <ul>
+      <li><a routerLink="profile" [routerLinkActive]="['is-active']">Profile</a></li>
+      <li><a routerLink="link" [routerLinkActive]="['is-active']">Link</a></li>
+    </ul>
+  </div>
+  <div class="account-shell__content">
+      <router-outlet></router-outlet>
+</div>

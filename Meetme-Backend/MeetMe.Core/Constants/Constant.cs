@@ -38,7 +38,7 @@ namespace MeetMe.Core.Constants
     {
         public const string Id = "Id";
         public const string UserId = "user_id";
-        public const string Email = "user_email";
+        public const string UserName = "user_name";
         public const string BaseURI = "base_uri";
         public const string TimeZone = "user_timezone";
 

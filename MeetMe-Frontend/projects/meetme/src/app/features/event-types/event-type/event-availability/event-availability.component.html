@@ -113,62 +113,7 @@
         </select>
 
     </div>
-    <!-- <h2>Time Intervals</h2>
-    <p>
-        <label for="timeZoneData">Time Zone:</label>
-        <select id="timeZoneData" name="timeZoneData" required class="form-control" [(ngModel)]="model.timeZoneId">
-            <option value="">Select</option>
-            <option [value]="timeZoneItem.id" *ngFor="let timeZoneItem of timeZoneList">
-                {{timeZoneItem.name}}</option>
-        </select>
-    </p>
-    <hr>
-    <div class="time-intervals-container">
-
-        <div class="time-intervals-weekly-container">
-            <h3>Weekly hours</h3>
-            <div *ngFor="let dailyTimeAvailabilities of weeklyTimeAvailabilities">
-                <table>
-                    <tr>
-                        <td valign="top" style="width:15px">
-                            <input type="checkbox" id="dailyTimeAvailabilities.day" name="dailyTimeAvailabilities.day"
-                                [(ngModel)]="dailyTimeAvailabilities.isAvailable">
-                        </td>
-                        <td valign="top" style="width:150px">
-                            <div>{{dailyTimeAvailabilities.day}}</div>
-                        </td>
-                        <td>
-                            
-
-                            <ng-template
-                                *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay : dailyTimeAvailabilities} "></ng-template>
-                        </td>
-                        
-                    </tr>
-                </table>
-                <hr>
-            </div>
-        </div>
-        <div class="time-intervals-date-override-container">
-            <h3>Time overrides in date</h3>
-            <button (click)="onApplyCalendarDateChanges($event)">Override date intervals</button>
-
-            <div *ngFor="let dailyTimeAvailabilities of dateOverrideAvailability;let index=index">
-                <div class="timeinterval_overrides">
-                    <div>{{dailyTimeAvailabilities.day}}</div>
-                    <div class="timeslots">
-                        <div *ngFor="let timeSlot of dailyTimeAvailabilities.intervals; let index=index">
-                            <span>{{timeSlot.startTime}}- {{timeSlot.endTime}}</span>
-                        </div>
-                    </div>
-                   <input type="button" value="remove" (click)="removeOverrideData(index)">
-                </div>
-                <hr>
-            </div>
-        </div>
-
-
-    </div> -->
+    
     <button [ngClass]="!isCustomAvailability?'toggle_button':''" (click)="onClickExistingHours($event)">Existing Working Hours</button>
     <button [ngClass]="isCustomAvailability?'toggle_button':''" (click)="onClickCustomHour($event)">Custom Working hour</button>
 

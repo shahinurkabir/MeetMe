@@ -39,7 +39,10 @@ export class AuthService {
 
         return response;
     }
-
+    
+    resetToken(token:any) {
+        this.setTokenData(token);
+    }
     private loginComplete(response: any): any {
 
         if (response == null) return response;
@@ -48,7 +51,7 @@ export class AuthService {
 
         return response
     }
-
+  
     private setTokenData(response: any) {
 
         let expiredAt = (Math.floor((new Date).getTime() / 1000)) + response.expiredAt;
@@ -59,7 +62,7 @@ export class AuthService {
             localStorage.setItem(ClaimTypes.TOKEN_EXPIRES_AT, expiredAt);
             localStorage.setItem(ClaimTypes.USER_ID, jsonString["user_id"]);
             localStorage.setItem(ClaimTypes.BASE_URI, jsonString["base_uri"]);
-            localStorage.setItem(ClaimTypes.USER_EMAIL, jsonString["user_email"]);
+            localStorage.setItem(ClaimTypes.USER_NAME, jsonString["user_name"]);
             localStorage.setItem(ClaimTypes.USER_TIMEZONE, jsonString["user_timezone"]);
 
         }
@@ -92,12 +95,13 @@ export class AuthService {
     get userId(): string {  
         return localStorage.getItem(ClaimTypes.USER_ID) ?? "";
     }
+    get userName(): string {
+        return localStorage.getItem(ClaimTypes.USER_NAME) ?? "";
+    }
     get baseUri(): string {
         return localStorage.getItem(ClaimTypes.BASE_URI) ?? "";
     }
-    get userEmail(): string {
-        return localStorage.getItem(ClaimTypes.USER_EMAIL) ?? "";
-    }
+   
     get userTimeZone(): string {
         return localStorage.getItem(ClaimTypes.USER_TIMEZONE) ?? "";
     }

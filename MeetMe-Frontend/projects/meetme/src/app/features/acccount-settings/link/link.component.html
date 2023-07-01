@@ -1,1 +1,27 @@
-<p>link works!</p>
+<div class="page">
+    <form (ngSubmit)="onSubmit(formEventInfo)" #formEventInfo="ngForm">
+        <div class="form-group">
+            <label for="name">Link  - <strong>{{host}}/</strong>
+            </label> 
+            <div class="form-control">
+                <input type="text" spellcheck="false" 
+                (input)="onLinkChanged($event)"
+                (keydown)="onKeyDown($event)" (keyup)="onKeyUp($event)" #link="ngModel"
+                    pattern="^[a-z0-9\-_]+$" [(ngModel)]="baseURI" id="link" name="link" required maxlength="255">
+                <div *ngIf="link.errors" class="invalid-feedback">
+                    <div *ngIf="link.errors['required']">Link is required</div>
+                </div>
+                <div *ngIf="availabilityStatus">
+                    <span >{{availabilityStatus}}</span>
+                </div>
+            </div>
+            
+        </div>
+
+
+        <div class="page-footer">
+            <input type="button" class="btn btn-default" value="Cancel" (click)="onCancel($event)" />
+            <input type="submit" class="btn btn-primary" value="Submit">
+        </div>
+    </form>
+</div>
