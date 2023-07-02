@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CalendarComponent } from '../../controls/calender/calendar.component';
-import { BookingService } from '../../services/booking.service';
 import { IEventTimeAvailability } from '../../interfaces/calendar';
 import { TimeZoneData } from '../../interfaces/event-type-interfaces';
 import { TimezoneControlComponent } from '../../controls/timezone-control/timezone-control.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { convertTimeZoneLocalTime } from '../../utilities/functions';
+import { EventTypeService } from '../../services/eventtype.service';
 
 @Component({
   selector: 'app-event-type-calendar',
@@ -26,21 +26,16 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   selectedDate: string | null = null;
   selectedYearMonth: string | null = null;
   constructor(
-    private bookingService: BookingService,
+    private eventTypeService: EventTypeService,
     private route: ActivatedRoute,
     private router: Router
   ) {
 
     this.timeZoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    // this.route.params.subscribe(params => {
-    //   this.eventTypeId = params["id"];
-
-    // });
   }
 
   ngOnInit(): void {
-    this.route.queryParams
     this.eventTypeId = this.route.snapshot.queryParamMap.get("id") ?? "";
     this.selectedDate = this.route.snapshot.queryParamMap.get('date');
     this.selectedYearMonth = this.route.snapshot.queryParamMap.get("month");
@@ -68,7 +63,6 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.showAvailableTimeSlotsInDay();
 
     this.addParamDate();
-    //this.day = this.days.find(e => e.date == this.selectedDate);
   }
 
   onHandledMonthChange(e: any) {
@@ -93,7 +87,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       fromDate = this.selectedYear + "-" + (this.selectedMonth + 1) + "-" + currentDate.getDate();
     }
 
-    this.bookingService.getList(this.eventTypeId, this.timeZoneName, fromDate, toDate).subscribe((data) => {
+    this.eventTypeService.getCalendarAvailability(this.eventTypeId, this.timeZoneName, fromDate, toDate).subscribe((data) => {
       this.availableTimeSlots = data;
       this.updateTimeLocalTime();
       this.disableNotAvailableDays(fromDate, toDate, data);

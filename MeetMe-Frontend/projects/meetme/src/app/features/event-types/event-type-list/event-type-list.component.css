@@ -2,18 +2,45 @@
     display: flex;
     justify-content: space-between;
     margin: 20px;
-    
+
 }
- hr {
+
+.event-list-header .user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.event-list-header .user-info h3 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.event-list-header .user-info a {
+    color: rgb(52, 52, 226);
+    text-decoration: none;
+}
+
+.event-list-header .user-info a:hover {
+    text-decoration: none;
+}
+
+.event-list-header .user-info a:visited {
+    color: rgb(52, 52, 226);
+}
+
+hr {
     height: 1px;
     border: 1px solid whitesmoke;
     margin: 15px;
 }
+
 .event-list-container {
     display: flex;
     width: 100%;
     align-items: center;
-    justify-content:flex-start;
+    justify-content: flex-start;
     flex-wrap: wrap;
 }
 
@@ -30,6 +57,7 @@
     box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 
 }
+
 .button {
     font: bold 11px Arial;
     text-decoration: none;
@@ -41,13 +69,15 @@
     border-bottom: 1px solid #333333;
     border-left: 1px solid #CCCCCC;
     cursor: pointer;
-  }
+}
+
 .event-list-item .header {
     display: flex;
     width: 100%;
     justify-content: space-between;
     text-align: center;
 }
+
 .event-list-item .header button {
     /* padding: 0 5px;
     cursor: pointer;
@@ -55,13 +85,15 @@
 }
 
 .event-list-item .time-location {
-    color:gray;
+    color: gray;
     font-size: 13px;
 }
+
 .event-list-item hr {
     margin: 5px 0;
-    color:lightgray
+    color: lightgray
 }
+
 .event-list-item article {
     margin: 7px 5px;
     overflow: hidden;
@@ -69,14 +101,14 @@
     text-align: justify;
     height: 125px;
 }
-.event-list-item .footer{
+
+.event-list-item .footer {
     position: absolute;
     width: 100%;
     bottom: 10px;
     left: 0;
     padding: 0 10px;
     display: flex;
-    justify-content:space-between;
+    justify-content: space-between;
     align-items: center;
 }
-

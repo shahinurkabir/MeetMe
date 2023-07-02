@@ -28,6 +28,7 @@ import { TestComponentComponent } from './test-component/test-component.componen
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { BookingLayoutComponent } from './layouts/booking-layout/booking-layout.component';
+import { UserEventTypesComponent } from './features/user-event-types/user-event-types.component';
 
 @NgModule({
     declarations: [
@@ -53,7 +54,8 @@ import { BookingLayoutComponent } from './layouts/booking-layout/booking-layout.
         TestComponentComponent,
         AuthLayoutComponent,
         AdminLayoutComponent,
-        BookingLayoutComponent
+        BookingLayoutComponent,
+        UserEventTypesComponent
         
     ],
     providers: [

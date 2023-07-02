@@ -14,8 +14,5 @@ export class BookingService extends DataService {
     constructor(http: HttpClient) {
         super(http)
     }
-    getList(eventTypeId:string,timezone: string, from: string, to: string): Observable<Array<IEventTimeAvailability>> {
-        let url: string = `${this.baseURI}/calendar/event-type/${eventTypeId}?timezone=${timezone}&from=${from}&to=${to}`
-        return this.doGet(url)
-    }
+    
 }

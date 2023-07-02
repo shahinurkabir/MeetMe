@@ -1,3 +1,5 @@
+import { IAccountProfileInfo } from "./account-interfaces";
+
 export interface IEventType {
     id: string,
     name: string,
@@ -52,4 +54,9 @@ export interface IEventAvailabilityDetailItemDto {
     stepId: number,
     from: number,
     to: number
+}
+
+export interface IUserProfileDetailResponse {
+    profile:IAccountProfileInfo,
+    events:Array<IEventType>
 }

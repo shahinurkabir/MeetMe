@@ -15,7 +15,8 @@ export class EventTypeListComponent implements OnInit {
   listEventTypes: IEventType[] = [];
   itemToDelete: IEventType | undefined;
   baseUri: string = "";
-
+  user_name: string = "";
+  host: string = window.location.host;
   constructor(
     private eventTypeService: EventTypeService,
     private router: Router,
@@ -24,6 +25,7 @@ export class EventTypeListComponent implements OnInit {
   ) {
     this.modalService.reset();
     this.baseUri = this.authService.baseUri;
+    this.user_name = this.authService.userName;
   }
 
   ngOnInit(): void {

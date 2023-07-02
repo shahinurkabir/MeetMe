@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { DataService } from './data.service';
 import { ICreateEventTypeCommand, IUpdateEventCommand, IUpdateEventAvailabilityCommand, IUpdateEventQuestionCommand } from '../interfaces/event-type-commands';
-import { IEventAvailabilityDetailItemDto, IEventType, IEventTypeQuestion } from '../interfaces/event-type-interfaces';
+import { IEventAvailabilityDetailItemDto, IEventType, IEventTypeQuestion, IUserProfileDetailResponse } from '../interfaces/event-type-interfaces';
+import { IEventTimeAvailability } from '../interfaces/calendar';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,10 @@ export class EventTypeService extends DataService {
     let url = `${this.eventTypeURI}`
     return this.http.get<Array<IEventType>>(url);
   }
-
+  getListByBaseURI(base_uri:string): Observable<IUserProfileDetailResponse> {
+    let url = `${this.eventTypeURI}/list/${base_uri}`
+    return this.http.get<IUserProfileDetailResponse>(url);
+  }
   getById(id: string): Observable<IEventType> {
     let url = `${this.eventTypeURI}/${id}`
     return this.http.get<IEventType>(url);
@@ -70,5 +74,10 @@ export class EventTypeService extends DataService {
   delete(eventTypeId: string): Observable<boolean> {
     let url = `${this.eventTypeURI}/${eventTypeId}/delete`
     return this.doPut(url, null);
+  }
+
+  getCalendarAvailability(eventTypeId: string, timezone: string, from: string, to: string): Observable<Array<IEventTimeAvailability>> {
+    let url: string = `${this.eventTypeURI}/${eventTypeId}/calendar-availability?timezone=${timezone}&from=${from}&to=${to}`
+    return this.doGet(url)
   }
 }

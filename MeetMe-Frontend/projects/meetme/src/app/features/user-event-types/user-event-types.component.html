@@ -1,0 +1,13 @@
+<div>
+    <h3>{{userProfileDetails?.profile?.userName!}}</h3>
+    <div>{{userProfileDetails?.profile?.welcomeText!}}</div>
+</div>
+
+
+<div class="event-list-container">
+ <div *ngFor="let item of userProfileDetails?.events">
+    <h2><a  [routerLink]="['/booking',baseUri,item.slug]" [queryParams]="{id:item.id}">
+        {{item.name}}
+    </a>
+ </h2>
+</div>

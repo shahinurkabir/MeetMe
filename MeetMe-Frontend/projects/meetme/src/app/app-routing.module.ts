@@ -14,6 +14,7 @@ import { TestComponentComponent } from './test-component/test-component.componen
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { BookingLayoutComponent } from './layouts/booking-layout/booking-layout.component';
+import { UserEventTypesComponent } from './features/user-event-types/user-event-types.component';
 
 const admin_Routes: Routes = [
   { path: "", redirectTo: "event-types", pathMatch: "full" },
@@ -45,6 +46,7 @@ const auth_Routes: Routes = [
 ];
 
 const booking_Routes: Routes = [
+  { path: ":user", component: UserEventTypesComponent },
   { path: ":user/:slug", component: EventTypeCalendarComponent },
   { path: "cancel/:id", component: EventTypeCalendarComponent },
   { path: "reschedule/:id", component: EventTypeCalendarComponent },
