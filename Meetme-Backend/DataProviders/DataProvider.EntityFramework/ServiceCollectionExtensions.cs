@@ -11,7 +11,7 @@ namespace DataProvider.EntityFramework
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection RegisterInfraDependency(this IServiceCollection  services,string connectionString)
+        public static IServiceCollection RegisterDBPersistence(this IServiceCollection  services,string connectionString)
         {
             services.AddDbContext<BookingDbContext>(option => option.UseSqlServer(connectionString));
 
@@ -19,7 +19,7 @@ namespace DataProvider.EntityFramework
             services.AddScoped<IEventQuestionRepository, EventQuestionRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
-            services.AddScoped<IEventTypeAvailabilityDetailRepository, EventTypeAvailabilityDetailRepository>();
+            services.AddScoped<IEventTypeAvailabilityRepository, EventTypeAvailabilityDetailRepository>();
 
             return services;
 

@@ -60,7 +60,7 @@ export class EventTypeListComponent implements OnInit {
   }
 
   onToggleActive(eventType: IEventType) {
-    this.eventTypeService.toggleActive(eventType.id).subscribe(response => {
+    this.eventTypeService.toggleStatus(eventType.id).subscribe(response => {
       eventType.activeYN = !eventType.activeYN;
     })
   }

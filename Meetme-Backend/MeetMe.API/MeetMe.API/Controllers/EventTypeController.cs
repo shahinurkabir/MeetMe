@@ -20,10 +20,10 @@ namespace MeetMe.API.Controllers
     public class EventTypesController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly IUserInfo loginUser;
+        private readonly ILoginUserInfo loginUser;
         private readonly IUserRepository userRepository;
 
-        public EventTypesController(IMediator mediator, IUserInfo loginUser, IUserRepository userRepository)
+        public EventTypesController(IMediator mediator, ILoginUserInfo loginUser, IUserRepository userRepository)
         {
             this.mediator = mediator;
             this.loginUser = loginUser;
@@ -126,7 +126,7 @@ namespace MeetMe.API.Controllers
         [Route("{id}/availability")]
         public async Task<List<EventTypeAvailabilityDetail>> GetEventAvailabilityDetail(Guid id)
         {
-            var queryCommand = new GetEventTypeAvailabilityDetailQuery { EvnetTypeId = id };
+            var queryCommand = new GetEventTypeAvailabilityQuery { EvnetTypeId = id };
 
             var result = await mediator.Send(queryCommand);
 
@@ -144,8 +144,8 @@ namespace MeetMe.API.Controllers
         }
 
         [HttpPut]
-        [Route("{id}/toggleActive")]
-        public async Task<bool> ToggleActive(Guid id)
+        [Route("{id}/toggle-status")]
+        public async Task<bool> ToggleStatus(Guid id)
         {
             var command = new ToggleEventTypeStatusCommand(id);
 
@@ -164,6 +164,7 @@ namespace MeetMe.API.Controllers
 
             return result;
         }
+
         [HttpPut]
         [Route("{id}/delete")]
         public async Task<bool> Delete(Guid id)
@@ -174,6 +175,7 @@ namespace MeetMe.API.Controllers
 
             return result;
         }
+
         [AllowAnonymous]
         [HttpGet]
         [Route("{id}/calendar-availability")]

@@ -4,7 +4,7 @@ using MeetMe.Core.Persistence.Entities;
 
 namespace DataProvider.EntityFramework.EntityConfigurations
 {
-    public class UserEntityConfiguration : IEntityTypeConfiguration<User>
+    public class UsersEntityConfiguration : IEntityTypeConfiguration<User>
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {

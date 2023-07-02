@@ -17,7 +17,7 @@ namespace DataProvider.EntityFramework.Repositories
         {
             this.bookingDbContext = bookingDbContext;
         }
-        public async Task<List<EventTypeQuestion>> GetEventQuestionsByEventTypeId(Guid eventTypeId)
+        public async Task<List<EventTypeQuestion>> GetQuestionsByEventId(Guid eventTypeId)
         {
             return await bookingDbContext.Set<EventTypeQuestion>()
                 .Where(e => e.EventTypeId == eventTypeId)
@@ -29,7 +29,7 @@ namespace DataProvider.EntityFramework.Repositories
             var eventTypeId = questions.First().EventTypeId;
 
             var listOfQuestion = await bookingDbContext.Set<EventTypeQuestion>()
-               .Where(e => e.EventTypeId == eventTypeId)
+               .Where(e => e.EventTypeId == eventTypeId && e.SystemDefinedYN==false)
                .ToListAsync();
 
             if (listOfQuestion.Any())

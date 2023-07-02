@@ -7,20 +7,20 @@ using System.Threading.Tasks;
 
 namespace MeetMe.Application.Availabilities.Queries
 {
-    public class AvailabilityDetailQuery : IRequest<Availability>
+    public class GetAvailabilityDetailQuery : IRequest<Availability>
     {
         public Guid Id { get; set; }
     }
 
-    public class ScheduleDetailQueryHandler : IRequestHandler<AvailabilityDetailQuery, Availability>
+    public class GetAvailabilityDetailQueryHandler : IRequestHandler<GetAvailabilityDetailQuery, Availability>
     {
         private readonly IAvailabilityRepository availabilityRepository;
 
-        public ScheduleDetailQueryHandler(IAvailabilityRepository availabilityRepository)
+        public GetAvailabilityDetailQueryHandler(IAvailabilityRepository availabilityRepository)
         {
             this.availabilityRepository = availabilityRepository;
         }
-        public async Task<Availability> Handle(AvailabilityDetailQuery request, CancellationToken cancellationToken)
+        public async Task<Availability> Handle(GetAvailabilityDetailQuery request, CancellationToken cancellationToken)
         {
             var ruleInfo = await availabilityRepository.GetById(request.Id);
 

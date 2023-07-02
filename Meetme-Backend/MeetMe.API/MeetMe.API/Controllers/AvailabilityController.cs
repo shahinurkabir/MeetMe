@@ -17,9 +17,9 @@ namespace MeetMe.API.Controllers
     public class AvailabilityController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly IUserInfo applicationUserInfo;
+        private readonly ILoginUserInfo applicationUserInfo;
 
-        public AvailabilityController(IMediator mediator, IUserInfo applicationUserInfo)
+        public AvailabilityController(IMediator mediator, ILoginUserInfo applicationUserInfo)
         {
             this.mediator = mediator;
             this.applicationUserInfo = applicationUserInfo;
@@ -29,7 +29,7 @@ namespace MeetMe.API.Controllers
         [Route("")]
         public async Task<List<Availability>> GetList()
         {
-            var queryCommand = new AvailabilityListQuery { UserId = applicationUserInfo.Id };
+            var queryCommand = new GetAvailabilityListQuery { UserId = applicationUserInfo.Id };
 
             var result = await mediator.Send(queryCommand);
 
@@ -40,7 +40,7 @@ namespace MeetMe.API.Controllers
         [Route("{id}")]
         public async Task<Availability> GetDetail(Guid id)
         {
-            var queryCommand = new AvailabilityDetailQuery { Id = id };
+            var queryCommand = new GetAvailabilityDetailQuery { Id = id };
 
             var result = await mediator.Send(queryCommand);
 
@@ -58,7 +58,7 @@ namespace MeetMe.API.Controllers
 
         [HttpPost]
         [Route("{id}/EditName")]
-        public async Task<bool> EditName(Guid id, SetDefaultCommand editAvailabilityNameCommand)
+        public async Task<bool> EditName(Guid id, EditNameAvailabilityCommand editAvailabilityNameCommand)
         {
             var result = await mediator.Send(editAvailabilityNameCommand);
 
@@ -76,7 +76,7 @@ namespace MeetMe.API.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<bool> Edit(Guid id, UpdateAvailabilityCommand updateAvailabilityCommand)
+        public async Task<bool> UpdateAvailability(Guid id, UpdateAvailabilityCommand updateAvailabilityCommand)
         {
             updateAvailabilityCommand.Id = id;
 

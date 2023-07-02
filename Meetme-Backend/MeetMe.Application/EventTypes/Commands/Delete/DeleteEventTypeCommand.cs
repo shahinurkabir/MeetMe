@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MeetMe.Core.Interface;
 using MeetMe.Core.Persistence.Interface;
+using MeetMe.Core.Exceptions;
 
 namespace MeetMe.Application.EventTypes.Manage
 {
@@ -33,10 +34,10 @@ namespace MeetMe.Application.EventTypes.Manage
             var eventType = await eventTypeRepository.GetEventTypeById(request.eventTypeId);
 
             if (eventType == null)
-                throw new Exception("Not found.");
+                throw new MeetMeException("Not found.");
 
             if (eventType.IsDeleted)
-                throw new Exception("Already deleted.");
+                throw new MeetMeException("Already deleted.");
 
             eventType.IsDeleted = true;
 

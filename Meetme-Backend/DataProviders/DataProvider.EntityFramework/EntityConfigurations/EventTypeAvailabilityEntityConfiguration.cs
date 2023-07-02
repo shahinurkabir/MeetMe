@@ -4,7 +4,7 @@ using MeetMe.Core.Persistence.Entities;
 
 namespace DataProvider.EntityFramework.EntityConfigurations
 {
-    public class EventTypeAvailabilityDetailsEntityConfiguration : IEntityTypeConfiguration<EventTypeAvailabilityDetail>
+    public class EventTypeAvailabilityEntityConfiguration : IEntityTypeConfiguration<EventTypeAvailabilityDetail>
     {
         public void Configure(EntityTypeBuilder<EventTypeAvailabilityDetail> builder)
         {

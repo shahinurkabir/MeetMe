@@ -12,13 +12,13 @@ namespace MeetMe.Application.EventTypes.Commands.Create
     {
         private readonly IAvailabilityRepository availabilityRepository;
         private readonly IEventTypeRepository eventTypeRepository;
-        private readonly IUserInfo applicationUser;
+        private readonly ILoginUserInfo applicationUser;
         private readonly IDateTimeService dateTimeService;
 
         public CreateEventTypeCommandHandler(
             IAvailabilityRepository availabilityRepository,
             IEventTypeRepository eventTypeRepository,
-            IUserInfo applicationUser,
+            ILoginUserInfo applicationUser,
             IDateTimeService dateTimeService
             )
         {
@@ -44,10 +44,6 @@ namespace MeetMe.Application.EventTypes.Commands.Create
 
             EventType eventTypeInfo = ConvertToEntity(newEventTypeId, defaultAvailability, request);
 
-            var listOfDefaultQuestions =GetDefaultQuestion();
-
-            eventTypeInfo.Questions = listOfDefaultQuestions;
-
             await eventTypeRepository.AddNewEventType(eventTypeInfo);
 
             return await Task.FromResult(newEventTypeId);
@@ -56,6 +52,7 @@ namespace MeetMe.Application.EventTypes.Commands.Create
         private EventType ConvertToEntity(Guid newId, Availability availability, CreateEventTypeCommand request)
         {
             var listScheduleDetails = CopyScheduleItemFromAvailabilityDetails(newId, availability.Details);
+            var listQuestions = GetDefaultQuestion();
 
             return new EventType
             {
@@ -77,6 +74,7 @@ namespace MeetMe.Application.EventTypes.Commands.Create
                 CreatedBy = applicationUser.Id,
                 CreatedAt = dateTimeService.GetCurrentTimeUtc,
                 EventTypeAvailabilityDetails = listScheduleDetails,
+                Questions = listQuestions
             };
         }
 

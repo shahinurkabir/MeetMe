@@ -8,9 +8,9 @@ namespace MeetMe.Application.Availabilities.Commands.Update
     public class UpdateAvailabilityCommandHandler : IRequestHandler<UpdateAvailabilityCommand, bool>
     {
         private readonly IAvailabilityRepository availabilityRepository;
-        private readonly IUserInfo applicationUserInfo;
+        private readonly ILoginUserInfo applicationUserInfo;
 
-        public UpdateAvailabilityCommandHandler(IAvailabilityRepository availabilityRepository, IUserInfo applicationUserInfo)
+        public UpdateAvailabilityCommandHandler(IAvailabilityRepository availabilityRepository, ILoginUserInfo applicationUserInfo)
         {
             this.availabilityRepository = availabilityRepository;
             this.applicationUserInfo = applicationUserInfo;

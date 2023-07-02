@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MeetMe.Core.Interface
 {
-    public interface IUserInfo
+    public interface ILoginUserInfo
     {
         public Guid Id { get; set; }
         public string UserId { get; set; }

@@ -24,9 +24,9 @@ namespace MeetMe.Application.AccountSettings
     public class UpdateProfileCommandHandler : IRequestHandler<UpdateProfileCommand, bool>
     {
         private readonly IUserRepository userRepository;
-        private readonly IUserInfo userInfo;
+        private readonly ILoginUserInfo userInfo;
 
-        public UpdateProfileCommandHandler(IUserRepository userRepository, IUserInfo userInfo)
+        public UpdateProfileCommandHandler(IUserRepository userRepository, ILoginUserInfo userInfo)
         {
             this.userRepository = userRepository;
             this.userInfo = userInfo;

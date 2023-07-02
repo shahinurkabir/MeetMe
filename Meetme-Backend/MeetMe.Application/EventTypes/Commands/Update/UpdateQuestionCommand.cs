@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using MeetMe.Core.Exceptions;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using System;
@@ -36,7 +37,7 @@ namespace MeetMe.Application.EventTypes.Update
             var eventTypeEntity = await eventTypeRepository.GetEventTypeById(request.EventTypeId);
 
             if (eventTypeEntity == null)
-                throw new Core.Exceptions.MeetMeException("Invalid event");
+                throw new MeetMeException("Invalid event");
 
             var listQuestionEntities = ConvertToEventTypeQuestions(request);
 

@@ -36,14 +36,6 @@ namespace DataProvider.EntityFramework.Repositories
             return entity;
         }
 
-        public async Task<List<EventType>> GetEventTypeList()
-        {
-
-            var list = await bookingDbContext.Set<EventType>().ToListAsync();
-
-            return list;
-
-        }
         public async Task UpdateEventType(EventType eventTypeInfo)
         {
             bookingDbContext.Update(eventTypeInfo);
@@ -51,14 +43,25 @@ namespace DataProvider.EntityFramework.Repositories
             await bookingDbContext.SaveChangesAsync();
         }
 
-        //public async Task<bool> SlugUsedYN(string slug, Guid userId)
-        //{
-        //    var result = await bookingDbContext.Set<EventType>()
-        //        .Where(e => e.OwnerId == userId && e.Slug == slug)
-        //        .CountAsync();
+        public async Task UpdateEventAvailability(EventType eventTypeInfo, List<EventTypeAvailabilityDetail> eventTypeAvailabilityDetails)
+        {
+            var eventTypeId = eventTypeInfo.Id;
 
-        //    return result > 0;
-        //}
+            var listAvailabilityIinDb = await bookingDbContext.Set<EventTypeAvailabilityDetail>()
+              .Where(e => e.EventTypeId == eventTypeId)
+              .ToListAsync();
+
+            if (listAvailabilityIinDb.Any())
+            {
+                bookingDbContext.RemoveRange(listAvailabilityIinDb);
+
+            }
+            await bookingDbContext.AddRangeAsync(eventTypeAvailabilityDetails);
+
+            bookingDbContext.Update(eventTypeInfo);
+
+            await bookingDbContext.SaveChangesAsync();
+        }
 
         public async Task<List<EventType>> GetEventTypeListByUserId(Guid userId)
         {

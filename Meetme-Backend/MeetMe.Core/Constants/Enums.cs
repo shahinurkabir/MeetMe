@@ -6,8 +6,6 @@ namespace MeetMe.Core.Constant
 {
     public class Enums
     {
-        
-
         public enum QuestionType
         {
             Text = 10,

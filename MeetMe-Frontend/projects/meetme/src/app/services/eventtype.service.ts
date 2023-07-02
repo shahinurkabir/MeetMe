@@ -63,8 +63,8 @@ export class EventTypeService extends DataService {
     let url = `${this.eventTypeURI}/${updateEventQuestionsCommand.eventTypeId}/questions`
     return this.doPost(url, updateEventQuestionsCommand);
   }
-  toggleActive(eventTypeId: string): Observable<boolean> {
-    let url = `${this.eventTypeURI}/${eventTypeId}/toggleactive`
+  toggleStatus(eventTypeId: string): Observable<boolean> {
+    let url = `${this.eventTypeURI}/${eventTypeId}/toggle-status`
     return this.doPut(url, null);
   }
   clone(eventTypeId: string): Observable<string> {

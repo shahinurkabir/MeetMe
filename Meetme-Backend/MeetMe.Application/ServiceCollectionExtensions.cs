@@ -7,7 +7,7 @@ namespace MeetMe.Application
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection RegisterApplicationDependency(this IServiceCollection services)
+        public static IServiceCollection RegisterApplication(this IServiceCollection services)
         {
             var assembly = typeof(CreateEventTypeCommand).Assembly;
 

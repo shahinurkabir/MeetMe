@@ -49,7 +49,7 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 
-var connectionString = builder.Configuration.GetConnectionString("BookingDB");
+var dbConnectionString = builder.Configuration.GetConnectionString("BookingDB")??"";// TODO: handle null more gracefully later
 
 RegisterJwtAuthentication(builder);
 RegisterAuthorization(builder);
@@ -58,29 +58,15 @@ builder.Services.AddControllers();
 builder.Services.AddMemoryCache();
 builder.Services.AddSwaggerGen();
 
-//var domainAssembly = typeof(CreateEventTypeCommand).Assembly;
-//builder.Services.AddMediatR(domainAssembly);
-
-//Add FluentValidationbuilder.Sservices.AddFluentValidation(new[] { domainAssembly });
-
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-builder.Services.AddScoped<IUserInfo, ApplicationUser>();
-//services.AddSingleton<IPersistenseProvider, InMemoryPersistenseProvider>();
+builder.Services.AddScoped<ILoginUserInfo, LoginUserInfo>();
 
-//builder.Services.AddScoped<IEventTypeRepository, EventTypeRepository>();
-//builder.Services.AddScoped<IEventQuestionRepository, EventQuestionRepository>();
-//builder.Services.AddScoped<IEventAvailabilityRepository, EventAvailabilityRepository>();
-//builder.Services.AddScoped<ITimeZoneDataRepository, TimeZoneDataRepository>();
-//builder.Services.AddScoped<IPersistenceProvider, PersistenceProviderEF>();
 builder.Services.AddScoped<ICacheService, InMemoryCacheService>();
 builder.Services.AddScoped<IDateTimeService, DateTimeService>();
-//builder.Services.AddScoped<IEventTypeService, EventTypeService>();
 
-builder.Services.RegisterApplicationDependency();
-builder.Services.RegisterInfraDependency(connectionString);
-
-
+builder.Services.RegisterApplication();
+builder.Services.RegisterDBPersistence(dbConnectionString);
 
 
 builder.Services.AddCors(e => e.AddPolicy("AllowAll",
@@ -91,7 +77,6 @@ builder.Services.AddCors(e => e.AddPolicy("AllowAll",
                  .AllowAnyMethod()
                  .AllowAnyHeader();
              }));
-
 
 
 var app = builder.Build();

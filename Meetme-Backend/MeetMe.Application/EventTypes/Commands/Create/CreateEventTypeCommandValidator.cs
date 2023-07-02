@@ -10,9 +10,9 @@ namespace MeetMe.Application.EventTypes.Commands.Create
     public class CreateCreateEventTypeCommandValidator : AbstractValidator<CreateEventTypeCommand>
     {
         private readonly IEventTypeRepository eventTypeRepository;
-        private readonly IUserInfo applicationUser;
+        private readonly ILoginUserInfo applicationUser;
 
-        public CreateCreateEventTypeCommandValidator(IEventTypeRepository eventTypeRepository, IUserInfo applicationUser)
+        public CreateCreateEventTypeCommandValidator(IEventTypeRepository eventTypeRepository, ILoginUserInfo applicationUser)
         {
             this.eventTypeRepository = eventTypeRepository;
             this.applicationUser = applicationUser;

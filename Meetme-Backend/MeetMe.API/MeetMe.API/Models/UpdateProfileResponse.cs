@@ -1,6 +1,6 @@
 ﻿namespace MeetMe.API.Models
 {
-    public class UpdateAccountSettingsResponse
+    public class UpdateProfileResponse
     {
         public bool Result { get; set; }
         public TokenResponse NewToken { get; set; }=null!;

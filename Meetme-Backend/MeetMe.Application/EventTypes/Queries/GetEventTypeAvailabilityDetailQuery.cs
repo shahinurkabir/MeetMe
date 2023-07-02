@@ -8,22 +8,22 @@ using MeetMe.Core.Persistence.Interface;
 
 namespace MeetMe.Application.EventTypes.Queries
 {
-    public class GetEventTypeAvailabilityDetailQuery : IRequest<List<EventTypeAvailabilityDetail>>
+    public class GetEventTypeAvailabilityQuery : IRequest<List<EventTypeAvailabilityDetail>>
     {
         public Guid EvnetTypeId { get; set; }
     };
 
-    public class GetEventTypeAvailabilityDetailQueryHandler : IRequestHandler<GetEventTypeAvailabilityDetailQuery, List<EventTypeAvailabilityDetail>>
+    public class GetEventTypeAvailabilityQueryHandler : IRequestHandler<GetEventTypeAvailabilityQuery, List<EventTypeAvailabilityDetail>>
     {
-        private readonly IEventTypeAvailabilityDetailRepository eventTypeAvailabilityDetailRepository;
+        private readonly IEventTypeAvailabilityRepository eventTypeAvailabilityDetailRepository;
 
-        public GetEventTypeAvailabilityDetailQueryHandler(IEventTypeAvailabilityDetailRepository  eventTypeAvailabilityDetailRepository)
+        public GetEventTypeAvailabilityQueryHandler(IEventTypeAvailabilityRepository  eventTypeAvailabilityDetailRepository)
         {
             this.eventTypeAvailabilityDetailRepository = eventTypeAvailabilityDetailRepository;
         }
-        public async Task<List<EventTypeAvailabilityDetail>> Handle(GetEventTypeAvailabilityDetailQuery request, CancellationToken cancellationToken)
+        public async Task<List<EventTypeAvailabilityDetail>> Handle(GetEventTypeAvailabilityQuery request, CancellationToken cancellationToken)
         {
-            var availability = await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityDetailByEventId(request.EvnetTypeId);
+            var availability = await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityByEventId(request.EvnetTypeId);
             return availability;
         }
     }

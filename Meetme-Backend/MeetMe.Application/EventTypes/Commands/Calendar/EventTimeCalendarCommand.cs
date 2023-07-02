@@ -18,11 +18,11 @@ namespace MeetMe.Application.EventTypes.Calendar
     public class EventTimeCalendarCommandHandler : IRequestHandler<EventTimeCalendarCommand, List<EventTimeCalendar>>
     {
         private readonly IEventTypeRepository eventTypeRepository;
-        private readonly IEventTypeAvailabilityDetailRepository eventTypeAvailabilityDetailRepository;
+        private readonly IEventTypeAvailabilityRepository eventTypeAvailabilityDetailRepository;
 
         public EventTimeCalendarCommandHandler(
             IEventTypeRepository eventTypeRepository,
-            IEventTypeAvailabilityDetailRepository eventTypeAvailabilityDetailRepository
+            IEventTypeAvailabilityRepository eventTypeAvailabilityDetailRepository
             )
         {
             this.eventTypeRepository = eventTypeRepository;
@@ -32,11 +32,12 @@ namespace MeetMe.Application.EventTypes.Calendar
         public async Task<List<EventTimeCalendar>> Handle(EventTimeCalendarCommand request, CancellationToken cancellationToken)
         {
             var eventTypeEntity = await eventTypeRepository.GetEventTypeById(request.EventTypeId);
+
             var calendarTimeZone = eventTypeEntity.TimeZone;
             var bufferTime = eventTypeEntity.BufferTimeAfter;
             var meetingDuration = eventTypeEntity.Duration;
 
-            var availabilityList = await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityDetailByEventId(eventTypeEntity.Id);
+            var availabilityList = await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityByEventId(eventTypeEntity.Id);
 
             var userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(request.TimeZone);
             var listSlots = GetCalendarTimeSlots(request.TimeZone, calendarTimeZone, request.FromDate, request.ToDate, bufferTime, meetingDuration, availabilityList);
@@ -61,6 +62,7 @@ namespace MeetMe.Application.EventTypes.Calendar
                 };
                 result.Add(eventTimeCalendar);
             }
+
             return result;
 
         }
@@ -141,6 +143,7 @@ namespace MeetMe.Application.EventTypes.Calendar
             while (dayStartTime < dayEndTime)
             {
                 yield return new TimeSlot { StartAt = dayStartTime };
+
                 dayStartTime = dayStartTime.AddMinutes(meetingDuration).AddMinutes(bufferTimeInMinute); ;
 
             }

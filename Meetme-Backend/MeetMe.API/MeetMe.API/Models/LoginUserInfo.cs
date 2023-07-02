@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace MeetMe.API.Models
 {
-    public class ApplicationUser : IUserInfo
+    public class LoginUserInfo : ILoginUserInfo
     {
-        public ApplicationUser(IHttpContextAccessor httpContextAccessor)
+        public LoginUserInfo(IHttpContextAccessor httpContextAccessor)
         {
 
             httpContextAccessor.HttpContext?.User.Claims.ToList().ForEach(x =>

@@ -14,9 +14,9 @@ namespace MeetMe.Application.AccountSettings
     public class UpdateAccountLinkCommandHandler : IRequestHandler<UpdateAccountLinkCommand, bool>
     {
         private readonly IUserRepository userRepository;
-        private readonly IUserInfo userInfo;
+        private readonly ILoginUserInfo userInfo;
 
-        public UpdateAccountLinkCommandHandler(IUserRepository userRepository, IUserInfo userInfo)
+        public UpdateAccountLinkCommandHandler(IUserRepository userRepository, ILoginUserInfo userInfo)
         {
             this.userRepository = userRepository;
             this.userInfo = userInfo;
@@ -41,9 +41,9 @@ namespace MeetMe.Application.AccountSettings
     public class UpdateAccountLinkCommandValidator : AbstractValidator<UpdateAccountLinkCommand>
     {
         private readonly IUserRepository userRepository;
-        private readonly IUserInfo userInfo;
+        private readonly ILoginUserInfo userInfo;
 
-        public UpdateAccountLinkCommandValidator(IUserRepository userRepository, IUserInfo userInfo)
+        public UpdateAccountLinkCommandValidator(IUserRepository userRepository, ILoginUserInfo userInfo)
         {
             RuleFor(m => m.BaseURI).NotEmpty().WithMessage("Link can not be empty");
             RuleFor(m => m.BaseURI).MustAsync(async (command, link, token) => (await userRepository.IsLinkAvailable( link,userInfo.Id))).WithMessage("Link is already used");

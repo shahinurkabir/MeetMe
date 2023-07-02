@@ -24,12 +24,12 @@ namespace MeetMe.Application.EventTypes.Manage
     {
         private readonly IEventTypeRepository eventTypeRepository;
         private readonly IDateTimeService dateTimeService;
-        private readonly IUserInfo applicationUserInfo;
+        private readonly ILoginUserInfo applicationUserInfo;
 
         public CloneEventTypeCommandHandler(
             IEventTypeRepository eventTypeRepository,
             IDateTimeService dateTimeService,
-            IUserInfo applicationUserInfo
+            ILoginUserInfo applicationUserInfo
             )
         {
             this.eventTypeRepository = eventTypeRepository;
@@ -45,20 +45,22 @@ namespace MeetMe.Application.EventTypes.Manage
 
             var newEventTypeId = Guid.NewGuid();
 
-            var cloneEventTypeEntity = CloneEventType(eventType, newEventTypeId);
+            var newSlug = await GetNewSlugAsync(eventType.Slug);
+
+            var cloneEventTypeEntity = CloneEventType(eventType,newSlug, newEventTypeId);
 
             await eventTypeRepository.AddNewEventType(cloneEventTypeEntity);
 
             return newEventTypeId;
         }
 
-        private EventType CloneEventType(EventType eventType, Guid newEventTypeId)
+        private EventType CloneEventType(EventType eventType,string newSlug, Guid newEventTypeId)
         {
             var cloneEventType = new EventType
             {
                 Id = newEventTypeId,
                 Name = $"{eventType.Name} (clone)",
-                Slug = $"{eventType.Name}-clone",
+                Slug =newSlug,
                 ActiveYN = eventType.ActiveYN,
                 OwnerId = eventType.OwnerId,
                 AvailabilityId = eventType.AvailabilityId,
@@ -94,7 +96,7 @@ namespace MeetMe.Application.EventTypes.Manage
 
             cloneEventType.Questions.AddRange(eventType.Questions.Select(e =>
                 {
-                    return new MeetMe.Core.Persistence.Entities.EventTypeQuestion
+                    return new EventTypeQuestion
                     {
                         Id = Guid.NewGuid(),
                         EventTypeId = newEventTypeId,
@@ -110,9 +112,30 @@ namespace MeetMe.Application.EventTypes.Manage
                 }).ToList()
                 );
 
-
-
             return cloneEventType;
+        }
+
+        private async Task<string> GetNewSlugAsync(string slug)
+        {
+            var newSlug = $"{slug}-clone";
+
+            var listEventForThisUser = await eventTypeRepository.GetEventTypeListByUserId(applicationUserInfo.Id);
+
+            if (listEventForThisUser == null || listEventForThisUser.Count == 0)
+                return newSlug;
+
+            var index = 1;
+
+            foreach (var evenetTypeItem in listEventForThisUser)
+            {
+
+                if (evenetTypeItem.Slug == newSlug)
+                {
+                    newSlug = $"{slug}-clone-{index}";
+                }
+            }
+
+            return newSlug;
         }
     }
 

@@ -29,9 +29,9 @@ namespace MeetMe.Application.EventTypes.Update
     public class UpdateInfoCommandHandler : IRequestHandler<UpdateInfoCommand, bool>
     {
         private readonly IEventTypeRepository eventTypeRepository;
-        private readonly IUserInfo applicationUser;
+        private readonly ILoginUserInfo applicationUser;
 
-        public UpdateInfoCommandHandler(IEventTypeRepository eventTypeRepository, IUserInfo applicationUser)
+        public UpdateInfoCommandHandler(IEventTypeRepository eventTypeRepository, ILoginUserInfo applicationUser)
         {
             this.eventTypeRepository = eventTypeRepository;
             this.applicationUser = applicationUser;
@@ -59,9 +59,9 @@ namespace MeetMe.Application.EventTypes.Update
     public class UpdateInfoCommandValidator : AbstractValidator<UpdateInfoCommand>
     {
         private readonly IEventTypeRepository eventTypeRepository;
-        private readonly IUserInfo applicationUser;
+        private readonly ILoginUserInfo applicationUser;
 
-        public UpdateInfoCommandValidator(IEventTypeRepository eventTypeRepository, IUserInfo applicationUser)
+        public UpdateInfoCommandValidator(IEventTypeRepository eventTypeRepository, ILoginUserInfo applicationUser)
         {
             this.eventTypeRepository = eventTypeRepository;
             this.applicationUser = applicationUser;
