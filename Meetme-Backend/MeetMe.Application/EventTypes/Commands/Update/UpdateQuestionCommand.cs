@@ -43,7 +43,7 @@ namespace MeetMe.Application.EventTypes.Update
 
             listQuestionEntities=listQuestionEntities.FindAll(x => x.SystemDefinedYN ==false);
 
-            await eventQuestionRepository.ResetEventQuestions(listQuestionEntities);
+            await eventQuestionRepository.ResetEventQuestions(request.EventTypeId, listQuestionEntities);
 
             return true;
         }

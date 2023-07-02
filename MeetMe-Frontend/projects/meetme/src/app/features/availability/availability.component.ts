@@ -99,12 +99,15 @@ export class AvailabilityComponent implements OnInit {
     }
 
     this.availabilityService.edit(command).subscribe({
-      next: response => { this.listAvailabilityComponent?.loadData(this.selectedAvailability?.id); },
+      next: response => {
+        this.listAvailabilityComponent?.loadData(this.selectedAvailability?.id);
+        alert("Availability updated successfully");//TODO: Display success message
+      },
       error: (error) => { console.log(error) },
       complete: () => { this.modalService.close() }
     });
   }
-  
+
   onClickDelete() {
     this.modalService.open('delete-availability-modal')
   }

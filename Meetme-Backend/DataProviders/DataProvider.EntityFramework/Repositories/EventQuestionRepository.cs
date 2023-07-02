@@ -24,10 +24,8 @@ namespace DataProvider.EntityFramework.Repositories
                 .ToListAsync();
         }
 
-        public async Task ResetEventQuestions(List<EventTypeQuestion> questions)
+        public async Task ResetEventQuestions(Guid eventTypeId,List<EventTypeQuestion> questions)
         {
-            var eventTypeId = questions.First().EventTypeId;
-
             var listOfQuestion = await bookingDbContext.Set<EventTypeQuestion>()
                .Where(e => e.EventTypeId == eventTypeId && e.SystemDefinedYN==false)
                .ToListAsync();
