@@ -14,5 +14,6 @@ namespace MeetMe.Core.Persistence.Entities
         public string BaseURI { get; set; } = null!;
         public string TimeZone { get; set; } = null!;
         public string UserName { get; set; } = null!;
+        public string? WelcomeText { get; set; }
     }
 }

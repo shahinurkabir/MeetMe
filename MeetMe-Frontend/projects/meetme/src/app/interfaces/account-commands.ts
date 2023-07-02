@@ -4,5 +4,6 @@ export interface IUpdateUserLinkCommand {
 
 export interface IUpdateProfileCommand {
  userName: string,
- timeZone: string
+ timeZone: string,
+ welcomeText?: string
 }

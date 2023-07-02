@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IUpdateAccountSettingsResponse, IUserDetail } from '../../../interfaces/account-interfaces';
+import { IUpdateAccountSettingsResponse, IAccountProfileInfo } from '../../../interfaces/account-interfaces';
 import { TimeZoneData } from '../../../interfaces/event-type-interfaces';
 import { ListOfTimeZone } from '../../../utilities/timezone-data';
 import { AccountService } from '../../../services/account.service';
@@ -16,10 +16,12 @@ export class ProfileComponent implements OnInit {
 
   submitted: boolean = false;
   timeZoneList: TimeZoneData[] = ListOfTimeZone;
-  model: IUserDetail = {
+  model: IAccountProfileInfo = {
     id: "",
     userName: "",
     timeZone: "",
+    baseURI: "",
+    welcomeText: ""
   };
   constructor(
     private accountService: AccountService,
@@ -31,16 +33,28 @@ export class ProfileComponent implements OnInit {
   }
 
   loadData() {
-    this.model.userName = this.authService.userName;
-    this.model.timeZone = this.authService.userTimeZone;
+    this.accountService.getProfile().subscribe({
+      next: response => {
+        this.loadProfileDataComplete(response);
+      },
+      error: error => { console.log(error) },// TODO: Display error message
+      complete: () => { }
+    });
   }
+
+  private loadProfileDataComplete(response: IAccountProfileInfo) {
+    this.model = response;
+  }
+
   onSubmit(form: NgForm) {
 
     this.submitted = true;
 
-    if (form.invalid)  return;
+    if (form.invalid) return;
 
-    let command: IUpdateProfileCommand = { userName: this.model.userName, timeZone: this.model.timeZone }
+    let command: IUpdateProfileCommand = {
+      userName: this.model.userName, timeZone: this.model.timeZone,welcomeText:this.model.welcomeText
+    }
 
     this.accountService.updateProfile(command).subscribe({
       next: response => {
@@ -50,8 +64,6 @@ export class ProfileComponent implements OnInit {
       complete: () => { }
     });
   }
-
-  
 
   onCancel(e: any) {
     e.preventDefault();
@@ -65,7 +77,6 @@ export class ProfileComponent implements OnInit {
 
   private updateComplete(response: IUpdateAccountSettingsResponse) {
     this.authService.resetToken(response.newToken);
-    this.loadData();
     alert("Link updated successfylly") // TODO
   }
 }

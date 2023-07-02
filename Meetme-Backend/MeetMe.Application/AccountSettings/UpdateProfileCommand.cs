@@ -16,7 +16,9 @@ namespace MeetMe.Application.AccountSettings
     {
         public string UserName { get; set; } = null!;
         public string TimeZone { get; set; }=null!;
-        
+        public string? WelcomeText { get; set; }
+
+
     }
 
     public class UpdateProfileCommandHandler : IRequestHandler<UpdateProfileCommand, bool>
@@ -36,6 +38,7 @@ namespace MeetMe.Application.AccountSettings
                 throw new MeetMeException("User not found");
             userEntity.UserName=request.UserName;
             userEntity.TimeZone = request.TimeZone;
+            userEntity.WelcomeText = request.WelcomeText;
 
             await userRepository.Update(userEntity);
             

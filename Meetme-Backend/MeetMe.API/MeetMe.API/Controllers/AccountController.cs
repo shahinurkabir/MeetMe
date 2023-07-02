@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using MeetMe.API.Models;
 using MeetMe.Application.AccountSettings;
+using MeetMe.Application.AccountSettings.Dtos;
+using MeetMe.Application.AccountSettings.Queries;
 using MeetMe.Application.Availabilities.Commands.Update;
 using MeetMe.Core.Constants;
 using MeetMe.Core.Interface;
@@ -44,6 +46,15 @@ namespace MeetMe.API.Controllers
 
         }
 
+        [HttpGet]
+        [Route("profile")]
+        public async Task<AccountProfileDto?> GetProfile()
+        {
+            var response = await mediator.Send(new ProfileDetailQuery { Id=userInfo.Id});
+
+            return response;
+        }
+
         [HttpPost]
         [Route("profile")]
         public async Task<UpdateAccountSettingsResponse?> UpdateProfile(UpdateProfileCommand updateProfileCommand)
@@ -60,6 +71,20 @@ namespace MeetMe.API.Controllers
             return response;
         }
 
+        [HttpGet]
+        [Route("link-available/{link}")]
+        public async Task<ActionResult> LinkAvailable(string link)
+        {
+            var command = new UpdateAccountLinkCommand { BaseURI = link };
+
+            var validator = new UpdateAccountLinkCommandValidator(userRepository, userInfo);
+            var result = await validator.ValidateAsync(command);
+
+            if (result.IsValid) { return new OkResult(); }
+
+            return new BadRequestObjectResult(result);
+        }
+        
         [HttpPost]
         [Route("link")]
         public async Task<UpdateAccountSettingsResponse?> UpdateURI(UpdateAccountLinkCommand updateAccountLinkCommand)
@@ -77,19 +102,6 @@ namespace MeetMe.API.Controllers
             return response;
         }
 
-        [HttpGet]
-        [Route("availablelink/{link}")]
-        public async Task<ActionResult> LinkAvailable(string link)
-        {
-            var command = new UpdateAccountLinkCommand { BaseURI = link };
-
-            var validator = new UpdateAccountLinkCommandValidator(userRepository, userInfo);
-            var result = await validator.ValidateAsync(command);
-
-            if (result.IsValid) { return new OkResult(); }
-
-            return new BadRequestObjectResult(result);
-        }
 
         private TokenResponse GenerateToken(User user)
         {

@@ -1,7 +1,9 @@
-export interface IUserDetail {
+export interface IAccountProfileInfo {
     id: string,
     userName: string,
     timeZone: string,
+    baseURI: string,
+    welcomeText?: string
 }
 
 export interface IUpdateAccountSettingsResponse {
