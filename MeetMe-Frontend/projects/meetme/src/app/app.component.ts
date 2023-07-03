@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalService } from './controls/modal/modalService';
-import { AuthService } from './services/auth-service';
+import { AuthService } from './app-core';
+import { ModalService } from './app-core/controls/modal/modalService';
 
 @Component({
   selector: 'app-root',

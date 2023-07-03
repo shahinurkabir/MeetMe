@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { environment } from "../../environments/environment";
 import { DataService } from "./data.service";
 import { ICreateAvailabilityCommand, IEditAvailabilityNameCommand, ICloneAvailabilityCommand, IDeleteAvailabilityCommand, ISetDefaultAvailabilityCommand } from "../interfaces/availability-commands";
 import { IAvailability } from "../interfaces/availability-interfaces";
+import { environment } from "projects/meetme/src/environments/environment";
 
 @Injectable({
     providedIn: 'root'

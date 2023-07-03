@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalService } from '../../controls/modal/modalService';
-import { AuthService } from '../../services/auth-service';
-import { EventTypeService } from '../../services/eventtype.service';
+import { EventTypeService, AuthService } from '../../app-core';
+import { ModalService } from '../../app-core/controls/modal/modalService';
 
 @Component({
   selector: 'app-admin-layout',

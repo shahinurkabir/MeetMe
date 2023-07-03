@@ -1,9 +1,7 @@
 import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ICreateEventTypeCommand, IUpdateEventCommand } from 'projects/meetme/src/app/interfaces/event-type-commands';
-import { IEventType } from 'projects/meetme/src/app/interfaces/event-type-interfaces';
-import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.service';
+import { IEventType, EventTypeService, ICreateEventTypeCommand, IUpdateEventCommand } from 'projects/meetme/src/app/app-core';
 
 @Component({
   selector: 'app-event-info-form',

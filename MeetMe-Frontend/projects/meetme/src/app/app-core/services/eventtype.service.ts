@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
 import { DataService } from './data.service';
 import { ICreateEventTypeCommand, IUpdateEventCommand, IUpdateEventAvailabilityCommand, IUpdateEventQuestionCommand } from '../interfaces/event-type-commands';
 import { IEventAvailabilityDetailItemDto, IEventType, IEventTypeQuestion, IUserProfileDetailResponse } from '../interfaces/event-type-interfaces';
 import { IEventTimeAvailability } from '../interfaces/calendar';
+import { environment } from 'projects/meetme/src/environments/environment';
 
 @Injectable({
   providedIn: 'root'

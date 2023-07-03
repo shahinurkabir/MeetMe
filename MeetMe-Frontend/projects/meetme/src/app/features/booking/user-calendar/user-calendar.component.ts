@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { EventTypeService } from '../../services/eventtype.service';
 import { ActivatedRoute } from '@angular/router';
-import { IUserProfileDetailResponse } from '../../interfaces/event-type-interfaces';
+import { IUserProfileDetailResponse, EventTypeService } from '../../../app-core';
 
 @Component({
-  selector: 'app-user-event-types',
-  templateUrl: './user-event-types.component.html',
-  styleUrls: ['./user-event-types.component.scss']
+  selector: 'app-user-calendar',
+  templateUrl: './user-calendar.component.html',
+  styleUrls: ['./user-calendar.component.scss']
 })
-export class UserEventTypesComponent implements OnInit {
+export class UserCalendarComponent implements OnInit {
 
   userProfileDetails: IUserProfileDetailResponse | undefined;
   baseUri: string = "";

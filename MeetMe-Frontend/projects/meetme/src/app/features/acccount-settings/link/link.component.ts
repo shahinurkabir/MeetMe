@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../../services/auth-service';
 import { NgForm } from '@angular/forms';
-import { AccountService } from '../../../services/account.service';
-import { IUpdateUserLinkCommand } from '../../../interfaces/account-commands';
-import { IUpdateAccountSettingsResponse } from '../../../interfaces/account-interfaces';
+import { AuthService, AccountService, IUpdateUserLinkCommand, IUpdateAccountSettingsResponse } from '../../../app-core';
 
 @Component({
   selector: 'app-link',

@@ -1,14 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { day_of_week, default_endTime_Minutes, default_startTime_minutes, meeting_day_type_weekday } from 'projects/meetme/src/app/utilities/default-data';
-import { TimeAvailabilityComponent } from 'projects/meetme/src/app/controls/time-availability/time-availability.component';
-import { IAvailability, IAvailabilityDetails } from 'projects/meetme/src/app/interfaces/availability-interfaces';
-import { IUpdateEventAvailabilityCommand } from 'projects/meetme/src/app/interfaces/event-type-commands';
-import { TimeZoneData, IEventAvailabilityDetailItemDto, IEventType } from 'projects/meetme/src/app/interfaces/event-type-interfaces';
-import { ListItem } from 'projects/meetme/src/app/interfaces/list-item';
-import { AvailabilityService } from 'projects/meetme/src/app/services/availability.service';
-import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.service';
-import { convertToDays } from 'projects/meetme/src/app/utilities/functions';
+import { TimeZoneData, IUpdateEventAvailabilityCommand, ListItem, IAvailability, IEventAvailabilityDetailItemDto, IEventType, TimeAvailabilityComponent, EventTypeService, AvailabilityService, convertToDays, day_of_week, IAvailabilityDetails, meeting_day_type_weekday, default_startTime_minutes, default_endTime_Minutes } from 'projects/meetme/src/app/app-core';
 import {  Observable, forkJoin } from 'rxjs';
 
 @Component({

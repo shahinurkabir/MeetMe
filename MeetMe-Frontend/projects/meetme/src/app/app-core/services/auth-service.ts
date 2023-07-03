@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import { map, Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 import { parseJwt } from '../utilities/functions';
 import { ClaimTypes } from '../utilities/keys';
+import { environment } from 'projects/meetme/src/environments/environment';
 
 @Injectable({
     providedIn: 'root'

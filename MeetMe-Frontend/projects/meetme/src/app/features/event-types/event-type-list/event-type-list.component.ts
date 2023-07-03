@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IEventType } from '../../../interfaces/event-type-interfaces';
-import { EventTypeService } from '../../../services/eventtype.service';
-import { ModalService } from '../../../controls/modal/modalService';
-import { AuthService } from '../../../services/auth-service';
+import { IEventType, EventTypeService, AuthService } from '../../../app-core';
+import { ModalService } from '../../../app-core/controls/modal/modalService';
 
 @Component({
   selector: 'app-eventtype',

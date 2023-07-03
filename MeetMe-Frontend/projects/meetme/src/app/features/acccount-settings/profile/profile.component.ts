@@ -1,11 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { IUpdateAccountSettingsResponse, IAccountProfileInfo } from '../../../interfaces/account-interfaces';
-import { TimeZoneData } from '../../../interfaces/event-type-interfaces';
-import { ListOfTimeZone } from '../../../utilities/timezone-data';
-import { AccountService } from '../../../services/account.service';
-import { AuthService } from '../../../services/auth-service';
 import { NgForm } from '@angular/forms';
-import { IUpdateProfileCommand } from '../../../interfaces/account-commands';
+import { TimeZoneData, ListOfTimeZone, IAccountProfileInfo, AccountService, AuthService, IUpdateProfileCommand, IUpdateAccountSettingsResponse } from '../../../app-core';
 
 @Component({
   selector: 'app-profile',

@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import  {Location} from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { IEventType } from 'projects/meetme/src/app/interfaces/event-type-interfaces';
-import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.service';
+import { IEventType, EventTypeService } from 'projects/meetme/src/app/app-core';
 
 @Component({
   selector: 'app-event-info-update',

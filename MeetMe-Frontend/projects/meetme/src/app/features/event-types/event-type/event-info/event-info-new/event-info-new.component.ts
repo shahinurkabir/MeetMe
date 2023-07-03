@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { IEventType } from 'projects/meetme/src/app/interfaces/event-type-interfaces';
+import { IEventType } from 'projects/meetme/src/app/app-core';
 
 @Component({
   selector: 'app-event-info-new',

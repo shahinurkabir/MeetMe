@@ -1,12 +1,9 @@
 import { NgFor } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ModalService } from '../../controls/modal/modalService';
-import { TimeAvailabilityComponent } from '../../controls/time-availability/time-availability.component';
-import { AvailabilityService } from '../../services/availability.service';
+import { TimeAvailabilityComponent, IAvailability, AvailabilityService, IEditAvailabilityNameCommand, ICloneAvailabilityCommand, IEditAvailabilityCommand, IDeleteAvailabilityCommand, ISetDefaultAvailabilityCommand } from '../../app-core';
+import { ModalService } from '../../app-core/controls/modal/modalService';
 import { AvailabilityListComponent } from './availability-list/availability-list.component';
-import { IEditAvailabilityNameCommand, ICloneAvailabilityCommand, IEditAvailabilityCommand, IDeleteAvailabilityCommand, ISetDefaultAvailabilityCommand } from '../../interfaces/availability-commands';
-import { IAvailability } from '../../interfaces/availability-interfaces';
 
 @Component({
   selector: 'app-availability',

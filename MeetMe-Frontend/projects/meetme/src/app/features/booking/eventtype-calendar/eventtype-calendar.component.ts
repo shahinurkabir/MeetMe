@@ -1,11 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { CalendarComponent } from '../../controls/calender/calendar.component';
-import { IEventTimeAvailability } from '../../interfaces/calendar';
-import { TimeZoneData } from '../../interfaces/event-type-interfaces';
-import { TimezoneControlComponent } from '../../controls/timezone-control/timezone-control.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { convertTimeZoneLocalTime } from '../../utilities/functions';
-import { EventTypeService } from '../../services/eventtype.service';
+import { CalendarComponent, TimezoneControlComponent, IEventTimeAvailability, TimeZoneData, EventTypeService, convertTimeZoneLocalTime } from '../../../app-core';
 
 @Component({
   selector: 'app-event-type-calendar',

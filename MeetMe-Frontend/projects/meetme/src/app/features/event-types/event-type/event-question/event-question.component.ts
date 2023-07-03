@@ -1,11 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { ModalService } from 'projects/meetme/src/app/controls/modal/modalService';
-import { IUpdateEventQuestionCommand } from 'projects/meetme/src/app/interfaces/event-type-commands';
-import { IEventTypeQuestion } from 'projects/meetme/src/app/interfaces/event-type-interfaces';
-import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.service';
-import { cloneObject } from 'projects/meetme/src/app/utilities/functions';
+import { EventTypeService, IEventTypeQuestion, IUpdateEventQuestionCommand, cloneObject } from 'projects/meetme/src/app/app-core';
+import { ModalService } from 'projects/meetme/src/app/app-core/controls/modal/modalService';
+
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({

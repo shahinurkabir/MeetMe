@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
-import { environment } from "../../environments/environment";
 import { IUpdateProfileCommand, IUpdateUserLinkCommand } from "../interfaces/account-commands";
 import { DataService } from "./data.service";
 import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { IAccountProfileInfo, IUpdateAccountSettingsResponse } from "../interfaces/account-interfaces";
+import { environment } from "projects/meetme/src/environments/environment";
 
 @Injectable({
     providedIn: 'root'

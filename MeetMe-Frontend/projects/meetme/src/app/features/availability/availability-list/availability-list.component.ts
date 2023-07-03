@@ -1,10 +1,8 @@
 import { NgFor } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ModalService } from '../../../controls/modal/modalService';
-import { AvailabilityService } from '../../../services/availability.service';
-import { ICreateAvailabilityCommand } from '../../../interfaces/availability-commands';
-import { IAvailability } from '../../../interfaces/availability-interfaces';
+import { IAvailability, AvailabilityService, ICreateAvailabilityCommand } from '../../../app-core';
+import { ModalService } from '../../../app-core/controls/modal/modalService';
 
 @Component({
   selector: 'app-availability-list',

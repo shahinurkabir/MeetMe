@@ -6,57 +6,34 @@ import { AppComponent } from './app.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { HttpRequestInterceptor } from './interceptors/http-interceptor';
 import { LoginComponent } from './features/users/login/login.component';
-import { AvailabilityComponent } from './features/availability/availability.component';
-import { TimeAvailabilityComponent } from './controls/time-availability/time-availability.component';
-import { CalendarComponent } from './controls/calender/calendar.component';
-import { EventTypeListComponent } from './features/event-types/event-type-list/event-type-list.component';
-import { EventAvailabilityComponent } from './features/event-types/event-type/event-availability/event-availability.component';
-import { EventInfoNewComponent } from './features/event-types/event-type/event-info/event-info-new/event-info-new.component';
-import { EventInfoUpdateComponent } from './features/event-types/event-type/event-info/event-info-update/event-info-update.component';
-import { EventInfoComponent } from './features/event-types/event-type/event-info/event-info.component';
-import { EventQuestionComponent } from './features/event-types/event-type/event-question/event-question.component';
-import { EventTypeComponent } from './features/event-types/event-type/eventtype.component';
-import { AvailabilityListComponent } from './features/availability/availability-list/availability-list.component';
-import { ModalComponent } from './controls/modal/modal.component';
-import { MyOffClickDirective } from './directives/myOffClickDirective';
-import { CallbackPipe } from './pipes/callback-pipe';
-import { EventTypeCalendarComponent } from './features/eventtype-calendar/eventtype-calendar.component';
-import { TimezoneControlComponent } from './controls/timezone-control/timezone-control.component';
-import { TestComponentComponent } from './test-component/test-component.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { BookingLayoutComponent } from './layouts/booking-layout/booking-layout.component';
-import { UserEventTypesComponent } from './features/user-event-types/user-event-types.component';
+import { eventType_Components } from './features/event-types';
+import { TimeAvailabilityComponent, CalendarComponent, ModalComponent, MyOffClickDirective, TimezoneControlComponent, HttpRequestInterceptor } from './app-core';
+import { CallbackPipe } from './app-core/pipes/callback-pipe';
+import { booking_Components } from './features/booking';
+import { accountSettings_Components } from './features/acccount-settings';
+import { availability_Components } from './features/availability';
 
 @NgModule({
     declarations: [
         AppComponent,
         LoginComponent,
-        AvailabilityComponent,
         TimeAvailabilityComponent,
         CalendarComponent,
-        EventTypeListComponent,
-        EventTypeComponent,
-        EventInfoComponent,
-        EventAvailabilityComponent,
-        EventQuestionComponent,
-        EventInfoNewComponent,
-        EventInfoUpdateComponent,
-        AvailabilityListComponent,
         ModalComponent,
         MyOffClickDirective,
         CallbackPipe,
-        CalendarComponent,
-        EventTypeCalendarComponent,
         TimezoneControlComponent,
-        TestComponentComponent,
         AuthLayoutComponent,
         AdminLayoutComponent,
         BookingLayoutComponent,
-        UserEventTypesComponent
-        
+        accountSettings_Components,
+        availability_Components,
+        eventType_Components,
+        booking_Components
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },
