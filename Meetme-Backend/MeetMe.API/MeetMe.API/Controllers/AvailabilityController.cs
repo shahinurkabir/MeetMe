@@ -84,6 +84,7 @@ namespace MeetMe.API.Controllers
 
             return result;
         }
+
         [HttpPost]
         [Route("{id}/delete")]
         public async Task<bool> DeleteAvailability(Guid id, DeleteAvailabilityCommand  deleteAvailabilityCommand)
@@ -92,6 +93,7 @@ namespace MeetMe.API.Controllers
 
             return result;
         }
+
         [HttpPost]
         [Route("{id}/default")]
         public async Task<bool> SetDefault(Guid id, SetDefaultAvailabilityCommand  setDefaultAvailabilityCommand)

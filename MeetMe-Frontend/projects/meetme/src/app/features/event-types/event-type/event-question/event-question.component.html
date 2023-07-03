@@ -1,123 +1,138 @@
-<div class="quetion-list-container">
-    <div class="list-item-container">
-        <div class="toolbar-pane">
-        </div>
-        <div class="content-pane">
-            <div *ngFor="let item of listSystemDefinedQuestion ;let index=index">
-                <div class="form-group">
-                    <label for="name" class="form-control">{{item.name}}
-                        <span *ngIf="item.requiredYN" style="color:red;">*</span>
-                    </label>
-                    <input class="form-cortrol" type="text" style="pointer-events: none;">
+<div class="page page-width-85p page">
+    <div class="header">
+        <h2>Event Questions</h2>
+    </div>
+    <div class="body">
+        <div class="quetion-list-container">
+            <div class="list-item-container">
+                <div class="toolbar-pane">
+                </div>
+                <div class="content-pane">
+                    <div *ngFor="let item of listSystemDefinedQuestion ;let index=index">
+                        <div class="form-group">
+                            <label for="name" class="form-control">{{item.name}}
+                                <span *ngIf="item.requiredYN" style="color:red;">*</span>
+                            </label>
+                            <input class="form-cortrol" type="text" style="pointer-events: none;">
+                        </div>
+                    </div>
+                    <!-- <i class="fa fa-pen show-edit-pencil"></i> -->
                 </div>
             </div>
-            <!-- <i class="fa fa-pen show-edit-pencil"></i> -->
-        </div>
-    </div>
-    <div class="list-item-container"
-        *ngFor="let item of listGeneralQuestion;let index=index">
-        <div class="toolbar-pane" [draggable]="true" (dragstart)="onDragStartQuestion(index)"
-            (dragover)="onDragOverQuestion($event)" (drop)="onDropQuestion(index)">
-            <span class="serial-number">{{index+1}}</span> <i class="fa fa-light fa-arrows-up-down"></i>
-        </div>
-        <div class="content-pane" (click)="onEditQuestion(item,index)">
-            <div class="title-container">
-                <label for="name" >{{item.name}}
-                    <span *ngIf="item.requiredYN" style="color:red;">*</span>
-                </label>
-            </div>
-
-            <ng-container [ngSwitch]="true">
-                <ng-container *ngSwitchCase="item.questionType=='Text'">
-                    <input type="text" style="pointer-events: none;">
-                </ng-container>
-                <ng-container *ngSwitchCase="item.questionType=='MultilineText'">
-                    <textarea id="w3review" name="w3review" rows="2">
-                    </textarea>
-                </ng-container>
-                <ng-container *ngSwitchCase="item.questionType=='ComboBox'">
-                    <select></select>
-                </ng-container>
-                <ng-container *ngSwitchCase="(item.questionType==='RadioButtons')||
-            (item.questionType==='CheckBoxes')">
-                    <div class="question-item-options">
-
-                        <span class="option-item" *ngFor="let option of item.options;let index=index;">
-                            {{option.text}}
-                        </span>
-                        <span class="option-item" *ngIf="item.otherOptionYN">
-                            <input type="text" placeholder="Other" style="pointer-events: none;">
-                        </span>
+            <div class="list-item-container" *ngFor="let item of listGeneralQuestion;let index=index">
+                <div class="toolbar-pane" [draggable]="true" (dragstart)="onDragStartQuestion(index)"
+                    (dragover)="onDragOverQuestion($event)" (drop)="onDropQuestion(index)">
+                    <span class="serial-number">{{index+1}}</span> <i class="fa fa-light fa-arrows-up-down"></i>
+                </div>
+                <div class="content-pane" (click)="onEditQuestion(item,index)">
+                    <div class="title-container">
+                        <label for="name">{{item.name}}
+                            <span *ngIf="item.requiredYN" style="color:red;">*</span>
+                        </label>
                     </div>
-                </ng-container>
 
-            </ng-container>
-            <i class="fa fa-pen show-edit-pencil"></i>
+                    <ng-container [ngSwitch]="true">
+                        <ng-container *ngSwitchCase="item.questionType=='Text'">
+                            <input type="text" style="pointer-events: none;">
+                        </ng-container>
+                        <ng-container *ngSwitchCase="item.questionType=='MultilineText'">
+                            <textarea id="w3review" name="w3review" rows="2">
+                    </textarea>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="item.questionType=='ComboBox'">
+                            <select></select>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="(item.questionType==='RadioButtons')||
+            (item.questionType==='CheckBoxes')">
+                            <div class="question-item-options">
+
+                                <span class="option-item" *ngFor="let option of item.options;let index=index;">
+                                    {{option.text}}
+                                </span>
+                                <span class="option-item" *ngIf="item.otherOptionYN">
+                                    <input type="text" placeholder="Other" style="pointer-events: none;">
+                                </span>
+                            </div>
+                        </ng-container>
+
+                    </ng-container>
+                    <i class="fa fa-pen show-edit-pencil"></i>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <button type="button" (click)="onAddNewQuestion()">+Question</button>
         </div>
     </div>
+    <div class="footer-left">
+        <button (click)="onCancelChanges()" class="btn btn-default">Cancel Changes</button>
+        <button (click)="onSave()" class="btn btn-primary">Save</button>
+    </div>
 </div>
-
-<div>
-    <button type="button" (click)="onAddNewQuestion()">+Question</button>
-</div>
-
 <mm-modal id="{{MODAL_ID_EVENT_QUESTION}}" title="Question Details" (cancelEvent)="onCancelEditing()"
     (confirmEvent)="onConfirmEditQuestion($event)">
 
-    <div *ngIf="selectedQuestion!=null">
-        <form #fromQuestionDetails="ngForm">
-            <div class="form-group">
-                <label  for="name">Name</label>
-                <textarea class="form-cortrol" [maxlength]="255" autocomplete="off"
-                type="text" name="name"  [(ngModel)]="selectedQuestion.name"
-                 class="form-control" required></textarea>
-                <!-- <input class="form-cortrol" type="text" name="name" [(ngModel)]="selectedQuestion.name" class="form-control" required> -->
-            </div>
-            <div class="form-group">
-                <label for="required" class="form-control">
-                    <input type="checkbox" name="requred" [(ngModel)]="selectedQuestion.requiredYN"
-                        class="form-control">Requred</label>
-            </div>
-            <div class="form-group">
-                <label for="questionType" class="form-control">Question Type</label>
-                <select [(ngModel)]="selectedQuestion.questionType" id="questionType" name="questionType" id=""
-                    class="form-control">
-                    <option value="Text">Text</option>
-                    <option value="MultilineText">MultilineText</option>
-                    <option value="ComboBox">ComboBox</option>
-                    <option value="RadioButtons">RadioButtons</option>
-                    <option value="CheckBoxes">CheckBoxes</option>
-                </select>
-            </div>
-            <ng-container [ngSwitch]="true">
-                <ng-container *ngSwitchCase="selectedQuestion?.questionType==null"></ng-container>
-                <ng-container *ngSwitchCase="selectedQuestion.questionType==='ComboBox' ||
+    <div class="page">
+        <div *ngIf="selectedQuestion!=null" class="body modal">
+            <form #fromQuestionDetails="ngForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <div class="form-control">
+                        <textarea [maxlength]="255" autocomplete="off" type="text" id="name" name="name" #name="ngModel"
+                            [(ngModel)]="selectedQuestion.name" class="form-control" required></textarea>
+                        <div *ngIf="name.touched && name.invalid" class="invalid-feedback">
+                            <div>Question name is required</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="required">
+                        <input type="checkbox" name="requred" [(ngModel)]="selectedQuestion.requiredYN"> Requred</label>
+                </div>
+                <div class="form-group">
+                    <label for="questionType">Question Type</label>
+                    <div class="form-control">
+                        <select [(ngModel)]="selectedQuestion.questionType" id="questionType" name="questionType"
+                            id="questionType" >
+                            <option value="Text">Text</option>
+                            <option value="MultilineText">MultilineText</option>
+                            <option value="ComboBox">ComboBox</option>
+                            <option value="RadioButtons">RadioButtons</option>
+                            <option value="CheckBoxes">CheckBoxes</option>
+                        </select>
+                    </div>
+                </div>
+                <ng-container [ngSwitch]="true">
+                    <ng-container *ngSwitchCase="selectedQuestion?.questionType==null"></ng-container>
+                    <ng-container *ngSwitchCase="selectedQuestion.questionType==='ComboBox' ||
              (selectedQuestion.questionType==='RadioButtons')||
             (selectedQuestion.questionType==='CheckBoxes')">
-                    <ul>
-                        <li id="{{index}}" [draggable]="true" (dragstart)="onDragStart($event)"
-                            (dragover)="onDragOver($event)" (drop)="onDrop($event)"
-                            *ngFor="let option of selectedQuestion.options;let index=index;">
-                            <input type="text" id="option-{{index}}" name="option-{{index}}"
-                                placeholder="Answer {{index+1}}" [(ngModel)]="option.text" required>
-                            <button (click)="onRemoveOption(index)">Remove</button>
-                        </li>
-                    </ul>
-                    <button (click)="onAddOption()">Add more option</button>
-                    <div *ngIf="selectedQuestion.questionType!=='ComboBox'">
-                        <label for="otherOptionYN" class="form-control">
-                            <input type="checkbox" name="otherOptionYN" [(ngModel)]="selectedQuestion.otherOptionYN"
-                                class="form-control">Allow other option</label>
-                    </div>
+                        <ul>
+                            <li id="{{index}}" [draggable]="true" (dragstart)="onDragStart($event)"
+                                (dragover)="onDragOver($event)" (drop)="onDrop($event)"
+                                *ngFor="let option of selectedQuestion.options;let index=index;">
+                                <input type="text" id="option-{{index}}" name="option-{{index}}"
+                                    #option{{index}}="ngModel" (change)="onChangedOptionText(option)"
+                                    (blur)="onChangedOptionText(option)" autocomplete="off"
+                                    placeholder="Answer {{index+1}}" [(ngModel)]="option.text" required>
+                                <div *ngIf="option.validationMessage" class="invalid-feedback">
+                                    {{option.validationMessage}}</div>
+                                <button (click)="onRemoveOption(index)">Remove</button>
+                            </li>
+                        </ul>
+                        <button (click)="onAddOption()">Add more option</button>
+                        <div *ngIf="selectedQuestion.questionType!=='ComboBox'">
+                            <label for="otherOptionYN" class="form-control">
+                                <input type="checkbox" name="otherOptionYN" [(ngModel)]="selectedQuestion.otherOptionYN"
+                                    class="form-control">Allow other option</label>
+                        </div>
+                    </ng-container>
+
                 </ng-container>
 
-            </ng-container>
-
-        </form>
-        <button *ngIf="selectedQuestionIndex>-1" (click)="onRemoveQuestion()">Delete Quetion</button>
+            </form>
+            <button *ngIf="selectedQuestionIndex>-1" (click)="onRemoveQuestion()">Delete Quetion</button>
+        </div>
     </div>
 </mm-modal>
-<div>
-    <button (click)="onCancelChanges()">Cancel Changes</button>
-    <button (click)="onSave()">Save</button>
-</div>

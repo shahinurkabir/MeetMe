@@ -45,7 +45,7 @@ export class EventQuestionComponent implements OnInit {
       .pipe(takeUntil(this.componentDestroyed$))
       .subscribe({
         next: (response: IEventTypeQuestion[]) => {
-          let listEventQuestion= response.map((e => this.convertToModel(e)));
+          let listEventQuestion = response.map((e => this.convertToModel(e)));
           this.listSystemDefinedQuestion = listEventQuestion.filter(e => e.systemDefinedYN == true);
           this.listGeneralQuestion = listEventQuestion.filter(e => e.systemDefinedYN == false);
           console.log(response);
@@ -91,7 +91,7 @@ export class EventQuestionComponent implements OnInit {
   // filterNormalQuestion(modelQuestionItem: IModelQuestionItem) {
   //   return modelQuestionItem.systemDefinedYN == false;
   // }
-  
+
   onSave() {
 
     let listQuestonEntities = this.listGeneralQuestion.map(modelItem => {
@@ -242,6 +242,14 @@ export class EventQuestionComponent implements OnInit {
     }
     return model;
   }
+  onChangedOptionText(optionItem: IModelOptionItem) {
+    if (optionItem.text.trim() === "") {
+      optionItem.validationMessage = "Option text is required";
+    }
+    else {
+      optionItem.validationMessage = "";
+    }
+  }
   ngOnDestroy() {
     this.componentDestroyed$.next(true)
     this.componentDestroyed$.complete()
@@ -263,6 +271,8 @@ export interface IModelQuestionItem {
   systemDefinedYN: boolean
 }
 export interface IModelOptionItem {
-  text: string
+  text: string,
+  validationMessage?: string
+
 }
 

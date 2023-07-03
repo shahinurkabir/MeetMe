@@ -21,9 +21,5 @@ namespace MeetMe.API.Controllers
             this.mediator = mediator;
         }
 
-
-
-       
-
     }
 }

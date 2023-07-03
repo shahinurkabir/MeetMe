@@ -6,7 +6,6 @@ export interface IAvailability {
     timeZone: string,
     isDefault:boolean,
     details: Array<IAvailabilityDetails>,
-    isCustom:boolean
 }
 
 export interface IAvailabilityDetails {

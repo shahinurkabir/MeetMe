@@ -15,8 +15,6 @@ namespace DataProvider.EntityFramework
 {
     public class BookingDbContext : DbContext
     {
-        public DbSet<EventType> EventType { get; set; }
-        public DbSet<EventTypeQuestion> EventTypeQuestion { get; set; }
         public BookingDbContext(DbContextOptions<BookingDbContext> dbContextOptions) : base(dbContextOptions)
         {
 

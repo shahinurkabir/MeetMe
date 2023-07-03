@@ -11,7 +11,7 @@
         <div class="form-group">
             <label for="description">Description</label>
             <div class="form-control">
-                <textarea class="" #description="ngModel" [(ngModel)]="model.description" name="description"
+                <textarea class="" rows="5"  #description="ngModel" [(ngModel)]="model.description" name="description"
                     required></textarea>
                 <div *ngIf="submitted && description.invalid" class="invalid-feedback">
                     <div>Description is required</div>

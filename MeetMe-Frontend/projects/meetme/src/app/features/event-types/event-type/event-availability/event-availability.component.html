@@ -1,208 +1,148 @@
-<h4>Set your working hours</h4>
 <form (ngSubmit)="onSubmit(formAvailability)" #formAvailability="ngForm">
-    <datalist id="time_slots">
-        <option value="12:00am"></option>
-        <option value="12:15am"></option>
-        <option value="12:30am"></option>
-        <option value="12:45am"></option>
-        <option value="1:00am"></option>
-        <option value="1:15am"></option>
-        <option value="1:30am"></option>
-        <option value="1:45am"></option>
-        <option value="2:00am"></option>
-        <option value="2:15am"></option>
-        <option value="2:30am"></option>
-        <option value="2:45am"></option>
-        <option value="3:00am"></option>
-        <option value="3:15am"></option>
-        <option value="3:30am"></option>
-        <option value="3:45am"></option>
-        <option value="4:00am"></option>
-        <option value="4:15am"></option>
-        <option value="4:30am"></option>
-        <option value="4:45am"></option>
-        <option value="5:00am"></option>
-        <option value="5:15am"></option>
-        <option value="5:30am"></option>
-        <option value="5:45am"></option>
-        <option value="6:00am"></option>
-        <option value="6:15am"></option>
-        <option value="6:30am"></option>
-        <option value="6:45am"></option>
-        <option value="7:00am"></option>
-        <option value="7:15am"></option>
-        <option value="7:45am"></option>
-        <option value="8:00am"></option>
-        <option value="8:15am"></option>
-        <option value="8:30am"></option>
-        <option value="8:45am"></option>
-        <option value="9:00am"></option>
-        <option value="9:15am"></option>
-        <option value="9:30am"></option>
-        <option value="9:45am"></option>
-        <option value="10:00am"></option>
-        <option value="10:15am"></option>
-        <option value="10:30am"></option>
-        <option value="10:45am"></option>
-        <option value="11:00am"></option>
-        <option value="11:15am"></option>
-        <option value="11:30am"></option>
-        <option value="11:45am"></option>
-        <option value="12:00pm"></option>
-        <option value="12:00pm"></option>
-        <option value="12:15pm"></option>
-        <option value="12:30pm"></option>
-        <option value="12:45pm"></option>
-        <option value="1:00pm"></option>
-        <option value="1:15pm"></option>
-        <option value="1:30pm"></option>
-        <option value="1:45pm"></option>
-        <option value="2:00pm"></option>
-        <option value="2:15pm"></option>
-        <option value="2:30pm"></option>
-        <option value="2:45pm"></option>
-        <option value="3:00pm"></option>
-        <option value="3:15pm"></option>
-        <option value="3:30pm"></option>
-        <option value="3:45pm"></option>
-        <option value="4:00pm"></option>
-        <option value="4:15pm"></option>
-        <option value="4:30pm"></option>
-        <option value="4:45pm"></option>
-        <option value="5:00pm"></option>
-        <option value="5:15pm"></option>
-        <option value="5:30pm"></option>
-        <option value="5:45pm"></option>
-        <option value="6:00pm"></option>
-        <option value="6:15pm"></option>
-        <option value="6:30pm"></option>
-        <option value="6:45pm"></option>
-        <option value="7:00pm"></option>
-        <option value="7:15pm"></option>
-        <option value="7:45pm"></option>
-        <option value="8:00pm"></option>
-        <option value="8:15pm"></option>
-        <option value="8:30pm"></option>
-        <option value="8:45pm"></option>
-        <option value="9:00pm"></option>
-        <option value="9:15pm"></option>
-        <option value="9:30pm"></option>
-        <option value="9:45pm"></option>
-        <option value="10:00pm"></option>
-        <option value="10:15pm"></option>
-        <option value="10:30am"></option>
-        <option value="10:45am"></option>
-        <option value="11:00pm"></option>
-        <option value="11:15pm"></option>
-        <option value="11:30pm"></option>
-        <option value="11:45pm"></option>
-        <option value="12:00pm"></option>
-    </datalist>
-    <div class="form-group">
-        <label for="name">Data Range - in future days *</label>
-        <input type="text" class="form-control" id="forwardDuration" required [(ngModel)]="forwardDurationInDays"
-            name="forwardDuration">
-    </div>
-
-    <div class="form-group">
-
-        <label for="meetingDuration">Duration:</label>
-        <select id="meetingDuration" name="meetingDuration" class="form-control" [(ngModel)]="model.duration">
-            <option [value]="meetingDuration.value" *ngFor="let meetingDuration of meetingDurations">
-                {{meetingDuration.text}}</option>
-        </select>
-
-    </div>
-    
-    <button [ngClass]="!isCustomAvailability?'toggle_button':''" (click)="onClickExistingHours($event)">Existing Working Hours</button>
-    <button [ngClass]="isCustomAvailability?'toggle_button':''" (click)="onClickCustomHour($event)">Custom Working hour</button>
-
-
-    <div [style.display]="!isCustomAvailability?'block':'none'">
-        <label for="availability">Availability:</label>
-        <select id="availability" (change)="onChangeAvailability()" name="availability" class="form-control"
-            [(ngModel)]="selectedAvailability">
-            <option [ngValue]="availabilityItem" *ngFor="let availabilityItem of listOfAvailability">
-                {{availabilityItem.name}}</option>
-        </select>
-        <app-time-availability #timeAvailabilityControl viewMode="readonly"></app-time-availability>
-
-    </div>
-    <app-time-availability #timeAvailabilityControlCustom
-        [style.display]="isCustomAvailability?'block':'none'"></app-time-availability>
-    <div>
-        <button type="submit" class="btn btn-success" [disabled]="!formAvailability.form.valid">Submit</button>
-    </div>
-</form>
-<!-- 
-<div class="modal-override-dates">
-    <h3>Date overrides</h3>
-    <app-calender (handlerDateClick)="onDateClicked($event)" [selectedDates]="selectedDatesFromCalender"></app-calender>
-    <div class="override-time-intervals" *ngIf="selecteDateOverrideIntervals">
-        <ng-template
-            *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay : selecteDateOverrideIntervals} "></ng-template>
-    </div>
-    <div class="override-toolbar">
-        <button (click)="onToggleCalendarModal($event)">Cancel</button>
-        <button (click)="onApplyCalendarDateChanges($event)">Apply</button>
-    </div>
-</div>
-
-<ng-template #timeInvervalsInDayTemplate let-timeInvervalsInDay="timeInvervalsInDay">
-    <div class="daily_time_interval_container">
-        <div class="interval_list_grid">
-            <div *ngIf="!timeInvervalsInDay.isAvailable ">
-                <span>Not available</span>
-            </div>
-
-            <div *ngIf="timeInvervalsInDay.isAvailable">
-                <div *ngFor="let timeInterval of timeInvervalsInDay.intervals; let i=index">
-                    <table>
-                        <tr>
-                            <td>
-                                <input type="text" [id]="'startTime_'+[timeInvervalsInDay.day]+''+i"
-                                    [name]="'startTime_'+[timeInvervalsInDay.day]+''+i" list="time_slots"
-                                    [(ngModel)]="timeInterval.startTime" required
-                                    (focusout)="onLostFocus($event,i,false,timeInvervalsInDay)">
-                            </td>
-                            <td>-</td>
-                            <td>
-                                <input type="text" list="time_slots" [(ngModel)]="timeInterval.endTime"
-                                    [id]="'endTime_'+[timeInvervalsInDay.day]+''+i"
-                                    [name]="'endTime_'+[timeInvervalsInDay.day]+''+i" required
-                                    (focusout)="onLostFocus($event,i,true,timeInvervalsInDay)">
-                            </td>
-                            <td><input type="button" value="Delete"
-                                    (click)="onRemoveTimeInterval(i,timeInvervalsInDay)" />
-                            </td>
-
-                        </tr>
-                        <tr>
-                            <td colspan="3" *ngIf="timeInterval.errorMessage" colspan="3">
-                                {{timeInterval.errorMessage}}</td>
-                        </tr>
-                    </table>
+    <div class="page page-width-85p">
+        <div class="header">
+            <h2>Set your working hours</h2>
+        </div>
+        <div class="body">
+            <datalist id="time_slots">
+                <option value="12:00am"></option>
+                <option value="12:15am"></option>
+                <option value="12:30am"></option>
+                <option value="12:45am"></option>
+                <option value="1:00am"></option>
+                <option value="1:15am"></option>
+                <option value="1:30am"></option>
+                <option value="1:45am"></option>
+                <option value="2:00am"></option>
+                <option value="2:15am"></option>
+                <option value="2:30am"></option>
+                <option value="2:45am"></option>
+                <option value="3:00am"></option>
+                <option value="3:15am"></option>
+                <option value="3:30am"></option>
+                <option value="3:45am"></option>
+                <option value="4:00am"></option>
+                <option value="4:15am"></option>
+                <option value="4:30am"></option>
+                <option value="4:45am"></option>
+                <option value="5:00am"></option>
+                <option value="5:15am"></option>
+                <option value="5:30am"></option>
+                <option value="5:45am"></option>
+                <option value="6:00am"></option>
+                <option value="6:15am"></option>
+                <option value="6:30am"></option>
+                <option value="6:45am"></option>
+                <option value="7:00am"></option>
+                <option value="7:15am"></option>
+                <option value="7:45am"></option>
+                <option value="8:00am"></option>
+                <option value="8:15am"></option>
+                <option value="8:30am"></option>
+                <option value="8:45am"></option>
+                <option value="9:00am"></option>
+                <option value="9:15am"></option>
+                <option value="9:30am"></option>
+                <option value="9:45am"></option>
+                <option value="10:00am"></option>
+                <option value="10:15am"></option>
+                <option value="10:30am"></option>
+                <option value="10:45am"></option>
+                <option value="11:00am"></option>
+                <option value="11:15am"></option>
+                <option value="11:30am"></option>
+                <option value="11:45am"></option>
+                <option value="12:00pm"></option>
+                <option value="12:00pm"></option>
+                <option value="12:15pm"></option>
+                <option value="12:30pm"></option>
+                <option value="12:45pm"></option>
+                <option value="1:00pm"></option>
+                <option value="1:15pm"></option>
+                <option value="1:30pm"></option>
+                <option value="1:45pm"></option>
+                <option value="2:00pm"></option>
+                <option value="2:15pm"></option>
+                <option value="2:30pm"></option>
+                <option value="2:45pm"></option>
+                <option value="3:00pm"></option>
+                <option value="3:15pm"></option>
+                <option value="3:30pm"></option>
+                <option value="3:45pm"></option>
+                <option value="4:00pm"></option>
+                <option value="4:15pm"></option>
+                <option value="4:30pm"></option>
+                <option value="4:45pm"></option>
+                <option value="5:00pm"></option>
+                <option value="5:15pm"></option>
+                <option value="5:30pm"></option>
+                <option value="5:45pm"></option>
+                <option value="6:00pm"></option>
+                <option value="6:15pm"></option>
+                <option value="6:30pm"></option>
+                <option value="6:45pm"></option>
+                <option value="7:00pm"></option>
+                <option value="7:15pm"></option>
+                <option value="7:45pm"></option>
+                <option value="8:00pm"></option>
+                <option value="8:15pm"></option>
+                <option value="8:30pm"></option>
+                <option value="8:45pm"></option>
+                <option value="9:00pm"></option>
+                <option value="9:15pm"></option>
+                <option value="9:30pm"></option>
+                <option value="9:45pm"></option>
+                <option value="10:00pm"></option>
+                <option value="10:15pm"></option>
+                <option value="10:30am"></option>
+                <option value="10:45am"></option>
+                <option value="11:00pm"></option>
+                <option value="11:15pm"></option>
+                <option value="11:30pm"></option>
+                <option value="11:45pm"></option>
+                <option value="12:00pm"></option>
+            </datalist>
+            <div class="form-group">
+                <label for="name">Data Range - in future days *</label>
+                <div class="form-control">
+                    <input type="text" id="forwardDuration" required [(ngModel)]="forwardDurationInDays"
+                        name="forwardDuration">
                 </div>
             </div>
-        </div>
-        <input type="button" class="add_more_item" value="Add (+)" (click)="onAddTimeInterval(timeInvervalsInDay)" />
-    </div>
-</ng-template>
+
+            <div class="form-group">
+                <label for="meetingDuration">Duration:</label>
+                <div class="form-control">
+                    <select id="meetingDuration" name="meetingDuration" [(ngModel)]="model.duration">
+                        <option [value]="meetingDuration.value" *ngFor="let meetingDuration of meetingDurations">
+                            {{meetingDuration.text}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <button [ngClass]="!isCustomAvailability?'toggle_button':''" (click)="onClickExistingHours($event)">Existing
+                Working Hours</button>
+            <button [ngClass]="isCustomAvailability?'toggle_button':''" (click)="onClickCustomHour($event)">Custom
+                Working hour</button>
 
 
-<ng-template #timeInvervalsInDayTemplateReadOnly let-timeInvervalsInDay="timeInvervalsInDay">
-    <div class="intervals">
-        <div *ngIf="!timeInvervalsInDay.isAvailable ">
-            <div class="interval_item">Not available</div>
-        </div>
-
-        <div *ngIf="timeInvervalsInDay.isAvailable">
-            <div class="interval_item" *ngFor="let timeInterval of timeInvervalsInDay.intervals; let i=index">
-                <span>{{timeInterval.startTime}} - {{timeInterval.endTime}}</span>
+            <div [style.display]="!isCustomAvailability?'block':'none'">
+                <label for="availability">Availability:</label>
+                <select id="availability" (change)="onChangeAvailability()" name="availability" class="form-control"
+                    [(ngModel)]="selectedAvailability">
+                    <option [ngValue]="availabilityItem" *ngFor="let availabilityItem of listOfAvailability">
+                        {{availabilityItem.name}}</option>
+                </select>
+                <app-time-availability #timeAvailabilityControl viewMode="readonly"></app-time-availability>
 
             </div>
+            <app-time-availability #timeAvailabilityControlCustom
+                [style.display]="isCustomAvailability?'block':'none'"></app-time-availability>
+
         </div>
-
-
+        <div class="footer">
+            <input type="button" class="btn btn-default" value="Cancel" (click)="onCancel($event)" />
+            <button type="submit" class="btn btn-primary" [disabled]="!formAvailability.form.valid">Save Changes</button>
+        </div>
     </div>
-</ng-template> -->
+</form>

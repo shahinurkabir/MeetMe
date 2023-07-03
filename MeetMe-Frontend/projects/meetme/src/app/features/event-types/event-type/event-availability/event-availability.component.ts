@@ -1,6 +1,6 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, EventType } from '@angular/router';
-import { day_of_week, default_endTime_Minutes, default_meeting_buffertime, default_meeting_duration, default_meeting_forward_Duration_inDays, default_startTime_minutes, meeting_day_type_date, meeting_day_type_weekday, month_of_year } from 'projects/meetme/src/app/utilities/default-data';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { day_of_week, default_endTime_Minutes, default_startTime_minutes, meeting_day_type_weekday } from 'projects/meetme/src/app/utilities/default-data';
 import { TimeAvailabilityComponent } from 'projects/meetme/src/app/controls/time-availability/time-availability.component';
 import { IAvailability, IAvailabilityDetails } from 'projects/meetme/src/app/interfaces/availability-interfaces';
 import { IUpdateEventAvailabilityCommand } from 'projects/meetme/src/app/interfaces/event-type-commands';
@@ -8,9 +8,8 @@ import { TimeZoneData, IEventAvailabilityDetailItemDto, IEventType } from 'proje
 import { ListItem } from 'projects/meetme/src/app/interfaces/list-item';
 import { AvailabilityService } from 'projects/meetme/src/app/services/availability.service';
 import { EventTypeService } from 'projects/meetme/src/app/services/eventtype.service';
-//import { TimeZoneService } from 'projects/meetme/src/app/services/timezone.service';
 import { convertToDays } from 'projects/meetme/src/app/utilities/functions';
-import { ObjectUnsubscribedError, Observable, forkJoin } from 'rxjs';
+import {  Observable, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-event-availability',
@@ -21,7 +20,6 @@ export class EventAvailabilityComponent implements OnInit {
   timeZoneList: TimeZoneData[] = [];
   eventTypeId: string = "";
   eventTypeAvailability: IUpdateEventAvailabilityCommand | undefined;
-  //model: model = this.getDefaultModel();
   meetingDurations: ListItem[] = [];
   selectedDatesFromCalender: { [id: string]: string } = {};
   isCustomAvailability: boolean = false;
@@ -66,22 +64,28 @@ export class EventAvailabilityComponent implements OnInit {
 
   }
 
+  onCancel(e:any){
+    e.preventDefault();
+    this.loadData().subscribe(responses => {
+      this.loadDataCompleted(responses);
+    });
+  }
   subscribeRouteParams() {
     this.route.parent?.params.subscribe((params) => {
       this.eventTypeId = params["id"];
 
-      this.loadData(this.eventTypeId).subscribe(responses => {
+      this.loadData().subscribe(responses => {
         this.loadDataCompleted(responses);
       });
 
     });
   };
 
-  loadData(eventTypeId: string): Observable<[IAvailability[], IEventType, IEventAvailabilityDetailItemDto[]]> {
+  loadData(): Observable<[IAvailability[], IEventType, IEventAvailabilityDetailItemDto[]]> {
 
     return forkJoin([
       this.availabilityService.getList(),
-      this.eventTypeService.getById(eventTypeId),
+      this.eventTypeService.getById(this.eventTypeId),
       this.eventTypeService.getEventAvailability(this.eventTypeId)
     ]);
   }
@@ -124,7 +128,6 @@ export class EventAvailabilityComponent implements OnInit {
       timeZone: timeZone,
       isDefault: false,
       details: [],
-      isCustom: true
     };
 
     if (eventTimeAvailabilityDetails == undefined) {
