@@ -1,5 +1,5 @@
 <form (ngSubmit)="onSubmit(formAvailability)" #formAvailability="ngForm">
-    <div class="page page-width-85p">
+    <div class="page">
         <div class="header">
             <h2>Set your working hours</h2>
         </div>
@@ -119,22 +119,27 @@
                     </select>
                 </div>
             </div>
-
-            <button [ngClass]="!isCustomAvailability?'toggle_button':''" (click)="onClickExistingHours($event)">Existing
-                Working Hours</button>
-            <button [ngClass]="isCustomAvailability?'toggle_button':''" (click)="onClickCustomHour($event)">Custom
-                Working hour</button>
-
+            <div class="working-hour-options-menu">
+                <button [ngClass]="!isCustomAvailability?'toggle_button':''"
+                    (click)="onClickExistingHours($event)">Existing
+                    Working Hours</button>
+                <button [ngClass]="isCustomAvailability?'toggle_button':''" (click)="onClickCustomHour($event)">Custom
+                    Working hour</button>
+            </div>
 
             <div [style.display]="!isCustomAvailability?'block':'none'">
-                <label for="availability">Availability:</label>
-                <select id="availability" (change)="onChangeAvailability()" name="availability" class="form-control"
-                    [(ngModel)]="selectedAvailability">
-                    <option [ngValue]="availabilityItem" *ngFor="let availabilityItem of listOfAvailability">
-                        {{availabilityItem.name}}</option>
-                </select>
-                <app-time-availability #timeAvailabilityControl viewMode="readonly"></app-time-availability>
+                <div class="form-group">
 
+                    <label for="availability">Availability:</label>
+                    <div class="form-control">
+                        <select id="availability" (change)="onChangeAvailability()" name="availability"
+                            class="form-control" [(ngModel)]="selectedAvailability">
+                            <option [ngValue]="availabilityItem" *ngFor="let availabilityItem of listOfAvailability">
+                                {{availabilityItem.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <app-time-availability #timeAvailabilityControl viewMode="readonly"></app-time-availability>
             </div>
             <app-time-availability #timeAvailabilityControlCustom
                 [style.display]="isCustomAvailability?'block':'none'"></app-time-availability>
@@ -142,7 +147,8 @@
         </div>
         <div class="footer">
             <input type="button" class="btn btn-default" value="Cancel" (click)="onCancel($event)" />
-            <button type="submit" class="btn btn-primary" [disabled]="!formAvailability.form.valid">Save Changes</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!formAvailability.form.valid">Save
+                Changes</button>
         </div>
     </div>
 </form>

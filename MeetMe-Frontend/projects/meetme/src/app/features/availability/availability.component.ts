@@ -1,5 +1,5 @@
 import { NgFor } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { TimeAvailabilityComponent, IAvailability, AvailabilityService, IEditAvailabilityNameCommand, ICloneAvailabilityCommand, IEditAvailabilityCommand, IDeleteAvailabilityCommand, ISetDefaultAvailabilityCommand } from '../../app-core';
 import { ModalService } from '../../app-core/controls/modal/modalService';
@@ -14,15 +14,26 @@ export class AvailabilityComponent implements OnInit {
   @ViewChild("availabilityComponent", { static: true }) timeAvailabilityComponent: TimeAvailabilityComponent | undefined;
   @ViewChild("listAvailabilityComponent", { static: true }) listAvailabilityComponent: AvailabilityListComponent | undefined;
   @ViewChild(NgForm) editNameForm: NgForm | undefined;
-
+  @ViewChild('toggle_availability_action_menu') toggleButton: ElementRef | undefined;
+  @ViewChild('availability_action_menu') menu: ElementRef | undefined
+  
   editName: string = "";
   selectedAvailability: IAvailability | undefined;
   showActionMenubarYN: boolean = false;
   constructor(
     private availabilityService: AvailabilityService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private renderer: Renderer2
+  ) { 
+    this.renderer.listen('window', 'click', (e: Event) => {
 
-  ) { }
+      console.log(e.target);
+      if (e.target != this.toggleButton?.nativeElement && e.target != this.menu?.nativeElement) {
+        this.showActionMenubarYN = false;
+      }
+
+    });
+  }
 
   ngOnInit(): void {
   }
@@ -36,10 +47,7 @@ export class AvailabilityComponent implements OnInit {
   onOpenActionMenu() {
     this.showActionMenubarYN = !this.showActionMenubarYN;
   }
-  onCloseActionMenu(e: any) {
-    this.showActionMenubarYN = !this.showActionMenubarYN;
-  }
-
+  
   onClickEditName(id: string) {
     this.resetForm(this.editNameForm);
     this.editName = this.selectedAvailability?.name!
@@ -131,6 +139,7 @@ export class AvailabilityComponent implements OnInit {
     })
   }
 
+  
   private resetForm(frm: NgForm | undefined) {
     frm?.form.markAsPristine();
     frm?.resetForm();

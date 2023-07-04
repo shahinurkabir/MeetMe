@@ -98,10 +98,11 @@ nav ul li a.is-active {
     position: absolute;
     top: 100%;
     right: 1px;
-    width: 250px;
+    width: 300px;
     max-height: 0px;
     overflow: hidden;
     transition: max-height 0.5s;
+    z-index: 100;
 }
 
 .user-profile-wrapper.is-open {
@@ -140,15 +141,20 @@ nav ul li a.is-active {
 
 .user-profile ul {
     display: flex;
+    justify-content: space-between;
     align-items: center;
 }
 
 .user-profile ul li {
     list-style: none;
+    padding:10px 0;
+    margin: 0;
 }
 
 .user-profile ul li a {
     cursor: pointer;
+    padding: 0;
+    margin: 0;
 }
 
 .layout .main {
@@ -229,9 +235,9 @@ input.is-invalid {
 .page .header h2 {
     font-weight: bold;
     font-size: larger;
-    padding-bottom: 10px;
-    padding-left: 10px;
-    border-bottom: 1px solid lightgray;
+   // padding-bottom: 10px;
+   // padding-left: 10px;
+    //border-bottom: 1px solid lightgray;
 }
 
 .page .body {

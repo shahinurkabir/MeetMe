@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
-import { map, Observable } from 'rxjs';
+import { map, Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { parseJwt } from '../utilities/functions';
 import { ClaimTypes } from '../utilities/keys';
@@ -11,6 +11,8 @@ import { environment } from 'projects/meetme/src/environments/environment';
 })
 export class AuthService {
     TOKEN_KEY = "token_data"
+    private loginChanged:Subject<boolean> = new Subject<boolean>();
+    readonly loginChanged$ = this.loginChanged.asObservable();
     constructor(private http: HttpClient, private router: Router) {
 
     }
@@ -64,7 +66,8 @@ export class AuthService {
             localStorage.setItem(ClaimTypes.BASE_URI, jsonString["base_uri"]);
             localStorage.setItem(ClaimTypes.USER_NAME, jsonString["user_name"]);
             localStorage.setItem(ClaimTypes.USER_TIMEZONE, jsonString["user_timezone"]);
-
+            
+            this.loginChanged.next(true);
         }
         catch (e) {
             console.log(e);

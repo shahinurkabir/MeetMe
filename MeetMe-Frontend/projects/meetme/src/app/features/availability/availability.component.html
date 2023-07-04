@@ -1,39 +1,47 @@
-<app-availability-list #listAvailabilityComponent (itemSelected)="onSelected($event)"></app-availability-list>
-<div class="divider">
-</div>
-<div class="overview">
-    <div>
-        <h1 class="page_title">{{selectedAvailability?.name}}</h1>
-        <span *ngIf="selectedAvailability?.isDefault">
-            <i style="color:orange;" class="fa-sharp fa-solid fa-star"></i> default schedule</span>
-       
+<div class="page">
+    <div class="body">
+        <app-availability-list #listAvailabilityComponent (itemSelected)="onSelected($event)"></app-availability-list>
+        <div class="divider">
+        </div>
+        <div class="overview">
+            <div class="header">
+                <h2>{{selectedAvailability?.name}}</h2>
+                <span *ngIf="selectedAvailability?.isDefault">
+                    <i style="color:orange;" class="fa-sharp fa-solid fa-star"></i> default schedule</span>
+
+            </div>
+            <span  class="action_menu_openner" >
+                <i #toggle_availability_action_menu (click)="onOpenActionMenu()" class="fa-solid fa-gear"></i>
+            </span>
+            <ul #availability_action_menu  *ngIf="showActionMenubarYN" class="action_menu">
+                <li (click)="onClickEditName(selectedAvailability?.id!)"><i class="fa fa-pen"></i><span>Edit Name</span>
+                </li>
+                <li (click)="onClone(selectedAvailability?.id!)"><i class="fa fa-clone"></i><span>Clone</span></li>
+                <li *ngIf="!selectedAvailability?.isDefault" (click)="onDefault(selectedAvailability?.id!)">
+                    <i class="fa fa-star"></i><span>Default</span>
+                </li>
+                <li (click)="onClickDelete()"><i class="fa fa-trash"></i><span>Delete</span></li>
+            </ul>
+        </div>
+
+        <app-time-availability #availabilityComponent></app-time-availability>
+        <div class="footer">
+            <input type="button" class="btn btn-primary" value="Save Changes" (click)="onSubmit($event)">
+        </div>
     </div>
-    <span class="action_menu_openner" (click)="onOpenActionMenu()">
-        <i class="fa-solid fa-gear"></i>
-    </span>
-    <ul (mouseleave)="onCloseActionMenu($event)" *ngIf="showActionMenubarYN" class="action_menu">
-        <li (click)="onClickEditName(selectedAvailability?.id!)"><i class="fa fa-pen"></i><span>Edit Name</span></li>
-        <li (click)="onClone(selectedAvailability?.id!)"><i class="fa fa-clone"></i><span>Clone</span></li>
-        <li *ngIf="!selectedAvailability?.isDefault" (click)="onDefault(selectedAvailability?.id!)">
-            <i class="fa fa-star"></i><span>Default</span>
-        </li>
-        <li (click)="onClickDelete()"><i class="fa fa-trash"></i><span>Delete</span></li>
-    </ul>
 </div>
-
-
-<app-time-availability  #availabilityComponent></app-time-availability>
-<input type="button" value="Save" (click)="onSubmit($event)">
-
 <mm-modal id="edit-name-modal" title="Edit Schedule Name" (confirmEvent)="onEditName($event)"
     (cancelEvent)="onCloseModal()">
-    <form class="single-column" #frmEdit="ngForm" (ngSubmit)="onEditNameFormSubmit(frmEdit)">
+    <form #frmEdit="ngForm" (ngSubmit)="onEditNameFormSubmit(frmEdit)">
         <div class="form-group">
             <label>Schedule Name</label>
-            <input #name="ngModel" name="name" [ngClass]="frmEdit.submitted && name.invalid?'is-invalid':''"
-                class="form-control" type="text" [(ngModel)]="editName" required>
-            <div *ngIf="frmEdit.submitted && name.invalid" class="invalid-feedback">
-                Schedule name is required.
+            <div class="form-control">
+                <input #name="ngModel" name="name" autocomplete="off"
+                    [ngClass]="frmEdit.submitted && name.invalid?'is-invalid':''" type="text" [(ngModel)]="editName"
+                    required>
+                <div *ngIf="frmEdit.submitted && name.invalid" class="invalid-feedback">
+                    Schedule name is required.
+                </div>
             </div>
         </div>
     </form>

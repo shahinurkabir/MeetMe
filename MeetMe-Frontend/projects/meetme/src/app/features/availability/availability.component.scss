@@ -1,6 +1,6 @@
 .divider {
-    width: 104%;
-    left: -20px;
+    // width: 104%;
+    // left: -20px;
     position: relative;
     padding: 0 0 10px 0;
     border-bottom: 2px solid lightgray;
@@ -8,10 +8,11 @@
 
 .overview {
     display: flex;
+    height: 50px;
     justify-content: space-between;
     align-items: center;
     position: relative;
-    margin: 10px 0;
+   // margin: 10px 0;
 }
 
 .overview .action_menu_openner {
