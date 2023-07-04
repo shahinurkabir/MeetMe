@@ -9,13 +9,13 @@ import { RouterModule } from '@angular/router';
 import { LoginComponent } from './features/users/login/login.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
-import { BookingLayoutComponent } from './layouts/booking-layout/booking-layout.component';
 import { eventType_Components } from './features/event-types';
 import { TimeAvailabilityComponent, CalendarComponent, ModalComponent, MyOffClickDirective, TimezoneControlComponent, HttpRequestInterceptor } from './app-core';
 import { CallbackPipe } from './app-core/pipes/callback-pipe';
-import { booking_Components } from './features/booking';
 import { accountSettings_Components } from './features/acccount-settings';
 import { availability_Components } from './features/availability';
+import { calendar_Components } from './features/calendar';
+import { CalendarLayoutComponent } from './layouts/calendar-layout/calendar-layout.component';
 
 @NgModule({
     declarations: [
@@ -29,11 +29,11 @@ import { availability_Components } from './features/availability';
         TimezoneControlComponent,
         AuthLayoutComponent,
         AdminLayoutComponent,
-        BookingLayoutComponent,
+        CalendarLayoutComponent,
         accountSettings_Components,
         availability_Components,
         eventType_Components,
-        booking_Components
+        calendar_Components
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },

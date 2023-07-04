@@ -1,15 +1,15 @@
 import { Routes } from "@angular/router";
 import { EventTypeCalendarComponent } from "./eventtype-calendar/eventtype-calendar.component";
-import { UserCalendarComponent } from "./user-calendar/user-calendar.component";
+import { UserCalendarListComponent } from "./user-calendar-list/user-calendar-list.component";
 
-export const booking_Routes: Routes = [
-    { path: ":user", component: UserCalendarComponent },
+export const calendar_Routes: Routes = [
+    { path: ":user", component: UserCalendarListComponent },
     { path: ":user/:slug", component: EventTypeCalendarComponent },
     { path: "cancel/:id", component: EventTypeCalendarComponent },
     { path: "reschedule/:id", component: EventTypeCalendarComponent },
 ]
 
-export const booking_Components = [
+export const calendar_Components = [
     EventTypeCalendarComponent,
-    UserCalendarComponent
+    UserCalendarListComponent
 ];

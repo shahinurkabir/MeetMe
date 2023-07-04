@@ -2,7 +2,7 @@
 <div class="event-list-header">
     <div class="user-info">
         <h3>{{user_name}}</h3>
-        <a target="_blank" [routerLink]="['/booking',baseUri]">
+        <a target="_blank" [routerLink]="['/calendar',baseUri]">
             {{host}}/{{baseUri}}
         </a>
     </div>
@@ -33,7 +33,7 @@
             <button class="button" (click)="onClickDelete(item)">
                 Delete
             </button>
-            <a target="_blank" [routerLink]="['/booking',baseUri,item.slug]" [queryParams]="{id:item.id}">
+            <a target="_blank" [routerLink]="['/calendar',baseUri,item.slug]" [queryParams]="{id:item.id}">
                 Preview
             </a>
         </div>

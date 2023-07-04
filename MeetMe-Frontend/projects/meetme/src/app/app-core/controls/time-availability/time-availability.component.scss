@@ -5,7 +5,8 @@
 .section_overview {
     display: flex;
     justify-content: space-between;
-    padding: 0 0 15px 0;
+    align-items: center;
+    //padding: 0 0 15px 0;
 }
 
 .section_overview .toggle_view_container {

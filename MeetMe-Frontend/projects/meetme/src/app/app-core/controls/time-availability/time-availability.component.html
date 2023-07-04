@@ -100,14 +100,12 @@
 
     <h3>Time Zone <span *ngIf="viewMode=='readonly'">{{availability?.timeZone}} </span></h3>
     <div *ngIf="viewMode!='readonly'" class="section_overview">
-        
-        <app-timezone-control #timezoneControl [selectedTimeZone]="selectedTimeZone"
-        
-        (selectionChanged)="onSelectTimeZone($event)"
-        
-        ></app-timezone-control>
 
-        <div class="toggle_view_container">
+        <app-timezone-control #timezoneControl [selectedTimeZone]="selectedTimeZone"
+            (selectionChanged)="onSelectTimeZone($event)"></app-timezone-control>
+
+        <!-- <div class="toggle_view_container"> -->
+        <div class="toggle_buttons_container">
             <button [ngClass]="viewMode==='list'?'toggle_button':''" (click)="onToggleView('list')">
                 <i class="fa-solid fa-list"></i> List view</button>
             <button [ngClass]="viewMode==='monthly'?'toggle_button':''" (click)="onToggleView('monthly')"> <i
@@ -130,9 +128,9 @@
         <div class="overrides_dates">
 
             <h2 class="sub_title">Add date overrides</h2>
-           
 
-            <div class="timeinterval_overrides" 
+
+            <div class="timeinterval_overrides"
                 *ngFor="let dailyTimeAvailabilities of availabilityOverrides;let index=index">
                 <div>{{dailyTimeAvailabilities.day}}</div>
                 <div class="timeslots">
@@ -230,8 +228,8 @@
 
 
 </form>
-<mm-modal *ngIf="viewMode!=='readonly'" id="modal-override-dates" title="Date overrride intervals" (cancelEvent)="onCloseCalendarModal()"
-    (confirmEvent)="onApplyCalendarDateChanges()">
+<mm-modal *ngIf="viewMode!=='readonly'" id="modal-override-dates" title="Date overrride intervals"
+    (cancelEvent)="onCloseCalendarModal()" (confirmEvent)="onApplyCalendarDateChanges()">
     <app-calendar (handlerDateClick)="onHandledCalendarClicked($event)"
         [selectedDates]="selectedDatesFromCalender"></app-calendar>
     <div class="override_date_intervals" *ngIf="selecteDateOverride">

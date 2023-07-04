@@ -435,3 +435,11 @@ form.single-column .form-group label {
 form.single-column .form-group .form-control {
     width: 100%;
 }
+.toggle_buttons_container {
+    margin:  5px 0;
+    padding:5px;
+    display: block;
+    width: max-content;
+    background-color: rgb(251, 247, 247);
+    border: 1px solid lightgray;
+}

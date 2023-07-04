@@ -3,12 +3,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './features/users/login/login.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
-import { BookingLayoutComponent } from './layouts/booking-layout/booking-layout.component';
 import { eventType_Routes } from './features/event-types';
 import { AuthGuard } from './app-core';
-import { booking_Routes } from './features/booking';
 import { accountSettings_Routes } from './features/acccount-settings';
 import { availability_Route } from './features/availability';
+import { calendar_Routes } from './features/calendar';
+import { CalendarLayoutComponent } from './layouts/calendar-layout/calendar-layout.component';
 
 const admin_Routes: Routes = [
   { path: "", redirectTo: "event-types", pathMatch: "full" },
@@ -26,7 +26,7 @@ const routes: Routes = [
 
   { path: "", component: AdminLayoutComponent, children: admin_Routes, canActivate: [AuthGuard] },
   { path: "auth", component: AuthLayoutComponent, children: auth_Routes },
-  { path: "booking", component: BookingLayoutComponent, children: booking_Routes }
+  { path: "calendar", component: CalendarLayoutComponent, children: calendar_Routes }
 ];
 
 @NgModule({

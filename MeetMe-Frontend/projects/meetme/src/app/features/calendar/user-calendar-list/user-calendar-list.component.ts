@@ -3,11 +3,11 @@ import { ActivatedRoute } from '@angular/router';
 import { IUserProfileDetailResponse, EventTypeService, AuthService } from '../../../app-core';
 
 @Component({
-  selector: 'app-user-calendar',
-  templateUrl: './user-calendar.component.html',
-  styleUrls: ['./user-calendar.component.scss']
+  selector: 'app-user-calendar-list',
+  templateUrl: './user-calendar-list.component.html',
+  styleUrls: ['./user-calendar-list.component.scss']
 })
-export class UserCalendarComponent implements OnInit {
+export class UserCalendarListComponent implements OnInit {
 
   userProfileDetails: IUserProfileDetailResponse | undefined;
   baseUri: string = "";
