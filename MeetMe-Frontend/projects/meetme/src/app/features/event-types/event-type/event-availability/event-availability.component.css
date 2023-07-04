@@ -50,7 +50,7 @@ hr {
 
 .daily_time_interval_container {
     display: flex;
-    align-items: start;
+    align-items: flex-start;
     padding: 4px 10px;
     width: 100%;
     justify-content: space-between;

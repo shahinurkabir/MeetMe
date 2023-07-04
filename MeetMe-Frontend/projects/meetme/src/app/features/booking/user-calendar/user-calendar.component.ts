@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IUserProfileDetailResponse, EventTypeService } from '../../../app-core';
+import { IUserProfileDetailResponse, EventTypeService, AuthService } from '../../../app-core';
 
 @Component({
   selector: 'app-user-calendar',
@@ -11,11 +11,18 @@ export class UserCalendarComponent implements OnInit {
 
   userProfileDetails: IUserProfileDetailResponse | undefined;
   baseUri: string = "";
-
+  userName: string = "";
+  welcomeText:string |undefined;
   constructor(
     private eventTypeService:EventTypeService,
     private route: ActivatedRoute,
-    ) { }
+    private authService: AuthService
+    ) {
+      this.authService.loginChanged$.subscribe(res => {
+        this.baseUri = this.authService.baseUri;
+        this.userName = this.authService.userName;
+      } );
+     }
 
   ngOnInit(): void {
 
@@ -27,6 +34,9 @@ export class UserCalendarComponent implements OnInit {
     this.eventTypeService.getListByBaseURI(this.baseUri).subscribe({
       next: response => {
         this.userProfileDetails = response;
+        this.userName=this.userProfileDetails.profile.userName;
+        this.baseUri=this.userProfileDetails.profile.baseURI;
+        this.welcomeText =this.userProfileDetails.profile.welcomeText;
       },
       error: (error) => { console.log(error) },
       complete: () => { }
