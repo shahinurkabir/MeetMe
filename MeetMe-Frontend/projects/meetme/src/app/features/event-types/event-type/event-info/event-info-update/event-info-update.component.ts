@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import  {Location} from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { IEventType, EventTypeService } from 'projects/meetme/src/app/app-core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-event-info-update',
   templateUrl: './event-info-update.component.html',
   styleUrls: ['./event-info-update.component.scss']
 })
-export class EventInfoUpdateComponent implements OnInit {
+export class EventInfoUpdateComponent implements OnInit, OnDestroy {
+  destroyed$: Subject<boolean> = new Subject<boolean>();
   model: IEventType = {
     id: "",
     name: "",
@@ -30,14 +32,15 @@ export class EventInfoUpdateComponent implements OnInit {
     private eventTypeService: EventTypeService,
     private route: ActivatedRoute,
     private location: Location
-    ) {
+  ) {
 
-    this.route.parent?.params.subscribe((params) => {
+    this.route.parent?.params
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((params) => {
+        let eventTypeId = params["id"];
+        this.loadEventTypeDetail(eventTypeId);
 
-      let eventTypeId = params["id"];
-      this.loadEventTypeDetail(eventTypeId);
-
-    });
+      });
 
   }
 
@@ -45,9 +48,16 @@ export class EventInfoUpdateComponent implements OnInit {
   }
 
   loadEventTypeDetail(id: string) {
-    this.eventTypeService.getById(id).subscribe(response => {
-      this.model = response;
-    })
+    this.eventTypeService.getById(id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: response => {
+          this.model = response;
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { }
+      })
+
   }
   onSaved(response: any) {
     console.log(`Data saved ${response}`);
@@ -56,5 +66,8 @@ export class EventInfoUpdateComponent implements OnInit {
   onCancelled() {
     this.location.back();
   }
-
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
+  }
 }

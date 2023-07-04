@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IUserProfileDetailResponse, EventTypeService, AuthService } from '../../../app-core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-user-calendar-list',
   templateUrl: './user-calendar-list.component.html',
   styleUrls: ['./user-calendar-list.component.scss']
 })
-export class UserCalendarListComponent implements OnInit {
-
+export class UserCalendarListComponent implements OnInit,OnDestroy {
+  destroyed$:Subject<boolean> = new Subject<boolean>();
   userProfileDetails: IUserProfileDetailResponse | undefined;
   baseUri: string = "";
   userName: string = "";
@@ -18,7 +19,9 @@ export class UserCalendarListComponent implements OnInit {
     private route: ActivatedRoute,
     private authService: AuthService
     ) {
-      this.authService.loginChanged$.subscribe(res => {
+      this.authService.loginChanged$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(res => {
         this.baseUri = this.authService.baseUri;
         this.userName = this.authService.userName;
       } );
@@ -31,7 +34,9 @@ export class UserCalendarListComponent implements OnInit {
   }
   
   loadData(){
-    this.eventTypeService.getListByBaseURI(this.baseUri).subscribe({
+    this.eventTypeService.getListByBaseURI(this.baseUri)
+    .pipe(takeUntil(this.destroyed$))
+    .subscribe({
       next: response => {
         this.userProfileDetails = response;
         this.userName=this.userProfileDetails.profile.userName;
@@ -41,5 +46,9 @@ export class UserCalendarListComponent implements OnInit {
       error: (error) => { console.log(error) },
       complete: () => { }
     })
+  }
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

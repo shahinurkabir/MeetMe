@@ -1,15 +1,16 @@
 import { NgFor } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { IAvailability, AvailabilityService, ICreateAvailabilityCommand } from '../../../app-core';
-import { ModalService } from '../../../app-core/controls/modal/modalService';
+import { IAvailability, AvailabilityService, ICreateAvailabilityCommand, ModalService } from '../../../app-core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-availability-list',
   templateUrl: './availability-list.component.html',
   styleUrls: ['./availability-list.component.scss']
 })
-export class AvailabilityListComponent implements OnInit {
+export class AvailabilityListComponent implements OnInit, OnDestroy {
+  destroyed$:Subject<boolean> = new Subject<boolean>();
   @Output() itemSelected = new EventEmitter<IAvailability>();
   listAvailability: IAvailability[] = [];
   newAvailabilityName: string = "";
@@ -38,7 +39,9 @@ export class AvailabilityListComponent implements OnInit {
     this.itemSelected.emit(availability);
   }
   loadData(displayItem_Id: string | undefined) {
-    this.availabilityService.getList().subscribe({
+    this.availabilityService.getList()
+    .pipe(takeUntil(this.destroyed$))
+    .subscribe({
       next: response => {
         this.listAvailability = response;
         this.setDisplayItem(displayItem_Id)
@@ -75,7 +78,9 @@ export class AvailabilityListComponent implements OnInit {
       timeZone: this.timeZoneName
     };
 
-    this.availabilityService.addNew(command).subscribe({
+    this.availabilityService.addNew(command)
+    .pipe(takeUntil(this.destroyed$))
+    .subscribe({
       next: response => {
         this.loadData(response)
       },
@@ -93,5 +98,9 @@ export class AvailabilityListComponent implements OnInit {
   private resetForm(frm: NgForm | undefined) {
     frm?.form.markAsPristine();
     frm?.resetForm();
+  }
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

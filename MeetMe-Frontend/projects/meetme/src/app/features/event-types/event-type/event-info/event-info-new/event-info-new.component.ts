@@ -1,13 +1,15 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IEventType } from 'projects/meetme/src/app/app-core';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-event-info-new',
   templateUrl: './event-info-new.component.html',
   styleUrls: ['./event-info-new.component.scss']
 })
-export class EventInfoNewComponent implements OnInit {
+export class EventInfoNewComponent implements OnInit, OnDestroy {
+  destroyed$:Subject<boolean> = new Subject<boolean>();
   model: IEventType = {
     id: "",
     name: "",
@@ -36,5 +38,9 @@ export class EventInfoNewComponent implements OnInit {
   }
   onCancelled() {
     this.location.back();
+  }
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

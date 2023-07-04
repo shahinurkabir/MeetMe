@@ -1,8 +1,7 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import {  Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { EventTypeService, IEventTypeQuestion, IUpdateEventQuestionCommand, cloneObject } from 'projects/meetme/src/app/app-core';
-import { ModalService } from 'projects/meetme/src/app/app-core/controls/modal/modalService';
+import { EventTypeService, IEventTypeQuestion, IUpdateEventQuestionCommand, ModalService, cloneObject } from 'projects/meetme/src/app/app-core';
 
 import { Subject, takeUntil } from 'rxjs';
 
@@ -68,7 +67,6 @@ export class EventQuestionComponent implements OnInit {
     this.modalService.open(this.MODAL_ID_EVENT_QUESTION);
   }
   onRemoveQuestion() {
-    //let indexToDelete = this.listGeneralQuestion.findIndex(e => e.id == quetionId);
     if (this.selectedQuestionIndex < 0) return;
     this.listGeneralQuestion.splice(this.selectedQuestionIndex, 1);
     this.selectedQuestion = undefined;
@@ -82,13 +80,6 @@ export class EventQuestionComponent implements OnInit {
   onRemoveOption(index: number) {
     this.selectedQuestion?.options.splice(index, 1);
   }
-
-  // filterSystemDefinedQuestion(modelQuestionItem: IModelQuestionItem) {
-  //   return modelQuestionItem.systemDefinedYN == true;
-  // }
-  // filterNormalQuestion(modelQuestionItem: IModelQuestionItem) {
-  //   return modelQuestionItem.systemDefinedYN == false;
-  // }
 
   onSave() {
 
@@ -198,9 +189,7 @@ export class EventQuestionComponent implements OnInit {
     const targetIndex = +(event.target as HTMLElement).id;
     this.swapItems(this.dragItemIndex, targetIndex);
   }
-  // onDragEnd(event: any): void {
-  //   this.dragItemIndex = 0;
-  // }
+  
   swapItems(sourceIndex: number, targetIndex: number): void {
 
     if (this.selectedQuestion?.options === undefined) return;

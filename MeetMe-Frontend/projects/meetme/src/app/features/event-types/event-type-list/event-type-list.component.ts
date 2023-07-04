@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IEventType, EventTypeService, AuthService } from '../../../app-core';
-import { ModalService } from '../../../app-core/controls/modal/modalService';
+import { IEventType, EventTypeService, AuthService, ModalService } from '../../../app-core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-eventtype',
   templateUrl: './event-type-list.component.html',
   styleUrls: ['./event-type-list.component.css']
 })
-export class EventTypeListComponent implements OnInit {
-
+export class EventTypeListComponent implements OnInit, OnDestroy {
+  destroyed$: Subject<boolean> = new Subject<boolean>();
   listEventTypes: IEventType[] = [];
   itemToDelete: IEventType | undefined;
   baseUri: string = "";
@@ -26,21 +26,21 @@ export class EventTypeListComponent implements OnInit {
     this.user_name = this.authService.userName;
   }
 
+
   ngOnInit(): void {
     this.loadEventTypes();
   }
 
   loadEventTypes() {
-    this.eventTypeService.getList().subscribe({
-      next: response => {
-        this.listEventTypes = response
-      },
-      error: (error) => { console.log(error) },
-      complete: () => { }
-    })
-  }
-  onAddNewEventType() {
-
+    this.eventTypeService.getList()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: response => {
+          this.listEventTypes = response
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { }
+      })
   }
 
   getDynamicStyle(item: any): object {
@@ -58,19 +58,32 @@ export class EventTypeListComponent implements OnInit {
   }
 
   onToggleActive(eventType: IEventType) {
-    this.eventTypeService.toggleStatus(eventType.id).subscribe(response => {
-      eventType.activeYN = !eventType.activeYN;
-    })
+    this.eventTypeService.toggleStatus(eventType.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: response => {
+          eventType.activeYN = !eventType.activeYN;
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { }
+      });
   }
   onClone(eventType: IEventType) {
-    this.eventTypeService.clone(eventType.id).subscribe(response => {
-      let url = 'event-types/' + response;
-      this.router.navigate([url]);
-    })
+    this.eventTypeService.clone(eventType.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: response => {
+          let url = 'event-types/' + response;
+          this.router.navigate([url]);
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { }
+      })
   }
   onDelete(eventType: IEventType) {
-    this.eventTypeService.delete(this.itemToDelete?.id!).subscribe(
-      {
+    this.eventTypeService.delete(this.itemToDelete?.id!)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
         next: response => {
           this.loadEventTypes();
         },
@@ -85,5 +98,9 @@ export class EventTypeListComponent implements OnInit {
 
   onCloseModal() {
     this.modalService.close();
+  }
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

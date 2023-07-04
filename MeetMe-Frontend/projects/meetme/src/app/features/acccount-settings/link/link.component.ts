@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService, AccountService, IUpdateUserLinkCommand, IUpdateAccountSettingsResponse } from '../../../app-core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-link',
   templateUrl: './link.component.html',
   styleUrls: ['./link.component.scss']
 })
-export class LinkComponent implements OnInit {
-
+export class LinkComponent implements OnInit, OnDestroy {
+  destroyed$:Subject<boolean> = new Subject<boolean>();
   baseURI: string = "";
   submitted: boolean = false;
   timerTyping: any;
@@ -53,7 +54,9 @@ export class LinkComponent implements OnInit {
   checkLinkAvailability(link: string) {
     if (link.trim() == "") return;
     this.availabilityStatus = 'checking ...';
-    this.accountService.isLinkAvailable(link).subscribe({
+    this.accountService.isLinkAvailable(link)
+    .pipe(takeUntil(this.destroyed$))
+    .subscribe({
       next: response => {
         console.log(response);
         this.availabilityStatus = 'Link is available';
@@ -74,7 +77,9 @@ export class LinkComponent implements OnInit {
 
     let command: IUpdateUserLinkCommand = { baseURI: this.baseURI }
 
-    this.accountService.updateLink(command).subscribe({
+    this.accountService.updateLink(command)
+    .pipe(takeUntil(this.destroyed$))
+    .subscribe({
       next: response => {
         this.updateComplete(response)
 
@@ -111,5 +116,9 @@ export class LinkComponent implements OnInit {
 
   private updateFormFields() {
     this.baseURI = this.authService.baseUri;
+  }
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

@@ -1,22 +1,23 @@
 import { NgFor } from '@angular/common';
-import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { TimeAvailabilityComponent, IAvailability, AvailabilityService, IEditAvailabilityNameCommand, ICloneAvailabilityCommand, IEditAvailabilityCommand, IDeleteAvailabilityCommand, ISetDefaultAvailabilityCommand } from '../../app-core';
-import { ModalService } from '../../app-core/controls/modal/modalService';
+import { TimeAvailabilityComponent, IAvailability, AvailabilityService, IEditAvailabilityNameCommand, ICloneAvailabilityCommand, IEditAvailabilityCommand, IDeleteAvailabilityCommand, ISetDefaultAvailabilityCommand, ModalService } from '../../app-core';
 import { AvailabilityListComponent } from './availability-list/availability-list.component';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-availability',
   templateUrl: './availability.component.html',
   styleUrls: ['./availability.component.scss']
 })
-export class AvailabilityComponent implements OnInit {
+export class AvailabilityComponent implements OnInit, OnDestroy {
+  destroyed$: Subject<boolean> = new Subject<boolean>();
   @ViewChild("availabilityComponent", { static: true }) timeAvailabilityComponent: TimeAvailabilityComponent | undefined;
   @ViewChild("listAvailabilityComponent", { static: true }) listAvailabilityComponent: AvailabilityListComponent | undefined;
   @ViewChild(NgForm) editNameForm: NgForm | undefined;
   @ViewChild('toggle_availability_action_menu') toggleButton: ElementRef | undefined;
   @ViewChild('availability_action_menu') menu: ElementRef | undefined
-  
+
   editName: string = "";
   selectedAvailability: IAvailability | undefined;
   showActionMenubarYN: boolean = false;
@@ -24,7 +25,7 @@ export class AvailabilityComponent implements OnInit {
     private availabilityService: AvailabilityService,
     private modalService: ModalService,
     private renderer: Renderer2
-  ) { 
+  ) {
     this.renderer.listen('window', 'click', (e: Event) => {
 
       console.log(e.target);
@@ -47,7 +48,7 @@ export class AvailabilityComponent implements OnInit {
   onOpenActionMenu() {
     this.showActionMenubarYN = !this.showActionMenubarYN;
   }
-  
+
   onClickEditName(id: string) {
     this.resetForm(this.editNameForm);
     this.editName = this.selectedAvailability?.name!
@@ -65,13 +66,15 @@ export class AvailabilityComponent implements OnInit {
       id: this.selectedAvailability?.id!,
       name: this.editName,
     };
-    this.availabilityService.editName(command).subscribe({
-      next: response => {
-        this.listAvailabilityComponent?.loadData(this.selectedAvailability?.id)
-      },
-      error: (error) => { console.log(error) },
-      complete: () => { this.modalService.close() }
-    });
+    this.availabilityService.editName(command)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: response => {
+          this.listAvailabilityComponent?.loadData(this.selectedAvailability?.id)
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { this.modalService.close() }
+      });
   }
 
   onCloseModal() {
@@ -83,13 +86,16 @@ export class AvailabilityComponent implements OnInit {
       id: id
     };
 
-    this.availabilityService.clone(command).subscribe({
-      next: response => { this.listAvailabilityComponent?.loadData(response); },
-      error: (error) => {
-        // todo display error
-        console.log(error);
-      }
-    })
+    this.availabilityService.clone(command)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: response => { this.listAvailabilityComponent?.loadData(response); },
+        error: (error) => {
+          // todo display error
+          console.log(error);
+        },
+        complete: () => { }
+      })
   }
 
   onSubmit(event: any) {
@@ -103,14 +109,16 @@ export class AvailabilityComponent implements OnInit {
       details: availability?.details!
     }
 
-    this.availabilityService.edit(command).subscribe({
-      next: response => {
-        this.listAvailabilityComponent?.loadData(this.selectedAvailability?.id);
-        alert("Availability updated successfully");//TODO: Display success message
-      },
-      error: (error) => { console.log(error) },
-      complete: () => { this.modalService.close() }
-    });
+    this.availabilityService.edit(command)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: response => {
+          this.listAvailabilityComponent?.loadData(this.selectedAvailability?.id);
+          alert("Availability updated successfully");//TODO: Display success message
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { this.modalService.close() }
+      });
   }
 
   onClickDelete() {
@@ -121,11 +129,13 @@ export class AvailabilityComponent implements OnInit {
       id: this.selectedAvailability?.id!
     };
 
-    this.availabilityService.delete(command).subscribe({
-      next: response => { this.listAvailabilityComponent?.loadData(undefined); },
-      error: (error) => { console.log(error) },
-      complete: () => { this.modalService.close() }
-    })
+    this.availabilityService.delete(command)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: response => { this.listAvailabilityComponent?.loadData(undefined); },
+        error: (error) => { console.log(error) },
+        complete: () => { this.modalService.close() }
+      })
   }
 
   onDefault(id: string) {
@@ -139,9 +149,13 @@ export class AvailabilityComponent implements OnInit {
     })
   }
 
-  
+
   private resetForm(frm: NgForm | undefined) {
     frm?.form.markAsPristine();
     frm?.resetForm();
+  }
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

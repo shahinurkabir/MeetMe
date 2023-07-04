@@ -1,14 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TimeZoneData, IUpdateEventAvailabilityCommand, ListItem, IAvailability, IEventAvailabilityDetailItemDto, IEventType, TimeAvailabilityComponent, EventTypeService, AvailabilityService, convertToDays, day_of_week, IAvailabilityDetails, meeting_day_type_weekday, default_startTime_minutes, default_endTime_Minutes } from 'projects/meetme/src/app/app-core';
-import {  Observable, forkJoin } from 'rxjs';
+import { Observable, Subject, forkJoin, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-event-availability',
   templateUrl: './event-availability.component.html',
   styleUrls: ['./event-availability.component.css']
 })
-export class EventAvailabilityComponent implements OnInit {
+export class EventAvailabilityComponent implements OnInit, OnDestroy {
+  destroyed$: Subject<boolean> = new Subject<boolean>();
   timeZoneList: TimeZoneData[] = [];
   eventTypeId: string = "";
   eventTypeAvailability: IUpdateEventAvailabilityCommand | undefined;
@@ -56,21 +57,29 @@ export class EventAvailabilityComponent implements OnInit {
 
   }
 
-  onCancel(e:any){
+  onCancel(e: any) {
     e.preventDefault();
     this.loadData().subscribe(responses => {
       this.loadDataCompleted(responses);
     });
   }
   subscribeRouteParams() {
-    this.route.parent?.params.subscribe((params) => {
-      this.eventTypeId = params["id"];
+    this.route.parent?.params
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((params) => {
+        this.eventTypeId = params["id"];
 
-      this.loadData().subscribe(responses => {
-        this.loadDataCompleted(responses);
+        this.loadData()
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe({
+            next: responses => {
+              this.loadDataCompleted(responses);
+            },
+            error: (error) => { console.log(error) },
+            complete: () => { }
+          });
+
       });
-
-    });
   };
 
   loadData(): Observable<[IAvailability[], IEventType, IEventAvailabilityDetailItemDto[]]> {
@@ -183,9 +192,15 @@ export class EventAvailabilityComponent implements OnInit {
       availabilityDetails: availabilityDetails!
     };
 
-    this.eventTypeService.updateAvailability(eventTypeAvailability).subscribe(response => {
-      alert("Data saved successfully.")
-    });
+    this.eventTypeService.updateAvailability(eventTypeAvailability)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: response => {
+          alert("Data saved successfully.")
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { }
+      });
 
   }
 
@@ -211,17 +226,10 @@ export class EventAvailabilityComponent implements OnInit {
     this.meetingDurations.push({ text: "60 min", value: "60" });
 
   }
-
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
+  }
 }
 
-// interface model {
-//   id: string,
-//   meetingDuration: number,
-//   dateForwardKind: string,
-//   forwardDurationInDays: number,
-//   bufferTimeAfter: number,
-//   bufferTimeBefore: number,
-//   timeZone: string,
-//   availabilityId?: string,
-//   availabilityDetails: [],
-// }
+

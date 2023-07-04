@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AuthService } from '../../../app-core';
+import { Subject } from 'rxjs';
 
 @Component({ templateUrl: 'login.component.html' })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
+  destroyed$: Subject<boolean> = new Subject<boolean>();
   form!: FormGroup;
   loading = false;
   submitted = false;
@@ -15,8 +17,8 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private accountService: AuthService,
-    //private alertService: AlertService
   ) { }
+
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -25,16 +27,11 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  // convenience getter for easy access to form fields
   get f() { return this.form.controls; }
 
   onSubmit() {
     this.submitted = true;
 
-    // reset alerts on submit
-    //this.alertService.clear();
-
-    // stop here if form is invalid
     if (this.form.invalid) {
       return;
     }
@@ -48,14 +45,16 @@ export class LoginComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: () => {
-          // get return url from query parameters or default to home page
           const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
           this.router.navigateByUrl(returnUrl);
         },
         error: error => {
-          //this.alertService.error(error);
           this.loading = false;
         }
       });
+  }
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

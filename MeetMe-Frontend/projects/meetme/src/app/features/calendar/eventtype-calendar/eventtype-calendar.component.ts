@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CalendarComponent, TimezoneControlComponent, IEventTimeAvailability, TimeZoneData, EventTypeService, convertTimeZoneLocalTime } from '../../../app-core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-event-type-calendar',
@@ -10,6 +11,7 @@ import { CalendarComponent, TimezoneControlComponent, IEventTimeAvailability, Ti
 export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   @ViewChild(CalendarComponent, { static: true }) calendarComponent!: CalendarComponent;
   @ViewChild("timezoneControl", { static: true }) timezoneControl: TimezoneControlComponent | undefined;
+  destroyed$: Subject<boolean> = new Subject<boolean>();
   availableTimeSlots: IEventTimeAvailability[] = [];
   day: IEventTimeAvailability | undefined;
   selectedTimeZone: TimeZoneData | undefined;
@@ -82,12 +84,17 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       fromDate = this.selectedYear + "-" + (this.selectedMonth + 1) + "-" + currentDate.getDate();
     }
 
-    this.eventTypeService.getCalendarAvailability(this.eventTypeId, this.timeZoneName, fromDate, toDate).subscribe((data) => {
-      this.availableTimeSlots = data;
-      this.updateTimeLocalTime();
-      this.disableNotAvailableDays(fromDate, toDate, data);
-
-    });
+    this.eventTypeService.getCalendarAvailability(this.eventTypeId, this.timeZoneName, fromDate, toDate)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (response) => {
+          this.availableTimeSlots = response;
+          this.updateTimeLocalTime();
+          this.disableNotAvailableDays(fromDate, toDate, response);
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { }
+      });
   }
   disableNotAvailableDays(fromDate: string, toDate: string, avalableTimeSlots: IEventTimeAvailability[]) {
 
@@ -161,5 +168,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     });
   }
   ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

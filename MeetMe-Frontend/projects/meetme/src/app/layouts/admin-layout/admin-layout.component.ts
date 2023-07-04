@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { EventTypeService, AuthService } from '../../app-core';
-import { ModalService } from '../../app-core/controls/modal/modalService';
+import { EventTypeService, AuthService, ModalService } from '../../app-core';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-admin-layout',
@@ -9,6 +9,8 @@ import { ModalService } from '../../app-core/controls/modal/modalService';
 })
 export class AdminLayoutComponent implements OnInit, OnDestroy {
 
+  destroyed$:Subject<boolean> = new Subject<boolean>();
+  
   @ViewChild('toggleButton') toggleButton: ElementRef | undefined;
   @ViewChild('accountSettingsMenu') menu: ElementRef | undefined
    userName: string = "";
@@ -46,5 +48,8 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     this.authService.logout();
   }
   ngOnDestroy() {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
+
   }
 }

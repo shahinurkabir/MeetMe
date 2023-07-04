@@ -14,19 +14,19 @@ export class EventTypeComponent implements OnInit {
     private route: ActivatedRoute
   ) {
 
-    this.route.params.subscribe((params) => {
-      console.log(params);
-      console.log(this.route.snapshot.data);
-    });
+    // this.route.params.subscribe((params) => {
+    //   console.log(params);
+    //   console.log(this.route.snapshot.data);
+    // });
 
   }
 
   ngOnInit(): void {
   }
 
-  loadEventTypeDetail(id: string) {
-    this.eventTypeService.getById(id).subscribe(response => {
-      console.log(response)
-    })
-  }
+  // loadEventTypeDetail(id: string) {
+  //   this.eventTypeService.getById(id).subscribe(response => {
+  //     console.log(response)
+  //   })
+  // }
 }

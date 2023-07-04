@@ -1,7 +1,8 @@
 import { Location } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IEventType, EventTypeService, ICreateEventTypeCommand, IUpdateEventCommand } from 'projects/meetme/src/app/app-core';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-event-info-form',
@@ -9,7 +10,8 @@ import { IEventType, EventTypeService, ICreateEventTypeCommand, IUpdateEventComm
   styleUrls: ['./event-info.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class EventInfoComponent implements OnInit {
+export class EventInfoComponent implements OnInit, OnDestroy {
+  destroyed$: Subject<boolean> = new Subject<boolean>();
   submitted = false;
   @Input() model: IEventType = {
     id: "",
@@ -39,6 +41,7 @@ export class EventInfoComponent implements OnInit {
   ) {
 
   }
+
   onSelectedColor(event: any, color: string) {
 
     if (event)
@@ -71,12 +74,15 @@ export class EventInfoComponent implements OnInit {
       timeZoneName: timezone
     };
 
-    this.eventTypeService.addNew(command).subscribe({
-      next: response => {
-        this.saveComplete(response)
-      },
-      error: (error) => { console.log(error)}
-    });
+    this.eventTypeService.addNew(command)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: response => {
+          this.saveComplete(response)
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { }
+      });
   }
 
   private handleUpdate() {
@@ -88,12 +94,15 @@ export class EventInfoComponent implements OnInit {
       eventColor: this.model.eventColor,
     };
 
-    this.eventTypeService.update(command).subscribe({
-      next: response => {
-        this.saveComplete(response)
-      },
-      error: (error) => { console.log(error) }
-    });
+    this.eventTypeService.update(command)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: response => {
+          this.saveComplete(response)
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { }
+      });
   }
 
   private saveComplete(response: any) {
@@ -102,4 +111,10 @@ export class EventInfoComponent implements OnInit {
   onCancel() {
     this.cancelEvent?.emit()
   }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
+  }
+
 }
