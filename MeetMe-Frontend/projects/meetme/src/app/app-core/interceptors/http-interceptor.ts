@@ -9,13 +9,15 @@ import {
 import { catchError, Observable, of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth-service';
+import { AlertService } from '../controls/alert/alert.service';
 
 @Injectable()
 export class HttpRequestInterceptor implements HttpInterceptor {
 
   constructor(
     private router: Router,
-    private auth: AuthService
+    private auth: AuthService,
+    private alertService: AlertService
   ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -36,13 +38,13 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       return of(err.message);
     }
     else if (err.status === 400) {
-     // this.toasterMessageService.ShowInfo(err.error.title);
+      this.alertService.info("Invalid data provided");
     }
     else if (err.status === 500) {
-     // this.toasterMessageService.ShowError(err.error.title);
+      this.alertService.error(err.error.title);
     }
     else {
-     // this.toasterMessageService.ShowError(err.statusText);
+      this.alertService.error(err.statusText);
     }
     return throwError(() => err);
   }

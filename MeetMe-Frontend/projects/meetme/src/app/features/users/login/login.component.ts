@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { AuthService } from '../../../app-core';
+import { AlertService, AuthService } from '../../../app-core';
 import { Subject } from 'rxjs';
 
 @Component({ templateUrl: 'login.component.html' })
@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private accountService: AuthService,
+    private alertService: AlertService
   ) { }
 
 
@@ -29,14 +30,15 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   get f() { return this.form.controls; }
 
-  onSubmit() {
+  onLogin(e: any) {
+    e.preventDefault();
     this.submitted = true;
+    this.loading = true;
 
     if (this.form.invalid) {
       return;
     }
 
-    this.loading = true;
     this.accountService.onLogin(
       {
         userId: this.f['username'].value,
@@ -49,10 +51,19 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.router.navigateByUrl(returnUrl);
         },
         error: error => {
+          this.alertService.error(error);
+        },
+        complete: () => {
           this.loading = false;
         }
       });
   }
+
+  onCancelLogin(e: any) {
+    e.preventDefault();
+    this.loading = false;
+  }
+
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();

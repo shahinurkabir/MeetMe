@@ -3,10 +3,8 @@
         <div class="form-group">
             <label for="userName">Name *</label>
             <div class="form-control">
-                <input type="text" 
-                autocomplete="off" spellcheck="false" #userName="ngModel"
-                 required [(ngModel)]="model.userName"
-                    name="userName">
+                <input type="text" autocomplete="off" spellcheck="false" #userName="ngModel" required
+                    [(ngModel)]="model.userName" name="userName">
                 <div *ngIf="submitted && userName.invalid" class="invalid-feedback">
                     <div>Name is required</div>
                 </div>
@@ -16,17 +14,17 @@
         <div class="form-group">
             <label for="welcomeText">Welcome Text</label>
             <div class="form-control">
-                <textarea class="" #welcomeText="ngModel" maxlength="255" autocomplete="off" rows="3" [(ngModel)]="model.welcomeText" name="welcomeText"
-                    ></textarea>
-                
+                <textarea class="" #welcomeText="ngModel" maxlength="255" autocomplete="off" rows="3"
+                    [(ngModel)]="model.welcomeText" name="welcomeText"></textarea>
+
             </div>
         </div>
 
         <div class="form-group">
             <label for="meetingDuration">Time Zone *</label>
             <div class="form-control">
-                <select id="timeZone" name="timeZone" #timeZone="ngModel"
-                 class="form-control" [(ngModel)]="model.timeZone">
+                <select id="timeZone" name="timeZone" #timeZone="ngModel" class="form-control"
+                    [(ngModel)]="model.timeZone">
                     <option [value]="timeZoneItem.name" *ngFor="let timeZoneItem of timeZoneList">
                         {{timeZoneItem.name}} - {{timeZoneItem.currentTime}}</option>
                 </select>
@@ -34,11 +32,13 @@
                     <div>Time Zone is required</div>
                 </div>
             </div>
-            
+
         </div>
-        <div class="page-footer">
-            <input type="button" class="btn btn-default" value="Cancel" (click)="onCancel($event)" />
-            <input type="submit" class="btn btn-primary" value="Submit">
+        <div class="footer">
+            <button loading-indicator [loading]="isloading" [disabled]="isloading" (click)="onSubmit(formEventInfo)"
+                class="btn btn-primary">
+                Save Changes
+            </button>
         </div>
     </form>
 </div>

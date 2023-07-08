@@ -2,7 +2,7 @@
     <div class="page-header">
         <h2>Login to site!</h2>
     </div>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form [formGroup]="form">
         <div class="page-body">
             <div class="form-group">
                 <label>Username</label>
@@ -25,7 +25,10 @@
                 </div>
             </div>
             <div class="page-footer">
-                <input type="submit" class="btn btn-primary" value="Login">
+                <button loading-indicator [loading]="loading" [disabled]="loading" class="btn btn-primary"
+                    (click)="onLogin($event)">
+                    Login
+                </button>
             </div>
         </div>
     </form>

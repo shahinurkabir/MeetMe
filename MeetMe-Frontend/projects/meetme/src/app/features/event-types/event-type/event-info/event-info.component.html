@@ -1,50 +1,54 @@
 <form (ngSubmit)="onSubmit(formEventInfo)" #formEventInfo="ngForm">
-        <div class="form-group">
-            <label for="name">Name</label>
-            <div class="form-control">
-                <input type="text" #name="ngModel" required [(ngModel)]="model.name" name="name">
-                <div *ngIf="submitted && name.invalid" class="invalid-feedback">
-                    <div>Name is required</div>
-                </div>
+    <div class="form-group">
+        <label for="name">Name</label>
+        <div class="form-control">
+            <input type="text" #name="ngModel" required [(ngModel)]="model.name" id="name" name="name">
+            <div *ngIf="submitted && name.invalid" class="invalid-feedback">
+                <div>Name is required</div>
             </div>
         </div>
-        <div class="form-group">
-            <label for="description">Description</label>
-            <div class="form-control">
-                <textarea class="" rows="5"  #description="ngModel" [(ngModel)]="model.description" name="description"
-                    required></textarea>
-                <div *ngIf="submitted && description.invalid" class="invalid-feedback">
-                    <div>Description is required</div>
-                </div>
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <div class="form-control">
+            <textarea [ngClass]="{ 'is-invalid': submitted && description.errors }" rows="5" #description="ngModel"
+                [(ngModel)]="model.description" id="description" name="description" required></textarea>
+            <div *ngIf="submitted && description.errors" class="invalid-feedback">
+                <div *ngIf="description.errors['required']">Description is required</div>
+                <div *ngIf="description.errors['invalid']">{{description.errors['invalid']}}></div>
             </div>
         </div>
-        <div class="form-group">
-            <label for="slug">Slug</label>
-            <div class="form-control">
-                <input type="text" id="slug" required [(ngModel)]="model.slug" name="slug" #slug="ngModel">
-                <div *ngIf="submitted && slug.invalid" class="invalid-feedback">
-                    <div>Slug is required</div>
-                </div>
+    </div>
+    <div class="form-group">
+        <label for="slug">Slug</label>
+        <div class="form-control">
+            <input type="text" [ngClass]="{ 'is-invalid': submitted && slug.errors }" id="slug" required
+                [(ngModel)]="model.slug" name="slug" #slug="ngModel">
+            <div *ngIf="submitted && slug.errors" class="invalid-feedback">
+                <div *ngIf="slug.errors['required']">Slug is required</div>
+                <div *ngIf="slug.errors['invalid']">{{slug.errors['invalid']}}></div>
+                <div *ngIf="slug.errors['incorrect']">{{slug.errors['incorrect']}}</div>
             </div>
         </div>
-        <div class="form-group">
-            <label for="color">Event Color</label>
-            <div class="form-control">
-                <ul class="circle-list">
-                    <li [class.active]="colorItem==model.eventColor"
-                        *ngFor="let colorItem of eventColors; let index=index;">
-                        <a class="event-color-{{colorItem}}" (click)="onSelectedColor($event,colorItem);"
-                            style="cursor: pointer;"></a>
-                        <span>{{colorItem}}</span>
-                    </li>
-                </ul>
-                <div *ngIf="submitted && !model.eventColor" class="invalid-feedback">
-                    <div>Event color is required</div>
-                </div>
+    </div>
+    <div class="form-group">
+        <label for="color">Event Color</label>
+        <div class="form-control">
+            <ul class="circle-list">
+                <li [class.active]="colorItem==model.eventColor"
+                    *ngFor="let colorItem of eventColors; let index=index;">
+                    <a class="event-color-{{colorItem}}" (click)="onSelectedColor($event,colorItem);"
+                        style="cursor: pointer;"></a>
+                    <span>{{colorItem}}</span>
+                </li>
+            </ul>
+            <div *ngIf="submitted && !model.eventColor" class="invalid-feedback">
+                <div>Event color is required</div>
             </div>
+        </div>
 
-        </div>
-    
+    </div>
+
     <div class="footer">
         <input type="button" class="btn btn-default" value="Cancel" (click)="onCancel()" />
         <input type="submit" class="btn btn-primary" value="Submit">

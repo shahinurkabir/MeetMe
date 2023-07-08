@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AuthService, AccountService, IUpdateUserLinkCommand, IUpdateAccountSettingsResponse } from '../../../app-core';
+import { AuthService, AccountService, IUpdateUserLinkCommand, IUpdateAccountSettingsResponse, CommonFunction, AlertService } from '../../../app-core';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -9,17 +9,19 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrls: ['./link.component.scss']
 })
 export class LinkComponent implements OnInit, OnDestroy {
-  destroyed$:Subject<boolean> = new Subject<boolean>();
-  baseURI: string = "";
+  @ViewChild('formBaseURI') formBaseURI:NgForm | undefined;
+  destroyed$: Subject<boolean> = new Subject<boolean>();
+  base_URI: string = "";
   submitted: boolean = false;
   timerTyping: any;
   typingInterval: number = 500;
   availabilityStatus: string = "";
   host: string = window.location.host;
-
+  isLoading: boolean = false;
   constructor(
     private authService: AuthService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private alertService: AlertService
   ) {
 
     this.updateFormFields();
@@ -55,18 +57,17 @@ export class LinkComponent implements OnInit, OnDestroy {
     if (link.trim() == "") return;
     this.availabilityStatus = 'checking ...';
     this.accountService.isLinkAvailable(link)
-    .pipe(takeUntil(this.destroyed$))
-    .subscribe({
-      next: response => {
-        console.log(response);
-        this.availabilityStatus = 'Link is available';
-      },
-      error: error => {
-        this.handleErrorResponse(error);
-      },
-      complete: () => { }
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (response:any) => {
+          this.availabilityStatus =`${link} ${response.isAvailable ? "available" : "not available"}`;
+        },
+        error: error => {
+          CommonFunction.getErrorListAndShowIncorrectControls(this.formBaseURI?.controls, error.error.errors);
+        },
+        complete: () => { }
 
-    });
+      });
   }
 
   onSubmit(form: NgForm) {
@@ -75,35 +76,23 @@ export class LinkComponent implements OnInit, OnDestroy {
 
     if (form.invalid) return;
 
-    let command: IUpdateUserLinkCommand = { baseURI: this.baseURI }
-
+    let command: IUpdateUserLinkCommand = { baseURI: this.base_URI }
+    this.isLoading = true;
     this.accountService.updateLink(command)
-    .pipe(takeUntil(this.destroyed$))
-    .subscribe({
-      next: response => {
-        this.updateComplete(response)
-
-      },
-      error: error => { console.log(error) },
-      complete: () => { }
-    });
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: response => {
+          this.alertService.success("Update link success");
+          this.updateComplete(response)
+        },
+        error: error => {
+          CommonFunction.getErrorListAndShowIncorrectControls(this.formBaseURI?.controls, error.error.errors);
+        },
+        complete: () => {this.isLoading=false }
+      });
 
   }
 
-  handleErrorResponse(error: any) {
-    console.log(error); // TODO
-    this.availabilityStatus = "";
-
-    if (error.status != 400) {
-      alert(error); // TODO
-    }
-    else {
-      let validationErrors = error.error.errors;
-      if (validationErrors && validationErrors.length > 0) {
-        this.availabilityStatus = validationErrors[0].errorMessage;
-      }
-    }
-  }
   onLinkChanged(e: any) {
     let value = e.target.value;
     e.target.value = value.replace(/[-\s]+/g, "-").replace(/^-/, '').replace(/[^a-zA-Z0-9àç_èéù-]+/g, "").toLowerCase();
@@ -111,12 +100,12 @@ export class LinkComponent implements OnInit, OnDestroy {
   private updateComplete(response: IUpdateAccountSettingsResponse) {
     this.authService.resetToken(response.newToken);
     this.updateFormFields();
-    alert("Link updated successfylly") // TODO
   }
 
   private updateFormFields() {
-    this.baseURI = this.authService.baseUri;
+    this.base_URI = this.authService.baseUri;
   }
+
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();

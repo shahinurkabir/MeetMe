@@ -1,15 +1,16 @@
 <div class="page">
-    <form (ngSubmit)="onSubmit(formEventInfo)" #formEventInfo="ngForm">
+    <form (ngSubmit)="onSubmit(formBaseURI)" #formBaseURI="ngForm">
         <div class="form-group">
             <label for="name">Link  - <strong>{{host}}/</strong>
             </label> 
             <div class="form-control">
                 <input type="text" spellcheck="false" 
                 (input)="onLinkChanged($event)"
-                (keydown)="onKeyDown($event)" (keyup)="onKeyUp($event)" #link="ngModel"
-                    pattern="^[a-z0-9\-_]+$" [(ngModel)]="baseURI" id="link" name="link" required maxlength="255">
-                <div *ngIf="link.errors" class="invalid-feedback">
-                    <div *ngIf="link.errors['required']">Link is required</div>
+                (keydown)="onKeyDown($event)" (keyup)="onKeyUp($event)" #baseURI="ngModel"
+                    pattern="^[a-z0-9\-_]+$" [(ngModel)]="base_URI" id="baseURI" name="baseURI" required maxlength="255">
+                <div *ngIf="baseURI.errors" class="invalid-feedback">
+                    <div *ngIf="baseURI.errors['required']">Link is required</div>
+                    <div *ngIf="baseURI.errors['incorrect']">{{baseURI.errors['incorrect']}}</div>
                 </div>
                 <div *ngIf="availabilityStatus">
                     <span >{{availabilityStatus}}</span>

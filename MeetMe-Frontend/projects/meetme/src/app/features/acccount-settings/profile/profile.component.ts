@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { TimeZoneData, ListOfTimeZone, IAccountProfileInfo, AccountService, AuthService, IUpdateProfileCommand, IUpdateAccountSettingsResponse } from '../../../app-core';
+import { TimeZoneData, ListOfTimeZone, IAccountProfileInfo, AccountService, AuthService, IUpdateProfileCommand, IUpdateAccountSettingsResponse, AlertService, CommonFunction } from '../../../app-core';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -19,9 +19,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
     baseURI: "",
     welcomeText: ""
   };
+
+  isloading: boolean = false;
+
   constructor(
     private accountService: AccountService,
-    private authService: AuthService
+    private authService: AuthService,
+    private alertService:AlertService
   ) { }
 
   ngOnInit(): void {
@@ -35,7 +39,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         next: response => {
           this.loadProfileDataComplete(response);
         },
-        error: error => { console.log(error) },// TODO: Display error message
+        error: error => { console.log(error) },
         complete: () => { }
       });
   }
@@ -53,23 +57,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
     let command: IUpdateProfileCommand = {
       userName: this.model.userName, timeZone: this.model.timeZone, welcomeText: this.model.welcomeText
     }
+    this.isloading = true;
 
     this.accountService.updateProfile(command)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
+          this.alertService.success("Save changes successfully!");
           this.updateComplete(response)
         },
-        error: error => { console.log(error) },// TODO: Display error message
-        complete: () => { }
+        error: error => { CommonFunction.getErrorListAndShowIncorrectControls(form,error.error.errors)},
+        complete: () => { 
+          this.isloading = false;
+        }
       });
   }
 
-  onCancel(e: any) {
-    e.preventDefault();
-    this.submitted = false;
-    this.loadData();
-  }
 
   onChangedTimezone(e: TimeZoneData) {
     console.log(e);
@@ -77,7 +80,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   private updateComplete(response: IUpdateAccountSettingsResponse) {
     this.authService.resetToken(response.newToken);
-    alert("Link updated successfylly") // TODO
   }
   ngOnDestroy(): void {
     this.destroyed$.next(true);

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { TimeZoneData, IUpdateEventAvailabilityCommand, ListItem, IAvailability, IEventAvailabilityDetailItemDto, IEventType, TimeAvailabilityComponent, EventTypeService, AvailabilityService, convertToDays, day_of_week, IAvailabilityDetails, meeting_day_type_weekday, default_startTime_minutes, default_endTime_Minutes } from 'projects/meetme/src/app/app-core';
+import { TimeZoneData, IUpdateEventAvailabilityCommand, ListItem, IAvailability, IEventAvailabilityDetailItemDto, IEventType, TimeAvailabilityComponent, EventTypeService, AvailabilityService, convertToDays, day_of_week, IAvailabilityDetails, meeting_day_type_weekday, default_startTime_minutes, default_endTime_Minutes, AlertService } from 'projects/meetme/src/app/app-core';
 import { Observable, Subject, forkJoin, takeUntil } from 'rxjs';
 
 @Component({
@@ -45,7 +45,8 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
   constructor(
     private eventTypeService: EventTypeService,
     private availabilityService: AvailabilityService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private alertService: AlertService
   ) {
 
     this.initMeetingDurationAndTypes();
@@ -196,7 +197,8 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
-          alert("Data saved successfully.")
+          this.alertService.success("Availability updated successfully");
+          
         },
         error: (error) => { console.log(error) },
         complete: () => { }

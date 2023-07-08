@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IEventType, EventTypeService, ICreateEventTypeCommand, IUpdateEventCommand } from 'projects/meetme/src/app/app-core';
+import { IEventType, EventTypeService, ICreateEventTypeCommand, IUpdateEventCommand, AlertService, CommonFunction } from 'projects/meetme/src/app/app-core';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -37,7 +37,8 @@ export class EventInfoComponent implements OnInit, OnDestroy {
   constructor(
     private eventTypeService: EventTypeService,
     private route: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private alertServie: AlertService
   ) {
 
   }
@@ -58,12 +59,12 @@ export class EventInfoComponent implements OnInit, OnDestroy {
     if (form.invalid) return;
 
     if (this.model.id != undefined && this.model.id.trim() !== "")
-      this.handleUpdate();
+      this.handleUpdate(form);
     else
-      this.handleAddNew();
+      this.handleAddNew(form);
   }
 
-  private handleAddNew() {
+  private handleAddNew(form:any) {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     let command: ICreateEventTypeCommand = {
       name: this.model.name,
@@ -78,14 +79,15 @@ export class EventInfoComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
+          this.alertServie.success("New event type has been created.");
           this.saveComplete(response)
         },
-        error: (error) => { console.log(error) },
+        error: (error) => { CommonFunction.getErrorListAndShowIncorrectControls(form, error.error.errors); },
         complete: () => { }
       });
   }
 
-  private handleUpdate() {
+  private handleUpdate(form: any) {
     let command: IUpdateEventCommand = {
       id: this.model.id,
       name: this.model.name,
@@ -98,9 +100,10 @@ export class EventInfoComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
+          this.alertServie.success("Event type has been updated.");
           this.saveComplete(response)
         },
-        error: (error) => { console.log(error) },
+        error: (error) => { CommonFunction.getErrorListAndShowIncorrectControls(form, error.error.errors)},
         complete: () => { }
       });
   }

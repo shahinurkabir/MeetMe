@@ -1,0 +1,53 @@
+<div  class="alert-container alert-bottom-right">
+  <div  class="alert-wrapper">
+    <div class="ng-tns-c0-3 ng-trigger ng-trigger-anim ng-star-inserted" >
+      <div  class="alert alert-success" >
+        <div  class="alert-content-container">
+          <div  class="alert-icon-container">
+            <div  class="ng-tns-c0-3 ">
+              <div class="ng-star-inserted">icon</div>
+            </div>
+          </div>
+          <div class="alert-content">
+            <div  class="content-text-container">{{alert?.message}}</div>
+          </div>
+          <div class="alert-close-button"><a >×</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- <div class="alert-container {{positionClass}}">
+    <div class="alert-wrapper">
+      <div *ngFor="let alert of alerts; let i = index"   
+      [@anim]="alert.isVisible ? windowPosition : null">      
+        <div class="{{cssClass(alert)}}" *ngIf="alert.isVisible">
+          <div *ngIf="alert.title" class="alert-title">{{alert.title}}</div>
+          <div class="alert-content-container">
+            <div class="alert-icon-container">
+              <div *ngIf="iconTemplate != null; else contentIconTemplate">
+                <ng-container [ngTemplateOutlet]="iconTemplate" [ngTemplateOutletContext]="{data:alert}">
+                </ng-container>
+              </div>
+              <ng-template #contentIconTemplate>
+                <div class="{{iconClass(alert.type)}}"></div>
+            </ng-template>         
+            </div>    
+            <div class="alert-content">       
+              <div *ngIf="contentTemplate != null; else contentTextTemplate">
+                <ng-container [ngTemplateOutlet]="contentTemplate" [ngTemplateOutletContext]="{data:alert}"></ng-container>
+              </div>
+              <ng-template #contentTextTemplate>
+                <div class="content-text-container">{{alert.message}}</div>
+            </ng-template>
+            </div>
+            <div class="alert-close-button">
+              <a (click)="removeAlert(alert)">&times;</a>
+            </div>  
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
