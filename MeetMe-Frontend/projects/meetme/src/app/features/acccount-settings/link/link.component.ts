@@ -15,9 +15,11 @@ export class LinkComponent implements OnInit, OnDestroy {
   submitted: boolean = false;
   timerTyping: any;
   typingInterval: number = 500;
-  availabilityStatus: string = "";
   host: string = window.location.host;
-  isLoading: boolean = false;
+  isSaving: boolean = false;
+  is_Checking_Avaibility: boolean = false;
+  availabilityStatus: string = "";
+
   constructor(
     private authService: AuthService,
     private accountService: AccountService,
@@ -40,8 +42,8 @@ export class LinkComponent implements OnInit, OnDestroy {
   onKeyUp(e: any) {
     clearTimeout(this.timerTyping);
     let link: string = e.target.value;
-    if (link.trim() == "") {
-      this.availabilityStatus = "";
+    if (link.trim() == "" || link.trim().length < 3) {
+      this.resetAvailabilityStatus();
       return;
     }
 
@@ -54,18 +56,26 @@ export class LinkComponent implements OnInit, OnDestroy {
 
 
   checkLinkAvailability(link: string) {
-    if (link.trim() == "") return;
-    this.availabilityStatus = 'checking ...';
+    
+    if (link.trim() == "") {
+      this.resetAvailabilityStatus();
+      return;
+    }
+
+    this.availabilityStatus = "";
+    this.is_Checking_Avaibility = true;
+    
     this.accountService.isLinkAvailable(link)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (response:any) => {
-          this.availabilityStatus =`${link} ${response.isAvailable ? "available" : "not available"}`;
+          this.availabilityStatus =`Available`;
         },
         error: error => {
-          CommonFunction.getErrorListAndShowIncorrectControls(this.formBaseURI?.controls, error.error.errors);
+          this.availabilityStatus = `Not available`;
+          this.is_Checking_Avaibility = false;
         },
-        complete: () => { }
+        complete: () => { this.is_Checking_Avaibility = false;}
 
       });
   }
@@ -77,7 +87,7 @@ export class LinkComponent implements OnInit, OnDestroy {
     if (form.invalid) return;
 
     let command: IUpdateUserLinkCommand = { baseURI: this.base_URI }
-    this.isLoading = true;
+    this.isSaving = true;
     this.accountService.updateLink(command)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
@@ -88,7 +98,7 @@ export class LinkComponent implements OnInit, OnDestroy {
         error: error => {
           CommonFunction.getErrorListAndShowIncorrectControls(this.formBaseURI?.controls, error.error.errors);
         },
-        complete: () => {this.isLoading=false }
+        complete: () => {this.isSaving=false }
       });
 
   }
@@ -96,6 +106,11 @@ export class LinkComponent implements OnInit, OnDestroy {
   onLinkChanged(e: any) {
     let value = e.target.value;
     e.target.value = value.replace(/[-\s]+/g, "-").replace(/^-/, '').replace(/[^a-zA-Z0-9àç_èéù-]+/g, "").toLowerCase();
+  }
+
+  private resetAvailabilityStatus() {
+    this.availabilityStatus = "";
+    this.is_Checking_Avaibility = false;
   }
   private updateComplete(response: IUpdateAccountSettingsResponse) {
     this.authService.resetToken(response.newToken);

@@ -21,6 +21,8 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   editName: string = "";
   selectedAvailability: IAvailability | undefined;
   showActionMenubarYN: boolean = false;
+  isLoading: boolean=false;
+  isSaving: boolean=false;
   constructor(
     private availabilityService: AvailabilityService,
     private modalService: ModalService,
@@ -71,6 +73,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
+          this.alertService.success("Availability name updated successfully");
           this.listAvailabilityComponent?.loadData(this.selectedAvailability?.id)
         },
         error: (error) => { console.log(error) },
@@ -90,7 +93,10 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     this.availabilityService.clone(command)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
-        next: response => { this.listAvailabilityComponent?.loadData(response); },
+        next: response => {
+          this.alertService.success("Availability cloned successfully");
+          this.listAvailabilityComponent?.loadData(response);
+        },
         error: (error) => {
           // todo display error
           console.log(error);
@@ -109,7 +115,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
       timeZone: availability?.timeZone!,
       details: availability?.details!
     }
-
+    this.isSaving = true;
     this.availabilityService.edit(command)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
@@ -118,7 +124,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
           this.listAvailabilityComponent?.loadData(this.selectedAvailability?.id);
         },
         error: (error) => { console.log(error) },
-        complete: () => { this.modalService.close() }
+        complete: () => { this.isSaving = false;}
       });
   }
 
@@ -133,10 +139,10 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     this.availabilityService.delete(command)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
-        next: response => { 
+        next: response => {
           this.alertService.success("Availability deleted successfully");
           this.listAvailabilityComponent?.loadData(undefined);
-         },
+        },
         error: (error) => { console.log(error) },
         complete: () => { this.modalService.close() }
       })
@@ -148,9 +154,9 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     };
 
     this.availabilityService.setDefault(command).subscribe({
-      next: response => { 
+      next: response => {
         this.alertService.success("Availability set as default successfully");
-        this.listAvailabilityComponent?.loadData(this.selectedAvailability?.id) 
+        this.listAvailabilityComponent?.loadData(this.selectedAvailability?.id)
       },
       error: (error) => { console.log(error) }
     })

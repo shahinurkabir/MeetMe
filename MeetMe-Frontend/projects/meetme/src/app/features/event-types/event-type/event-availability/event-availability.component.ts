@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { TimeZoneData, IUpdateEventAvailabilityCommand, ListItem, IAvailability, IEventAvailabilityDetailItemDto, IEventType, TimeAvailabilityComponent, EventTypeService, AvailabilityService, convertToDays, day_of_week, IAvailabilityDetails, meeting_day_type_weekday, default_startTime_minutes, default_endTime_Minutes, AlertService } from 'projects/meetme/src/app/app-core';
+import { TimeZoneData, IUpdateEventAvailabilityCommand, ListItem, IAvailability, IEventAvailabilityDetailItemDto, IEventType, TimeAvailabilityComponent, EventTypeService, AvailabilityService, convertToDays, day_of_week, IAvailabilityDetails, meeting_day_type_weekday, default_startTime_minutes, default_endTime_Minutes, AlertService, CommonFunction } from 'projects/meetme/src/app/app-core';
 import { Observable, Subject, forkJoin, takeUntil } from 'rxjs';
 
 @Component({
@@ -20,7 +21,7 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
   selectedAvailability: IAvailability | undefined
   eventAvailabilityDetails: IEventAvailabilityDetailItemDto[] = [];
   customAvailability: IAvailability | undefined;
-
+  isLoading: boolean = false;
   model: IEventType = {
     id: "",
     name: "",
@@ -42,6 +43,7 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
 
   @ViewChild("timeAvailabilityControlCustom", { static: true }) timeAvailabilityControlCustom: TimeAvailabilityComponent | undefined;
   @ViewChild("timeAvailabilityControl", { static: true }) timeAvailabilityControl: TimeAvailabilityComponent | undefined;
+  @ViewChild("formAvailability") formAvailability: NgForm | undefined;
   constructor(
     private eventTypeService: EventTypeService,
     private availabilityService: AvailabilityService,
@@ -159,9 +161,9 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
     return availability;
   }
 
-  onSubmit(form: any) {
-
-    if (form.invalid) return;
+  onSubmit(e:any) {
+    e.preventDefault();
+    if (this.formAvailability!.invalid) return;
 
     let availability: IAvailability | undefined;
 
@@ -192,7 +194,8 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
         ? undefined : this.selectedAvailability?.id,
       availabilityDetails: availabilityDetails!
     };
-
+    
+    this.isLoading = true;
     this.eventTypeService.updateAvailability(eventTypeAvailability)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
@@ -200,8 +203,8 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
           this.alertService.success("Availability updated successfully");
           
         },
-        error: (error) => { console.log(error) },
-        complete: () => { }
+        error: (error) => { CommonFunction.getErrorListAndShowIncorrectControls(this.formAvailability!,error.error.errors) },
+        complete: () => {this.isLoading=false; }
       });
 
   }

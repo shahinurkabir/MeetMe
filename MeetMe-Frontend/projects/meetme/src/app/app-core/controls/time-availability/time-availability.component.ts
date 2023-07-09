@@ -455,7 +455,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   onClickDayInMonthView(event: any) {
     let element = event.target.querySelector(".action_buttons");
-    if (!element) { // if clicked happend inner html element
+    if (!element) { 
       element = event.target.parentElement.parentElement.querySelector(".action_buttons")
     }
     if (element)

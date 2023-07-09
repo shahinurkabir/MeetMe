@@ -10,10 +10,10 @@
                     <i style="color:orange;" class="fa-sharp fa-solid fa-star"></i> default schedule</span>
 
             </div>
-            <span  class="action_menu_openner" >
+            <span class="action_menu_openner">
                 <i #toggle_availability_action_menu (click)="onOpenActionMenu()" class="fa-solid fa-gear"></i>
             </span>
-            <ul #availability_action_menu  *ngIf="showActionMenubarYN" class="action_menu">
+            <ul #availability_action_menu *ngIf="showActionMenubarYN" class="action_menu">
                 <li (click)="onClickEditName(selectedAvailability?.id!)"><i class="fa fa-pen"></i><span>Edit Name</span>
                 </li>
                 <li (click)="onClone(selectedAvailability?.id!)"><i class="fa fa-clone"></i><span>Clone</span></li>
@@ -26,7 +26,15 @@
 
         <app-time-availability #availabilityComponent></app-time-availability>
         <div class="footer">
-            <input type="button" class="btn btn-primary" value="Save Changes" (click)="onSubmit($event)">
+
+            <button loading-indicator [loading]="isLoading" [disabled]="isLoading" (click)="onSubmit($event)"
+                class="btn btn-default">
+                Cancel Changes
+            </button>
+            <button loading-indicator [loading]="isSaving" [disabled]="isSaving" (click)="onSubmit($event)"
+                class="btn btn-primary">
+                Save Changes
+            </button>
         </div>
     </div>
 </div>
@@ -38,9 +46,10 @@
             <div class="form-control">
                 <input #name="ngModel" name="name" autocomplete="off"
                     [ngClass]="frmEdit.submitted && name.invalid?'is-invalid':''" type="text" [(ngModel)]="editName"
-                    required>
-                <div *ngIf="frmEdit.submitted && name.invalid" class="invalid-feedback">
-                    Schedule name is required.
+                    required minlength="3">
+                <div *ngIf="frmEdit.submitted && name.errors" class="invalid-feedback">
+                    <div *ngIf="name.errors['required']">Name is required</div>
+                    <div *ngIf="name.invalid">Name at-least three charecters</div>
                 </div>
             </div>
         </div>

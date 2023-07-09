@@ -54,28 +54,28 @@
 }
 
 mm-modal .page {
-  padding: 0 !important;
+  padding: 5px !important;
 }
 mm-modal .page .body {
-  padding: 0 !important;
+  padding: 5px !important;
 }
 .page .body.modal ul{
   max-height: 170px;
   overflow-y: auto;
 }
   li {
-    padding: 10px;
-    background-color: #f1f1f1;
-    margin-bottom: 5px;
+    /* padding: 10px;
+    background-color: #f1f1f1; */
+    margin-bottom: 7px;
   }
-  li[draggable="true"] {
+  /* li[draggable="true"] {
     cursor: move;
     opacity: 0.6;
   }
   
   li[draggable="true"]:hover {
     background-color: #e0e0e0;
-  }
+  } */
   
   .quetion-list-container{
     display: flex;
@@ -122,3 +122,23 @@ mm-modal .page .body {
     right: 10px;
   }
   
+
+
+  .answer-set-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0 0 10px 0;
+  }
+  .answer-set-list__answer-set-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 7px;
+  }
+  .answer-set-list__answer-set-container__input-container {
+    width: 80%;
+  }
+  .answer-set-list__answer-set-container__input-container input {
+    width: 100%;
+  }

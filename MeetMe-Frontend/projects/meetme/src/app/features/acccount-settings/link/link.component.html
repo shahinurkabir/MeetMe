@@ -1,28 +1,35 @@
 <div class="page">
+
     <form (ngSubmit)="onSubmit(formBaseURI)" #formBaseURI="ngForm">
         <div class="form-group">
-            <label for="name">Link  - <strong>{{host}}/</strong>
-            </label> 
+            <label for="name">{{host}}/{{base_URI}}
+            </label>
             <div class="form-control">
-                <input type="text" spellcheck="false" 
-                (input)="onLinkChanged($event)"
-                (keydown)="onKeyDown($event)" (keyup)="onKeyUp($event)" #baseURI="ngModel"
-                    pattern="^[a-z0-9\-_]+$" [(ngModel)]="base_URI" id="baseURI" name="baseURI" required maxlength="255">
-                <div *ngIf="baseURI.errors" class="invalid-feedback">
-                    <div *ngIf="baseURI.errors['required']">Link is required</div>
-                    <div *ngIf="baseURI.errors['incorrect']">{{baseURI.errors['incorrect']}}</div>
+                <input type="text" spellcheck="false" (input)="onLinkChanged($event)" (keydown)="onKeyDown($event)"
+                    (keyup)="onKeyUp($event)" #baseURI="ngModel" pattern="^[a-z0-9\-_]+$" [(ngModel)]="base_URI"
+                    id="baseURI" name="baseURI" required minlength="3" maxlength="255">
+                <div style="height: 25px;">
+                    <div *ngIf="!is_Checking_Avaibility && baseURI.errors" class="invalid-feedback">
+                        <div *ngIf="baseURI.errors['required']">Link is required</div>
+                        <div *ngIf="baseURI.errors['minlength']">At-least 3 charecters</div>
+                        <div *ngIf="baseURI.errors['incorrect']">{{baseURI.errors['incorrect']}}</div>
+                    </div>
+                    <div *ngIf="is_Checking_Avaibility || availabilityStatus">
+                        <span *ngIf="availabilityStatus"> {{availabilityStatus}}</span>
+                        <div *ngIf="is_Checking_Avaibility" class="dot-pulse"></div>
+                    </div>
                 </div>
-                <div *ngIf="availabilityStatus">
-                    <span >{{availabilityStatus}}</span>
-                </div>
+
             </div>
-            
+
         </div>
 
 
-        <div class="page-footer">
-            <input  type="button" class="btn btn-default" value="Cancel" (click)="onCancel($event)" />
-            <input type="submit" class="btn btn-primary" value="Submit">
+        <div class="footer">
+            <button loading-indicator [loading]="isSaving" [disabled]="isSaving" (click)="onSubmit(formBaseURI)"
+                class="btn btn-primary">
+                Save Changes
+            </button>
         </div>
     </form>
 </div>

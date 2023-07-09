@@ -4,9 +4,11 @@
             <label for="userName">Name *</label>
             <div class="form-control">
                 <input type="text" autocomplete="off" spellcheck="false" #userName="ngModel" required
-                    [(ngModel)]="model.userName" name="userName">
-                <div *ngIf="submitted && userName.invalid" class="invalid-feedback">
-                    <div>Name is required</div>
+                    [(ngModel)]="model.userName" name="userName" minlength="3">
+                <div *ngIf="submitted && userName.errors" class="invalid-feedback">
+                    <div *ngIf="userName.errors['required']">Name is required</div>
+                    <div *ngIf="userName.errors['minlength']">Name at-least 3 charecters</div>
+                    <div *ngIf="userName.errors['incorrect']">{{userName.errors['incorrect']}}</div>
                 </div>
             </div>
         </div>
@@ -23,19 +25,17 @@
         <div class="form-group">
             <label for="meetingDuration">Time Zone *</label>
             <div class="form-control">
-                <select id="timeZone" name="timeZone" #timeZone="ngModel" class="form-control"
-                    [(ngModel)]="model.timeZone">
-                    <option [value]="timeZoneItem.name" *ngFor="let timeZoneItem of timeZoneList">
-                        {{timeZoneItem.name}} - {{timeZoneItem.currentTime}}</option>
-                </select>
-                <div *ngIf="submitted && timeZone.invalid" class="invalid-feedback">
-                    <div>Time Zone is required</div>
+                <app-timezone-control #timezoneControl [selectedTimeZone]="selectedTimeZone"
+                 (selectionChanged)="onTimeZoneChanged($event)"
+                    [showHourFormatChangeOption]="false"></app-timezone-control>
+                <div *ngIf="submitted && !selectedTimeZone" class="invalid-feedback">
+                    <div>Timezone is required</div>
                 </div>
             </div>
 
         </div>
         <div class="footer">
-            <button loading-indicator [loading]="isloading" [disabled]="isloading" (click)="onSubmit(formEventInfo)"
+            <button loading-indicator [loading]="isLoading" [disabled]="isLoading" (click)="onSubmit(formEventInfo)"
                 class="btn btn-primary">
                 Save Changes
             </button>

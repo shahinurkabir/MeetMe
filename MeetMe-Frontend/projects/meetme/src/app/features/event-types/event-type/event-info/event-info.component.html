@@ -1,32 +1,33 @@
 <form (ngSubmit)="onSubmit(formEventInfo)" #formEventInfo="ngForm">
     <div class="form-group">
-        <label for="name">Name</label>
+        <label for="name">Name *</label>
         <div class="form-control">
-            <input type="text" #name="ngModel" required [(ngModel)]="model.name" id="name" name="name">
-            <div *ngIf="submitted && name.invalid" class="invalid-feedback">
-                <div>Name is required</div>
+            <input type="text" #name="ngModel"  [(ngModel)]="model.name" id="name" name="name" autocomplete="off" required minlength="3">
+            <div *ngIf="submitted && name.errors" class="invalid-feedback">
+                <div *ngIf="name.errors['required']">Name is required</div>
+                <div *ngIf="name.errors['minlength']">Description at-least 3 charecters</div>
             </div>
         </div>
     </div>
     <div class="form-group">
-        <label for="description">Description</label>
+        <label for="description">Description *</label>
         <div class="form-control">
-            <textarea [ngClass]="{ 'is-invalid': submitted && description.errors }" rows="5" #description="ngModel"
-                [(ngModel)]="model.description" id="description" name="description" required></textarea>
+            <textarea  [ngClass]="{ 'is-invalid': submitted && description.errors }" rows="5" #description="ngModel"
+                [(ngModel)]="model.description" id="description" name="description" autocomplete="off" required [minlength]="3"></textarea>
             <div *ngIf="submitted && description.errors" class="invalid-feedback">
                 <div *ngIf="description.errors['required']">Description is required</div>
-                <div *ngIf="description.errors['invalid']">{{description.errors['invalid']}}></div>
+                <div *ngIf="description.errors['minlength']">Description at-least 3 charecters</div>
             </div>
         </div>
     </div>
     <div class="form-group">
-        <label for="slug">Slug</label>
+        <label for="slug">Slug *</label>
         <div class="form-control">
-            <input type="text" [ngClass]="{ 'is-invalid': submitted && slug.errors }" id="slug" required
-                [(ngModel)]="model.slug" name="slug" #slug="ngModel">
-            <div *ngIf="submitted && slug.errors" class="invalid-feedback">
+            <input type="text" [ngClass]="{ 'is-invalid': submitted && slug.errors }" id="slug" required autocomplete="off"
+                [(ngModel)]="model.slug" name="slug" #slug="ngModel" minlength="3">
+            <div *ngIf="submitted && slug.errors" class="invalid-feedback"  >
                 <div *ngIf="slug.errors['required']">Slug is required</div>
-                <div *ngIf="slug.errors['invalid']">{{slug.errors['invalid']}}></div>
+                <div *ngIf="slug.errors['minlength']">Slug at-least 3 charecters</div>
                 <div *ngIf="slug.errors['incorrect']">{{slug.errors['incorrect']}}</div>
             </div>
         </div>

@@ -1,7 +1,7 @@
 import {  Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { EventTypeService, IEventTypeQuestion, IUpdateEventQuestionCommand, ModalService, cloneObject } from 'projects/meetme/src/app/app-core';
+import { AlertService, EventTypeService, IEventTypeQuestion, IUpdateEventQuestionCommand, ModalService, cloneObject } from 'projects/meetme/src/app/app-core';
 
 import { Subject, takeUntil } from 'rxjs';
 
@@ -25,7 +25,8 @@ export class EventQuestionComponent implements OnInit {
   constructor(
     private eventTypeService: EventTypeService,
     private route: ActivatedRoute,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private alertService: AlertService
   ) {
     this.route.parent?.params.subscribe(params => {
       this.eventTypeId = params["id"];
@@ -66,7 +67,8 @@ export class EventQuestionComponent implements OnInit {
     };
     this.modalService.open(this.MODAL_ID_EVENT_QUESTION);
   }
-  onRemoveQuestion() {
+  onRemoveQuestion(e:any) {
+    e.preventDefault();
     if (this.selectedQuestionIndex < 0) return;
     this.listGeneralQuestion.splice(this.selectedQuestionIndex, 1);
     this.selectedQuestion = undefined;
@@ -74,7 +76,8 @@ export class EventQuestionComponent implements OnInit {
     this.modalService.close();
 
   }
-  onAddOption() {
+  onAddOption(e:any) {
+    e.preventDefault();
     this.selectedQuestion?.options.push({ text: '' });
   }
   onRemoveOption(index: number) {
@@ -110,7 +113,7 @@ export class EventQuestionComponent implements OnInit {
       .subscribe(
         {
           next: response => {
-            alert("Data saved successfully");
+            this.alertService.success("Event questions updated successfully");
           },
           error: (error) => { console.log(error) },
           complete: () => { }

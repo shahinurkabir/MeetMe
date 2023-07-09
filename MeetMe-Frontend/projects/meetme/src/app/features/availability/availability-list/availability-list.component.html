@@ -19,10 +19,11 @@
             <label>Schedule Name</label>
             <div class="form-control">
                 <input #name="ngModel" name="name" autocomplete="off"
-                    [ngClass]="frmAddAvailability.submitted && name.invalid?'is-invalid':''"
-                    type="text" [(ngModel)]="newAvailabilityName" required>
-                <div *ngIf="frmAddAvailability.submitted && name.invalid" class="invalid-feedback">
-                    Schedule name is required.
+                    [ngClass]="frmAddAvailability.submitted && name.invalid?'is-invalid':''" type="text"
+                    [(ngModel)]="newAvailabilityName" minlength="3" required>
+                <div *ngIf="frmAddAvailability.submitted && name.errors" class="invalid-feedback">
+                    <div *ngIf="name.errors['required']">Name is required</div>
+                    <div *ngIf="name.invalid">Name at-least three charecters</div>
                 </div>
             </div>
         </div>

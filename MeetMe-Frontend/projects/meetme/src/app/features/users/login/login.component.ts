@@ -11,7 +11,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   loading = false;
   submitted = false;
-
+  loginError: string = "";
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
@@ -33,11 +33,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   onLogin(e: any) {
     e.preventDefault();
     this.submitted = true;
-    this.loading = true;
-
+    
     if (this.form.invalid) {
       return;
     }
+    this.loading = true;
 
     this.accountService.onLogin(
       {
@@ -46,7 +46,11 @@ export class LoginComponent implements OnInit, OnDestroy {
       })
       .pipe(first())
       .subscribe({
-        next: () => {
+        next: response => {
+          if (response == undefined) {
+            this.loginError = "Invalid username or password";
+            return;
+          }
           const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
           this.router.navigateByUrl(returnUrl);
         },

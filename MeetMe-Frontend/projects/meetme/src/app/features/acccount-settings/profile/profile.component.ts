@@ -19,8 +19,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     baseURI: "",
     welcomeText: ""
   };
-
-  isloading: boolean = false;
+  selectedTimeZone: TimeZoneData |undefined;
+  isLoading: boolean = false;
 
   constructor(
     private accountService: AccountService,
@@ -46,6 +46,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   private loadProfileDataComplete(response: IAccountProfileInfo) {
     this.model = response;
+    this.selectedTimeZone = this.timeZoneList.find(x => x.name == response.timeZone);
   }
 
   onSubmit(form: NgForm) {
@@ -53,11 +54,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.submitted = true;
 
     if (form.invalid) return;
-
+    if (this.model.timeZone == undefined) return;
     let command: IUpdateProfileCommand = {
-      userName: this.model.userName, timeZone: this.model.timeZone, welcomeText: this.model.welcomeText
+      userName: this.model.userName, timeZone: this.selectedTimeZone?.name!, welcomeText: this.model.welcomeText
     }
-    this.isloading = true;
+    this.isLoading = true;
 
     this.accountService.updateProfile(command)
       .pipe(takeUntil(this.destroyed$))
@@ -68,14 +69,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
         },
         error: error => { CommonFunction.getErrorListAndShowIncorrectControls(form,error.error.errors)},
         complete: () => { 
-          this.isloading = false;
+          this.isLoading = false;
         }
       });
   }
 
 
-  onChangedTimezone(e: TimeZoneData) {
-    console.log(e);
+  onTimeZoneChanged(e: TimeZoneData) {
+    this.selectedTimeZone = e;
   }
 
   private updateComplete(response: IUpdateAccountSettingsResponse) {

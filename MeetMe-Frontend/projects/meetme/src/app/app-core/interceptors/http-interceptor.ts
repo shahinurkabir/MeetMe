@@ -38,7 +38,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       return of(err.message);
     }
     else if (err.status === 400) {
-      this.alertService.info("Invalid data provided");
+      this.alertService.info("Bad request");  
     }
     else if (err.status === 500) {
       this.alertService.error(err.error.title);
