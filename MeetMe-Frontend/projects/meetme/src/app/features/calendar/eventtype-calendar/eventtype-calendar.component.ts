@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CalendarComponent, TimezoneControlComponent, IEventTimeAvailability, TimeZoneData, EventTypeService, convertTimeZoneLocalTime } from '../../../app-core';
-import { Subject, takeUntil } from 'rxjs';
+import { CalendarComponent, CalendarService, TimezoneControlComponent, IEventTimeAvailability, TimeZoneData, EventTypeService, convertTimeZoneLocalTime, IEventType, AccountService, IAccountProfileInfo, ITimeSlot, day_of_week, month_of_year, ICreateAppointmentCommand, AlertService } from '../../../app-core';
+import { Subject, forkJoin, from, takeUntil } from 'rxjs';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-event-type-calendar',
@@ -19,16 +20,33 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   selectedMonth: number = 0;
   is24HourFormat: boolean = false;
   eventTypeId: string = "";
-  timeZoneName: string = "";
+  selectedTimeZoneName: string = "";
   selectedDate: string | null = null;
   selectedYearMonth: string | null = null;
+  eventTypeInfo: IEventType | undefined;
+  eventTypeUserBaseURI: string = "";
+  eventTypeOwnerInfo: IAccountProfileInfo | undefined;
+  selectedDateTime: string = "";
+  selectedTimeSlot: ITimeSlot | undefined;
+  appointmentEntryModel: AppointmentEntryModel = {
+    inviteeName: "",
+    inviteeEmail: "",
+    guestEmails: "",
+    note: ""
+
+  };
+  submitted: boolean = false;
+  isSubmitting: boolean = false;
   constructor(
     private eventTypeService: EventTypeService,
+    private calendarService: CalendarService,
+    private accountService: AccountService,
+    private alertService: AlertService,
     private route: ActivatedRoute,
     private router: Router
   ) {
 
-    this.timeZoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    this.selectedTimeZoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   }
 
@@ -36,6 +54,9 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.eventTypeId = this.route.snapshot.queryParamMap.get("id") ?? "";
     this.selectedDate = this.route.snapshot.queryParamMap.get('date');
     this.selectedYearMonth = this.route.snapshot.queryParamMap.get("month");
+    this.eventTypeUserBaseURI = this.route.snapshot.paramMap.get("user") ?? "";
+
+    this.loadEventTypeAndUserInfo();
 
     if (this.selectedYearMonth) {
       let yearMonth = this.selectedYearMonth.split("-");
@@ -49,6 +70,22 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   }
 
   ngViewAfterInit() {
+  }
+
+  loadEventTypeAndUserInfo() {
+    forkJoin([
+      this.eventTypeService.getById(this.eventTypeId),
+      this.accountService.getUserByBaseURI(this.eventTypeUserBaseURI)
+    ])
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (response) => {
+          this.eventTypeInfo = response[0];
+          this.eventTypeOwnerInfo = response[1];
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { }
+      });
   }
 
   onHandledCalendarClicked(e: any) {
@@ -78,13 +115,13 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     let fromDate = this.selectedYear + "-" + (this.selectedMonth + 1) + "-01";
     let toDate = this.selectedYear + "-" + (this.selectedMonth + 1) + "-" + daysInMonth;
 
-    let currentDate = new Date(new Date().toLocaleString("en-US", { timeZone: this.timeZoneName }));
+    let currentDate = new Date(new Date().toLocaleString("en-US", { timeZone: this.selectedTimeZoneName }));
     let isCurrentMonth = currentDate.getMonth() == this.selectedMonth && currentDate.getFullYear() == this.selectedYear;
     if (isCurrentMonth) {
       fromDate = this.selectedYear + "-" + (this.selectedMonth + 1) + "-" + currentDate.getDate();
     }
 
-    this.eventTypeService.getCalendarAvailability(this.eventTypeId, this.timeZoneName, fromDate, toDate)
+    this.calendarService.getCalendarAvailability(this.eventTypeId, this.selectedTimeZoneName, fromDate, toDate)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (response) => {
@@ -123,8 +160,8 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   onChangedTimezone(e: TimeZoneData) {
     console.log(e);
     this.selectedTimeZone = e;
-    this.timeZoneName = e.name;
-    this.calendarComponent.resetTimeZone(this.timeZoneName);
+    this.selectedTimeZoneName = e.name;
+    this.calendarComponent.resetTimeZone(this.selectedTimeZoneName);
   }
 
   onChangedHourFormat(is24HourFormat: boolean) {
@@ -139,6 +176,73 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       });
     });
   }
+  onSelectedTimeSlot(e: ITimeSlot) {
+    this.selectedTimeSlot = e;
+    let fromTime = e.startAtTimeOnly;
+    let toTime = convertTimeZoneLocalTime(new Date(new Date(e.startAt).setMinutes(this.eventTypeInfo?.duration!)), this.is24HourFormat, this.selectedTimeZoneName!);
+    let day = new Date(e.startAt).getDate();
+    let weekDay = new Date(e.startAt).getDay();
+    let dayOfWeek = day_of_week[weekDay];
+    let monthName = month_of_year[new Date(e.startAt).getMonth()];
+    let year = new Date(e.startAt).getFullYear();
+    this.selectedDateTime = `${fromTime} - ${toTime}, ${dayOfWeek},${monthName} ${day}, ${year}`;
+
+  }
+
+  // onMakeAppointment() {
+  //   if (!this.selectedTimeSlot) return;
+
+  //   if (!this.appointmentEntryModel) return;
+
+  //   let command: ICreateAppointmentCommand = {
+  //     eventTypeId: this.eventTypeId,
+  //     inviteeName: this.appointmentEntryModel?.inviteeName!,
+  //     inviteeEmail: this.appointmentEntryModel?.inviteeEmail!,
+  //     startTime: this.selectedTimeSlot.startAt,
+  //     endTime: new Date(new Date(this.selectedTimeSlot.startAt).setMinutes(this.eventTypeInfo?.duration!)).toISOString(),
+  //     timeZone: this.selectedTimeZone?.name!,
+  //     guestEmails: this.appointmentEntryModel?.guestEmails,
+  //     notes: this.appointmentEntryModel?.notes
+  //   };
+
+  //   this.calendarService.AddNewAppointment(command)
+  //     .pipe(takeUntil(this.destroyed$))
+  //     .subscribe({
+  //       next: (response) => {
+  //         this.alertService.success("Appointment created successfully");
+  //       },
+  //       error: (error) => { console.log(error) },
+  //       complete: () => { }
+  //     });
+  // }
+
+  onSubmitAppointmentForm(form: NgForm) {
+    this.submitted = true;
+    if (form.invalid) return;
+
+    let command: ICreateAppointmentCommand = {
+      eventTypeId: this.eventTypeId,
+      inviteeName: this.appointmentEntryModel?.inviteeName!,
+      inviteeEmail: this.appointmentEntryModel?.inviteeEmail!,
+      startTime: this.selectedTimeSlot?.startAt!,
+      meetingDuration: this.eventTypeInfo?.duration!,
+      guestEmails: this.appointmentEntryModel?.guestEmails,
+      note: this.appointmentEntryModel?.note
+    };
+
+    this.isSubmitting = true;
+    this.calendarService.AddNewAppointment(command)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (response) => {
+          this.alertService.success("Appointment created successfully");
+        }
+        ,
+        error: (error) => { console.log(error) },
+        complete: () => { this.isSubmitting = false; }
+      });
+  }
+
   addParamMonth() {
     // changes the route without moving from the current view or
     // triggering a navigation event,
@@ -171,4 +275,11 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.destroyed$.next(true);
     this.destroyed$.complete();
   }
+}
+
+interface AppointmentEntryModel {
+  inviteeName: string
+  inviteeEmail: string
+  guestEmails?: string
+  note?: string
 }

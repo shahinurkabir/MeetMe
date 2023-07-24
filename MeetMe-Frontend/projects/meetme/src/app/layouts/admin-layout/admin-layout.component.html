@@ -1,4 +1,43 @@
-<div class="layout">
+<!-- <div class="layout">
+  <nav>
+    <a href="/">
+      <img class="logo" src="../assets/images/logo.png">
+    </a>
+    <ul *ngIf="isLogin()">
+      <li>
+        <a [routerLink]="['availability']" [routerLinkActive]="['is-active']">
+          Availability
+        </a>
+      </li>
+
+      <li>
+        <a [routerLink]="['event-types']" [routerLinkActive]="['is-active']">
+          Events
+        </a>
+      </li>
+    </ul>
+    <img #toggleButton *ngIf="isLogin()" class="user-pic" (click)="toggleMenu($event)"
+      src="../assets/images/profile.png">
+    <div #accountSettingsMenu *ngIf="isLogin()" class="user-profile-wrapper">
+      <div class="user-profile">
+        <div class="user-info">
+          <img src="../assets/images/profile.png">
+          <h3 class="user-name">{{userName}}</h3>
+        </div>
+        <hr>
+        <ul>
+          <li> <a routerLink="account-settings">Account Settings</a></li>
+          <li><a (click)="onLogout()">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="main">
+    <router-outlet></router-outlet>
+  </div>
+</div> -->
+
+ <div class="layout">
   <nav>
     <a href="/">
       <img class="logo" src="../assets/images/logo.png">
@@ -36,3 +75,4 @@
     <router-outlet></router-outlet>
   </div>
 </div>
+

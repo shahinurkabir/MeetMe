@@ -20,6 +20,7 @@ export class AccountService extends DataService {
         let url = `${this.baseURI}/profile`;
         return this.doGet(url);
     }
+    
     updateProfile(updateProfileCommand: IUpdateProfileCommand): Observable<IUpdateAccountSettingsResponse> {
         let url = `${this.baseURI}/profile`;
         return this.doPost(url, updateProfileCommand);
@@ -31,6 +32,15 @@ export class AccountService extends DataService {
 
     isLinkAvailable(link: string): Observable<boolean> {
         let url = `${this.baseURI}/link-available/${link}`;
+        return this.doGet(url);
+    }
+
+    getUserById(id:string): Observable<IAccountProfileInfo> {
+        let url = `${this.baseURI}/userById/${id}}`;
+        return this.doGet(url);
+    }
+    getUserByBaseURI(baseURI:string): Observable<IAccountProfileInfo> {
+        let url = `${this.baseURI}/userByBaseURI/${baseURI}`;
         return this.doGet(url);
     }
 

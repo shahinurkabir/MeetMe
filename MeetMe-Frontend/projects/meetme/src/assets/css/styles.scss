@@ -1,3 +1,5 @@
+@import "_variables";
+
 * {
     margin: 0;
     padding: 0;
@@ -8,8 +10,8 @@
 }
 
 body {
-    background-color: #eceaff;
-    color: #525252;
+    background-color: $background-color;
+    color: #191919;
     position: relative;
 
 
@@ -20,7 +22,14 @@ body.is-modal-open {
 }
 
 a {
+    color: $accent-color;
     text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+a:visited {
+    color:$accent-color
 }
 
 // .layout_container {

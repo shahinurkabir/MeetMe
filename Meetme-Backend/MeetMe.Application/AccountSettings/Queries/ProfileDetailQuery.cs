@@ -47,6 +47,41 @@ namespace MeetMe.Application.AccountSettings.Queries
             return userDto;
         }
     }
+
+    public class ProfileDetailQueryByBaseURI : IRequest<AccountProfileDto>
+    {
+        public string BaseURI { get; set; } = null!;
+    }
+    public class ProfileDetailsQueryBaseURIHandler : IRequestHandler<ProfileDetailQueryByBaseURI, AccountProfileDto>
+    {
+        private readonly IUserRepository userRepository;
+
+        public ProfileDetailsQueryBaseURIHandler(IUserRepository userRepository)
+        {
+            this.userRepository = userRepository;
+        }
+
+        public async Task<AccountProfileDto> Handle(ProfileDetailQueryByBaseURI request, CancellationToken cancellationToken)
+        {
+            var userEntity = await userRepository.GetByBaseURI(request.BaseURI);
+
+            if (userEntity == null)
+            {
+                throw new MeetMeException("User not found");
+            }
+
+            var userDto = new AccountProfileDto
+            {
+                Id = userEntity.Id,
+                UserName = userEntity.UserName,
+                TimeZone = userEntity.TimeZone,
+                BaseURI = userEntity.BaseURI,
+                WelcomeText = userEntity.WelcomeText
+            };
+
+            return userDto;
+        }
+    }
 }
 
 

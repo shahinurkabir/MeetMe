@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { DataService } from './data.service';
 import { ICreateEventTypeCommand, IUpdateEventCommand, IUpdateEventAvailabilityCommand, IUpdateEventQuestionCommand } from '../interfaces/event-type-commands';
 import { IEventAvailabilityDetailItemDto, IEventType, IEventTypeQuestion, IUserProfileDetailResponse } from '../interfaces/event-type-interfaces';
-import { IEventTimeAvailability } from '../interfaces/calendar';
+import { IEventTimeAvailability } from '../interfaces/calendar-interface';
 import { environment } from 'projects/meetme/src/environments/environment';
 
 @Injectable({
@@ -76,8 +76,5 @@ export class EventTypeService extends DataService {
     return this.doPut(url, null);
   }
 
-  getCalendarAvailability(eventTypeId: string, timezone: string, from: string, to: string): Observable<Array<IEventTimeAvailability>> {
-    let url: string = `${this.eventTypeURI}/${eventTypeId}/calendar-availability?timezone=${timezone}&from=${from}&to=${to}`
-    return this.doGet(url)
-  }
+  
 }

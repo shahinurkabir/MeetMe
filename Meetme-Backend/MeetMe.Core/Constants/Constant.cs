@@ -31,6 +31,14 @@ namespace MeetMe.Core.Constants
             public const string Foreever = "foreever";
         }
 
+        public static class AppointmentStatus
+        {
+            public const string Active = "active";
+            public const string Cancelled = "cancelled";
+            public const string Rescheduled = "recheduled";
+        }
+
+
 
     }
 

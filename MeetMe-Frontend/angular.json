@@ -27,7 +27,7 @@
               "projects/meetme/src/assets"
             ],
             "styles": [
-              "projects/meetme/src/styles.scss"
+              "projects/meetme/src/assets/css/styles.scss"
             ],
             "scripts": []
           },

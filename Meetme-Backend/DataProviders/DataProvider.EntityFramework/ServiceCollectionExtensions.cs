@@ -20,6 +20,7 @@ namespace DataProvider.EntityFramework
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
             services.AddScoped<IEventTypeAvailabilityRepository, EventTypeAvailabilityDetailRepository>();
+            services.AddScoped<IAppointmentsRepository,AppointmentRepository>();
 
             return services;
 

@@ -4,6 +4,6 @@ export * from './availability-interfaces';
 export  * from './availability-commands';
 export * from './event-type-interfaces';
 export * from './event-type-commands';
-export * from './calendar';
+export * from './calendar-interface';
 export * from './ITimeIntervalInDay';
 export * from './list-item';

@@ -59,6 +59,7 @@ namespace MeetMe.API.Controllers
 
             return response;
         }
+        
 
         [HttpPost]
         [Route("profile")]
@@ -106,7 +107,22 @@ namespace MeetMe.API.Controllers
 
             return response;
         }
+        [HttpGet]
+        [Route("userById/{id}")]
+        public async Task<AccountProfileDto?> GetUserById(Guid id)
+        {
+            var response = await mediator.Send(new ProfileDetailQuery { Id = id });
 
+            return response;
+        }
+        [HttpGet]
+        [Route("userByBaseURI/{baseURI}")]
+        public async Task<AccountProfileDto?> GetUserByBaseURI(string baseURI)
+        {
+            var response = await mediator.Send(new ProfileDetailQueryByBaseURI { BaseURI = baseURI });
+
+            return response;
+        }
 
         private TokenResponse GenerateToken(User user)
         {

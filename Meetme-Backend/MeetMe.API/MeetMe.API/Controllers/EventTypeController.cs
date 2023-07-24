@@ -176,16 +176,6 @@ namespace MeetMe.API.Controllers
             return result;
         }
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("{id}/calendar-availability")]
-        public async Task<List<EventTimeCalendar>> EventCalendarAvailability(Guid id, string timezone, string from, string to)
-        {
-            var command = new EventTimeCalendarCommand { EventTypeId = id, TimeZone = timezone, FromDate = from, ToDate = to };
-
-            var result = await mediator.Send(command);
-            return result;
-
-        }
+       
     }
 }
