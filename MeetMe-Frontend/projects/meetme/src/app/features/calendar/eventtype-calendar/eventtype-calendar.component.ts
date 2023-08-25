@@ -162,6 +162,9 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.selectedTimeZone = e;
     this.selectedTimeZoneName = e.name;
     this.calendarComponent.resetTimeZone(this.selectedTimeZoneName);
+    //this.showAvailableTimeSlotsInDay();
+    //this.updateTimeLocalTime();
+    this.loadEventCalendarData ()
   }
 
   onChangedHourFormat(is24HourFormat: boolean) {
@@ -172,19 +175,22 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   updateTimeLocalTime() {
     this.availableTimeSlots.forEach((day) => {
       day.slots.forEach((slot) => {
-        slot.startAtTimeOnly = convertTimeZoneLocalTime(new Date(slot.startAt), this.is24HourFormat, this.selectedTimeZone?.name!);
+        let timeToStart = convertTimeZoneLocalTime(new Date(slot.startDateTime), this.is24HourFormat, this.selectedTimeZone?.name!);
+        let isDaySecondHalf =(timeToStart.split(" ")[1] == "PM" || parseInt(timeToStart.substring(0, 2)) >= 12 )? true : false;
+        slot.startTime = timeToStart;
+        slot.isDaySecondHalf = isDaySecondHalf
       });
     });
   }
   onSelectedTimeSlot(e: ITimeSlot) {
     this.selectedTimeSlot = e;
-    let fromTime = e.startAtTimeOnly;
-    let toTime = convertTimeZoneLocalTime(new Date(new Date(e.startAt).setMinutes(this.eventTypeInfo?.duration!)), this.is24HourFormat, this.selectedTimeZoneName!);
-    let day = new Date(e.startAt).getDate();
-    let weekDay = new Date(e.startAt).getDay();
+    let fromTime = e.startTime;
+    let toTime = convertTimeZoneLocalTime(new Date(new Date(e.startDateTime).setMinutes(this.eventTypeInfo?.duration!)), this.is24HourFormat, this.selectedTimeZoneName!);
+    let day = new Date(e.startDateTime).getDate();
+    let weekDay = new Date(e.startDateTime).getDay();
     let dayOfWeek = day_of_week[weekDay];
-    let monthName = month_of_year[new Date(e.startAt).getMonth()];
-    let year = new Date(e.startAt).getFullYear();
+    let monthName = month_of_year[new Date(e.startDateTime).getMonth()];
+    let year = new Date(e.startDateTime).getFullYear();
     this.selectedDateTime = `${fromTime} - ${toTime}, ${dayOfWeek},${monthName} ${day}, ${year}`;
 
   }
@@ -224,7 +230,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       eventTypeId: this.eventTypeId,
       inviteeName: this.appointmentEntryModel?.inviteeName!,
       inviteeEmail: this.appointmentEntryModel?.inviteeEmail!,
-      startTime: this.selectedTimeSlot?.startAt!,
+      startTime: this.selectedTimeSlot?.startDateTime!,
       meetingDuration: this.eventTypeInfo?.duration!,
       guestEmails: this.appointmentEntryModel?.guestEmails,
       note: this.appointmentEntryModel?.note
@@ -243,6 +249,10 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       });
   }
 
+  onCancel(e: any) {
+    e.preventDefault();
+    this.selectedTimeSlot = undefined;
+  }
   addParamMonth() {
     // changes the route without moving from the current view or
     // triggering a navigation event,

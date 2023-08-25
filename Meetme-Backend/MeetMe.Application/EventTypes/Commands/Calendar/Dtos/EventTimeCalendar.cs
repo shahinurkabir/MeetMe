@@ -17,6 +17,6 @@ namespace MeetMe.Application.EventTypes.Calendar.Dtos
     }
     public class TimeSlot
     {
-        public DateTimeOffset StartAt { get; set; }
+        public DateTimeOffset StartDateTime { get; set; }
     }
 }

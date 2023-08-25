@@ -87,7 +87,7 @@ export class CalendarComponent implements OnInit {
       let weekDay = calendarDay.getDay();
       let dayNo = i + 1
       let shortDateString = this.getShortDateString(dayNo);
-      let isPastDate =  currentTimeByTimeZone > calendarDay.getTime(); // date.isDayPast(calendarDay)
+      let isPastDate =  currentTimeByTimeZone > calendarDay.getTime(); 
       let isCurrentDate =this.isCurrentMonth() && currentDate.getDate() == calendarDay.getDate() ;
       this.days_in_month[weekNo][weekDay] = { dayNo: dayNo, date: shortDateString, isDisabled: isPastDate, isSelected: false, isCurrentDate: isCurrentDate };
 
@@ -166,7 +166,7 @@ export class CalendarComponent implements OnInit {
   resetYearMonthFromDate(date: Date) {
     this.selectedYear = date.getFullYear();
     this.selectedMonth = date.getMonth();
-    this.selectedDates = {};
+    //this.selectedDates = {};
   }
   disableDays(days: number[]) {
     for (let week in this.days_in_month) {

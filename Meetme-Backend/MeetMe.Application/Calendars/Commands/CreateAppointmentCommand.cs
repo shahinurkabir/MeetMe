@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.Validators;
 using MediatR;
+using MeetMe.Core.Exceptions;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using System;
@@ -34,12 +35,19 @@ namespace MeetMe.Application.Calendars.Commands
         }
         public async Task<Guid> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken)
         {
+
+            DateTime startTimeUTC = request.StartTime.ToUniversalTime();
+            DateTime endTimeUTC = startTimeUTC.AddMinutes(request.MeetingDuration);
+
+            var isTimeConflicling = await appointmentsRepository.IsTimeConflicting(request.EventTypeId, startTimeUTC, endTimeUTC);
+
+            if (isTimeConflicling == true)
+            {
+                throw new MeetMeException("The selected time slot is not available");
+            }
             var newId = Guid.NewGuid();
 
-            var startTimeUTC=request.StartTime.ToUniversalTime();
-            var endTimeUTC = startTimeUTC.AddMinutes(request.MeetingDuration);
-            
-            var entity = new CalendarAppointment
+            var entity = new Appointment
             {
                 Id = newId,
                 EventTypeId = request.EventTypeId,
@@ -47,12 +55,12 @@ namespace MeetMe.Application.Calendars.Commands
                 InviteeEmail = request.InviteeEmail,
                 GuestEmails = request.GuestEmails,
                 Status = AppointmentStatus.Active,
-                StartTime =startTimeUTC,
-                EndTime = endTimeUTC,
+                StartTimeUTC = startTimeUTC,
+                EndTimeUTC = endTimeUTC,
                 Note = request.Note,
             };
 
-            await appointmentsRepository.AddNewAppointment(entity);
+            await appointmentsRepository.AddAppointment(entity);
 
             return newId;
         }

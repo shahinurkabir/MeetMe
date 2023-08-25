@@ -45,23 +45,20 @@ namespace MeetMe.Core.Persistence.Entities
         public List<EventTypeAvailabilityDetail>  EventTypeAvailabilityDetails { get; set; }
 
         [JsonIgnore]
-        public List<CalendarAppointment> Appointments { get; set; }
-
-        //[JsonIgnore]
-        //public Availability Availability { set; get; }
+        public List<Appointment> Appointments { get; set; }
 
     }
 
-    public class EventTypeScheduleInfo
-    {
-        public EventTypeScheduleInfo()
-        {
-            WeeklyTimeSchedule = new List<DailyTimeSchedule>();
-        }
+    //public class EventTypeScheduleInfo
+    //{
+    //    public EventTypeScheduleInfo()
+    //    {
+    //        WeeklyTimeSchedule = new List<DailyTimeSchedule>();
+    //    }
 
-        public Guid EventTypeId { get; set; }
-        public List<DailyTimeSchedule> WeeklyTimeSchedule { get; set; }
+    //    public Guid EventTypeId { get; set; }
+    //    public List<DailyTimeSchedule> WeeklyTimeSchedule { get; set; }
 
-    }
+    //}
 }
 

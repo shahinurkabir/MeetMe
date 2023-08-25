@@ -4,11 +4,11 @@ using MeetMe.Core.Persistence.Entities;
 
 namespace DataProvider.EntityFramework.EntityConfigurations
 {
-    public class CalendarAppointmentEntityConfiguration : IEntityTypeConfiguration<CalendarAppointment>
+    public class AppointmentEntityConfiguration : IEntityTypeConfiguration<Appointment>
     {
-        public void Configure(EntityTypeBuilder<CalendarAppointment> builder)
+        public void Configure(EntityTypeBuilder<Appointment> builder)
         {
-            builder.ToTable("CalendarAppointment");
+            builder.ToTable("Appointment");
             builder.HasKey(e => e.Id);
             builder.Property(e => e.Id).ValueGeneratedOnAdd();
             builder.HasOne(e => e.EventType)

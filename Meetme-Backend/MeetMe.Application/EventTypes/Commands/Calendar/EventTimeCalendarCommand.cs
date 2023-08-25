@@ -19,33 +19,55 @@ namespace MeetMe.Application.EventTypes.Calendar
     {
         private readonly IEventTypeRepository eventTypeRepository;
         private readonly IEventTypeAvailabilityRepository eventTypeAvailabilityDetailRepository;
+        private readonly IAppointmentsRepository appointmentsRepository;
 
-        public EventTimeCalendarCommandHandler(
+        public EventTimeCalendarCommandHandler
+        (
             IEventTypeRepository eventTypeRepository,
-            IEventTypeAvailabilityRepository eventTypeAvailabilityDetailRepository
-            )
+            IEventTypeAvailabilityRepository eventTypeAvailabilityDetailRepository,
+            IAppointmentsRepository appointmentsRepository
+        )
         {
             this.eventTypeRepository = eventTypeRepository;
             this.eventTypeAvailabilityDetailRepository = eventTypeAvailabilityDetailRepository;
+            this.appointmentsRepository = appointmentsRepository;
         }
 
         public async Task<List<EventTimeCalendar>> Handle(EventTimeCalendarCommand request, CancellationToken cancellationToken)
         {
             var eventTypeEntity = await eventTypeRepository.GetEventTypeById(request.EventTypeId);
+            var scheduleDetailEntityList = await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityByEventId(eventTypeEntity.Id);
 
-            var calendarTimeZone = eventTypeEntity.TimeZone;
+            var timeZone_User = request.TimeZone;
+            var timeZone_Calendar = eventTypeEntity.TimeZone;
             var bufferTime = eventTypeEntity.BufferTimeAfter;
             var meetingDuration = eventTypeEntity.Duration;
 
-            var availabilityList = await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityByEventId(eventTypeEntity.Id);
+            var timeZoneInfo_User = TimeZoneInfo.FindSystemTimeZoneById(request.TimeZone);
+            var timeZoneInfo_Calendar = TimeZoneInfo.FindSystemTimeZoneById(timeZone_Calendar);
 
-            var userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(request.TimeZone);
-            var listSlots = GetCalendarTimeSlots(request.TimeZone, calendarTimeZone, request.FromDate, request.ToDate, bufferTime, meetingDuration, availabilityList);
+            var tempFromDate = DateTime.Parse(request.FromDate);
+            var tempToDate = DateTime.Parse(request.ToDate);
+
+            var tempFromUTC = tempFromDate.ToUniversalTime();
+            var tempToUTC = tempToDate.ToUniversalTime();
+
+            var dateFrom_User = TimeZoneInfo.ConvertTime(tempFromDate, timeZoneInfo_User);
+            var dateTo_User = TimeZoneInfo.ConvertTime(tempToDate, timeZoneInfo_User);
+
+            //some buffer time to include previous and next day
+            var dateFrom_Calendar = TimeZoneInfo.ConvertTime(dateFrom_User, timeZoneInfo_Calendar).AddDays(-1);
+            var dateTo_Calendar = TimeZoneInfo.ConvertTime(dateTo_User, timeZoneInfo_Calendar).AddDays(1);
 
 
-            listSlots.ForEach(e => e.StartAt = TimeZoneInfo.ConvertTime(e.StartAt, userTimeZone));
+            var listTimeSlots = GenerateTimeSlots(dateFrom_Calendar, dateTo_Calendar, meetingDuration, bufferTime, scheduleDetailEntityList);
 
-            var listDatesGroup = listSlots.GroupBy(e => e.StartAt.DateTime.Date);
+            listTimeSlots = listTimeSlots.Where(e => e.StartDateTime > DateTimeOffset.Now).ToList();// excludes past time
+
+
+            listTimeSlots.ForEach(e => e.StartDateTime = TimeZoneInfo.ConvertTime(e.StartDateTime, timeZoneInfo_User));
+
+            var listDatesGroup = listTimeSlots.GroupBy(e => e.StartDateTime.DateTime.Date);
 
             var result = new List<EventTimeCalendar>();
 
@@ -53,7 +75,7 @@ namespace MeetMe.Application.EventTypes.Calendar
             {
                 var date = dateGroup.Key;
                 var listDate = dateGroup.ToList();
-                listDate = listDate.Where(e => e.StartAt.DateTime.Date == date).ToList();
+                listDate = listDate.Where(e => e.StartDateTime.DateTime.Date == date).ToList();
 
                 var eventTimeCalendar = new EventTimeCalendar
                 {
@@ -67,69 +89,82 @@ namespace MeetMe.Application.EventTypes.Calendar
 
         }
 
-        private List<TimeSlot> GetCalendarTimeSlots(
-            string timezoneUser, string timezoneCalendar,
-            string dateFrom, string dateTo, int bufferTime,
-            int meetingDuration, List<EventTypeAvailabilityDetail> scheduleList
+        private List<TimeSlot> GenerateTimeSlots(
+            //string timezoneOfUser,
+            //string timezoneOfCalendar,
+            DateTime dateFrom_Calendar,
+            DateTime dateTo_Calendar,
+            int meetingDuration,
+            int bufferTime,
+            List<EventTypeAvailabilityDetail> availabilityDetails
             )
         {
             var result = new List<TimeSlot>();
-            var userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timezoneUser);
-            var calendarTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timezoneCalendar);
+            //var timeZoneInfo_User = TimeZoneInfo.FindSystemTimeZoneById(timezoneOfUser);
+            //var timeZoneInfo_Calendar = TimeZoneInfo.FindSystemTimeZoneById(timezoneOfCalendar);
 
-            var tempFromDate = DateTime.Parse(dateFrom);
-            var tempToDate = DateTime.Parse(dateTo);
+            //var tempFromDate = DateTime.Parse(dateFrom);
+            //var tempToDate = DateTime.Parse(dateTo);
 
-            var tempFromUTC = tempFromDate.ToUniversalTime();
-            var tempToUTC = tempToDate.ToUniversalTime();
+            //var tempFromUTC = tempFromDate.ToUniversalTime();
+            //var tempToUTC = tempToDate.ToUniversalTime();
 
-            var dateFromUser = TimeZoneInfo.ConvertTime(tempFromDate, userTimeZone);
-            var dateToUser = TimeZoneInfo.ConvertTime(tempToDate, userTimeZone);
+            //var dateFrom_User = TimeZoneInfo.ConvertTime(tempFromDate, timeZoneInfo_User);
+            //var dateTo_User = TimeZoneInfo.ConvertTime(tempToDate, timeZoneInfo_User);
 
-            var dateFromCalendar = TimeZoneInfo.ConvertTime(dateFromUser, calendarTimeZone).AddDays(-1);
-            var dateToCalendar = TimeZoneInfo.ConvertTime(dateToUser, calendarTimeZone).AddDays(1);
+            //var dateFrom_Calendar = TimeZoneInfo.ConvertTime(dateFrom_User, timeZoneInfo_Calendar).AddDays(-1);
+            //var dateTo_Calendar = TimeZoneInfo.ConvertTime(dateTo_User, timeZoneInfo_Calendar).AddDays(1);
 
-            var scheduleDate = dateFromCalendar;
+            var dateRunning = dateFrom_Calendar;
 
-            while (scheduleDate <= dateToCalendar)
+            while (dateRunning <= dateTo_Calendar)
             {
-                var weekDay = scheduleDate.DayOfWeek;
+                var weekDay = dateRunning.DayOfWeek;
 
-                var listScheduleTimesPerDay = scheduleList
-                                            .Where(x => x.DayType == Events.SCHEDULE_DATETYPE_WEEKDAY
-                                            && x.Value == weekDay.ToString())
-                                            .ToList();
-                var listScheduleTimesPerDate = scheduleList
-                                                .Where(x => x.DayType == Events.SCHEDULE_DATETYPE_DATE
-                                                && DateTime.Parse(x.Value) == scheduleDate.Date)
-                                                .ToList();
+                var schedulesForDate = GetSchedulesForDate(availabilityDetails, dateRunning, weekDay);
 
-                if (listScheduleTimesPerDate != null && listScheduleTimesPerDate.Any())
+                if (schedulesForDate != null && schedulesForDate.Any())
                 {
-                    listScheduleTimesPerDay = listScheduleTimesPerDate;
-                }
-
-                if (listScheduleTimesPerDay != null && listScheduleTimesPerDay.Any())
-                {
-                    foreach (var scheduleItem in listScheduleTimesPerDay)
+                    foreach (var scheduleItem in schedulesForDate)
                     {
                         double dayStartFromInMinutes = scheduleItem.From;
                         double dayEndFromInMinutes = scheduleItem.To;
 
-                        var timeSlots = GenerateTimeSlotForDate(scheduleDate, bufferTime, meetingDuration, dayStartFromInMinutes, dayEndFromInMinutes).ToList();
+                        var timeSlots = GenerateTimeSlotForDate(dateRunning, bufferTime, meetingDuration, dayStartFromInMinutes, dayEndFromInMinutes).ToList();
 
                         result.AddRange(timeSlots);
                     }
-
                 }
 
-                scheduleDate = scheduleDate.AddDays(1);
+                dateRunning = dateRunning.AddDays(1);
 
             }
             return result;
         }
 
-        private IEnumerable<TimeSlot> GenerateTimeSlotForDate(
+        private static List<EventTypeAvailabilityDetail> GetSchedulesForDate(
+            List<EventTypeAvailabilityDetail> availabilityDetails,
+            DateTime scheduleDate, DayOfWeek weekDay
+            )
+        {
+            var listScheduleTimesPerDay = availabilityDetails
+                                        .Where(x => x.DayType == Events.SCHEDULE_DATETYPE_WEEKDAY
+                                        && x.Value == weekDay.ToString())
+                                        .ToList();
+            var listScheduleTimesPerDate = availabilityDetails
+                                            .Where(x => x.DayType == Events.SCHEDULE_DATETYPE_DATE
+                                            && DateTime.Parse(x.Value) == scheduleDate.Date)
+                                            .ToList();
+
+            if (listScheduleTimesPerDate != null && listScheduleTimesPerDate.Any())
+            {
+                listScheduleTimesPerDay = listScheduleTimesPerDate;
+            }
+
+            return listScheduleTimesPerDay;
+        }
+
+        private static IEnumerable<TimeSlot> GenerateTimeSlotForDate(
              DateTimeOffset calenderDate,
              double bufferTimeInMinute,
              int meetingDuration,
@@ -142,7 +177,7 @@ namespace MeetMe.Application.EventTypes.Calendar
 
             while (dayStartTime < dayEndTime)
             {
-                yield return new TimeSlot { StartAt = dayStartTime };
+                yield return new TimeSlot { StartDateTime = dayStartTime };
 
                 dayStartTime = dayStartTime.AddMinutes(meetingDuration).AddMinutes(bufferTimeInMinute); ;
 

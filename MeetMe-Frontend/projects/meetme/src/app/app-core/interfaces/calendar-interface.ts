@@ -3,8 +3,9 @@ export interface IEventTimeAvailability{
     slots:ITimeSlot[]
 }
 export interface ITimeSlot {
-    startAt: string
-    startAtTimeOnly: string
+    startDateTime: string
+    startTime: string
+    isDaySecondHalf: boolean
 }
 
 export interface ICreateAppointmentCommand {

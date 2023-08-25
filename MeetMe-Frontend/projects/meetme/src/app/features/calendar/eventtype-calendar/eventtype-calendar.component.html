@@ -1,11 +1,11 @@
 <div class="calendar-page">
-    <section class="event-info-wrapper">
+    <!-- <section class="event-info-wrapper">
         <h2>{{eventTypeOwnerInfo?.userName}}</h2>
         <h1>{{eventTypeInfo?.name}}</h1>
         <strong>{{eventTypeInfo?.duration}} minutes</strong>
         <strong>{{selectedDateTime}}</strong>
         <strong>{{selectedTimeZone}}</strong>
-    </section>
+    </section> -->
     <section  class="booking-wrapper">
         <section [ngStyle]="{'display':!selectedTimeSlot?'block': 'none'}" class="datetime-wrapper">
             <h2>Select a Date & Time</h2>
@@ -22,8 +22,19 @@
                 <div class="time-slots-wrapper">
                     <h2>{{selectedDate}}</h2>
                     <div class="time-slots">
-                        <button (click)="onSelectedTimeSlot(slot)" *ngFor="let slot of day?.slots">
-                            {{slot.startAtTimeOnly}}
+                        <button class="answerBtnsOff"  (click)="onSelectedTimeSlot(slot)" 
+                        *ngFor="let slot of day?.slots! | filter:'isDaySecondHalf':false">
+                            {{slot.startTime}}
+                        </button>
+                    </div>
+                    <button class="btn btn-primary">Next</button>
+                </div>
+                <div class="time-slots-wrapper">
+                    <h2>{{selectedDate}}</h2>
+                    <div class="time-slots">
+                        <button class="answerBtnsOff"  (click)="onSelectedTimeSlot(slot)" 
+                        *ngFor="let slot of day?.slots! | filter:'isDaySecondHalf':true">
+                            {{slot.startTime}}
                         </button>
                     </div>
                     <button class="btn btn-primary">Next</button>
@@ -62,6 +73,10 @@
                     </div>
                 </div>
                 <div class="footer">
+                    <button 
+                        (click)="onCancel($event)" class="btn btn-default">
+                        Back
+                    </button>
                     <button loading-indicator [loading]="isSubmitting" [disabled]="isSubmitting"
                         (click)="onSubmitAppointmentForm(formAppointmentDetail)" class="btn btn-primary">
                         Booking an Appointment
