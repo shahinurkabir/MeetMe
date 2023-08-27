@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MeetMe.Application.EventTypes.Calendar
 {
-    public class EventTimeCalendarCommand : IRequest<List<EventTimeCalendar>>
+    public class TimeSlotRangeQuery : IRequest<List<EventTimeCalendar>>
     {
         public Guid EventTypeId { get; set; }
         public string TimeZone { get; set; } = null!;
@@ -15,13 +15,13 @@ namespace MeetMe.Application.EventTypes.Calendar
         public string ToDate { get; set; } = null!;
     }
 
-    public class EventTimeCalendarCommandHandler : IRequestHandler<EventTimeCalendarCommand, List<EventTimeCalendar>>
+    public class TimeSlotRangeQueryHandler : IRequestHandler<TimeSlotRangeQuery, List<EventTimeCalendar>>
     {
         private readonly IEventTypeRepository eventTypeRepository;
         private readonly IEventTypeAvailabilityRepository eventTypeAvailabilityDetailRepository;
         private readonly IAppointmentsRepository appointmentsRepository;
 
-        public EventTimeCalendarCommandHandler
+        public TimeSlotRangeQueryHandler
         (
             IEventTypeRepository eventTypeRepository,
             IEventTypeAvailabilityRepository eventTypeAvailabilityDetailRepository,
@@ -33,37 +33,53 @@ namespace MeetMe.Application.EventTypes.Calendar
             this.appointmentsRepository = appointmentsRepository;
         }
 
-        public async Task<List<EventTimeCalendar>> Handle(EventTimeCalendarCommand request, CancellationToken cancellationToken)
+        public async Task<List<EventTimeCalendar>> Handle(TimeSlotRangeQuery request, CancellationToken cancellationToken)
         {
-            var eventTypeEntity = await eventTypeRepository.GetEventTypeById(request.EventTypeId);
-            var scheduleDetailEntityList = await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityByEventId(eventTypeEntity.Id);
-
-            var timeZone_User = request.TimeZone;
-            var timeZone_Calendar = eventTypeEntity.TimeZone;
-            var bufferTime = eventTypeEntity.BufferTimeAfter;
-            var meetingDuration = eventTypeEntity.Duration;
-
-            var timeZoneInfo_User = TimeZoneInfo.FindSystemTimeZoneById(request.TimeZone);
-            var timeZoneInfo_Calendar = TimeZoneInfo.FindSystemTimeZoneById(timeZone_Calendar);
-
             var tempFromDate = DateTime.Parse(request.FromDate);
             var tempToDate = DateTime.Parse(request.ToDate);
 
             var tempFromUTC = tempFromDate.ToUniversalTime();
             var tempToUTC = tempToDate.ToUniversalTime();
 
+            var eventTypeEntity = await eventTypeRepository.GetEventTypeById(request.EventTypeId);
+            var scheduleDetailEntityList = await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityByEventId(request.EventTypeId);
+            var appointmentList = await appointmentsRepository.GetAppointmentsByDateRange(request.EventTypeId, tempFromUTC, tempToUTC);
+
+            var bufferTime = eventTypeEntity.BufferTimeAfter;
+            var meetingDuration = eventTypeEntity.Duration;
+
+            var timeZoneInfo_User = TimeZoneInfo.FindSystemTimeZoneById(request.TimeZone);
+            var timeZoneInfo_Calendar = TimeZoneInfo.FindSystemTimeZoneById(eventTypeEntity.TimeZone);
+
+
             var dateFrom_User = TimeZoneInfo.ConvertTime(tempFromDate, timeZoneInfo_User);
             var dateTo_User = TimeZoneInfo.ConvertTime(tempToDate, timeZoneInfo_User);
 
-            //some buffer time to include previous and next day
+            //add 1 day before and after to include all the slots
             var dateFrom_Calendar = TimeZoneInfo.ConvertTime(dateFrom_User, timeZoneInfo_Calendar).AddDays(-1);
             var dateTo_Calendar = TimeZoneInfo.ConvertTime(dateTo_User, timeZoneInfo_Calendar).AddDays(1);
 
 
             var listTimeSlots = GenerateTimeSlots(dateFrom_Calendar, dateTo_Calendar, meetingDuration, bufferTime, scheduleDetailEntityList);
 
-            listTimeSlots = listTimeSlots.Where(e => e.StartDateTime > DateTimeOffset.Now).ToList();// excludes past time
 
+            List<EventTimeCalendar> result = FinalizeScheduleDates(timeZoneInfo_User, meetingDuration, appointmentList, ref listTimeSlots);
+
+            return result;
+
+        }
+
+        private static List<EventTimeCalendar> FinalizeScheduleDates(TimeZoneInfo timeZoneInfo_User, int meetingDuration, List<Appointment> appointmentsBooked, ref List<TimeSlot> listTimeSlots)
+        {
+            //exclude slots that are already passed
+            listTimeSlots = listTimeSlots.Where(e => e.StartDateTime > DateTimeOffset.UtcNow).ToList();
+
+            //remove slots that are already booked
+            foreach (var appointment in appointmentsBooked)
+            {
+                listTimeSlots.RemoveAll(e => appointment.StartTimeUTC >= e.StartDateTime.UtcDateTime &&
+                                            appointment.EndTimeUTC <= e.StartDateTime.AddMinutes(meetingDuration).UtcDateTime);
+            }
 
             listTimeSlots.ForEach(e => e.StartDateTime = TimeZoneInfo.ConvertTime(e.StartDateTime, timeZoneInfo_User));
 
@@ -86,7 +102,6 @@ namespace MeetMe.Application.EventTypes.Calendar
             }
 
             return result;
-
         }
 
         private List<TimeSlot> GenerateTimeSlots(
@@ -177,7 +192,7 @@ namespace MeetMe.Application.EventTypes.Calendar
 
             while (dayStartTime < dayEndTime)
             {
-                yield return new TimeSlot { StartDateTime = dayStartTime };
+                yield return new TimeSlot { StartDateTime = dayStartTime.ToUniversalTime() };
 
                 dayStartTime = dayStartTime.AddMinutes(meetingDuration).AddMinutes(bufferTimeInMinute); ;
 

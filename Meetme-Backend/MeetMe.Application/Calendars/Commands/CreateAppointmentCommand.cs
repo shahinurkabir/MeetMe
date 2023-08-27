@@ -55,7 +55,7 @@ namespace MeetMe.Application.Calendars.Commands
                 InviteeEmail = request.InviteeEmail,
                 GuestEmails = request.GuestEmails,
                 Status = AppointmentStatus.Active,
-                StartTimeUTC = startTimeUTC,
+                StartTimeUTC =startTimeUTC,
                 EndTimeUTC = endTimeUTC,
                 Note = request.Note,
             };

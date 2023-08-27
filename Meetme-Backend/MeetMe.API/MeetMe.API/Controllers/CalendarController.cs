@@ -27,7 +27,7 @@ namespace MeetMe.API.Controllers
         [Route("availability/{eventTypeId}")]
         public async Task<List<EventTimeCalendar>> CalendarAvailabilityByEventType(Guid eventTypeId, string timezone, string from, string to)
         {
-            var command = new EventTimeCalendarCommand { EventTypeId = eventTypeId, TimeZone = timezone, FromDate = from, ToDate = to };
+            var command = new TimeSlotRangeQuery { EventTypeId = eventTypeId, TimeZone = timezone, FromDate = from, ToDate = to };
 
             var result = await mediator.Send(command);
             return result;
