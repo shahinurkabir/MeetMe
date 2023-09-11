@@ -11,18 +11,20 @@ import { environment } from 'projects/meetme/src/environments/environment';
   providedIn: 'root'
 })
 export class EventTypeService extends DataService {
-  eventTypeURI = `${environment.apiBaseURI}/eventtypes`;
+  eventTypeURI = `${environment.apiBaseURI}/eventtype`;
+  eventTypeScheduleURI = `${environment.apiBaseURI}/eventtypeSchedule`;
+  eventTypeQuestionURI = `${environment.apiBaseURI}/eventtypeQuestion`;
 
   constructor(http: HttpClient) {
     super(http)
   }
 
   getList(): Observable<Array<IEventType>> {
-    let url = `${this.eventTypeURI}`
+    let url = `${this.eventTypeURI}/list`
     return this.http.get<Array<IEventType>>(url);
   }
   getListByBaseURI(base_uri:string): Observable<IUserProfileDetailResponse> {
-    let url = `${this.eventTypeURI}/list/${base_uri}`
+    let url = `${this.eventTypeURI}/${base_uri}/list`
     return this.http.get<IUserProfileDetailResponse>(url);
   }
   getById(id: string): Observable<IEventType> {
@@ -44,23 +46,23 @@ export class EventTypeService extends DataService {
   }
 
   getEventAvailability(eventTypeId: string): Observable<Array<IEventAvailabilityDetailItemDto>> {
-    let url = `${this.eventTypeURI}/${eventTypeId}/availability`
+    let url = `${this.eventTypeScheduleURI}/${eventTypeId}`
     return this.http.get<Array<IEventAvailabilityDetailItemDto>>(url);
   }
 
   updateAvailability(availabilityDetail: IUpdateEventAvailabilityCommand): Observable<boolean> {
-    let url = `${this.eventTypeURI}/${availabilityDetail.id}/availability`;
+    let url = `${this.eventTypeScheduleURI}/${availabilityDetail.id}`;
     return this.doPost(url, availabilityDetail);
 
   }
 
   getEventQuetions(eventTypeId: string): Observable<Array<IEventTypeQuestion>> {
-    let url = `${this.eventTypeURI}/${eventTypeId}/questions`
+    let url = `${this.eventTypeQuestionURI}/${eventTypeId}`
     return this.http.get<Array<IEventTypeQuestion>>(url);
   }
 
   updateEventQuestions(updateEventQuestionsCommand: IUpdateEventQuestionCommand): Observable<boolean> {
-    let url = `${this.eventTypeURI}/${updateEventQuestionsCommand.eventTypeId}/questions`
+    let url = `${this.eventTypeQuestionURI}/${updateEventQuestionsCommand.eventTypeId}`
     return this.doPost(url, updateEventQuestionsCommand);
   }
   toggleStatus(eventTypeId: string): Observable<boolean> {
@@ -76,5 +78,8 @@ export class EventTypeService extends DataService {
     return this.doPut(url, null);
   }
 
-  
+  getCalendarAvailability(eventTypeId: string, timezone: string, from: string, to: string): Observable<Array<IEventTimeAvailability>> {
+    let url: string = `${this.eventTypeURI}/${eventTypeId}/calendar-availability?timezone=${timezone}&from=${from}&to=${to}`
+    return this.doGet(url)
+}
 }

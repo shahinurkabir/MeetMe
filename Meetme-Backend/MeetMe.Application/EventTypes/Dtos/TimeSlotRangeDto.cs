@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeetMe.Application.EventTypes.Calendar.Dtos
+namespace MeetMe.Application.EventTypes.Dtos
 {
-    public class EventTimeCalendar
+    public class TimeSlotRangeDto
     {
-        public EventTimeCalendar()
+        public TimeSlotRangeDto()
         {
             Slots = new List<TimeSlot>();
         }

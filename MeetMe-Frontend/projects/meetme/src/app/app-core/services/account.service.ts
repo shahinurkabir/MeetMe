@@ -25,13 +25,13 @@ export class AccountService extends DataService {
         let url = `${this.baseURI}/profile`;
         return this.doPost(url, updateProfileCommand);
     }
-    updateLink(updateLinkCommand: IUpdateUserLinkCommand): Observable<IUpdateAccountSettingsResponse> {
-        let url = `${this.baseURI}/link`;
+    updateUri(updateLinkCommand: IUpdateUserLinkCommand): Observable<IUpdateAccountSettingsResponse> {
+        let url = `${this.baseURI}/update-uri`;
         return this.doPost(url, updateLinkCommand);
     }
 
-    isLinkAvailable(link: string): Observable<boolean> {
-        let url = `${this.baseURI}/link-available/${link}`;
+    isUriAvailable(link: string): Observable<boolean> {
+        let url = `${this.baseURI}/uri-available/${link}`;
         return this.doGet(url);
     }
 
@@ -39,8 +39,8 @@ export class AccountService extends DataService {
         let url = `${this.baseURI}/userById/${id}}`;
         return this.doGet(url);
     }
-    getUserByBaseURI(baseURI:string): Observable<IAccountProfileInfo> {
-        let url = `${this.baseURI}/userByBaseURI/${baseURI}`;
+    getProfileByUserName(name:string): Observable<IAccountProfileInfo> {
+        let url = `${this.baseURI}/profile/${name}`;
         return this.doGet(url);
     }
 

@@ -8,12 +8,3 @@ export interface ITimeSlot {
     isDaySecondHalf: boolean
 }
 
-export interface ICreateAppointmentCommand {
-    eventTypeId: string
-    inviteeName: string
-    inviteeEmail: string
-    startTime: string
-    meetingDuration: number
-    guestEmails?:string
-    note?: string
-}

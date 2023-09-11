@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using MeetMe.Core.Interface;
 using MeetMe.Core.Persistence.Interface;
 
-namespace MeetMe.Application.EventTypes.Manage
+namespace MeetMe.Application.EventTypes.Commands.Manage
 {
     public class ToggleEventTypeStatusCommand : IRequest<bool>
     {
@@ -43,5 +43,5 @@ namespace MeetMe.Application.EventTypes.Manage
 
     }
 
-    
+
 }

@@ -8,7 +8,7 @@ using MeetMe.Core.Interface;
 using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Persistence.Entities;
 
-namespace MeetMe.Application.EventTypes.Manage
+namespace MeetMe.Application.EventTypes.Commands.Clone
 {
     public class CloneEventTypeCommand : IRequest<Guid>
     {
@@ -47,20 +47,20 @@ namespace MeetMe.Application.EventTypes.Manage
 
             var newSlug = await GetNewSlugAsync(eventType.Slug);
 
-            var cloneEventTypeEntity = CloneEventType(eventType,newSlug, newEventTypeId);
+            var cloneEventTypeEntity = CloneEventType(eventType, newSlug, newEventTypeId);
 
             await eventTypeRepository.AddNewEventType(cloneEventTypeEntity);
 
             return newEventTypeId;
         }
 
-        private EventType CloneEventType(EventType eventType,string newSlug, Guid newEventTypeId)
+        private EventType CloneEventType(EventType eventType, string newSlug, Guid newEventTypeId)
         {
             var cloneEventType = new EventType
             {
                 Id = newEventTypeId,
                 Name = $"{eventType.Name} (clone)",
-                Slug =newSlug,
+                Slug = newSlug,
                 ActiveYN = eventType.ActiveYN,
                 OwnerId = eventType.OwnerId,
                 AvailabilityId = eventType.AvailabilityId,

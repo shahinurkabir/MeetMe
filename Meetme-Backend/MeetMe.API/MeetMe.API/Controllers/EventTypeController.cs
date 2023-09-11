@@ -1,29 +1,31 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using MeetMe.Application.EventTypes.Manage;
 using MeetMe.Application.EventTypes.Queries;
 using MeetMe.Core.Persistence.Entities;
-using MeetMe.Application.EventTypes.Update;
 using MeetMe.Core.Interface;
 using MeetMe.Application.EventTypes.Commands.Create;
-using MeetMe.Application.EventTypes.Calendar.Dtos;
-using MeetMe.Application.EventTypes.Calendar;
 using Microsoft.AspNetCore.Authorization;
 using MeetMe.Core.Persistence.Interface;
 using MeetMe.Application.AccountSettings.Dtos;
 using MeetMe.API.Models;
+using MeetMe.Application.EventTypes.Commands.Update;
+using MeetMe.Application.EventTypes.Dtos;
+using MeetMe.Application.EventTypes.Commands.Clone;
+using MeetMe.Application.EventTypes.Commands.Manage;
+using MeetMe.Application.EventTypes.Commands.Delete;
+using MeetMe.Application.AccountSettings.Queries;
 
 namespace MeetMe.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EventTypesController : ControllerBase
+    public class EventTypeController : ControllerBase
     {
         private readonly IMediator mediator;
         private readonly ILoginUserInfo loginUser;
         private readonly IUserRepository userRepository;
 
-        public EventTypesController(IMediator mediator, ILoginUserInfo loginUser, IUserRepository userRepository)
+        public EventTypeController(IMediator mediator, ILoginUserInfo loginUser, IUserRepository userRepository)
         {
             this.mediator = mediator;
             this.loginUser = loginUser;
@@ -31,7 +33,7 @@ namespace MeetMe.API.Controllers
         }
 
         [HttpGet]
-        [Route("")]
+        [Route("list")]
         public async Task<List<EventType>> GetList()
         {
             var eventTypeListQuery = new GetEventTypeListQuery { OwnerId = loginUser.Id };
@@ -41,18 +43,29 @@ namespace MeetMe.API.Controllers
             return result;
         }
 
+
+        //[AllowAnonymous]
+        //[HttpGet]
+        //[Route("calendar/{user_uri}")]
+        //public async Task<AccountProfileDto?> GetUserCalendar(string user_uri)
+        //{
+        //    var response = await mediator.Send(new ProfileDetailQueryByBaseURI { BaseURI = user_uri });
+
+        //    return response;
+        //}
+
         [AllowAnonymous]
         [HttpGet]
-        [Route("list/{baseURI}")]
-        public async Task<UserProfileDetailResponse?> GetListByBaseURI(string baseURI)
+        [Route("{userURI}/list")]
+        public async Task<UserProfileDetailResponse?> GetListByBaseURI(string userURI)
         {
-            var userEnttiy = await userRepository.GetByBaseURI(baseURI);
+            var userEnttiy = await userRepository.GetByBaseURI(userURI);
 
             if (userEnttiy == null) return null;
 
             var userProfileInfo = new AccountProfileDto
             {
-                BaseURI = baseURI,
+                BaseURI = userURI,
                 UserName = userEnttiy.UserName,
                 TimeZone = userEnttiy.TimeZone,
                 WelcomeText = userEnttiy.WelcomeText
@@ -61,6 +74,7 @@ namespace MeetMe.API.Controllers
             var eventTypeListQuery = new GetEventTypeListQuery { OwnerId = userEnttiy.Id };
 
             var commandResult = await mediator.Send(eventTypeListQuery);
+
             var result = new UserProfileDetailResponse
             {
                 Profile = userProfileInfo,
@@ -69,6 +83,7 @@ namespace MeetMe.API.Controllers
 
             return result;
         }
+
 
         [HttpGet]
         [Route("{id}")]
@@ -98,47 +113,6 @@ namespace MeetMe.API.Controllers
             updateInfoCommand.Id = id;
 
             var result = await mediator.Send(updateInfoCommand);
-
-            return result;
-        }
-
-        [HttpGet]
-        [Route("{id}/questions")]
-        public async Task<List<EventTypeQuestion>> GetQuestionList(Guid id)
-        {
-            var result = await mediator.Send(new GetEventTypeQuestionsQuery { EventTypeId = id });
-            result = result.OrderBy(x => x.DisplayOrder).ToList();
-            return result;
-        }
-
-
-        [HttpPost]
-        [Route("{id}/questions")]
-        public async Task<bool> ConfugureQuestions(Guid id, UpdateQuestionCommand command)
-        {
-            command.EventTypeId = id;
-            var result = await mediator.Send(command);
-
-            return result;
-        }
-
-        [HttpGet]
-        [Route("{id}/availability")]
-        public async Task<List<EventTypeAvailabilityDetail>> GetEventAvailabilityDetail(Guid id)
-        {
-            var queryCommand = new GetEventTypeAvailabilityQuery { EvnetTypeId = id };
-
-            var result = await mediator.Send(queryCommand);
-
-            return result;
-
-        }
-
-        [HttpPost]
-        [Route("{id}/availability")]
-        public async Task<bool> UpdateAvailability(Guid id, UpdateEventAvailabilityCommand updateAvailabilityCommand)
-        {
-            var result = await mediator.Send(updateAvailabilityCommand);
 
             return result;
         }
@@ -176,6 +150,18 @@ namespace MeetMe.API.Controllers
             return result;
         }
 
-       
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("{id}/calendar-availability")]
+        public async Task<List<TimeSlotRangeDto>> AvailabilityByEventType(Guid id, string timezone, string from, string to)
+        {
+            var command = new TimeSlotRangeQuery { EventTypeId = id, TimeZone = timezone, FromDate = from, ToDate = to };
+
+            var result = await mediator.Send(command);
+            return result;
+
+        }
+
+
     }
 }

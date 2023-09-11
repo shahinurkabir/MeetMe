@@ -65,7 +65,7 @@ export class LinkComponent implements OnInit, OnDestroy {
     this.availabilityStatus = "";
     this.is_Checking_Avaibility = true;
     
-    this.accountService.isLinkAvailable(link)
+    this.accountService.isUriAvailable(link)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (response:any) => {
@@ -88,7 +88,7 @@ export class LinkComponent implements OnInit, OnDestroy {
 
     let command: IUpdateUserLinkCommand = { baseURI: this.base_URI }
     this.isSaving = true;
-    this.accountService.updateLink(command)
+    this.accountService.updateUri(command)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {

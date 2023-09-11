@@ -19,6 +19,12 @@ namespace DataProvider.EntityFramework.Repositories
             await bookingDbContext.SaveChangesAsync();
         }
 
+        public async Task<bool> DeleteAppointment(Guid id)
+        {
+            await bookingDbContext.Set<Appointment>().Where(x => x.Id == id).ExecuteDeleteAsync();
+            return await bookingDbContext.SaveChangesAsync() > 0;
+        }
+
         public async Task<List<Appointment>> GetAppointmentsByDateRange(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC)
         {
             var result = await bookingDbContext.Set<Appointment>()
@@ -33,10 +39,16 @@ namespace DataProvider.EntityFramework.Repositories
             return await bookingDbContext.Set<Appointment>().FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<bool> IsTimeConflicting(Guid eventTypeId, DateTime startDateUTC, DateTime  endDateUTC)
+        public async Task<bool> IsTimeConflicting(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC)
         {
             return await bookingDbContext.Set<Appointment>()
                 .AnyAsync(x => x.EventTypeId == eventTypeId && x.StartTimeUTC >= startDateUTC && x.EndTimeUTC <= endDateUTC);
+        }
+
+        public async Task<bool> UpdateAppointment(Appointment appointment)
+        {
+            bookingDbContext.Set<Appointment>().Update(appointment);
+            return await bookingDbContext.SaveChangesAsync() > 0;
         }
     }
 }

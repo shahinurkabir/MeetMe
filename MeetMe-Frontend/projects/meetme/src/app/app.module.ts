@@ -38,7 +38,7 @@ import { FilterPipe } from './app-core/pipes/filter.pipe';
         eventType_Components,
         calendar_Components,
         AlertComponent,
-        LoadingIndicatorDirective
+        LoadingIndicatorDirective,
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },

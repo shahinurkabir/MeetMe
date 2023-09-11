@@ -1,16 +1,15 @@
-<div class="calendar-page">
-    <!-- <section class="event-info-wrapper">
-        <h2>{{eventTypeOwnerInfo?.userName}}</h2>
+<div class="calendar-appointment-booking">
+    <section class="event-info-section">
         <h1>{{eventTypeInfo?.name}}</h1>
+        <h2>{{eventTypeOwnerInfo?.userName}}</h2>
         <strong>{{eventTypeInfo?.duration}} minutes</strong>
-        <strong>{{selectedDateTime}}</strong>
-        <strong>{{selectedTimeZone}}</strong>
-    </section> -->
-    <section  class="booking-wrapper">
-        <section [ngStyle]="{'display':!selectedTimeSlot?'block': 'none'}" class="datetime-wrapper">
-            <h2>Select a Date & Time</h2>
-            <div class="calendar-datetime-wrapper">
-                <div class="calendar-wrapper">
+        <strong *ngIf="selectedTimeSlot">{{selectedDateTime}}</strong>
+        <strong *ngIf="selectedTimeSlot">{{selectedTimeZoneName}}</strong>
+    </section>
+    <section class="booking-wrapper">
+        <div [ngStyle]="{'display':!selectedTimeSlot?'block': 'none','width':'100%'}">
+            <div class="calendar-timeslots-wrapper">
+                <section class="calendar-section">
                     <app-calendar (handlerDateClick)="onHandledCalendarClicked($event)"
                         (handlerMonthChange)="onHandledMonthChange($event)"
                         [allowMultipleSelection]="false"></app-calendar>
@@ -18,32 +17,28 @@
                         [showHourFormatChangeOption]="true" (dataLoaded)="onLoadedTimezoneData($event)"
                         (selectionChanged)="onChangedTimezone($event)"
                         (hourFormatChanged)="onChangedHourFormat($event)"></app-timezone-control>
-                </div>
-                <div class="time-slots-wrapper">
+                </section>
+                <section class="timeslots-section">
                     <h2>{{selectedDate}}</h2>
-                    <div class="time-slots">
-                        <button class="answerBtnsOff"  (click)="onSelectedTimeSlot(slot)" 
-                        *ngFor="let slot of day?.slots! | filter:'isDaySecondHalf':false">
-                            {{slot.startTime}}
-                        </button>
+                    <div class="timeslots-wrapper">
+                        <div class="time-slots">
+                            <button class="answerBtnsOff" (click)="onSelectedTimeSlot(slot)"
+                                *ngFor="let slot of day?.slots! | filter:'isDaySecondHalf':false">
+                                {{slot.startTime}}
+                            </button>
+                        </div>
+                        <div class="time-slots">
+                            <button class="answerBtnsOff" (click)="onSelectedTimeSlot(slot)"
+                                *ngFor="let slot of day?.slots! | filter:'isDaySecondHalf':true">
+                                {{slot.startTime}}
+                            </button>
+                        </div>
                     </div>
-                    <button class="btn btn-primary">Next</button>
-                </div>
-                <div class="time-slots-wrapper">
-                    <h2>{{selectedDate}}</h2>
-                    <div class="time-slots">
-                        <button class="answerBtnsOff"  (click)="onSelectedTimeSlot(slot)" 
-                        *ngFor="let slot of day?.slots! | filter:'isDaySecondHalf':true">
-                            {{slot.startTime}}
-                        </button>
-                    </div>
-                    <button class="btn btn-primary">Next</button>
-                </div>
+                </section>
             </div>
-
-        </section>
-        <div  [ngStyle]="{'display':selectedTimeSlot?'block': 'none'}" class="page  page-width-85p">
-            <form #formAppointmentDetail="ngForm" class=" " >
+        </div>
+        <div [ngStyle]="{'display':selectedTimeSlot?'block': 'none'}" class="page  page-width-85p">
+            <form #formAppointmentDetail="ngForm" class=" ">
                 <div class="form-group">
                     <label for="userName">Name *</label>
                     <div class="form-control">
@@ -73,8 +68,7 @@
                     </div>
                 </div>
                 <div class="footer">
-                    <button 
-                        (click)="onCancel($event)" class="btn btn-default">
+                    <button (click)="onCancelBooking($event)" class="btn btn-default">
                         Back
                     </button>
                     <button loading-indicator [loading]="isSubmitting" [disabled]="isSubmitting"
@@ -85,7 +79,4 @@
             </form>
         </div>
     </section>
-   
-    
 </div>
-

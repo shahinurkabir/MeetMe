@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using FluentValidation.Validators;
 using MediatR;
+using MeetMe.Application.AccountSettings.Dtos;
+using MeetMe.Application.Calendars.Dtos;
 using MeetMe.Core.Exceptions;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
@@ -19,6 +21,7 @@ namespace MeetMe.Application.Calendars.Commands
         public Guid EventTypeId { get; set; }
         public string InviteeName { get; set; } = null!;
         public string InviteeEmail { get; set; } = null!;
+        public string  InviteeTimeZone { get; set; } = null!;
         public string? GuestEmails { get; set; }
         public DateTime StartTime { get; set; }
         public int MeetingDuration { get; set; }
@@ -53,11 +56,13 @@ namespace MeetMe.Application.Calendars.Commands
                 EventTypeId = request.EventTypeId,
                 InviteeName = request.InviteeName,
                 InviteeEmail = request.InviteeEmail,
+                InviteeTimeZone = request.InviteeTimeZone,
                 GuestEmails = request.GuestEmails,
                 Status = AppointmentStatus.Active,
                 StartTimeUTC =startTimeUTC,
                 EndTimeUTC = endTimeUTC,
                 Note = request.Note,
+                DateCreated = DateTime.UtcNow
             };
 
             await appointmentsRepository.AddAppointment(entity);
@@ -68,5 +73,4 @@ namespace MeetMe.Application.Calendars.Commands
     public class CreateAppointmentCommandValidation : AbstractValidator<CreateAppointmentCommand>
     {
     }
-
 }

@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MeetMe.Application.EventTypes.Update
+namespace MeetMe.Application.EventTypes.Commands.Update
 {
     public class UpdateQuestionCommand : IRequest<bool>
     {
@@ -27,7 +27,7 @@ namespace MeetMe.Application.EventTypes.Update
         private readonly IEventTypeRepository eventTypeRepository;
         private readonly IEventQuestionRepository eventQuestionRepository;
 
-        public UpdateQuestionCommandHandler(IEventTypeRepository eventTypeRepository, IEventQuestionRepository  eventQuestionRepository)
+        public UpdateQuestionCommandHandler(IEventTypeRepository eventTypeRepository, IEventQuestionRepository eventQuestionRepository)
         {
             this.eventTypeRepository = eventTypeRepository;
             this.eventQuestionRepository = eventQuestionRepository;
@@ -41,7 +41,7 @@ namespace MeetMe.Application.EventTypes.Update
 
             var listQuestionEntities = ConvertToEventTypeQuestions(request);
 
-            listQuestionEntities=listQuestionEntities.FindAll(x => x.SystemDefinedYN ==false);
+            listQuestionEntities = listQuestionEntities.FindAll(x => x.SystemDefinedYN == false);
 
             await eventQuestionRepository.ResetEventQuestions(request.EventTypeId, listQuestionEntities);
 

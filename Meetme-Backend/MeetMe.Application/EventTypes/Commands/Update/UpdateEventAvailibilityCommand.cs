@@ -5,7 +5,7 @@ using MeetMe.Core.Interface;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 
-namespace MeetMe.Application.EventTypes.Update
+namespace MeetMe.Application.EventTypes.Commands.Update
 {
     public class UpdateEventAvailabilityCommand : IRequest<bool>
     {
@@ -16,7 +16,7 @@ namespace MeetMe.Application.EventTypes.Update
         public DateTime? DateTo { get; set; }
         public int Duration { get; set; }
         public int BufferTimeBefore { get; set; } = 0;
-        public int BufferTimeAfter { get; set; }=0;
+        public int BufferTimeAfter { get; set; } = 0;
         public string TimeZone { get; set; } = null!;
         public Guid? AvailabilityId { get; set; }
 
@@ -62,7 +62,7 @@ namespace MeetMe.Application.EventTypes.Update
 
             var eventAvailabilityList = ConvertToAvailabilityDetails(eventTypeEntity.Id, request.AvailabilityDetails);
 
-            await eventTypeRepository.UpdateEventAvailability (eventTypeEntity,eventAvailabilityList);
+            await eventTypeRepository.UpdateEventAvailability(eventTypeEntity, eventAvailabilityList);
 
             //await UpdateEventTypeFields(eventTypeEntity, request);
 

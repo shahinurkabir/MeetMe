@@ -8,7 +8,7 @@ using MeetMe.Core.Interface;
 using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Exceptions;
 
-namespace MeetMe.Application.EventTypes.Manage
+namespace MeetMe.Application.EventTypes.Commands.Delete
 {
     public class DeleteEventTypeCommand : IRequest<bool>
     {

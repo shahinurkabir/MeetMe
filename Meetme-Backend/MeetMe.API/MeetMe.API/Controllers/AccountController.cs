@@ -23,12 +23,13 @@ namespace MeetMe.API.Controllers
         private readonly IConfiguration configuration;
         private readonly ILoginUserInfo userInfo;
 
-        public AccountController(
+        public AccountController
+        (
             IMediator mediator,
             IUserRepository userRepository,
             IConfiguration configuration,
             ILoginUserInfo userInfo
-            )
+        )
         {
             this.mediator = mediator;
             this.userRepository = userRepository;
@@ -59,7 +60,15 @@ namespace MeetMe.API.Controllers
 
             return response;
         }
-        
+        [HttpGet]
+        [Route("profile/{name}")]
+        public async Task<AccountProfileDto?> GetProfileByName(string name)
+        {
+            var response = await mediator.Send(new ProfileDetailQueryByName { Name = name });
+
+            return response;
+        }
+
 
         [HttpPost]
         [Route("profile")]
@@ -78,12 +87,12 @@ namespace MeetMe.API.Controllers
         }
 
         [HttpGet]
-        [Route("link-available/{link}")]
-        public async Task<ActionResult> LinkAvailable(string link)
+        [Route("uri-available/{uri}")]
+        public async Task<ActionResult> LinkAvailable(string uri)
         {
-            var command = new UpdateAccountLinkCommand { BaseURI = link };
+            var command = new UpdateUserUriCommand { BaseURI = uri };
 
-            var validator = new UpdateAccountLinkCommandValidator(userRepository, userInfo);
+            var validator = new UpdateUserUriCommandValidator(userRepository, userInfo);
             var result = await validator.ValidateAsync(command);
 
             if (result.IsValid) { return new OkResult(); }
@@ -92,8 +101,8 @@ namespace MeetMe.API.Controllers
         }
 
         [HttpPost]
-        [Route("link")]
-        public async Task<UpdateProfileResponse?> UpdateURI(UpdateAccountLinkCommand updateAccountLinkCommand)
+        [Route("update-uri")]
+        public async Task<UpdateProfileResponse?> UpdateURI(UpdateUserUriCommand updateAccountLinkCommand)
         {
             var commandResult = await mediator.Send(updateAccountLinkCommand);
 
@@ -108,21 +117,14 @@ namespace MeetMe.API.Controllers
             return response;
         }
         [HttpGet]
-        [Route("userById/{id}")]
+        [Route("{id}")]
         public async Task<AccountProfileDto?> GetUserById(Guid id)
         {
             var response = await mediator.Send(new ProfileDetailQuery { Id = id });
 
             return response;
         }
-        [HttpGet]
-        [Route("userByBaseURI/{baseURI}")]
-        public async Task<AccountProfileDto?> GetUserByBaseURI(string baseURI)
-        {
-            var response = await mediator.Send(new ProfileDetailQueryByBaseURI { BaseURI = baseURI });
 
-            return response;
-        }
 
         private TokenResponse GenerateToken(User user)
         {

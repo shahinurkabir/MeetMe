@@ -7,3 +7,4 @@ export * from './event-type-commands';
 export * from './calendar-interface';
 export * from './ITimeIntervalInDay';
 export * from './list-item';
+export * from './appointment-interface';

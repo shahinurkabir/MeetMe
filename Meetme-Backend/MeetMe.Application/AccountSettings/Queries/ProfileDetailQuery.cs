@@ -15,6 +15,7 @@ namespace MeetMe.Application.AccountSettings.Queries
     public class ProfileDetailQuery : IRequest<AccountProfileDto>
     {
         public Guid Id { get; set; }
+
     }
 
     public class ProfileDetailQueryHandler : IRequestHandler<ProfileDetailQuery, AccountProfileDto>
@@ -48,11 +49,11 @@ namespace MeetMe.Application.AccountSettings.Queries
         }
     }
 
-    public class ProfileDetailQueryByBaseURI : IRequest<AccountProfileDto>
+    public class ProfileDetailQueryByName : IRequest<AccountProfileDto>
     {
-        public string BaseURI { get; set; } = null!;
+        public string Name { get; set; } = null!;
     }
-    public class ProfileDetailsQueryBaseURIHandler : IRequestHandler<ProfileDetailQueryByBaseURI, AccountProfileDto>
+    public class ProfileDetailsQueryBaseURIHandler : IRequestHandler<ProfileDetailQueryByName, AccountProfileDto>
     {
         private readonly IUserRepository userRepository;
 
@@ -61,9 +62,9 @@ namespace MeetMe.Application.AccountSettings.Queries
             this.userRepository = userRepository;
         }
 
-        public async Task<AccountProfileDto> Handle(ProfileDetailQueryByBaseURI request, CancellationToken cancellationToken)
+        public async Task<AccountProfileDto> Handle(ProfileDetailQueryByName request, CancellationToken cancellationToken)
         {
-            var userEntity = await userRepository.GetByBaseURI(request.BaseURI);
+            var userEntity = await userRepository.GetByBaseURI(request.Name);
 
             if (userEntity == null)
             {
