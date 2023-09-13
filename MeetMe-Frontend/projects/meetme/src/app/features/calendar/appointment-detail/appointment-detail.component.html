@@ -2,10 +2,10 @@
     <h1>Your appointment has been successfully scheduled</h1>
     <p>you will get a invitaiton message shortly to your email adrress</p>
     <div class="success-message">
-        <h1>30 min</h1>
-        <p>Shahinur Kabir</p>
-        <p>10:00 AM - 10:30 AM, Monday, September 11, 2023 </p>
-        <p>Asia/Dhaka</p>
+        <h1>{{eventTypeInfo?.duration}} min</h1>
+        <p>{{eventTypeOwnerInfo?.userName}}</p>
+        <p>{{appointmentDetails?.appointmentDateTime}} </p>
+        <p>{{appointmentDetails?.inviteeTimeZone}}</p>
 
     </div>
 </div>

@@ -31,6 +31,11 @@ export class EventTypeService extends DataService {
     let url = `${this.eventTypeURI}/${id}`
     return this.http.get<IEventType>(url);
   }
+  
+  getBySlugName(slug: string): Observable<IEventType> {
+    let url = `${this.eventTypeURI}/getBySlugName/${slug}`
+    return this.http.get<IEventType>(url);
+  }
   addNew(command: ICreateEventTypeCommand): Observable<string> {
     let url = `${this.eventTypeURI}`
 

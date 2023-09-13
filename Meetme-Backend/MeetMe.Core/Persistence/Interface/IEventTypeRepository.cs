@@ -12,7 +12,7 @@ namespace MeetMe.Core.Persistence.Interface
         Task<EventType> GetEventTypeById(Guid eventTypeId);
         Task UpdateEventType(EventType eventTypeInfo);
         Task UpdateEventAvailability(EventType eventTypeInfo, List<EventTypeAvailabilityDetail> eventTypeAvailabilityDetails);
-
+        Task<EventType> GetEventTypeBySlug(string slug);
     }
 
 

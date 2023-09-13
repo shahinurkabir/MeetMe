@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using MeetMe.Application.Availabilities.Queries;
 using MeetMe.Application.Calendars.Commands;
+using MeetMe.Application.Calendars.Quaries;
+using MeetMe.Application.Calendars.Quaries.Dtos;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using Microsoft.AspNetCore.Authorization;
@@ -20,6 +22,16 @@ namespace MeetMe.API.Controllers
             this.mediator = mediator;
         }
 
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("{id}/details")]
+        public async Task<AppointmentDetailsDto> GetDetails(Guid id)
+        {
+            var result = await mediator.Send(new AppointmentDetailsQuery { Id=id});
+            return result;
+        }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("new")]
@@ -29,7 +41,7 @@ namespace MeetMe.API.Controllers
             return result;
         }
 
-       
+
 
         [AllowAnonymous]
         [HttpGet]

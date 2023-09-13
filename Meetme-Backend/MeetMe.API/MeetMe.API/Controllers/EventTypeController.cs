@@ -24,12 +24,13 @@ namespace MeetMe.API.Controllers
         private readonly IMediator mediator;
         private readonly ILoginUserInfo loginUser;
         private readonly IUserRepository userRepository;
-
-        public EventTypeController(IMediator mediator, ILoginUserInfo loginUser, IUserRepository userRepository)
+        private readonly IEventTypeRepository eventTypeRepository;
+        public EventTypeController(IMediator mediator, ILoginUserInfo loginUser, IUserRepository userRepository, IEventTypeRepository eventTypeRepository)
         {
             this.mediator = mediator;
             this.loginUser = loginUser;
             this.userRepository = userRepository;
+            this.eventTypeRepository = eventTypeRepository;
         }
 
         [HttpGet]
@@ -96,6 +97,14 @@ namespace MeetMe.API.Controllers
             return result;
         }
 
+        [HttpGet]
+        [Route("{getBySlugName}/{slug}")]
+        public async Task<EventType> GetDetails(string slug)
+        {
+            var result = await  eventTypeRepository.GetEventTypeBySlug(slug);
+
+            return result;
+        }
 
         [HttpPost]
         [Route("")]

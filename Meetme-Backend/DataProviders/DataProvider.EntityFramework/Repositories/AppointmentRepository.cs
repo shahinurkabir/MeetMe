@@ -25,6 +25,11 @@ namespace DataProvider.EntityFramework.Repositories
             return await bookingDbContext.SaveChangesAsync() > 0;
         }
 
+        public async Task<Appointment> GetById(Guid id)
+        {
+            return await bookingDbContext.Set<Appointment>().FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task<List<Appointment>> GetAppointmentsByDateRange(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC)
         {
             var result = await bookingDbContext.Set<Appointment>()
@@ -34,10 +39,6 @@ namespace DataProvider.EntityFramework.Repositories
             return result;
         }
 
-        public async Task<Appointment> GetById(Guid id)
-        {
-            return await bookingDbContext.Set<Appointment>().FirstOrDefaultAsync(x => x.Id == id);
-        }
 
         public async Task<bool> IsTimeConflicting(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC)
         {

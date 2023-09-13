@@ -2,7 +2,6 @@
 using FluentValidation.Validators;
 using MediatR;
 using MeetMe.Application.AccountSettings.Dtos;
-using MeetMe.Application.Calendars.Dtos;
 using MeetMe.Core.Exceptions;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;

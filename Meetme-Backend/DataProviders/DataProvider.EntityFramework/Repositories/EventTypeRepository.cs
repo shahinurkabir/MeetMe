@@ -36,6 +36,16 @@ namespace DataProvider.EntityFramework.Repositories
             return entity;
         }
 
+        public async Task<EventType> GetEventTypeBySlug(string slug)
+        {
+            var entity = await bookingDbContext.Set<EventType>()
+                .Where(e => e.Slug == slug)
+                .Include(e => e.EventTypeAvailabilityDetails)
+                .Include(e => e.Questions).FirstAsync();
+
+            return entity;
+        }
+
         public async Task UpdateEventType(EventType eventTypeInfo)
         {
             bookingDbContext.Update(eventTypeInfo);
@@ -72,6 +82,6 @@ namespace DataProvider.EntityFramework.Repositories
             return result;
         }
 
-
+       
     }
 }

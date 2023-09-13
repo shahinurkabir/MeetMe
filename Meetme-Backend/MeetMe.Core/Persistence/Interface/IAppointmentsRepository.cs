@@ -10,6 +10,5 @@ namespace MeetMe.Core.Persistence.Interface
         Task<bool> UpdateAppointment(Appointment appointment);
         Task<List<Appointment>> GetAppointmentsByDateRange(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC);
         Task<bool> IsTimeConflicting(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC);
-
     }
 }
