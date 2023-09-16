@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using MeetMe.Application.Calendars.Quaries.Dtos;
+using MeetMe.Core.Dtos;
 using MeetMe.Core.Extensions;
 using MeetMe.Core.Persistence.Interface;
 
@@ -23,34 +24,33 @@ namespace MeetMe.Application.Calendars.Quaries
 
         public async Task<AppointmentDetailsDto> Handle(AppointmentDetailsQuery request, CancellationToken cancellationToken)
         {
-            var appointment = await appointmentsRepository.GetById(request.Id);
+            var appointmentDetailsDto = await appointmentsRepository.GetDetailsById(request.Id);
 
-            var meetingDuration = (appointment.EndTimeUTC - appointment.StartTimeUTC).TotalMinutes;
-            var offsetLoccal = TimeZoneInfo.Local.GetUtcOffset(DateTime.UtcNow);
-            var offsetInvitee = TimeZoneInfo.FindSystemTimeZoneById(appointment.InviteeTimeZone).GetUtcOffset(DateTime.UtcNow);
+            //var appointmentDateTime=appointmentDetails.InviteeTimeZone.ToAppointmentTimeRangeText(appointmentDetails.EventTypeDuration, appointmentDetails.StartTime, appointmentDetails.EndTime);
+            //var meetingDuration = (appointmentDetails.EndTime - appointmentDetails.StartTime).TotalMinutes;
 
-            var dateTime=TimeZoneInfo.ConvertTimeBySystemTimeZoneId(appointment.StartTimeUTC, TimeZoneInfo.Utc.Id, appointment.InviteeTimeZone);
-            var startTime = dateTime.ToString("hh:mm tt");
-            var endTime = dateTime.AddMinutes(meetingDuration).ToString("hh:mm tt");
-            var appointmentDateTime =$"{startTime} - {endTime}, {dateTime.ToString("dddd, MMMM dd, yyyy")}";
-            //< p > 10:00 AM - 10:30 AM, Monday, September 11, 2023 </ p >
-            var appointmentDetailsDto = new AppointmentDetailsDto
-            {
-                Id = appointment.Id,
-                EventTypeId = appointment.EventTypeId,
-                InviteeName = appointment.InviteeName,
-                InviteeEmail = appointment.InviteeEmail,
-                InviteeTimeZone = appointment.InviteeTimeZone,
-                GuestEmails = appointment.GuestEmails,
-                StartTime = appointment.StartTimeUTC,
-                EndTime = appointment.EndTimeUTC,
-                AppointmentDateTime= appointmentDateTime,
-                Note = appointment.Note,
-                Status = appointment.Status.ToString(),
-                DateCreated = appointment.DateCreated,
-                DateCancelled = appointment.DateCancelled,
-                CancellationReason = appointment.CancellationReason,
-            };
+            //var dateTime=TimeZoneInfo.ConvertTimeBySystemTimeZoneId(appointmentDetails.StartTime, TimeZoneInfo.Utc.Id, appointmentDetails.InviteeTimeZone);
+            //var startTime = dateTime.ToString("hh:mm tt");
+            //var endTime = dateTime.AddMinutes(meetingDuration).ToString("hh:mm tt");
+            //var appointmentDateTime =$"{startTime} - {endTime}, {dateTime.ToString("dddd, MMMM dd, yyyy")}";
+            
+            //var appointmentDetailsDto = new AppointmentDetailsDto
+            //{
+            //    Id = appointmentDetails.Id,
+            //    EventTypeId = appointmentDetails.EventTypeId,
+            //    InviteeName = appointmentDetails.InviteeName,
+            //    InviteeEmail = appointmentDetails.InviteeEmail,
+            //    InviteeTimeZone = appointmentDetails.InviteeTimeZone,
+            //    GuestEmails = appointmentDetails.GuestEmails,
+            //    StartTime = appointmentDetails.StartTimeUTC,
+            //    EndTime = appointmentDetails.EndTimeUTC,
+            //    AppointmentDateTime= appointmentDateTime,
+            //    Note = appointmentDetails.Note,
+            //    Status = appointmentDetails.Status.ToString(),
+            //    DateCreated = appointmentDetails.DateCreated,
+            //    DateCancelled = appointmentDetails.DateCancelled,
+            //    CancellationReason = appointmentDetails.CancellationReason,
+            //};
 
             return appointmentDetailsDto;
         }

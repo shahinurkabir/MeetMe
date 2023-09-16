@@ -40,5 +40,14 @@ namespace MeetMe.Core.Extensions
 
             return new DateTimeOffset(time, offset);
         }
+        public static string ToAppointmentTimeRangeText(this string timeZoneName, int meetingDuration, DateTime appointmentStartTime)
+        {
+            var dateTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(appointmentStartTime, TimeZoneInfo.Utc.Id, timeZoneName);
+            var startTime = dateTime.ToString("hh:mm tt");
+            var endTime = dateTime.AddMinutes(meetingDuration).ToString("hh:mm tt");
+            var appointmentTimeRange = $"{startTime} - {endTime}, {dateTime.ToString("dddd, MMMM dd, yyyy")}";
+
+            return appointmentTimeRange;
+        }
     }
 }

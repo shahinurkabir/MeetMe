@@ -47,6 +47,9 @@ namespace MeetMe.Core.Persistence.Entities
         [JsonIgnore]
         public List<Appointment> Appointments { get; set; }
 
+        [JsonIgnore]
+        public User User { get; set; }
+
     }
 
     //public class EventTypeScheduleInfo

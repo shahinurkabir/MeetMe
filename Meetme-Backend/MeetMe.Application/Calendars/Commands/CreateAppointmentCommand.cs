@@ -41,7 +41,7 @@ namespace MeetMe.Application.Calendars.Commands
             DateTime startTimeUTC = request.StartTime.ToUniversalTime();
             DateTime endTimeUTC = startTimeUTC.AddMinutes(request.MeetingDuration);
 
-            var isTimeConflicling = await appointmentsRepository.IsTimeConflicting(request.EventTypeId, startTimeUTC, endTimeUTC);
+            var isTimeConflicling = await appointmentsRepository.IsTimeBooked(request.EventTypeId, startTimeUTC, endTimeUTC);
 
             if (isTimeConflicling == true)
             {

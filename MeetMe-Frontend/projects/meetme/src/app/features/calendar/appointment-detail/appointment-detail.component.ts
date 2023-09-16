@@ -31,7 +31,7 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
     this.eventTypeOwner = this.route.snapshot.paramMap.get("user") ?? "";
     this.appointmentId = this.route.snapshot.paramMap.get("id") ?? "";
 
-    this.loadAllData()
+    this.loadAppointmentDetails()
   }
 
   loadAllData() {
@@ -51,6 +51,18 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
         complete: () => { }
       });
 
+  }
+
+  loadAppointmentDetails() { 
+    this.calendarService.getAppointmentById(this.appointmentId)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (response) => {
+          this.appointmentDetails = response;
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { }
+      });
   }
   ngOnDestroy(): void {
     this.destroyed$.next(true);

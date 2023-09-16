@@ -9,11 +9,13 @@ import { accountSettings_Routes } from './features/acccount-settings';
 import { availability_Route } from './features/availability';
 import { calendar_Routes } from './features/calendar';
 import { CalendarLayoutComponent } from './layouts/calendar-layout/calendar-layout.component';
+import { scheduled_Appointment_Routes } from './features/scheduled-appointments';
 
 const admin_Routes: Routes = [
   { path: "", redirectTo: "event-types", pathMatch: "full" },
   availability_Route,
   { path: "event-types", children: eventType_Routes },
+  scheduled_Appointment_Routes,
   { path: "account-settings", children: accountSettings_Routes },
 ];
 

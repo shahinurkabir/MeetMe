@@ -54,6 +54,11 @@
           Events
         </a>
       </li>
+      <li>
+        <a [routerLink]="['scheduled-appointments']" [routerLinkActive]="['is-active']">
+          Scheduled Appointments
+        </a>
+      </li>
     </ul>
     <img #toggleButton *ngIf="isLogin()" class="user-pic" (click)="toggleMenu($event)"
       src="../assets/images/profile.png">

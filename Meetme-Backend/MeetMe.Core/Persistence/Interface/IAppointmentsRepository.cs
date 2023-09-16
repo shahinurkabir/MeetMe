@@ -1,4 +1,5 @@
-﻿using MeetMe.Core.Persistence.Entities;
+﻿using MeetMe.Core.Dtos;
+using MeetMe.Core.Persistence.Entities;
 
 namespace MeetMe.Core.Persistence.Interface
 {
@@ -6,9 +7,11 @@ namespace MeetMe.Core.Persistence.Interface
     {
         Task<Appointment> GetById(Guid id);
         Task AddAppointment(Appointment appointment);
-        Task<bool> DeleteAppointment(Guid id);
         Task<bool> UpdateAppointment(Appointment appointment);
-        Task<List<Appointment>> GetAppointmentsByDateRange(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC);
-        Task<bool> IsTimeConflicting(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC);
+        Task<bool> DeleteAppointment(Guid id);
+        Task<AppointmentDetailsDto?> GetDetailsById(Guid id);
+        Task<bool> IsTimeBooked(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC);
+        Task<List<AppointmentDetailsDto>> GetAppointmentsOfEventTypeByDateRange(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC);
+        Task<List<AppointmentDetailsDto>?> GetAppointmentsByUserId(Guid userId);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using MeetMe.Application.EventTypes.Dtos;
 using MeetMe.Core.Constants;
+using MeetMe.Core.Dtos;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using System.ComponentModel.DataAnnotations;
@@ -43,7 +44,7 @@ namespace MeetMe.Application.EventTypes.Queries
 
             var eventTypeEntity = await eventTypeRepository.GetEventTypeById(request.EventTypeId);
             var scheduleDetailEntityList = await eventTypeAvailabilityDetailRepository.GetEventTypeAvailabilityByEventId(request.EventTypeId);
-            var appointmentList = await appointmentsRepository.GetAppointmentsByDateRange(request.EventTypeId, tempFromUTC, tempToUTC);
+            var appointmentList = await appointmentsRepository.GetAppointmentsOfEventTypeByDateRange(request.EventTypeId, tempFromUTC, tempToUTC);
 
             var bufferTime = eventTypeEntity.BufferTimeAfter;
             var meetingDuration = eventTypeEntity.Duration;
@@ -69,7 +70,7 @@ namespace MeetMe.Application.EventTypes.Queries
 
         }
 
-        private static List<TimeSlotRangeDto> FinalizeScheduleDates(TimeZoneInfo timeZoneInfo_User, int meetingDuration, List<Appointment> appointmentsBooked, ref List<TimeSlot> listTimeSlots)
+        private static List<TimeSlotRangeDto> FinalizeScheduleDates(TimeZoneInfo timeZoneInfo_User, int meetingDuration, List<AppointmentDetailsDto> appointmentsBooked, ref List<TimeSlot> listTimeSlots)
         {
             //exclude slots that are already passed
             listTimeSlots = listTimeSlots.Where(e => e.StartDateTime > DateTimeOffset.UtcNow).ToList();
