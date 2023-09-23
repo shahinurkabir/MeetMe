@@ -67,7 +67,7 @@ namespace MeetMe.API.Controllers
 
 
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("{id}/cancel")]
         public async Task<bool> CancelAppointment(CancelAppointmentCommand cancelAppointmentCommand)
         {

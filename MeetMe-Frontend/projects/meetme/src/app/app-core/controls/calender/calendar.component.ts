@@ -31,9 +31,10 @@ export class CalendarComponent implements OnInit {
   ngOnInit(): void {
     //this.resetCalendar();
   }
-  moveTo(selectedYear: number, selectedMonth: number) {
+  moveTo(selectedYear: number, selectedMonth: number, selectedDate: {[id: string]: string  }) {
     this.selectedYear = selectedYear;
     this.selectedMonth = selectedMonth;
+    this.selectedDates = selectedDate;
     this.updateCalendar();
   }
   onNextMonth() {
@@ -89,7 +90,8 @@ export class CalendarComponent implements OnInit {
       let shortDateString = this.getShortDateString(dayNo);
       let isPastDate =  currentTimeByTimeZone > calendarDay.getTime(); 
       let isCurrentDate =this.isCurrentMonth() && currentDate.getDate() == calendarDay.getDate() ;
-      this.days_in_month[weekNo][weekDay] = { dayNo: dayNo, date: shortDateString, isDisabled: isPastDate, isSelected: false, isCurrentDate: isCurrentDate };
+      let isSelected= this.selectedDates[shortDateString] != undefined;
+      this.days_in_month[weekNo][weekDay] = { dayNo: dayNo, date: shortDateString, isDisabled: isPastDate, isSelected: isSelected, isCurrentDate: isCurrentDate };
 
       if (weekDay == 6) {
         weekNo += 1
@@ -166,7 +168,6 @@ export class CalendarComponent implements OnInit {
   resetYearMonthFromDate(date: Date) {
     this.selectedYear = date.getFullYear();
     this.selectedMonth = date.getMonth();
-    //this.selectedDates = {};
   }
   disableDays(days: number[]) {
     for (let week in this.days_in_month) {

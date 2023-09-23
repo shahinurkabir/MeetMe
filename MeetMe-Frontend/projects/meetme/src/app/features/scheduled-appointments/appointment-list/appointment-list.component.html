@@ -1,1 +1,16 @@
-<p>appointment-list works!</p>
+<h1>Appointment List</h1>
+<ul>
+  <li *ngFor="let appointment of appointments; let i=index;">
+    {{appointment.appointmentDateTime}} -
+    {{appointment.eventTypeTitle}} -
+    {{appointment.inviteeName}}
+    <div>
+      <label>Cancellation Reason</label>
+      <br>
+      <textarea [(ngModel)]="cancellationReason" placeholder="Reason"></textarea>
+      <br>
+      <button (click)="cancelAppointment(appointment.id)">Cancel</button>
+    </div>
+    <br>
+  </li>
+</ul>

@@ -18,6 +18,7 @@ import { calendar_Components } from './features/calendar';
 import { CalendarLayoutComponent } from './layouts/calendar-layout/calendar-layout.component';
 import { AlertComponent } from './app-core/controls/alert/alert.component';
 import { FilterPipe } from './app-core/pipes/filter.pipe';
+import { scheduled_Appointment_Components } from './features/scheduled-appointments';
 
 @NgModule({
     declarations: [
@@ -37,6 +38,7 @@ import { FilterPipe } from './app-core/pipes/filter.pipe';
         availability_Components,
         eventType_Components,
         calendar_Components,
+        scheduled_Appointment_Components,
         AlertComponent,
         LoadingIndicatorDirective,
     ],

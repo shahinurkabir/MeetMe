@@ -13,6 +13,8 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   @ViewChild(CalendarComponent, { static: true }) calendarComponent!: CalendarComponent;
   @ViewChild("timezoneControl", { static: true }) timezoneControl: TimezoneControlComponent | undefined;
   @ViewChild("appointmentForm") appointmentForm: NgForm | undefined;
+  //selectedDatesFromCalender: { [id: string]: string } = {};
+
   destroyed$: Subject<boolean> = new Subject<boolean>();
   availableTimeSlots: IEventTimeAvailability[] = [];
   day: IEventTimeAvailability | undefined;
@@ -58,21 +60,31 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.selectedYearMonth = this.route.snapshot.queryParamMap.get("month");
     this.eventTypeOwner = this.route.snapshot.paramMap.get("user") ?? "";
 
+    this.initializeRouteParameters();
     this.loadEventTypeAndUserInfo();
+    this.updateCalendar();
 
+  }
+  private initializeRouteParameters(): void {
+    this.eventTypeId = this.route.snapshot.queryParamMap.get("id") || "";
+    this.selectedDate = this.route.snapshot.queryParamMap.get('date') || "";
+    this.selectedYearMonth = this.route.snapshot.queryParamMap.get("month") || "";
+    this.eventTypeOwner = this.route.snapshot.paramMap.get("user") || "";
+  }
+  private updateCalendar(): void {
     if (this.selectedYearMonth) {
-      let yearMonth = this.selectedYearMonth.split("-");
-      this.selectedYear = parseInt(yearMonth[0]);
-      this.selectedMonth = parseInt(yearMonth[1]) - 1;
-      this.calendarComponent.moveTo(this.selectedYear, this.selectedMonth);
-    }
-    else {
+      const [year, month] = this.selectedYearMonth.split("-").map(Number);
+      this.selectedYear = year;
+      this.selectedMonth = month - 1;
+
+      const selectedDatesFromCalendar = this.selectedDate ? { [this.selectedDate]: this.selectedDate } : {};
+
+      this.calendarComponent.moveTo(this.selectedYear, this.selectedMonth, selectedDatesFromCalendar);
+    } else {
       this.calendarComponent.resetCalendar();
     }
   }
 
-  ngViewAfterInit() {
-  }
 
   loadEventTypeAndUserInfo() {
     forkJoin([
@@ -130,6 +142,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
           this.availableTimeSlots = response;
           this.updateTimeLocalTime();
           this.disableNotAvailableDays(fromDate, toDate, response);
+          this.showAvailableTimeSlotsInDay();
         },
         error: (error) => { console.log(error) },
         complete: () => { }
@@ -164,9 +177,10 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.selectedTimeZone = e;
     this.selectedTimeZoneName = e.name;
     this.calendarComponent.resetTimeZone(this.selectedTimeZoneName);
+    //this.loadEventCalendarData();
     //this.showAvailableTimeSlotsInDay();
     //this.updateTimeLocalTime();
-    this.loadEventCalendarData()
+    //this.loadEventCalendarData()
   }
 
   onChangedHourFormat(is24HourFormat: boolean) {

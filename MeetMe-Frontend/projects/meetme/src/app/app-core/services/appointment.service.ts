@@ -15,6 +15,10 @@ export class AppointmentService extends DataService {
         super(http)
     }
     
+    getAppointments(): Observable<IAppointmentDetailsDto[]> {
+        let url: string = `${this.calendarURI}/me`
+        return this.doGet(url)
+    }
     getAppointmentById(id: string): Observable<IAppointmentDetailsDto> {
         let url: string = `${this.calendarURI}/${id}/details`
         return this.doGet(url)
@@ -24,7 +28,7 @@ export class AppointmentService extends DataService {
         return this.doPost(url, command)
     }
     cancelAppointment(command: ICancelAppointmentCommand): Observable<string> {
-        let url: string = `${this.calendarURI}/cancel`
+        let url: string = `${this.calendarURI}/${command.id}/cancel`
         return this.doPost(url, command)
     }
 }

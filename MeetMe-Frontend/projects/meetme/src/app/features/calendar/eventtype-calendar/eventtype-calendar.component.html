@@ -20,8 +20,14 @@
                 </section>
                 <section class="timeslots-section">
                     <h2>{{selectedDate}}</h2>
+
                     <div class="timeslots-wrapper">
+
                         <div class="time-slots">
+                            <!-- <div *ngIf="selectedDate && day?.slots!.length==0">
+                                <div>No times available <span>{{selectedDate}}</span></div>
+                                <div>Please select another date</div>
+                            </div> -->
                             <button class="answerBtnsOff" (click)="onSelectedTimeSlot(slot)"
                                 *ngFor="let slot of day?.slots! | filter:'isDaySecondHalf':false">
                                 {{slot.startTime}}
