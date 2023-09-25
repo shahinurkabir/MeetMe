@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CalendarComponent, AppointmentService, TimezoneControlComponent, IEventTimeAvailability, TimeZoneData, EventTypeService, convertTimeZoneLocalTime, IEventType, AccountService, IAccountProfileInfo, ITimeSlot, day_of_week, month_of_year, AlertService, ICreateAppointmentCommand } from '../../../app-core';
+import { CalendarComponent, AppointmentService, TimezoneControlComponent, IEventTimeAvailability, TimeZoneData, EventTypeService, getTimeWithAMPM, IEventType, AccountService, IAccountProfileInfo, ITimeSlot, day_of_week, month_of_year, AlertService, ICreateAppointmentCommand, convertTimeZone, getDaysInMonth, getDateString, getCurrentDateInTimeZone, getDaysInRange } from '../../../app-core';
 import { Subject, forkJoin, from, takeUntil } from 'rxjs';
 import { NgForm } from '@angular/forms';
 
@@ -13,7 +13,6 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   @ViewChild(CalendarComponent, { static: true }) calendarComponent!: CalendarComponent;
   @ViewChild("timezoneControl", { static: true }) timezoneControl: TimezoneControlComponent | undefined;
   @ViewChild("appointmentForm") appointmentForm: NgForm | undefined;
-  //selectedDatesFromCalender: { [id: string]: string } = {};
 
   destroyed$: Subject<boolean> = new Subject<boolean>();
   availableTimeSlots: IEventTimeAvailability[] = [];
@@ -41,6 +40,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   submitted: boolean = false;
   isSubmitting: boolean = false;
   isAppointmentCreated: boolean = false;
+
   constructor(
     private eventTypeService: EventTypeService,
     private calendarService: AppointmentService,
@@ -61,45 +61,9 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.eventTypeOwner = this.route.snapshot.paramMap.get("user") ?? "";
 
     this.initializeRouteParameters();
-    this.loadEventTypeAndUserInfo();
+    this.loadEventDetails();
     this.updateCalendar();
 
-  }
-  private initializeRouteParameters(): void {
-    this.eventTypeId = this.route.snapshot.queryParamMap.get("id") || "";
-    this.selectedDate = this.route.snapshot.queryParamMap.get('date') || "";
-    this.selectedYearMonth = this.route.snapshot.queryParamMap.get("month") || "";
-    this.eventTypeOwner = this.route.snapshot.paramMap.get("user") || "";
-  }
-  private updateCalendar(): void {
-    if (this.selectedYearMonth) {
-      const [year, month] = this.selectedYearMonth.split("-").map(Number);
-      this.selectedYear = year;
-      this.selectedMonth = month - 1;
-
-      const selectedDatesFromCalendar = this.selectedDate ? { [this.selectedDate]: this.selectedDate } : {};
-
-      this.calendarComponent.moveTo(this.selectedYear, this.selectedMonth, selectedDatesFromCalendar);
-    } else {
-      this.calendarComponent.resetCalendar();
-    }
-  }
-
-
-  loadEventTypeAndUserInfo() {
-    forkJoin([
-      this.eventTypeService.getById(this.eventTypeId),
-      this.accountService.getProfileByUserName(this.eventTypeOwner)
-    ])
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: (response) => {
-          this.eventTypeInfo = response[0];
-          this.eventTypeOwnerInfo = response[1];
-        },
-        error: (error) => { console.log(error) },
-        complete: () => { }
-      });
   }
 
   onHandledCalendarClicked(e: any) {
@@ -115,60 +79,12 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
   onHandledMonthChange(e: any) {
 
-    console.log(`month changed ${e}`);
     this.selectedYear = e.year;
     this.selectedMonth = e.month;
     this.addParamMonth();
-    this.loadEventCalendarData();
+    this.loadEventAvailabileTimeSlots();
   }
 
-  loadEventCalendarData() {
-
-    let daysInMonth = new Date(this.selectedYear, this.selectedMonth + 1, 0).getDate();
-
-    let fromDate = this.selectedYear + "-" + (this.selectedMonth + 1) + "-01";
-    let toDate = this.selectedYear + "-" + (this.selectedMonth + 1) + "-" + daysInMonth;
-
-    let currentDate = new Date(new Date().toLocaleString("en-US", { timeZone: this.selectedTimeZoneName }));
-    let isCurrentMonth = currentDate.getMonth() == this.selectedMonth && currentDate.getFullYear() == this.selectedYear;
-    if (isCurrentMonth) {
-      fromDate = this.selectedYear + "-" + (this.selectedMonth + 1) + "-" + currentDate.getDate();
-    }
-
-    this.eventTypeService.getCalendarAvailability(this.eventTypeId, this.selectedTimeZoneName, fromDate, toDate)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: (response) => {
-          this.availableTimeSlots = response;
-          this.updateTimeLocalTime();
-          this.disableNotAvailableDays(fromDate, toDate, response);
-          this.showAvailableTimeSlotsInDay();
-        },
-        error: (error) => { console.log(error) },
-        complete: () => { }
-      });
-  }
-  disableNotAvailableDays(fromDate: string, toDate: string, avalableTimeSlots: IEventTimeAvailability[]) {
-
-    let from = new Date(fromDate);
-    let to = new Date(toDate);
-    let days: number[] = [];
-    for (let index = from.getDate(); index <= to.getDate(); index++) {
-      days.push(index);
-    }
-    let daysHasData = avalableTimeSlots.map(e => new Date(e.date).getDate());
-    daysHasData.forEach((day) => {
-      let index = days.indexOf(day);
-      if (index != -1) {
-        days.splice(index, 1);
-      }
-    });
-    if (days.length == 0) return;
-    this.calendarComponent.disableDays(days);
-  }
-  showAvailableTimeSlotsInDay() {
-    this.day = this.availableTimeSlots.find(e => e.date == this.selectedDate);
-  }
   onLoadedTimezoneData(e: any) {
     console.log(e);
   }
@@ -177,10 +93,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.selectedTimeZone = e;
     this.selectedTimeZoneName = e.name;
     this.calendarComponent.resetTimeZone(this.selectedTimeZoneName);
-    //this.loadEventCalendarData();
-    //this.showAvailableTimeSlotsInDay();
-    //this.updateTimeLocalTime();
-    //this.loadEventCalendarData()
+
   }
 
   onChangedHourFormat(is24HourFormat: boolean) {
@@ -188,20 +101,10 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.updateTimeLocalTime();
   }
 
-  updateTimeLocalTime() {
-    this.availableTimeSlots.forEach((day) => {
-      day.slots.forEach((slot) => {
-        let timeToStart = convertTimeZoneLocalTime(new Date(slot.startDateTime), this.is24HourFormat, this.selectedTimeZone?.name!);
-        let isDaySecondHalf = (timeToStart.split(" ")[1] == "PM" || parseInt(timeToStart.substring(0, 2)) >= 12) ? true : false;
-        slot.startTime = timeToStart;
-        slot.isDaySecondHalf = isDaySecondHalf
-      });
-    });
-  }
   onSelectedTimeSlot(e: ITimeSlot) {
     this.selectedTimeSlot = e;
     let fromTime = e.startTime;
-    let toTime = convertTimeZoneLocalTime(new Date(new Date(e.startDateTime).setMinutes(this.eventTypeInfo?.duration!)), this.is24HourFormat, this.selectedTimeZoneName!);
+    let toTime = getTimeWithAMPM(new Date(new Date(e.startDateTime).setMinutes(this.eventTypeInfo?.duration!)), this.is24HourFormat, this.selectedTimeZoneName!);
     let day = new Date(e.startDateTime).getDate();
     let weekDay = new Date(e.startDateTime).getDay();
     let dayOfWeek = day_of_week[weekDay];
@@ -212,9 +115,14 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   }
 
   onSubmitAppointmentForm(form: NgForm) {
-    this.submitted = true;
-    if (form.invalid) return;
 
+    this.submitted = true;
+
+    if (form.invalid) {
+      return;
+    }
+
+    // crate the command object with the data from the form
     let command: ICreateAppointmentCommand = {
       eventTypeId: this.eventTypeId,
       inviteeName: this.appointmentEntryModel?.inviteeName!,
@@ -226,19 +134,31 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       note: this.appointmentEntryModel?.note
     };
 
+    //show the loading indicator
     this.isSubmitting = true;
-    this.calendarService.addAppointment(command)
+
+    // call the calendar service to create the appointment
+    this.calendarService
+      .addAppointment(command)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (response) => {
+          // handle the successfull response
+          console.log(response);
+          this.apointmentCreated(response);
           this.alertService.success("Appointment created successfully");
         }
         ,
-        error: (error) => { console.log(error) },
-        complete: () => { this.isSubmitting = false; }
+        error: (error) => {
+          //handle the error response
+          console.log(error)
+        },
+        complete: () => {
+          // hide the loading indicator when the call is completed
+          this.isSubmitting = false;
+        }
       });
   }
-
   onCancelBooking(e: any) {
     e.preventDefault();
     this.selectedTimeSlot = undefined;
@@ -247,7 +167,142 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.appointmentForm?.form.markAsPristine();
     this.submitted = false;
   }
-  addParamMonth() {
+
+  private apointmentCreated(appointmentId: string) {
+    this.router.navigate(["calendar/booking", this.eventTypeOwner, this.eventTypeInfo?.slug, appointmentId, "view"]);
+  }
+
+  private initializeRouteParameters(): void {
+    this.eventTypeId = this.route.snapshot.queryParamMap.get("id") || "";
+    this.selectedDate = this.route.snapshot.queryParamMap.get('date') || "";
+    this.selectedYearMonth = this.route.snapshot.queryParamMap.get("month") || "";
+    this.eventTypeOwner = this.route.snapshot.paramMap.get("user") || "";
+  }
+
+  private updateCalendar(): void {
+    if (this.selectedYearMonth) {
+      const [year, month] = this.selectedYearMonth.split("-").map(Number);
+      this.selectedYear = year;
+      this.selectedMonth = month - 1;
+
+      const selectedDatesFromCalendar = this.selectedDate ? { [this.selectedDate]: this.selectedDate } : {};
+
+      this.calendarComponent.moveTo(this.selectedYear, this.selectedMonth, selectedDatesFromCalendar);
+    } else {
+      this.calendarComponent.resetCalendar();
+    }
+  }
+
+
+  private loadEventDetails() {
+    forkJoin([
+      this.eventTypeService.getById(this.eventTypeId),
+      this.accountService.getProfileByUserName(this.eventTypeOwner)
+    ])
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (response) => {
+          this.eventTypeInfo = response[0];
+          this.eventTypeOwnerInfo = response[1];
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { }
+      });
+  }
+
+  private loadEventAvailabileTimeSlots() {
+
+    const daysInMonth = getDaysInMonth(this.selectedYear, this.selectedMonth);
+
+    let fromDate = getDateString(this.selectedYear, this.selectedMonth, 1);
+    const toDate = getDateString(this.selectedYear, this.selectedMonth, daysInMonth);
+
+    let currentDate = getCurrentDateInTimeZone(this.selectedTimeZoneName);
+    let isCurrentMonth = currentDate.getMonth() == this.selectedMonth && currentDate.getFullYear() == this.selectedYear;
+
+    if (isCurrentMonth) {
+      fromDate = getDateString(this.selectedYear, this.selectedMonth, currentDate.getDate());
+    }
+
+    this.fetchCalendarAvailability(fromDate, toDate);
+
+    // this.eventTypeService.getCalendarAvailability(this.eventTypeId, this.selectedTimeZoneName, fromDate, toDate)
+    //   .pipe(takeUntil(this.destroyed$))
+    //   .subscribe({
+    //     next: (response) => {
+    //       this.availableTimeSlots = response;
+    //       this.updateTimeLocalTime();
+    //       this.disableNotAvailableDays(fromDate, toDate, response);
+    //       this.showAvailableTimeSlotsInDay();
+    //     },
+    //     error: (error) => { console.log(error) },
+    //     complete: () => { }
+    //   });
+  }
+  private fetchCalendarAvailability(fromDate: string, toDate: string): void {
+    this.eventTypeService
+      .getCalendarAvailability(this.eventTypeId, this.selectedTimeZoneName, fromDate, toDate)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (response) => {
+          this.availableTimeSlots = response;
+          this.updateTimeLocalTime();
+          this.disableCalendarDaysForEmptySlot(fromDate, toDate, response);
+          //this.showAvailableTimeSlotsInDay();
+        },
+        error: (error) => {
+          console.log(error);
+        },
+        complete: () => {
+          // Optionally, you can handle completion here.
+        },
+      });
+  }
+
+  private disableCalendarDaysForEmptySlot(fromDate: string, toDate: string, availableTimeSlots: IEventTimeAvailability[]) {
+
+    const fromDateObj = new Date(fromDate);
+    const toDateObj = new Date(toDate);
+
+    // Create an array of all days within the date range
+    const allDaysInRange = getDaysInRange(fromDateObj, toDateObj);
+
+    // Extract the day numbers from availableTimeSlots
+    const daysWithAvailability = availableTimeSlots.map((event) => new Date(event.date).getDate());
+
+    // Filter out the days without availability
+    const disabledDays = allDaysInRange.filter((day) => !daysWithAvailability.includes(day));
+
+    if (disabledDays.length > 0) {
+      this.calendarComponent.disableDays(disabledDays);
+    }
+  }
+
+  private showAvailableTimeSlotsInDay() {
+    this.day = this.availableTimeSlots.find(e => e.date == this.selectedDate);
+  }
+  private updateTimeLocalTime() {
+    // Function to convert a single time slot
+    const convertTimeSlot = (slot: ITimeSlot) => {
+      const startDateTime = convertTimeZone(slot.startDateTime, this.selectedTimeZone?.name!);
+      const timeToStart = getTimeWithAMPM(new Date(slot.startDateTime), this.is24HourFormat, this.selectedTimeZone?.name!);
+      const hourOfDay = startDateTime.getHours();
+      const isDaySecondHalf = timeToStart.includes('PM') || (hourOfDay >= 12 && hourOfDay < 24);
+
+      return {
+        ...slot,
+        startTime: timeToStart,
+        isDaySecondHalf: isDaySecondHalf,
+      };
+    };
+
+    // Update time slots for each day
+    this.availableTimeSlots.forEach((day) => {
+      day.slots = day.slots.map(convertTimeSlot);
+    });
+  }
+
+  private addParamMonth() {
     // changes the route without moving from the current view or
     // triggering a navigation event,
     this.router.navigate([], {
@@ -261,7 +316,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       // do not trigger navigation
     });
   }
-  addParamDate() {
+  private addParamDate() {
     // changes the route without moving from the current view or
     // triggering a navigation event,
     this.router.navigate([], {

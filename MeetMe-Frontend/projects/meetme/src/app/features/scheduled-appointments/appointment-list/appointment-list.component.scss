@@ -1,0 +1,84 @@
+/* appointment-list.component.css */
+
+/* Basic styling for the appointment list */
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    margin-bottom: 20px;
+  }
+  
+  /* Styling for the appointment header */
+  .appointment-header {
+    cursor: pointer;
+    background-color: #f4f4f4;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .date-time {
+    font-weight: bold;
+  }
+  
+  .toggle-icon {
+    font-size: 20px;
+    transition: transform 0.3s;
+  }
+  
+//   .expanded {
+//     transform: rotate(45deg);
+//   }
+  
+//   .collapsed {
+//     transform: rotate(0);
+//   }
+  
+  /* Styling for the appointment details */
+  .appointment-details {
+    display: none;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+  }
+  
+  /* Styling for the cancellation reason textarea */
+  textarea {
+    width: 100%;
+    height: 60px;
+    padding: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  /* Styling for action buttons */
+  .actions {
+    margin-top: 10px;
+  }
+  
+  .cancel-button,
+  .reschedule-button {
+    background-color: #d9534f;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+  
+  .reschedule-button {
+    background-color: #5bc0de;
+  }
+  
+  /* Show the appointment details when expanded */
+   .appointment-details.expanded {
+    display: block;
+  }
+  

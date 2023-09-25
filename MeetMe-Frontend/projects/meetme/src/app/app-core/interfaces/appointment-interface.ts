@@ -42,4 +42,5 @@ export interface IAppointmentDetailsDto {
         dateCreated: string;
         dateCancelled: string | null;
         cancellationReason: string | null;
+        isExpanded: boolean;
 }

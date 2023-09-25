@@ -65,12 +65,12 @@ namespace DataProvider.EntityFramework.Repositories
 
             return result;
         }
-        public async Task<List<AppointmentDetailsDto>?> GetAppointmentsOfEventTypeByDateRange(Guid userId, DateTime startDateUTC, DateTime endDateUTC)
+        public async Task<List<AppointmentDetailsDto>?> GetAppointmentsOfEventTypeByDateRange(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC)
         {
             var result = await bookingDbContext.Set<Appointment>()
                   .Include(x => x.EventType)
                   .ThenInclude(x => x.User)
-                  .Where(x => x.EventType.User.Id == userId && x.StartTimeUTC >= startDateUTC && x.EndTimeUTC <= endDateUTC)
+                  .Where(x => x.EventTypeId == eventTypeId && x.StartTimeUTC >= startDateUTC && x.EndTimeUTC <= endDateUTC)
                   .Select(x => ToAppointmentDto(x)).ToListAsync();
 
             return result;

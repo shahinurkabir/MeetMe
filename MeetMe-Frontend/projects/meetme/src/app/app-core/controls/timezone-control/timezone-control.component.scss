@@ -1,3 +1,99 @@
+// /* Container */
+// .wrapper {
+//   font-family: Arial, sans-serif;
+//   display: inline-block;
+//   position: relative;
+//   width: 300px; /* Adjust the width as needed */
+//   background-color: #fff;
+//   border: 1px solid #ccc;
+//   border-radius: 5px;
+// }
+
+// /* Toggle Button */
+// .select-btn {
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   padding: 10px;
+//   cursor: pointer;
+// }
+
+// .select-btn span {
+//   flex-grow: 1;
+// }
+
+// .select-btn i {
+//   font-size: 16px;
+// }
+
+// /* 24h Checkbox */
+// .select-btn input[type="checkbox"] {
+//   margin-left: 10px;
+//   cursor: pointer;
+// }
+
+// /* Content Section */
+// .content {
+//   display: none;
+//   background-color: #fff;
+//   border-top: 1px solid #ccc;
+//   border-radius: 0 0 5px 5px;
+//   overflow: hidden;
+// }
+
+// /* Search Bar */
+// .search {
+//   display: flex;
+//   align-items: center;
+//   padding: 10px;
+// }
+
+// .search i {
+//   font-size: 16px;
+//   margin-right: 5px;
+// }
+
+// .search input[type="text"] {
+//   flex-grow: 1;
+//   border: none;
+//   outline: none;
+//   padding: 5px;
+//   font-size: 14px;
+// }
+
+// /* Options List */
+// .options {
+//   list-style-type: none;
+//   padding: 0;
+//   margin: 0;
+// }
+
+// .options li {
+//   padding: 10px;
+//   cursor: pointer;
+//   transition: background-color 0.3s ease;
+// }
+
+// .options li.selected {
+//   background-color: #007bff;
+//   color: #fff;
+// }
+
+// /* Timezone and Current Time */
+// .timezone-currenttime-wrapper {
+//   display: flex;
+//   flex-direction: column;
+// }
+
+// .timezone {
+//   font-weight: bold;
+//   font-size: 14px;
+// }
+
+// .current-time {
+//   color: #777;
+//   font-size: 12px;
+// }
 
 // Custom Select Box
 ::selection{

@@ -1,4 +1,46 @@
-
+<div class="calendar-control">
+    <div class="header">
+      <div>{{ selectedYearMonth }}</div>
+      <div>
+        <button [disabled]="isCurrentMonth()" (click)="onPreviousMonth()">
+          <i class="fa-solid fa-angle-left"></i>
+        </button>
+        <button (click)="onNextMonth()">
+          <i class="fa-solid fa-angle-right"></i>
+        </button>
+      </div>
+    </div>
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th *ngFor="let day of weekDays; let index = index;">{{ day.substring(0, 3) }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let week of days_in_month | keyvalue; let index = index">
+            <ng-container *ngFor="let weekDay of week.value">
+              <td>
+                <button
+                  [disabled]="weekDay.isDisabled"
+                  class="day"
+                  *ngIf="weekDay.dayNo > 0"
+                  [ngStyle]="{ 'cursor': weekDay.isDisabled ? 'auto' : 'pointer' }"
+                  [ngClass]="[weekDay.isSelected ? 'selected' : '']"
+                  (click)="onClickDay(weekDay)"
+                >
+                  <span>{{ weekDay.dayNo }}</span>
+                  <div [ngClass]="[weekDay.isCurrentDate ? 'current-date' : '']"></div>
+                </button>
+              </td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+<!-- 
 <div class="calendar_control">
     <div class="header">
         <div>{{selectedYearMonth}}</div>
@@ -20,7 +62,10 @@
             <tbody>
                 <tr *ngFor="let daysInSlot of days_in_month |keyvalue; let index=index">
                     <td *ngFor="let weekDay of  daysInSlot.value">
-                        <button [disabled]="weekDay.isDisabled" class="day" *ngIf="weekDay.dayNo>0"
+                        <button 
+                        [disabled]="weekDay.isDisabled" class="day" *ngIf="weekDay.dayNo>0"
+                        [ngStyle] ="{ 'cursor':weekDay.isDisabled?'auto':'pointer'}"
+
                             [ngClass]="[weekDay.isSelected?'selected':'']" (click)="onClickDay(weekDay)">
                             <span>{{weekDay.dayNo}}</span>
                             <div [ngClass]="[weekDay.isCurrentDate?'current_date':'']" ></div>
@@ -30,4 +75,4 @@
             </tbody>
         </table>
     </div>
-</div>
+</div> -->

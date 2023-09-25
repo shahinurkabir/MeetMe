@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AppointmentService,  IAppointmentDetailsDto, ICancelAppointmentCommand } from '../../../app-core';
+import { AppointmentService, IAppointmentDetailsDto, ICancelAppointmentCommand } from '../../../app-core';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -9,7 +9,7 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class AppointmentListComponent implements OnInit, OnDestroy {
   destroyed$: Subject<boolean> = new Subject<boolean>();
- 
+
   appointments: IAppointmentDetailsDto[] = [];
   cancellationReason: string = '';
 
@@ -21,6 +21,9 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
     this.loadAppointments();
   }
 
+  toggleDetails(index: number): void {
+    this.appointments[index].isExpanded = !this.appointments[index].isExpanded;
+  }
   resetData() {
     this.appointments = [];
     this.cancellationReason = '';
@@ -41,8 +44,8 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
         }
       })
   }
-  cancelAppointment (id: string) {
-    let cancelAppointmentCommand:ICancelAppointmentCommand = {
+  cancelAppointment(id: string) {
+    let cancelAppointmentCommand: ICancelAppointmentCommand = {
       id: id,
       cancellationReason: this.cancellationReason
     }
@@ -61,6 +64,9 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
         }
       })
   }
+  rescheduleAppointment(id: string) {
+  }
+
 
   ngOnDestroy(): void {
     this.destroyed$.next(true);

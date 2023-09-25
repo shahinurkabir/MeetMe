@@ -1,4 +1,4 @@
-<div class="calendar-appointment-booking">
+<!-- <div class="calendar-appointment-booking">
     <section class="event-info-section">
         <h1>{{eventTypeInfo?.name}}</h1>
         <h2>{{eventTypeOwnerInfo?.userName}}</h2>
@@ -24,10 +24,7 @@
                     <div class="timeslots-wrapper">
 
                         <div class="time-slots">
-                            <!-- <div *ngIf="selectedDate && day?.slots!.length==0">
-                                <div>No times available <span>{{selectedDate}}</span></div>
-                                <div>Please select another date</div>
-                            </div> -->
+                            
                             <button class="answerBtnsOff" (click)="onSelectedTimeSlot(slot)"
                                 *ngFor="let slot of day?.slots! | filter:'isDaySecondHalf':false">
                                 {{slot.startTime}}
@@ -86,3 +83,100 @@
         </div>
     </section>
 </div>
+ -->
+
+<div class="calendar-appointment-booking">
+    <!-- Event Info Section -->
+    <section class="event-info-section">
+      <h1>{{ eventTypeInfo?.name }}</h1>
+      <h2>{{ eventTypeOwnerInfo?.userName }}</h2>
+      <strong>{{ eventTypeInfo?.duration }} minutes</strong>
+      <strong *ngIf="selectedTimeSlot">{{ selectedDateTime }}</strong>
+      <strong *ngIf="selectedTimeSlot">{{ selectedTimeZoneName }}</strong>
+    </section>
+  
+    <!-- Booking Wrapper -->
+    <section class="booking-wrapper">
+      <!-- Display when selectedTimeSlot is not available -->
+      <div [ngStyle]="{'display': !selectedTimeSlot ? 'block' : 'none', 'width': '100%'}">
+        <!-- Calendar and Time Slots Section -->
+        <div class="calendar-timeslots-wrapper">
+          <section class="calendar-section">
+            <app-calendar (handlerDateClick)="onHandledCalendarClicked($event)"
+                        (handlerMonthChange)="onHandledMonthChange($event)"
+                        [allowMultipleSelection]="false"></app-calendar>
+                    <app-timezone-control #timezoneControl [selectedTimeZone]="selectedTimeZone"
+                        [showHourFormatChangeOption]="true" (dataLoaded)="onLoadedTimezoneData($event)"
+                        (selectionChanged)="onChangedTimezone($event)"
+                        (hourFormatChanged)="onChangedHourFormat($event)"></app-timezone-control>
+          </section>
+          <section class="timeslots-section">
+            <h2>{{ selectedDate }}</h2>
+            <div class="timeslots-wrapper">
+              <div class="time-slots">
+                <!-- First half of the day time slots -->
+                <button class="answerBtnsOff" (click)="onSelectedTimeSlot(slot)"
+                  *ngFor="let slot of day?.slots! | filter:'isDaySecondHalf':false">
+                  {{ slot.startTime }}
+                </button>
+              </div>
+              <div class="time-slots">
+                <!-- Second half of the day time slots -->
+                <button class="answerBtnsOff" (click)="onSelectedTimeSlot(slot)"
+                  *ngFor="let slot of day?.slots! | filter:'isDaySecondHalf':true">
+                  {{ slot.startTime }}
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+  
+      <!-- Display when selectedTimeSlot is available -->
+      <div [ngStyle]="{'display': selectedTimeSlot ? 'block' : 'none'}" class="page  page-width-85p">
+        <form #formAppointmentDetail="ngForm" class=" ">
+          <!-- Form Fields with Labels and Validation Messages -->
+          <div class="form-group">
+            <label for="inviteeName">Name *</label>
+            <div class="form-control">
+              <input type="text" autocomplete="off" spellcheck="false" #inviteeName="ngModel" required
+                [(ngModel)]="appointmentEntryModel.inviteeName" name="inviteeName" minlength="3">
+              <div *ngIf="submitted && inviteeName.errors" class="invalid-feedback">
+                <div *ngIf="inviteeName.errors['required']">Name is required</div>
+                <div *ngIf="inviteeName.errors['minlength']">Name should be at least 3 characters long</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="userName">Email *</label>
+            <div class="form-control">
+                <input type="text" autocomplete="off" spellcheck="false" #inviteeEmail="ngModel" required
+                    [(ngModel)]="appointmentEntryModel.inviteeEmail" name="inviteeEmail" minlength="3">
+                <div *ngIf="submitted && inviteeEmail.errors" class="invalid-feedback">
+                    <div *ngIf="inviteeEmail.errors['required']">Email is required</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="note">Notes </label>
+            <div class="form-control">
+                <textarea [ngClass]="{ 'is-invalid': submitted && note.errors }" rows="5" #note="ngModel"
+                    [(ngModel)]="appointmentEntryModel.note" id="note" name="note"></textarea>
+            </div>
+        </div>
+  
+          <!-- Form Submission Buttons -->
+          <div class="footer">
+            <button (click)="onCancelBooking($event)" class="btn btn-default">
+              Back
+            </button>
+            <button loading-indicator [loading]="isSubmitting" [disabled]="isSubmitting"
+              (click)="onSubmitAppointmentForm(formAppointmentDetail)" class="btn btn-primary">
+              Booking an Appointment
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+  

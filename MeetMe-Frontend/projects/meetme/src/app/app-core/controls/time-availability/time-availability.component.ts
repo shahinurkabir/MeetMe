@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { day_of_week, default_endTime_Minutes, default_startTime_minutes, meeting_day_type_date, meeting_day_type_weekday, month_of_year } from '../../utilities/default-data';
+import { day_of_week, default_endTime_Minutes, default_startTime_minutes, meeting_day_type_date, meeting_day_type_weekday, month_of_year, time_Slots_List } from '../../utilities/default-data';
 import { TimeZoneData } from '../../interfaces/event-type-interfaces';
 import { ListItem } from '../../interfaces/list-item';
 import { date } from '../../utilities/date-functions';
@@ -15,7 +15,7 @@ import { ITimeIntervalInDay, ITimeInterval, ITimeIntervalsInMonth } from '../../
   styleUrls: ['./time-availability.component.scss']
 })
 export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
-
+  timeSlotsList: string[] = time_Slots_List
   availability: IAvailability | undefined;
   timeZoneList: TimeZoneData[] = ListOfTimeZone;
   filterTimeZoneList: TimeZoneData[] = ListOfTimeZone;
