@@ -11,18 +11,18 @@ namespace MeetMe.Application.Availabilities.Commands.SetDefault
 
     public class SetDefaultAvailabilityCommandHandler : IRequestHandler<SetDefaultAvailabilityCommand, bool>
     {
-        private readonly IAvailabilityRepository availabilityRepository;
-        private readonly ILoginUserInfo userInfo;
+        private readonly IAvailabilityRepository _availabilityRepository;
+        private readonly ILoginUserInfo _userInfo;
 
         public SetDefaultAvailabilityCommandHandler(IAvailabilityRepository availabilityRepository, ILoginUserInfo userInfo)
         {
-            this.availabilityRepository = availabilityRepository;
-            this.userInfo = userInfo;
+            _availabilityRepository = availabilityRepository;
+            _userInfo = userInfo;
         }
         public async Task<bool> Handle(SetDefaultAvailabilityCommand request, CancellationToken cancellationToken)
         {
             
-            await availabilityRepository.SetDefault(request.Id, userInfo.Id);
+            await _availabilityRepository.SetDefaultAvailability(request.Id, _userInfo.Id);
 
             return true;
             

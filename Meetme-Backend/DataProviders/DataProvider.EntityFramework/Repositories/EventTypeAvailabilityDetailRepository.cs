@@ -9,35 +9,35 @@ using System.Threading.Tasks;
 
 namespace DataProvider.EntityFramework.Repositories
 {
-    public class EventTypeAvailabilityDetailRepository : IEventTypeAvailabilityRepository
-    {
-        private readonly BookingDbContext bookingDbContext;
+    //public class EventTypeAvailabilityDetailRepository : IEventTypeAvailabilityRepository
+    //{
+    //    private readonly BookingDbContext bookingDbContext;
 
-        public EventTypeAvailabilityDetailRepository(BookingDbContext bookingDbContext)
-        {
-            this.bookingDbContext = bookingDbContext;
-        }
+    //    public EventTypeAvailabilityDetailRepository(BookingDbContext bookingDbContext)
+    //    {
+    //        this.bookingDbContext = bookingDbContext;
+    //    }
 
-        public async Task<List<EventTypeAvailabilityDetail>> GetEventTypeAvailabilityByEventId(Guid eventTypeId)
-        {
-            var entity = await bookingDbContext.Set<EventTypeAvailabilityDetail>().Where(e => e.EventTypeId == eventTypeId).ToListAsync();
+    //    public async Task<List<EventTypeAvailabilityDetail>> GetEventTypeAvailabilityByEventId(Guid eventTypeId)
+    //    {
+    //        var entity = await bookingDbContext.Set<EventTypeAvailabilityDetail>().Where(e => e.EventTypeId == eventTypeId).ToListAsync();
 
-            return entity;
-        }
+    //        return entity;
+    //    }
 
-        public async Task InsertItems(List<EventTypeAvailabilityDetail> itemsToInsert)
-        {
-            await bookingDbContext.Set<EventTypeAvailabilityDetail>().AddRangeAsync(itemsToInsert);
+        //public async Task InsertItems(List<EventTypeAvailabilityDetail> itemsToInsert)
+        //{
+        //    await bookingDbContext.Set<EventTypeAvailabilityDetail>().AddRangeAsync(itemsToInsert);
 
-            await bookingDbContext.SaveChangesAsync();
+        //    await bookingDbContext.SaveChangesAsync();
 
-        }
+        //}
 
-        public async Task RemoveItems(List<EventTypeAvailabilityDetail> itemsToRemove)
-        {
-            bookingDbContext.Set<EventTypeAvailabilityDetail>().RemoveRange(itemsToRemove);
+        //public async Task RemoveItems(List<EventTypeAvailabilityDetail> itemsToRemove)
+        //{
+        //    bookingDbContext.Set<EventTypeAvailabilityDetail>().RemoveRange(itemsToRemove);
 
-            await bookingDbContext.SaveChangesAsync();
-        }
-    }
+        //    await bookingDbContext.SaveChangesAsync();
+        //}
+    //}
 }

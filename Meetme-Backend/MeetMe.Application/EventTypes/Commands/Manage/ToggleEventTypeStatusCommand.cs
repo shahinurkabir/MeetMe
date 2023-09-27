@@ -21,22 +21,23 @@ namespace MeetMe.Application.EventTypes.Commands.Manage
 
     public class ToggleEventTypeStatusCommandHandler : IRequestHandler<ToggleEventTypeStatusCommand, bool>
     {
-        private readonly IEventTypeRepository eventTypeRepository;
+        private readonly IEventTypeRepository _eventTypeRepository;
 
         public ToggleEventTypeStatusCommandHandler(IEventTypeRepository eventTypeRepository)
         {
-            this.eventTypeRepository = eventTypeRepository;
+            _eventTypeRepository = eventTypeRepository;
         }
         public async Task<bool> Handle(ToggleEventTypeStatusCommand request, CancellationToken cancellationToken)
         {
-            var eventType = await eventTypeRepository.GetEventTypeById(request.eventTypeId);
+            var eventType = await _eventTypeRepository.GetEventTypeById(request.eventTypeId);
 
             if (eventType == null)
+            {
                 throw new Exception("Not found.");
-
+            }
             eventType.ActiveYN = !eventType.ActiveYN;
 
-            await eventTypeRepository.UpdateEventType(eventType);
+            await _eventTypeRepository.UpdateEventType(eventType);
 
             return await Task.FromResult(true);
         }

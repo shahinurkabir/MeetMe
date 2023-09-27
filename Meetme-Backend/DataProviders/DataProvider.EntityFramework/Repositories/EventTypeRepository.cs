@@ -11,71 +11,73 @@ namespace DataProvider.EntityFramework.Repositories
 {
     public class EventTypeRepository : IEventTypeRepository
     {
-        private readonly BookingDbContext bookingDbContext;
+        private readonly BookingDbContext _bookingDbContext;
 
         public EventTypeRepository(BookingDbContext bookingDbContext)
         {
-            this.bookingDbContext = bookingDbContext;
+            _bookingDbContext = bookingDbContext;
         }
 
         public async Task AddNewEventType(EventType eventTypeInfo)
         {
-            await bookingDbContext.AddAsync(eventTypeInfo);
+            await _bookingDbContext.AddAsync(eventTypeInfo);
 
-            await bookingDbContext.SaveChangesAsync();
+            await _bookingDbContext.SaveChangesAsync();
 
         }
 
         public async Task<EventType> GetEventTypeById(Guid eventTypeId)
         {
-            var entity = await bookingDbContext.Set<EventType>()
+            var entity = await _bookingDbContext.Set<EventType>()
                 .Where(e => e.Id == eventTypeId)
                 .Include(e => e.EventTypeAvailabilityDetails)
-                .Include(e => e.Questions).FirstAsync();
+                .Include(e => e.Questions)
+                .FirstOrDefaultAsync();
 
             return entity;
         }
 
         public async Task<EventType> GetEventTypeBySlug(string slug)
         {
-            var entity = await bookingDbContext.Set<EventType>()
+            var entity = await _bookingDbContext.Set<EventType>()
                 .Where(e => e.Slug == slug)
                 .Include(e => e.EventTypeAvailabilityDetails)
-                .Include(e => e.Questions).FirstAsync();
+                .Include(e => e.Questions)
+                .FirstOrDefaultAsync();
 
             return entity;
         }
 
         public async Task UpdateEventType(EventType eventTypeInfo)
         {
-            bookingDbContext.Update(eventTypeInfo);
+            _bookingDbContext.Update(eventTypeInfo);
 
-            await bookingDbContext.SaveChangesAsync();
+            await _bookingDbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateEventAvailability(EventType eventTypeInfo, List<EventTypeAvailabilityDetail> eventTypeAvailabilityDetails)
+        public async Task UpdateEventAvailability(EventType eventTypeInfo, List<EventTypeAvailabilityDetail> scheduleDetails)
         {
             var eventTypeId = eventTypeInfo.Id;
 
-            var listAvailabilityIinDb = await bookingDbContext.Set<EventTypeAvailabilityDetail>()
+            var existingAvailabilityDetails = await _bookingDbContext.Set<EventTypeAvailabilityDetail>()
               .Where(e => e.EventTypeId == eventTypeId)
               .ToListAsync();
 
-            if (listAvailabilityIinDb.Any())
+            if (existingAvailabilityDetails.Any())
             {
-                bookingDbContext.RemoveRange(listAvailabilityIinDb);
+                _bookingDbContext.RemoveRange(existingAvailabilityDetails);
 
             }
-            await bookingDbContext.AddRangeAsync(eventTypeAvailabilityDetails);
+            await _bookingDbContext.AddRangeAsync(scheduleDetails);
 
-            bookingDbContext.Update(eventTypeInfo);
+            _bookingDbContext.Update(eventTypeInfo);
 
-            await bookingDbContext.SaveChangesAsync();
+            await _bookingDbContext.SaveChangesAsync();
         }
 
         public async Task<List<EventType>> GetEventTypeListByUserId(Guid userId)
         {
-            var result = await bookingDbContext.Set<EventType>()
+            var result = await _bookingDbContext.Set<EventType>()
                 .Where(e => e.OwnerId == userId)
                 .ToListAsync();
 

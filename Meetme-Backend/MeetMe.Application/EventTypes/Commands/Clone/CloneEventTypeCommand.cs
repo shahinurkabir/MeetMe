@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MeetMe.Core.Interface;
 using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Persistence.Entities;
+using MeetMe.Core.Exceptions;
 
 namespace MeetMe.Application.EventTypes.Commands.Clone
 {
@@ -22,34 +23,31 @@ namespace MeetMe.Application.EventTypes.Commands.Clone
 
     public class CloneEventTypeCommandHandler : IRequestHandler<CloneEventTypeCommand, Guid>
     {
-        private readonly IEventTypeRepository eventTypeRepository;
-        private readonly IDateTimeService dateTimeService;
-        private readonly ILoginUserInfo applicationUserInfo;
+        private readonly IEventTypeRepository _eventTypeRepository;
+        private readonly IDateTimeService _dateTimeService;
+        private readonly ILoginUserInfo _applicationUserInfo;
 
-        public CloneEventTypeCommandHandler(
-            IEventTypeRepository eventTypeRepository,
-            IDateTimeService dateTimeService,
-            ILoginUserInfo applicationUserInfo
-            )
+        public CloneEventTypeCommandHandler(IEventTypeRepository eventTypeRepository, IDateTimeService dateTimeService, ILoginUserInfo applicationUserInfo)
         {
-            this.eventTypeRepository = eventTypeRepository;
-            this.dateTimeService = dateTimeService;
-            this.applicationUserInfo = applicationUserInfo;
+            _eventTypeRepository = eventTypeRepository;
+            _dateTimeService = dateTimeService;
+            _applicationUserInfo = applicationUserInfo;
         }
         public async Task<Guid> Handle(CloneEventTypeCommand request, CancellationToken cancellationToken)
         {
-            var eventType = await eventTypeRepository.GetEventTypeById(request.eventTypeId);
+            var eventType = await _eventTypeRepository.GetEventTypeById(request.eventTypeId);
 
             if (eventType == null)
-                throw new Exception("Not found.");
-
+            {
+                throw new MeetMeException("Not found.");
+            }
             var newEventTypeId = Guid.NewGuid();
 
-            var newSlug = await GetNewSlugAsync(eventType.Slug);
+            var newSlug = await GetUniqueSlug(eventType.Slug);
 
             var cloneEventTypeEntity = CloneEventType(eventType, newSlug, newEventTypeId);
 
-            await eventTypeRepository.AddNewEventType(cloneEventTypeEntity);
+            await _eventTypeRepository.AddNewEventType(cloneEventTypeEntity);
 
             return newEventTypeId;
         }
@@ -76,27 +74,24 @@ namespace MeetMe.Application.EventTypes.Commands.Clone
                 TimeZone = eventType.TimeZone,
                 DateFrom = eventType.DateFrom,
                 DateTo = eventType.DateTo,
-                CreatedAt = dateTimeService.GetCurrentTime,
-                CreatedBy = applicationUserInfo.Id,
-                UpdatedAt = dateTimeService.GetCurrentTimeUtc,
+                CreatedAt = _dateTimeService.GetCurrentTime,
+                CreatedBy = _applicationUserInfo.Id,
+                UpdatedAt = _dateTimeService.GetCurrentTimeUtc,
             };
 
             cloneEventType.EventTypeAvailabilityDetails.AddRange(eventType.EventTypeAvailabilityDetails.Select(e =>
-               {
-                   return new EventTypeAvailabilityDetail
-                   {
-                       EventTypeId = eventType.Id,
-                       DayType = e.DayType,
-                       Value = e.Value,
-                       From = e.From,
-                       To = e.To,
-                       StepId = e.StepId
-                   };
-               }).ToList());
+                    new EventTypeAvailabilityDetail
+                    {
+                        EventTypeId = eventType.Id,
+                        DayType = e.DayType,
+                        Value = e.Value,
+                        From = e.From,
+                        To = e.To,
+                        StepId = e.StepId
+                    }));
 
             cloneEventType.Questions.AddRange(eventType.Questions.Select(e =>
-                {
-                    return new EventTypeQuestion
+                    new EventTypeQuestion
                     {
                         Id = Guid.NewGuid(),
                         EventTypeId = newEventTypeId,
@@ -108,31 +103,28 @@ namespace MeetMe.Application.EventTypes.Commands.Clone
                         Options = e.Options,
                         OtherOptionYN = e.OtherOptionYN,
                         SystemDefinedYN = e.SystemDefinedYN
-                    };
-                }).ToList()
-                );
+                    }));
 
             return cloneEventType;
         }
 
-        private async Task<string> GetNewSlugAsync(string slug)
+        private async Task<string> GetUniqueSlug(string slug)
         {
             var newSlug = $"{slug}-clone";
 
-            var listEventForThisUser = await eventTypeRepository.GetEventTypeListByUserId(applicationUserInfo.Id);
+            var listEventForThisUser = await _eventTypeRepository.GetEventTypeListByUserId(_applicationUserInfo.Id);
 
-            if (listEventForThisUser == null || listEventForThisUser.Count == 0)
+            if (!listEventForThisUser.Any())
+            {
                 return newSlug;
+            }
 
             var index = 1;
 
-            foreach (var evenetTypeItem in listEventForThisUser)
+            while (listEventForThisUser.Any(e => e.Slug == newSlug))
             {
-
-                if (evenetTypeItem.Slug == newSlug)
-                {
-                    newSlug = $"{slug}-clone-{index}";
-                }
+                newSlug = $"{slug}-clone-{index}";
+                index++;
             }
 
             return newSlug;

@@ -19,7 +19,7 @@ namespace DataProvider.EntityFramework
             services.AddScoped<IEventQuestionRepository, EventQuestionRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
-            services.AddScoped<IEventTypeAvailabilityRepository, EventTypeAvailabilityDetailRepository>();
+            //services.AddScoped<IEventTypeAvailabilityRepository, EventTypeAvailabilityDetailRepository>();
             services.AddScoped<IAppointmentsRepository,AppointmentRepository>();
 
             return services;

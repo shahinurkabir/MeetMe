@@ -28,21 +28,21 @@ namespace MeetMe.Application.EventTypes.Commands.Update
 
     public class UpdateInfoCommandHandler : IRequestHandler<UpdateInfoCommand, bool>
     {
-        private readonly IEventTypeRepository eventTypeRepository;
-        private readonly ILoginUserInfo applicationUser;
+        private readonly IEventTypeRepository _eventTypeRepository;
+        private readonly ILoginUserInfo _applicationUser;
 
         public UpdateInfoCommandHandler(IEventTypeRepository eventTypeRepository, ILoginUserInfo applicationUser)
         {
-            this.eventTypeRepository = eventTypeRepository;
-            this.applicationUser = applicationUser;
+            _eventTypeRepository = eventTypeRepository;
+            _applicationUser = applicationUser;
         }
         public async Task<bool> Handle(UpdateInfoCommand request, CancellationToken cancellationToken)
         {
-            var entity = await eventTypeRepository.GetEventTypeById(request.Id);
+            var entity = await _eventTypeRepository.GetEventTypeById(request.Id);
 
             if (entity == null) throw new MeetMeException("Event Type not found");
 
-            if (entity.OwnerId != applicationUser.Id) throw new MeetMeException("Event Type not found");
+            if (entity.OwnerId != _applicationUser.Id) throw new MeetMeException("Event Type not found");
 
             entity.Name = request.Name;
             entity.EventColor = request.EventColor;
@@ -50,7 +50,7 @@ namespace MeetMe.Application.EventTypes.Commands.Update
             entity.Location = request.Location;
             entity.Description = request.Description;
 
-            await eventTypeRepository.UpdateEventType(entity);
+            await _eventTypeRepository.UpdateEventType(entity);
 
             return true;
         }

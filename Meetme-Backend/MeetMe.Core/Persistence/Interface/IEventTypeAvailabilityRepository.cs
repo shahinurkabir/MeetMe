@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace MeetMe.Core.Persistence.Interface
 {
-    public interface IEventTypeAvailabilityRepository
-    {
-        Task<List<EventTypeAvailabilityDetail>> GetEventTypeAvailabilityByEventId(Guid eventTypeId);
-        Task RemoveItems(List<EventTypeAvailabilityDetail> itemsToRemove);
-        Task InsertItems(List<EventTypeAvailabilityDetail> itemsToInsert);
-    }
+    //public interface IEventTypeAvailabilityRepository
+    //{
+    //    Task<List<EventTypeAvailabilityDetail>> GetEventTypeAvailabilityByEventId(Guid eventTypeId);
+    //    Task RemoveItems(List<EventTypeAvailabilityDetail> itemsToRemove);
+    //    Task InsertItems(List<EventTypeAvailabilityDetail> itemsToInsert);
+    //}
 }

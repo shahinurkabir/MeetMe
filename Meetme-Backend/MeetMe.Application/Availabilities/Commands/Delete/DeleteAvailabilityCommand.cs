@@ -10,20 +10,23 @@ namespace MeetMe.Application.Availabilities.Commands.Delete
 
     public class DeleteAvailabilityCommandHandler : IRequestHandler<DeleteAvailabilityCommand, bool>
     {
-        private readonly IAvailabilityRepository availabilityRepository;
+        private readonly IAvailabilityRepository _availabilityRepository;
 
         public DeleteAvailabilityCommandHandler(IAvailabilityRepository availabilityRepository)
         {
-            this.availabilityRepository = availabilityRepository;
+            _availabilityRepository = availabilityRepository;
         }
 
         public async Task<bool> Handle(DeleteAvailabilityCommand request, CancellationToken cancellationToken)
         {
-            var entity = await availabilityRepository.GetById(request.Id);
+            var entity = await _availabilityRepository.GetAvailability(request.Id);
 
-            if (entity == null) throw new Exception("Invalid rule id provided");
+            if (entity == null)
+            {
+                throw new Exception("Invalid rule id provided");
+            }
 
-            var result = await availabilityRepository.DeleteSchedule(entity);
+            var result = await _availabilityRepository.DeleteAvailability(entity);
 
             return result;
         }

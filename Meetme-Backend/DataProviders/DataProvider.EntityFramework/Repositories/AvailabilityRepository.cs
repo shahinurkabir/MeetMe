@@ -1,49 +1,46 @@
 ﻿using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataProvider.EntityFramework.Repositories
 {
     public class AvailabilityRepository : IAvailabilityRepository
     {
-        private readonly BookingDbContext bookingDbContext;
+        private readonly BookingDbContext _bookingDbContext;
 
         public AvailabilityRepository(BookingDbContext bookingDbContext)
         {
-            this.bookingDbContext = bookingDbContext;
+            _bookingDbContext = bookingDbContext;
         }
-        public async Task<bool> AddSchedule(Availability scheduleRule)
+        public async Task<bool> AddAvailability(Availability availability)
         {
-            await bookingDbContext.AddAsync(scheduleRule);
-            bookingDbContext.SaveChanges();
+            await _bookingDbContext.AddAsync(availability);
+            _bookingDbContext.SaveChanges();
 
             return true;
 
         }
 
-        public async Task<bool> UpdateSchedule(Availability scheduleRule)
+        public async Task<bool> UpdateAvailability(Availability availability)
         {
-            var listScheduleLineItem = await bookingDbContext.Set<AvailabilityDetail>()
-                                      .Where(e => e.AvailabilityId == scheduleRule.Id).ToListAsync();
+            var listScheduleLineItem = await _bookingDbContext.Set<AvailabilityDetail>()
+                .Where(e => e.AvailabilityId == availability.Id)
+                .ToListAsync();
 
-            bookingDbContext.RemoveRange(listScheduleLineItem);
+            _bookingDbContext.RemoveRange(listScheduleLineItem);
 
-            bookingDbContext.Update(scheduleRule);
+            _bookingDbContext.Update(availability);
 
             // update time schedule of all event type availability those are related to this schedule rule
-            var listEventType = await bookingDbContext.Set<EventType>()
-                               .Where(e => e.AvailabilityId == scheduleRule.Id)
-                               .Include(e => e.EventTypeAvailabilityDetails).ToListAsync();
+            var listEventType = await _bookingDbContext.Set<EventType>()
+                .Where(e => e.AvailabilityId == availability.Id)
+                .Include(e => e.EventTypeAvailabilityDetails)
+                .ToListAsync();
 
             foreach (var eventTypeItem in listEventType)
             {
                 eventTypeItem.EventTypeAvailabilityDetails.Clear();
-                eventTypeItem.EventTypeAvailabilityDetails.AddRange(scheduleRule.Details.Select(e => new EventTypeAvailabilityDetail
+                eventTypeItem.EventTypeAvailabilityDetails.AddRange(availability.Details.Select(e => new EventTypeAvailabilityDetail
                 {
                     EventTypeId = eventTypeItem.Id,
                     DayType = e.DayType,
@@ -54,24 +51,28 @@ namespace DataProvider.EntityFramework.Repositories
                 }));
             }
 
-            bookingDbContext.SaveChanges();
+            _bookingDbContext.SaveChanges();
 
-            return await Task.FromResult(true);
+            return true;
         }
 
-        public async Task<bool> DeleteSchedule(Availability entity)
+        public async Task<bool> DeleteAvailability(Availability availability)
         {
-            entity.IsDeleted = true;
+            availability.IsDeleted = true;
 
-            // detach all event type availability those are related to this schedule rule
-            var listEventType = await bookingDbContext.Set<EventType>()
-                               .Where(e => e.AvailabilityId == entity.Id).ToListAsync();
+            // detach all event type availability those are related from this schedule rule
+            var listEventType = await _bookingDbContext.Set<EventType>()
+                .Where(e => e.AvailabilityId == availability.Id)
+                .ToListAsync();
 
-            foreach (var eventTypeItem in listEventType) { eventTypeItem.AvailabilityId = null; }
+            foreach (var eventTypeItem in listEventType)
+            {
+                eventTypeItem.AvailabilityId = null;
+            }
 
-            await bookingDbContext.SaveChangesAsync();
+            await _bookingDbContext.SaveChangesAsync();
 
-            return Task.FromResult(true).Result;
+            return true;
         }
 
         public async Task<List<Availability>> GetListByUserId(Guid userId)
@@ -81,42 +82,51 @@ namespace DataProvider.EntityFramework.Repositories
             return list;
         }
 
-        public async Task<Availability> GetById(Guid ruleId)
+        public async Task<Availability> GetAvailability(Guid ruleId)
         {
-            var scheduleRule = await bookingDbContext.Set<Availability>()
+            var scheduleRule = await _bookingDbContext.Set<Availability>()
                 .Include(e => e.Details)
-                .Where(e => e.Id == ruleId).FirstOrDefaultAsync();
+                .Where(e => e.Id == ruleId)
+                .FirstOrDefaultAsync();
 
             return scheduleRule;
         }
 
-        public async Task<bool> EditName(Guid id, string nameToUpdate)
+        public async Task<bool> UpdateAvailabilityName(Guid id, string nameToUpdate)
         {
-            var entity = await bookingDbContext.Set<Availability>().FindAsync(id);
+            var entity = await _bookingDbContext.Set<Availability>()
+                .FindAsync(id);
 
-            if (entity == null) return false;
+            if (entity == null)
+            {
+                return false;
+            }
 
             entity.Name = nameToUpdate;
 
-            await bookingDbContext.SaveChangesAsync();
+            await _bookingDbContext.SaveChangesAsync();
 
             return true;
 
         }
-        public async Task<bool> SetDefault(Guid id, Guid userId)
+        public async Task<bool> SetDefaultAvailability(Guid id, Guid userId)
         {
             var listAvailabilityForUser = await GetAvailabilityList(userId);
 
             var entity = listAvailabilityForUser.FirstOrDefault(e => e.Id == id);
 
-            if (entity == null) return false;
+            if (entity == null)
 
-            //Reset 
+            {
+                return false;
+            }
+
+            //Reset all availability to non-default
             listAvailabilityForUser.ForEach(e => e.IsDefault = false);
 
             entity.IsDefault = true;
 
-            await bookingDbContext.SaveChangesAsync();
+            await _bookingDbContext.SaveChangesAsync();
 
             return true;
 
@@ -124,9 +134,10 @@ namespace DataProvider.EntityFramework.Repositories
 
         private async Task<List<Availability>> GetAvailabilityList(Guid userId)
         {
-            var list = await bookingDbContext.Set<Availability>()
+            var list = await _bookingDbContext.Set<Availability>()
                 .Include(e => e.Details)
-                .Where(e => e.OwnerId == userId).ToListAsync();
+                .Where(e => e.OwnerId == userId)
+                .ToListAsync();
 
             return list;
         }

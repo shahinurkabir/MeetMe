@@ -5,15 +5,38 @@ using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Exceptions;
 using MeetMe.Core.Constant;
 using MeetMe.Core.Constants;
+using FluentValidation;
 
 namespace MeetMe.Application.EventTypes.Commands.Create
 {
+    public class CreateEventTypeCommand : IRequest<Guid>
+    {
+        public string Name { get; set; } = null!;
+
+        public string? Description { get; set; }
+
+        public string? Location { get; set; }
+
+        public string Slug { get; set; } = null!;
+
+        public string EventColor { get; set; } = null!;
+        public bool ActiveYN { get; set; }
+        public string TimeZoneName { get; set; } = null!;
+
+        public bool IsValid()
+        {
+            return !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(EventColor);
+        }
+
+
+    }
+
     public class CreateEventTypeCommandHandler : IRequestHandler<CreateEventTypeCommand, Guid>
     {
-        private readonly IAvailabilityRepository availabilityRepository;
-        private readonly IEventTypeRepository eventTypeRepository;
-        private readonly ILoginUserInfo applicationUser;
-        private readonly IDateTimeService dateTimeService;
+        private readonly IAvailabilityRepository _availabilityRepository;
+        private readonly IEventTypeRepository _eventTypeRepository;
+        private readonly ILoginUserInfo _applicationUser;
+        private readonly IDateTimeService _dateTimeService;
 
         public CreateEventTypeCommandHandler(
             IAvailabilityRepository availabilityRepository,
@@ -22,10 +45,10 @@ namespace MeetMe.Application.EventTypes.Commands.Create
             IDateTimeService dateTimeService
             )
         {
-            this.availabilityRepository = availabilityRepository;
-            this.eventTypeRepository = eventTypeRepository;
-            this.applicationUser = applicationUser;
-            this.dateTimeService = dateTimeService;
+            _availabilityRepository = availabilityRepository;
+            _eventTypeRepository = eventTypeRepository;
+            _applicationUser = applicationUser;
+            _dateTimeService = dateTimeService;
         }
 
 
@@ -33,32 +56,33 @@ namespace MeetMe.Application.EventTypes.Commands.Create
         {
             var newEventTypeId = Guid.NewGuid();
 
-            var listOfAvailabilities = await availabilityRepository.GetListByUserId(applicationUser.Id);
+            var listOfAvailabilities = await _availabilityRepository.GetListByUserId(_applicationUser.Id);
 
             if (listOfAvailabilities == null || !listOfAvailabilities.Any())
+            {
                 throw new MeetMeException("There is no availability configured yet.");
+            }
 
-            var defaultAvailability = listOfAvailabilities.Count(e => e.IsDefault) > 0
-                ? listOfAvailabilities.First(e => e.IsDefault)
-                : listOfAvailabilities.First();
+            var defaultAvailability = listOfAvailabilities.FirstOrDefault(e => e.IsDefault)?? listOfAvailabilities.First();
 
-            EventType eventTypeInfo = ConvertToEntity(newEventTypeId, defaultAvailability, request);
+            EventType eventTypeInfo = MapCommandToEntity(newEventTypeId, defaultAvailability, request);
 
-            await eventTypeRepository.AddNewEventType(eventTypeInfo);
+            await _eventTypeRepository.AddNewEventType(eventTypeInfo);
 
             return await Task.FromResult(newEventTypeId);
         }
 
-        private EventType ConvertToEntity(Guid newId, Availability availability, CreateEventTypeCommand request)
+        private EventType MapCommandToEntity(Guid newId, Availability availability, CreateEventTypeCommand request)
         {
-            var listScheduleDetails = CopyScheduleItemFromAvailabilityDetails(newId, availability.Details);
+            var listScheduleDetails = MapDefaultScheduleToEntity(newId, availability.Details);
+
             var listQuestions = GetDefaultQuestion();
 
             return new EventType
             {
                 Id = newId,
                 Name = request.Name,
-                OwnerId = applicationUser.Id,
+                OwnerId = _applicationUser.Id,
                 Description = request.Description,
                 EventColor = request.EventColor,
                 Slug = request.Slug,
@@ -71,16 +95,16 @@ namespace MeetMe.Application.EventTypes.Commands.Create
                 Duration = Events.MeetingDuration,
                 BufferTimeBefore = Events.BufferTimeDuration,
                 BufferTimeAfter = Events.BufferTimeDuration,
-                CreatedBy = applicationUser.Id,
-                CreatedAt = dateTimeService.GetCurrentTimeUtc,
+                CreatedBy = _applicationUser.Id,
+                CreatedAt = _dateTimeService.GetCurrentTimeUtc,
                 EventTypeAvailabilityDetails = listScheduleDetails,
                 Questions = listQuestions
             };
         }
 
-        private List<EventTypeAvailabilityDetail> CopyScheduleItemFromAvailabilityDetails(Guid eventTypeId, List<AvailabilityDetail> availabilityDetails)
+        private List<EventTypeAvailabilityDetail> MapDefaultScheduleToEntity(Guid eventTypeId, List<AvailabilityDetail> availabilityDetails)
         {
-            var eventAvailabilityList = availabilityDetails.Select(e => new EventTypeAvailabilityDetail
+            return  availabilityDetails.Select(e => new EventTypeAvailabilityDetail
             {
                 Id = Guid.NewGuid(),
                 EventTypeId = eventTypeId,
@@ -90,8 +114,6 @@ namespace MeetMe.Application.EventTypes.Commands.Create
                 To = e.To,
                 StepId = e.StepId
             }).ToList();
-
-            return eventAvailabilityList;
 
         }
 
@@ -120,6 +142,40 @@ namespace MeetMe.Application.EventTypes.Commands.Create
             };
 
             return questions;
+        }
+    }
+
+    public class CreateCreateEventTypeCommandValidator : AbstractValidator<CreateEventTypeCommand>
+    {
+        private readonly IEventTypeRepository eventTypeRepository;
+        private readonly ILoginUserInfo applicationUser;
+
+        public CreateCreateEventTypeCommandValidator(IEventTypeRepository eventTypeRepository, ILoginUserInfo applicationUser)
+        {
+            this.eventTypeRepository = eventTypeRepository;
+            this.applicationUser = applicationUser;
+
+            RuleFor(m => m.Name).NotEmpty().WithMessage("Event Type name cannot be empty.");
+
+            RuleFor(m => m.EventColor).NotEmpty().WithMessage("Event Color cannot be empty.");
+
+            RuleFor(m => m.Slug).NotEmpty().WithMessage("Slug cannot be empty.")
+                .MustAsync(async (model, slug, token) =>
+                {
+                    return await CheckNotUsed(model, token);
+
+                }).WithMessage("Slug already used.");
+
+        }
+
+        private async Task<bool> CheckNotUsed(CreateEventTypeCommand command, CancellationToken cancellationToken)
+        {
+            var listEvents = await eventTypeRepository.GetEventTypeListByUserId(applicationUser.Id);
+
+            var isUsed = listEvents.Count(e =>
+            e.Slug.Equals(command.Slug, StringComparison.InvariantCultureIgnoreCase)) > 0;
+
+            return isUsed == false;
         }
     }
 }

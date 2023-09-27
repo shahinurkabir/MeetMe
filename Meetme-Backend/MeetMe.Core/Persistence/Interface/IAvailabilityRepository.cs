@@ -8,14 +8,14 @@ namespace MeetMe.Core.Persistence.Interface
 {
     public interface IAvailabilityRepository
     {
-        Task<bool> AddSchedule(Availability scheduleRule);
-        Task<bool> UpdateSchedule(Availability scheduleRule);
-        Task<bool> DeleteSchedule(Availability scheduleRule);
+        Task<bool> AddAvailability(Availability availability);
+        Task<bool> UpdateAvailability(Availability availability);
+        Task<bool> DeleteAvailability(Availability availability);
 
-        Task<Availability> GetById(Guid id);
+        Task<Availability> GetAvailability(Guid id);
         Task<List<Availability>> GetListByUserId(Guid userId);
-        Task<bool> EditName (Guid id ,string nameToUpdate );
+        Task<bool> UpdateAvailabilityName(Guid id ,string nameToUpdate );
 
-        Task<bool> SetDefault(Guid id, Guid userId);
+        Task<bool> SetDefaultAvailability(Guid id, Guid userId);
     }
 }

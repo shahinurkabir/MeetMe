@@ -8,48 +8,50 @@ namespace DataProvider.EntityFramework.Repositories
 {
     public class AppointmentRepository : IAppointmentsRepository
     {
-        private readonly BookingDbContext bookingDbContext;
+        private readonly BookingDbContext _bookingDbContext;
 
         public AppointmentRepository(BookingDbContext bookingDbContext)
         {
-            this.bookingDbContext = bookingDbContext;
+            this._bookingDbContext = bookingDbContext;
         }
         public async Task AddAppointment(Appointment appointment)
         {
-            await bookingDbContext.Set<Appointment>().AddAsync(appointment);
+            await _bookingDbContext.Set<Appointment>().AddAsync(appointment);
 
-            await bookingDbContext.SaveChangesAsync();
+            await _bookingDbContext.SaveChangesAsync();
         }
 
         public async Task<bool> DeleteAppointment(Guid id)
         {
-            await bookingDbContext.Set<Appointment>().Where(x => x.Id == id).ExecuteDeleteAsync();
-            return await bookingDbContext.SaveChangesAsync() > 0;
+            await _bookingDbContext.Set<Appointment>().Where(x => x.Id == id).ExecuteDeleteAsync();
+            return await _bookingDbContext.SaveChangesAsync() > 0;
         }
 
-        public async Task<Appointment> GetById(Guid id)
+        public async Task<Appointment> GetAppointment(Guid id)
         {
-            return await bookingDbContext.Set<Appointment>().FirstOrDefaultAsync(x => x.Id == id);
+            return await _bookingDbContext.Set<Appointment>().FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<bool> IsTimeBooked(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC)
+        public async Task<bool> IsTimeBooked(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
         {
-            return await bookingDbContext.Set<Appointment>()
+            return await _bookingDbContext.Set<Appointment>()
                 .AnyAsync(x => x.EventTypeId == eventTypeId && x.StartTimeUTC >= startDateUTC && x.EndTimeUTC <= endDateUTC);
         }
 
         public async Task<bool> UpdateAppointment(Appointment appointment)
         {
-            bookingDbContext.Set<Appointment>().Update(appointment);
-            return await bookingDbContext.SaveChangesAsync() > 0;
+            _bookingDbContext.Set<Appointment>().Update(appointment);
+            return await _bookingDbContext.SaveChangesAsync() > 0;
         }
 
-        public async Task<AppointmentDetailsDto?> GetDetailsById(Guid id)
+        public async Task<AppointmentDetailsDto?> GetAppointmentDetails(Guid id)
         {
-            var result = await bookingDbContext.Set<Appointment>()
+            var result = await _bookingDbContext.Set<Appointment>()
                  .Where(x => x.Id == id)
-                 .Include(x => x.EventType).ThenInclude(x => x.User)
-                 .Select(x => ToAppointmentDto(x)).FirstOrDefaultAsync();
+                 .Include(x => x.EventType)
+                 .ThenInclude(x => x.User)
+                 .Select(x => ToAppointmentDto(x))
+                 .FirstOrDefaultAsync();
 
             return result;
 
@@ -57,21 +59,23 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<List<AppointmentDetailsDto>?> GetAppointmentsByUserId(Guid userId)
         {
-            var result = await bookingDbContext.Set<Appointment>()
+            var result = await _bookingDbContext.Set<Appointment>()
                   .Include(x => x.EventType)
                   .ThenInclude(x => x.User)
                   .Where(x => x.EventType.User.Id == userId)
-                  .Select(x => ToAppointmentDto(x)).ToListAsync();
+                  .Select(x => ToAppointmentDto(x))
+                  .ToListAsync();
 
             return result;
         }
-        public async Task<List<AppointmentDetailsDto>?> GetAppointmentsOfEventTypeByDateRange(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC)
+        public async Task<List<AppointmentDetailsDto>?> GetAppointmentsOfEventTypeByDateRange(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
         {
-            var result = await bookingDbContext.Set<Appointment>()
+            var result = await _bookingDbContext.Set<Appointment>()
                   .Include(x => x.EventType)
                   .ThenInclude(x => x.User)
                   .Where(x => x.EventTypeId == eventTypeId && x.StartTimeUTC >= startDateUTC && x.EndTimeUTC <= endDateUTC)
-                  .Select(x => ToAppointmentDto(x)).ToListAsync();
+                  .Select(x => ToAppointmentDto(x))
+                  .ToListAsync();
 
             return result;
         }

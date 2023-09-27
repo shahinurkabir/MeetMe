@@ -17,17 +17,17 @@ namespace MeetMe.Application.EventTypes.Queries
 
     public class GetEventTypeQuestionsQueryHandler : IRequestHandler<GetEventTypeQuestionsQuery, List<EventTypeQuestion>>
     {
-        private readonly IEventQuestionRepository eventQuestionRepository;
-        private readonly ILoginUserInfo userInfo;
+        private readonly IEventQuestionRepository _eventQuestionRepository;
+        private readonly ILoginUserInfo _userInfo;
 
         public GetEventTypeQuestionsQueryHandler(IEventQuestionRepository eventQuestionRepository, ILoginUserInfo userInfo)
         {
-            this.eventQuestionRepository = eventQuestionRepository;
-            this.userInfo = userInfo;
+            _eventQuestionRepository = eventQuestionRepository;
+            _userInfo = userInfo;
         }
         public async Task<List<EventTypeQuestion>> Handle(GetEventTypeQuestionsQuery request, CancellationToken cancellationToken)
         {
-            var listQuestion =await eventQuestionRepository.GetQuestionsByEventId(request.EventTypeId);
+            var listQuestion =await _eventQuestionRepository.GetQuestionsByEventId(request.EventTypeId);
             return listQuestion;
         }
     }

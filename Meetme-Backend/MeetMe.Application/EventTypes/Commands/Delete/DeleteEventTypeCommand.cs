@@ -22,26 +22,29 @@ namespace MeetMe.Application.EventTypes.Commands.Delete
 
     public class DeleteEventTypeCommandHandler : IRequestHandler<DeleteEventTypeCommand, bool>
     {
-        private readonly IEventTypeRepository eventTypeRepository;
+        private readonly IEventTypeRepository _eventTypeRepository;
 
         public DeleteEventTypeCommandHandler(IEventTypeRepository eventTypeRepository)
         {
-            this.eventTypeRepository = eventTypeRepository;
+            _eventTypeRepository = eventTypeRepository;
         }
 
         public async Task<bool> Handle(DeleteEventTypeCommand request, CancellationToken cancellationToken)
         {
-            var eventType = await eventTypeRepository.GetEventTypeById(request.eventTypeId);
+            var eventType = await _eventTypeRepository.GetEventTypeById(request.eventTypeId);
 
             if (eventType == null)
+            {
                 throw new MeetMeException("Not found.");
-
+            }
             if (eventType.IsDeleted)
+            {
                 throw new MeetMeException("Already deleted.");
+            }
 
             eventType.IsDeleted = true;
 
-            await eventTypeRepository.UpdateEventType(eventType);
+            await _eventTypeRepository.UpdateEventType(eventType);
 
             return await Task.FromResult(true);
         }

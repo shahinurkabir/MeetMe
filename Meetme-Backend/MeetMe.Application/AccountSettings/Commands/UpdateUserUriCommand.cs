@@ -13,51 +13,46 @@ namespace MeetMe.Application.AccountSettings
 
     public class UpdateUserUriCommandHandler : IRequestHandler<UpdateUserUriCommand, bool>
     {
-        private readonly IUserRepository userRepository;
-        private readonly ILoginUserInfo userInfo;
+        private readonly IUserRepository _userRepository;
+        private readonly ILoginUserInfo _userInfo;
 
         public UpdateUserUriCommandHandler(IUserRepository userRepository, ILoginUserInfo userInfo)
         {
-            this.userRepository = userRepository;
-            this.userInfo = userInfo;
+            _userRepository = userRepository;
+            _userInfo = userInfo;
         }
 
         public async Task<bool> Handle(UpdateUserUriCommand request, CancellationToken cancellationToken)
         {
-            var userEntity = await userRepository.GetByUserId(userInfo.UserId);
+            var userEntity = await _userRepository.GetByUserId(_userInfo.UserId);
 
             if (userEntity == null)
+            {
                 throw new MeetMeException("User not found");
-
+            }
             userEntity.BaseURI = request.BaseURI;
 
-            await userRepository.Update(userEntity);
+            await _userRepository.Update(userEntity);
 
-            return await Task.FromResult(true);
+            return true;
 
         }
     }
 
     public class UpdateUserUriCommandValidator : AbstractValidator<UpdateUserUriCommand>
     {
-        private readonly IUserRepository userRepository;
-        private readonly ILoginUserInfo userInfo;
 
         public UpdateUserUriCommandValidator(IUserRepository userRepository, ILoginUserInfo userInfo)
         {
             RuleFor(m => m.BaseURI).NotEmpty().WithMessage("Link can not be empty");
-            RuleFor(m => m.BaseURI).MustAsync(async (command, link, token) => (await userRepository.IsLinkAvailable( link,userInfo.Id))).WithMessage("Link is already used");
-            this.userRepository = userRepository;
-            this.userInfo = userInfo;
+            RuleFor(m => m.BaseURI).MustAsync(async (command, link, token) => (await IsLinkAvailable(userRepository, link,userInfo.UserId))).WithMessage("Link is already used");
         }
 
-        private async Task<bool> IsUsedByOther(string link)
+        private async Task<bool> IsLinkAvailable(IUserRepository userRepository,string link,string userId)
         {
             var userEntity = await userRepository.GetByBaseURI(link);
-            if (userEntity == null)
-                return await Task.FromResult(false);
 
-            return userEntity.UserID != userInfo.UserId;
+            return userEntity==null || userEntity.UserID == userId;
 
         }
 

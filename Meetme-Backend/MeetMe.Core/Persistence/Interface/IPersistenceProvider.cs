@@ -2,7 +2,7 @@
 
 namespace MeetMe.Core.Persistence.Interface
 {
-    public interface IPersistenceProvider :IAvailabilityRepository, IEventTypeRepository, IEventTypeAvailabilityRepository,IEventQuestionRepository, IAppointmentsRepository,IUserRepository
+    public interface IPersistenceProvider :IAvailabilityRepository, IEventTypeRepository, IEventQuestionRepository, IAppointmentsRepository,IUserRepository
     {
         
     }

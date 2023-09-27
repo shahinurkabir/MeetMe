@@ -2,65 +2,72 @@
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Interface;
+using FluentValidation;
 
 namespace MeetMe.Application.Availabilities.Commands.Update
 {
+    public class UpdateAvailabilityCommand : IRequest<bool>
+    {
+        public UpdateAvailabilityCommand()
+        {
+            Details = new List<AvailabilityDetail>();
+        }
+        public Guid Id { get; set; }
+        public string Name { get; set; } = null!;
+        public string TimeZone { get; set; } = null!;
+        public List<AvailabilityDetail> Details { get; set; }
+    }
+
     public class UpdateAvailabilityCommandHandler : IRequestHandler<UpdateAvailabilityCommand, bool>
     {
-        private readonly IAvailabilityRepository availabilityRepository;
-        private readonly ILoginUserInfo applicationUserInfo;
+        private readonly IAvailabilityRepository _availabilityRepository;
 
-        public UpdateAvailabilityCommandHandler(IAvailabilityRepository availabilityRepository, ILoginUserInfo applicationUserInfo)
+        public UpdateAvailabilityCommandHandler(IAvailabilityRepository availabilityRepository)
         {
-            this.availabilityRepository = availabilityRepository;
-            this.applicationUserInfo = applicationUserInfo;
+            _availabilityRepository = availabilityRepository;
         }
         public async Task<bool> Handle(UpdateAvailabilityCommand request, CancellationToken cancellationToken)
         {
 
-            var entity = await availabilityRepository.GetById(request.Id);
+            var entity = await _availabilityRepository.GetAvailability(request.Id);
 
             if (entity == null) throw new Core.Exceptions.MeetMeException("Invalid schedule provided.");
 
-            var listScheduleRuleItems = GetDetailItems(request, entity.Id);
+            var listScheduleRuleItems = request.Details.Select(e => new AvailabilityDetail
+            {
+                AvailabilityId = entity.Id,
+                DayType = e.DayType,
+                Value = e.Value,
+                From = e.From,
+                To = e.To
+            }).ToList();
 
             entity.Name = request.Name;
             entity.TimeZone = request.TimeZone;
             entity.Details = listScheduleRuleItems;
 
-            _ = await availabilityRepository.UpdateSchedule(entity);
+            await _availabilityRepository.UpdateAvailability(entity);
 
             return true;
 
         }
 
-        private List<AvailabilityDetail> GetDetailItems(UpdateAvailabilityCommand command, Guid availabilityId)
+    }
+
+    public class UpdateAvailabilityCommandValidator : AbstractValidator<UpdateAvailabilityCommand>
+    {
+        public UpdateAvailabilityCommandValidator()
         {
-
-            var listScheduleRuleItems = new List<AvailabilityDetail>();
-
-            int itemId = 0;
-
-            command.Details.ForEach(e =>
-            {
-                var item = new AvailabilityDetail
-                {
-                    //Id = itemId,
-                    AvailabilityId = availabilityId,
-                    DayType = e.DayType,
-                    Value = e.Value,
-                    From = e.From,
-                    To = e.To
-                };
-
-                listScheduleRuleItems.Add(item);
-
-                itemId++;
-
-            });
-
-            return listScheduleRuleItems;
-
+            RuleFor(m => m.Name).NotEmpty().WithMessage("Name can not be empty");
+            RuleFor(m => m.TimeZone).NotEmpty().WithMessage("TimeZone is empty.");
+            RuleFor(m => m.Details).Must(RequiredScheduleItems).WithMessage("No Schedule items found.");
         }
+        private bool RequiredScheduleItems(List<AvailabilityDetail> ruleAttributes)
+        {
+            return ruleAttributes.Any();
+        }
+
     }
 }
+
+

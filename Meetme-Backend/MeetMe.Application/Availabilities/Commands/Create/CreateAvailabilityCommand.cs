@@ -16,16 +16,16 @@ namespace MeetMe.Application.Availabilities.Commands.Create
     }
     public class CreateAvailabilityCommandHandler : IRequestHandler<CreateAvailabilityCommand, Guid>
     {
-        private readonly IAvailabilityRepository availabilityRepository;
-        private readonly ILoginUserInfo applicationUserInfo;
+        private readonly IAvailabilityRepository _availabilityRepository;
+        private readonly ILoginUserInfo _applicationUserInfo;
 
         public CreateAvailabilityCommandHandler(
             IAvailabilityRepository availabilityRepository, 
             ILoginUserInfo applicationUserInfo
             )
         {
-            this.availabilityRepository = availabilityRepository;
-            this.applicationUserInfo = applicationUserInfo;
+            _availabilityRepository = availabilityRepository;
+            _applicationUserInfo = applicationUserInfo;
         }
         public async Task<Guid> Handle(CreateAvailabilityCommand request, CancellationToken cancellationToken)
         {
@@ -36,13 +36,13 @@ namespace MeetMe.Application.Availabilities.Commands.Create
             {
                 Id = newId,
                 Name = request.Name,
-                OwnerId = applicationUserInfo.Id,
+                OwnerId = _applicationUserInfo.Id,
                 TimeZone = request.timeZone,
                 IsDefault = false,
                 Details=GetDefaultWeeklySchedule(newId)
             };
 
-            _ = await availabilityRepository.AddSchedule(entity);
+            await _availabilityRepository.AddAvailability(entity);
 
             return newId;
 

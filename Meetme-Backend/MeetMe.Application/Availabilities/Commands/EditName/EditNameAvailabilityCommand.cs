@@ -21,7 +21,7 @@ namespace MeetMe.Application.Availabilities.Commands.EditName
         public async Task<bool> Handle(EditNameAvailabilityCommand request, CancellationToken cancellationToken)
         {
             
-            await availabilityRepository.EditName(request.Id, request.Name);
+            await availabilityRepository.UpdateAvailabilityName(request.Id, request.Name);
 
             return true;
             

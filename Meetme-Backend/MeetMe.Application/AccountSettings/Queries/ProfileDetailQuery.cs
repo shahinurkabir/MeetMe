@@ -20,16 +20,16 @@ namespace MeetMe.Application.AccountSettings.Queries
 
     public class ProfileDetailQueryHandler : IRequestHandler<ProfileDetailQuery, AccountProfileDto>
     {
-        private readonly IUserRepository userRepository;
+        private readonly IUserRepository _userRepository;
 
         public ProfileDetailQueryHandler(IUserRepository userRepository)
         {
-            this.userRepository = userRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<AccountProfileDto> Handle(ProfileDetailQuery request, CancellationToken cancellationToken)
         {
-            var userEntity=await userRepository.GetById(request.Id);
+            var userEntity=await _userRepository.GetById(request.Id);
 
             if (userEntity==null)
             {
