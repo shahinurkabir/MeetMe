@@ -18,11 +18,13 @@ namespace DataProvider.EntityFramework.Repositories
             _bookingDbContext = bookingDbContext;
         }
 
-        public async Task AddNewEventType(EventType eventTypeInfo)
+        public async Task<bool> AddNewEventType(EventType eventTypeInfo)
         {
             await _bookingDbContext.AddAsync(eventTypeInfo);
 
             await _bookingDbContext.SaveChangesAsync();
+
+            return true;
 
         }
 
@@ -48,14 +50,16 @@ namespace DataProvider.EntityFramework.Repositories
             return entity;
         }
 
-        public async Task UpdateEventType(EventType eventTypeInfo)
+        public async Task<bool> UpdateEventType(EventType eventTypeInfo)
         {
             _bookingDbContext.Update(eventTypeInfo);
 
             await _bookingDbContext.SaveChangesAsync();
+
+            return true;
         }
 
-        public async Task UpdateEventAvailability(EventType eventTypeInfo, List<EventTypeAvailabilityDetail> scheduleDetails)
+        public async Task<bool> UpdateEventAvailability(EventType eventTypeInfo, List<EventTypeAvailabilityDetail> scheduleDetails)
         {
             var eventTypeId = eventTypeInfo.Id;
 
@@ -73,6 +77,8 @@ namespace DataProvider.EntityFramework.Repositories
             _bookingDbContext.Update(eventTypeInfo);
 
             await _bookingDbContext.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<List<EventType>> GetEventTypeListByUserId(Guid userId)

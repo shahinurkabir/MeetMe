@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataProvider.EntityFramework.Repositories
 {
-    public class AppointmentRepository : IAppointmentsRepository
+    public class AppointmentRepository : IAppointmentRepository
     {
         private readonly BookingDbContext _bookingDbContext;
 
@@ -14,11 +14,13 @@ namespace DataProvider.EntityFramework.Repositories
         {
             this._bookingDbContext = bookingDbContext;
         }
-        public async Task AddAppointment(Appointment appointment)
+        public async Task<bool> AddAppointment(Appointment appointment)
         {
             await _bookingDbContext.Set<Appointment>().AddAsync(appointment);
 
             await _bookingDbContext.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<bool> DeleteAppointment(Guid id)
@@ -50,7 +52,7 @@ namespace DataProvider.EntityFramework.Repositories
                  .Where(x => x.Id == id)
                  .Include(x => x.EventType)
                  .ThenInclude(x => x.User)
-                 .Select(x => ToAppointmentDto(x))
+                 .Select(x => AppointmentDetailsDto.New(x, x.EventType!, x.EventType!.User))
                  .FirstOrDefaultAsync();
 
             return result;
@@ -63,7 +65,7 @@ namespace DataProvider.EntityFramework.Repositories
                   .Include(x => x.EventType)
                   .ThenInclude(x => x.User)
                   .Where(x => x.EventType.User.Id == userId)
-                  .Select(x => ToAppointmentDto(x))
+                  .Select(x => AppointmentDetailsDto.New(x, x.EventType!, x.EventType!.User))
                   .ToListAsync();
 
             return result;
@@ -74,42 +76,12 @@ namespace DataProvider.EntityFramework.Repositories
                   .Include(x => x.EventType)
                   .ThenInclude(x => x.User)
                   .Where(x => x.EventTypeId == eventTypeId && x.StartTimeUTC >= startDateUTC && x.EndTimeUTC <= endDateUTC)
-                  .Select(x => ToAppointmentDto(x))
+                  .Select(x => AppointmentDetailsDto.New(x,x.EventType!,x.EventType!.User))
                   .ToListAsync();
 
             return result;
         }
-        private static AppointmentDetailsDto ToAppointmentDto(Appointment x)
-        {
-
-            var dto = new AppointmentDetailsDto
-            {
-                Id = x.Id,
-                EventTypeId = x.EventTypeId,
-                InviteeName = x.InviteeName,
-                InviteeEmail = x.InviteeEmail,
-                StartTimeUTC = x.StartTimeUTC,
-                EndTimeUTC = x.EndTimeUTC,
-                InviteeTimeZone = x.InviteeTimeZone,
-                GuestEmails = x.GuestEmails,
-                Note = x.Note,
-                Status = x.Status.ToString(),
-                DateCreated = x.DateCreated,
-                DateCancelled = x.DateCancelled,
-                CancellationReason = x.CancellationReason,
-                EventTypeTitle = x.EventType.Name,
-                EventTypeDescription = x.EventType.Description,
-                EventTypeLocation = x.EventType.Location,
-                EventTypeDuration = x.EventType.Duration,
-                EventTypeColor = x.EventType.EventColor,
-                EventTypeTimeZone = x.EventType.TimeZone,
-                EventOwnerId = x.EventType.OwnerId,
-                EventOwnerName = x.EventType.User.UserName,
-                AppointmentDateTime = x.InviteeTimeZone.ToAppointmentTimeRangeText(x.EventType.Duration, x.StartTimeUTC),
-            };
-
-            return dto;
-        }
+       
 
 
     }

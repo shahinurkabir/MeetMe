@@ -17,10 +17,10 @@ namespace MeetMe.API.Controllers
     public class AppointmentController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly IAppointmentsRepository appointmentsRepository;
+        private readonly IAppointmentRepository appointmentsRepository;
         private readonly ILoginUserInfo loginUserInfo;
 
-        public AppointmentController(IMediator mediator, IAppointmentsRepository appointmentsRepository, ILoginUserInfo loginUserInfo)
+        public AppointmentController(IMediator mediator, IAppointmentRepository appointmentsRepository, ILoginUserInfo loginUserInfo)
         {
             this.mediator = mediator;
             this.appointmentsRepository = appointmentsRepository;

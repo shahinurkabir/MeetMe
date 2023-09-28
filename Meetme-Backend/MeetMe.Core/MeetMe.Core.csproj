@@ -15,4 +15,8 @@
     <None Remove="Interface\Services\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Persistence\InMemory\" />
+  </ItemGroup>
+
 </Project>

@@ -5,7 +5,7 @@ namespace MeetMe.Core.Persistence.Interface
     public interface IEventQuestionRepository
     {
         Task<List<EventTypeQuestion>> GetQuestionsByEventId(Guid eventTypeId);
-        Task ResetEventQuestions(Guid eventTypeId,List<EventTypeQuestion> questions);
+        Task <bool> ResetEventQuestions(Guid eventTypeId,List<EventTypeQuestion> questions);
     }
 
 }

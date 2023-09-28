@@ -29,9 +29,9 @@ namespace MeetMe.Application.Calendars.Commands
     }
     public class CreateAppoimentCommandHandler : IRequestHandler<CreateAppointmentCommand, Guid>
     {
-        private readonly IAppointmentsRepository _appointmentsRepository;
+        private readonly IAppointmentRepository _appointmentsRepository;
 
-        public CreateAppoimentCommandHandler(IAppointmentsRepository appointmentsRepository)
+        public CreateAppoimentCommandHandler(IAppointmentRepository appointmentsRepository)
         {
             _appointmentsRepository = appointmentsRepository;
         }

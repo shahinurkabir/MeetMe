@@ -33,7 +33,7 @@ namespace MeetMe.Application.AccountSettings
         }
         public async Task<bool> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
         {
-            var userEntity = await _userRepository.GetByUserId(_userInfo.UserId);
+            var userEntity = await _userRepository.GetUserByLoginId(_userInfo.UserId);
 
             if (userEntity == null)
             {
@@ -44,7 +44,7 @@ namespace MeetMe.Application.AccountSettings
             userEntity.TimeZone = request.TimeZone;
             userEntity.WelcomeText = request.WelcomeText;
 
-            await _userRepository.Update(userEntity);
+            await _userRepository.UpdateUser(userEntity);
 
             return true;
 

@@ -24,11 +24,11 @@ namespace MeetMe.Application.EventTypes.Queries
     public class TimeSlotRangeQueryHandler : IRequestHandler<TimeSlotRangeQuery, List<TimeSlotRangeDto>>
     {
         private readonly IEventTypeRepository _eventTypeRepository;
-        private readonly IAppointmentsRepository _appointmentsRepository;
+        private readonly IAppointmentRepository _appointmentsRepository;
 
         public TimeSlotRangeQueryHandler(
             IEventTypeRepository eventTypeRepository,
-            IAppointmentsRepository appointmentsRepository)
+            IAppointmentRepository appointmentsRepository)
         {
             _eventTypeRepository = eventTypeRepository;
             _appointmentsRepository = appointmentsRepository;

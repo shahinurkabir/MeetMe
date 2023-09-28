@@ -3,10 +3,10 @@ using MeetMe.Core.Persistence.Entities;
 
 namespace MeetMe.Core.Persistence.Interface
 {
-    public interface IAppointmentsRepository
+    public interface IAppointmentRepository
     {
         Task<Appointment> GetAppointment(Guid id);
-        Task AddAppointment(Appointment appointment);
+        Task <bool> AddAppointment(Appointment appointment);
         Task<bool> UpdateAppointment(Appointment appointment);
         Task<bool> DeleteAppointment(Guid id);
         Task<AppointmentDetailsDto?> GetAppointmentDetails(Guid id);

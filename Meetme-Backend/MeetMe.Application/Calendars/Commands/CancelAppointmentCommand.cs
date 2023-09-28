@@ -24,10 +24,10 @@ namespace MeetMe.Application.Calendars.Commands
     }
     public class CancelAppointmentCommandHandler : IRequestHandler<CancelAppointmentCommand, bool>
     {
-        private readonly IAppointmentsRepository _appointmentsRepository;
+        private readonly IAppointmentRepository _appointmentsRepository;
         private readonly IDateTimeService _dateTimeService;
 
-        public CancelAppointmentCommandHandler(IAppointmentsRepository appointmentsRepository,IDateTimeService dateTimeService)
+        public CancelAppointmentCommandHandler(IAppointmentRepository appointmentsRepository,IDateTimeService dateTimeService)
         {
             this._appointmentsRepository = appointmentsRepository;
             this._dateTimeService = dateTimeService;

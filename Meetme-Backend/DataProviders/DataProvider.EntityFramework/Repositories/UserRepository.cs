@@ -18,7 +18,7 @@ namespace DataProvider.EntityFramework.Repositories
             this.bookingDbContext = bookingDbContext;
         }
 
-        public async Task<User?> GetByUserId(string userId)
+        public async Task<User?> GetUserByLoginId(string userId)
         {
             var user = await this.bookingDbContext.Set<User>()
                 .FirstOrDefaultAsync(x => x.UserID == userId);
@@ -26,14 +26,14 @@ namespace DataProvider.EntityFramework.Repositories
             return user;
         }
 
-        public async Task<User?> GetByBaseURI(string URI)
+        public async Task<User?> GetUserBySlug(string URI)
         {
             var entity = await bookingDbContext.Set<User>()
                 .FirstOrDefaultAsync(e => e.BaseURI.ToLower() == URI.ToLower());
             return entity;
         }
 
-        public async Task<bool> IsLinkAvailable(string URI, Guid id)
+        public async Task<bool> IsUserSlugAvailable(string URI, Guid id)
         {
             var entity = await bookingDbContext.Set<User>()
                             .FirstOrDefaultAsync(e => e.BaseURI.ToLower() == URI.ToLower());
@@ -42,21 +42,21 @@ namespace DataProvider.EntityFramework.Repositories
 
             return entity.Id == id;
         }
-        public async Task<List<User>> GetList()
+        public async Task<List<User>> GetUserList()
         {
             var list = await this.bookingDbContext.Set<User>().ToListAsync();
             return list;
         }
 
-        public Task Update(User userEntity)
+        public async Task<bool> UpdateUser(User userEntity)
         {
             this.bookingDbContext.Set<User>().Update(userEntity);
-            bookingDbContext.SaveChanges();
+            await bookingDbContext.SaveChangesAsync();
 
-            return Task.CompletedTask;
+            return true;
         }
 
-        public async Task<User?> GetById(Guid id)
+        public async Task<User?> GetUserById(Guid id)
         {
             var userEntity = await this.bookingDbContext.Set<User>().FindAsync(id);
             return userEntity;

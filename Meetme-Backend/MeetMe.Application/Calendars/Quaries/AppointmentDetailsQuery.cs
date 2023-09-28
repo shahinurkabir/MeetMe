@@ -15,9 +15,9 @@ namespace MeetMe.Application.Calendars.Quaries
     // create a class for handle the request
     public class AppointmentDetailsQueryHandler : IRequestHandler<AppointmentDetailsQuery, AppointmentDetailsDto>
     {
-        private readonly IAppointmentsRepository _appointmentsRepository;
+        private readonly IAppointmentRepository _appointmentsRepository;
 
-        public AppointmentDetailsQueryHandler(IAppointmentsRepository appointmentsRepository)
+        public AppointmentDetailsQueryHandler(IAppointmentRepository appointmentsRepository)
         {
             _appointmentsRepository = appointmentsRepository;
         }

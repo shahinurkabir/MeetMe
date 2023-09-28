@@ -4,11 +4,11 @@ namespace MeetMe.Core.Persistence.Interface
 {
     public interface IUserRepository
     {
-        Task<List<User>> GetList();
-        Task<User?> GetById(Guid id);
-        Task<User?> GetByUserId(string userId);
-        Task<User?> GetByBaseURI(string URI);
-        Task Update(User userEntity);
-        Task<bool> IsLinkAvailable(string link, Guid id);
+        Task<List<User>> GetUserList();
+        Task<User?> GetUserById(Guid id);
+        Task<User?> GetUserByLoginId(string userId);
+        Task<User?> GetUserBySlug(string slug);
+        Task<bool> UpdateUser(User userEntity);
+        Task<bool> IsUserSlugAvailable(string slug, Guid id);
     }
 }

@@ -29,7 +29,7 @@ namespace MeetMe.Application.AccountSettings.Queries
 
         public async Task<AccountProfileDto> Handle(ProfileDetailQuery request, CancellationToken cancellationToken)
         {
-            var userEntity=await _userRepository.GetById(request.Id);
+            var userEntity=await _userRepository.GetUserById(request.Id);
 
             if (userEntity==null)
             {
@@ -64,7 +64,7 @@ namespace MeetMe.Application.AccountSettings.Queries
 
         public async Task<AccountProfileDto> Handle(ProfileDetailQueryByName request, CancellationToken cancellationToken)
         {
-            var userEntity = await userRepository.GetByBaseURI(request.Name);
+            var userEntity = await userRepository.GetUserBySlug(request.Name);
 
             if (userEntity == null)
             {

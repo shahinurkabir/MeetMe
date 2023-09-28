@@ -24,7 +24,7 @@ namespace DataProvider.EntityFramework.Repositories
                 .ToListAsync();
         }
 
-        public async Task ResetEventQuestions(Guid eventTypeId,List<EventTypeQuestion> questions)
+        public async Task<bool> ResetEventQuestions(Guid eventTypeId,List<EventTypeQuestion> questions)
         {
             var listOfQuestion = await bookingDbContext.Set<EventTypeQuestion>()
                .Where(e => e.EventTypeId == eventTypeId && e.SystemDefinedYN==false)
@@ -38,6 +38,8 @@ namespace DataProvider.EntityFramework.Repositories
             await bookingDbContext.AddRangeAsync(questions);
 
             await bookingDbContext.SaveChangesAsync();
+
+            return true;
         }
 
     }

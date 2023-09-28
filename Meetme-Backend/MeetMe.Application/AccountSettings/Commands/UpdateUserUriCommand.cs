@@ -24,7 +24,7 @@ namespace MeetMe.Application.AccountSettings
 
         public async Task<bool> Handle(UpdateUserUriCommand request, CancellationToken cancellationToken)
         {
-            var userEntity = await _userRepository.GetByUserId(_userInfo.UserId);
+            var userEntity = await _userRepository.GetUserByLoginId(_userInfo.UserId);
 
             if (userEntity == null)
             {
@@ -32,7 +32,7 @@ namespace MeetMe.Application.AccountSettings
             }
             userEntity.BaseURI = request.BaseURI;
 
-            await _userRepository.Update(userEntity);
+            await _userRepository.UpdateUser(userEntity);
 
             return true;
 
@@ -50,7 +50,7 @@ namespace MeetMe.Application.AccountSettings
 
         private async Task<bool> IsLinkAvailable(IUserRepository userRepository,string link,string userId)
         {
-            var userEntity = await userRepository.GetByBaseURI(link);
+            var userEntity = await userRepository.GetUserBySlug(link);
 
             return userEntity==null || userEntity.UserID == userId;
 

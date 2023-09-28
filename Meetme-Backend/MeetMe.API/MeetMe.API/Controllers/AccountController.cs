@@ -42,7 +42,7 @@ namespace MeetMe.API.Controllers
         [Route("token")]
         public async Task<TokenResponse?> GetToken(TokenRequest tokenRequest)
         {
-            var userEntity = await userRepository.GetByUserId(tokenRequest.UserId);
+            var userEntity = await userRepository.GetUserByLoginId(tokenRequest.UserId);
 
             if (userEntity == null || userEntity.Password != tokenRequest.Password) return null;
 
@@ -76,7 +76,7 @@ namespace MeetMe.API.Controllers
         {
             var commandResult = await mediator.Send(updateProfileCommand);
 
-            var userEntity = await userRepository.GetById(userInfo.Id);
+            var userEntity = await userRepository.GetUserById(userInfo.Id);
 
             var response = new UpdateProfileResponse
             {
@@ -106,7 +106,7 @@ namespace MeetMe.API.Controllers
         {
             var commandResult = await mediator.Send(updateAccountLinkCommand);
 
-            var userEntity = await userRepository.GetById(userInfo.Id);
+            var userEntity = await userRepository.GetUserById(userInfo.Id);
 
             var response = new UpdateProfileResponse
             {

@@ -60,7 +60,7 @@ namespace MeetMe.API.Controllers
         [Route("{userURI}/list")]
         public async Task<UserProfileDetailResponse?> GetListByBaseURI(string userURI)
         {
-            var userEnttiy = await userRepository.GetByBaseURI(userURI);
+            var userEnttiy = await userRepository.GetUserBySlug(userURI);
 
             if (userEnttiy == null) return null;
 
