@@ -13,16 +13,16 @@ namespace MeetMe.Application.Calendars.Quaries
 
     public class AppointmentDetailsQueryHandler : IRequestHandler<AppointmentDetailsQuery, AppointmentDetailsDto>
     {
-        private readonly IAppointmentRepository _appointmentsRepository;
+        private readonly IPersistenceProvider persistenceProvider;
 
-        public AppointmentDetailsQueryHandler(IAppointmentRepository appointmentsRepository)
+        public AppointmentDetailsQueryHandler(IPersistenceProvider persistenceProvider)
         {
-            _appointmentsRepository = appointmentsRepository;
+            this.persistenceProvider = persistenceProvider;
         }
 
         public async Task<AppointmentDetailsDto> Handle(AppointmentDetailsQuery request, CancellationToken cancellationToken)
         {
-            var appointmentDetailsDto = await _appointmentsRepository.GetAppointmentDetails(request.Id);
+            var appointmentDetailsDto = await persistenceProvider.GetAppointmentDetails(request.Id);
 
             return appointmentDetailsDto;
         }

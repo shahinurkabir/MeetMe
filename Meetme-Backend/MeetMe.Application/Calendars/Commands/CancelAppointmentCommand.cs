@@ -23,17 +23,17 @@ namespace MeetMe.Application.Calendars.Commands
     }
     public class CancelAppointmentCommandHandler : IRequestHandler<CancelAppointmentCommand, bool>
     {
-        private readonly IAppointmentRepository _appointmentsRepository;
+        private readonly IPersistenceProvider persistenceProvider;
         private readonly IDateTimeService _dateTimeService;
 
-        public CancelAppointmentCommandHandler(IAppointmentRepository appointmentsRepository,IDateTimeService dateTimeService)
+        public CancelAppointmentCommandHandler(IPersistenceProvider persistenceProvider,IDateTimeService dateTimeService)
         {
-            this._appointmentsRepository = appointmentsRepository;
+            this.persistenceProvider = persistenceProvider;
             this._dateTimeService = dateTimeService;
         }
         public async Task<bool> Handle(CancelAppointmentCommand request, CancellationToken cancellationToken)
         {
-            var appointmentEntity = await _appointmentsRepository.GetAppointment(request.Id);
+            var appointmentEntity = await persistenceProvider.GetAppointment(request.Id);
 
             if (appointmentEntity == null)
             {
@@ -44,7 +44,7 @@ namespace MeetMe.Application.Calendars.Commands
             appointmentEntity.Status = AppointmentStatus.Cancelled; 
             appointmentEntity.DateCancelled = _dateTimeService.GetCurrentTimeUtc;
             
-            return await _appointmentsRepository.UpdateAppointment(appointmentEntity);
+            return await persistenceProvider.UpdateAppointment(appointmentEntity);
 
         }
     }

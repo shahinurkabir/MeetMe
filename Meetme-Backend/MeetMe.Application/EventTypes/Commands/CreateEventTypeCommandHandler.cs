@@ -26,20 +26,17 @@ namespace MeetMe.Application.EventTypes.Commands
 
     public class CreateEventTypeCommandHandler : IRequestHandler<CreateEventTypeCommand, Guid>
     {
-        private readonly IAvailabilityRepository _availabilityRepository;
-        private readonly IEventTypeRepository _eventTypeRepository;
+        private readonly IPersistenceProvider persistenceProvider;
         private readonly ILoginUserInfo _applicationUser;
         private readonly IDateTimeService _dateTimeService;
 
         public CreateEventTypeCommandHandler(
-            IAvailabilityRepository availabilityRepository,
-            IEventTypeRepository eventTypeRepository,
+            IPersistenceProvider persistenceProvider,
             ILoginUserInfo applicationUser,
             IDateTimeService dateTimeService
             )
         {
-            _availabilityRepository = availabilityRepository;
-            _eventTypeRepository = eventTypeRepository;
+            this.persistenceProvider = persistenceProvider;
             _applicationUser = applicationUser;
             _dateTimeService = dateTimeService;
         }
@@ -49,7 +46,7 @@ namespace MeetMe.Application.EventTypes.Commands
         {
             var newEventTypeId = Guid.NewGuid();
 
-            var listOfAvailabilities = await _availabilityRepository.GetListByUserId(_applicationUser.Id);
+            var listOfAvailabilities = await persistenceProvider.GetListByUserId(_applicationUser.Id);
 
             if (listOfAvailabilities == null || !listOfAvailabilities.Any())
             {
@@ -60,7 +57,7 @@ namespace MeetMe.Application.EventTypes.Commands
 
             EventType eventTypeInfo = MapCommandToEntity(newEventTypeId, defaultAvailability, request);
 
-            await _eventTypeRepository.AddNewEventType(eventTypeInfo);
+            await persistenceProvider.AddNewEventType(eventTypeInfo);
 
             return await Task.FromResult(newEventTypeId);
         }
@@ -140,12 +137,12 @@ namespace MeetMe.Application.EventTypes.Commands
 
     public class CreateCreateEventTypeCommandValidator : AbstractValidator<CreateEventTypeCommand>
     {
-        private readonly IEventTypeRepository eventTypeRepository;
+        private readonly IPersistenceProvider persistenceProvider;
         private readonly ILoginUserInfo applicationUser;
 
-        public CreateCreateEventTypeCommandValidator(IEventTypeRepository eventTypeRepository, ILoginUserInfo applicationUser)
+        public CreateCreateEventTypeCommandValidator(IPersistenceProvider persistenceProvider, ILoginUserInfo applicationUser)
         {
-            this.eventTypeRepository = eventTypeRepository;
+            this.persistenceProvider = persistenceProvider;
             this.applicationUser = applicationUser;
 
             RuleFor(m => m.Name).NotEmpty().WithMessage("Event Type name cannot be empty.");
@@ -163,7 +160,7 @@ namespace MeetMe.Application.EventTypes.Commands
 
         private async Task<bool> CheckNotUsed(CreateEventTypeCommand command, CancellationToken cancellationToken)
         {
-            var listEvents = await eventTypeRepository.GetEventTypeListByUserId(applicationUser.Id);
+            var listEvents = await persistenceProvider.GetEventTypeListByUserId(applicationUser.Id);
 
             var isUsed = listEvents != null && listEvents.Count(e =>
             e.Slug.Equals(command.Slug, StringComparison.InvariantCultureIgnoreCase)) > 0;

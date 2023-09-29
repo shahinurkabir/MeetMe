@@ -15,11 +15,12 @@ namespace DataProvider.EntityFramework
         {
             services.AddDbContext<MeetMeDbContext>(option => option.UseSqlServer(connectionString));
 
-            services.AddScoped<IEventTypeRepository, EventTypeRepository>();
-            services.AddScoped<IEventQuestionRepository, EventQuestionRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
-            services.AddScoped<IAppointmentRepository,AppointmentRepository>();
+            //services.AddScoped<IEventTypeRepository, EventTypeRepository>();
+            //services.AddScoped<IEventQuestionRepository, EventQuestionRepository>();
+            //services.AddScoped<IUserRepository, UserRepository>();
+            //services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
+            //services.AddScoped<IAppointmentRepository,AppointmentRepository>();
+            services.AddScoped<IPersistenceProvider, PersistenceProviderEntityFrameWork>();
 
             return services;
 

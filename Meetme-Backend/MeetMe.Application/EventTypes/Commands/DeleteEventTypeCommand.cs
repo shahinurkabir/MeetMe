@@ -21,16 +21,16 @@ namespace MeetMe.Application.EventTypes.Commands
 
     public class DeleteEventTypeCommandHandler : IRequestHandler<DeleteEventTypeCommand, bool>
     {
-        private readonly IEventTypeRepository _eventTypeRepository;
+        private readonly IPersistenceProvider persistenceProvider;
 
-        public DeleteEventTypeCommandHandler(IEventTypeRepository eventTypeRepository)
+        public DeleteEventTypeCommandHandler(IPersistenceProvider persistenceProvider)
         {
-            _eventTypeRepository = eventTypeRepository;
+            this.persistenceProvider = persistenceProvider;
         }
 
         public async Task<bool> Handle(DeleteEventTypeCommand request, CancellationToken cancellationToken)
         {
-            var eventType = await _eventTypeRepository.GetEventTypeById(request.eventTypeId);
+            var eventType = await persistenceProvider.GetEventTypeById(request.eventTypeId);
 
             if (eventType == null)
             {
@@ -43,7 +43,7 @@ namespace MeetMe.Application.EventTypes.Commands
 
             eventType.IsDeleted = true;
 
-            await _eventTypeRepository.UpdateEventType(eventType);
+            await persistenceProvider.UpdateEventType(eventType);
 
             return await Task.FromResult(true);
         }

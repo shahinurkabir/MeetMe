@@ -28,17 +28,17 @@ namespace MeetMe.Application.EventTypes.Commands
 
     public class UpdateInfoCommandHandler : IRequestHandler<UpdateInfoCommand, bool>
     {
-        private readonly IEventTypeRepository _eventTypeRepository;
+        private readonly IPersistenceProvider persistenceProvider;
         private readonly ILoginUserInfo _applicationUser;
 
-        public UpdateInfoCommandHandler(IEventTypeRepository eventTypeRepository, ILoginUserInfo applicationUser)
+        public UpdateInfoCommandHandler(IPersistenceProvider persistenceProvider, ILoginUserInfo applicationUser)
         {
-            _eventTypeRepository = eventTypeRepository;
+            this.persistenceProvider = persistenceProvider;
             _applicationUser = applicationUser;
         }
         public async Task<bool> Handle(UpdateInfoCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _eventTypeRepository.GetEventTypeById(request.Id);
+            var entity = await persistenceProvider.GetEventTypeById(request.Id);
 
             if (entity == null) throw new MeetMeException("Event Type not found");
 
@@ -50,7 +50,7 @@ namespace MeetMe.Application.EventTypes.Commands
             entity.Location = request.Location;
             entity.Description = request.Description;
 
-            await _eventTypeRepository.UpdateEventType(entity);
+            await persistenceProvider.UpdateEventType(entity);
 
             return true;
         }
@@ -58,12 +58,12 @@ namespace MeetMe.Application.EventTypes.Commands
 
     public class UpdateInfoCommandValidator : AbstractValidator<UpdateInfoCommand>
     {
-        private readonly IEventTypeRepository eventTypeRepository;
+        private readonly IPersistenceProvider persistenceProvider;
         private readonly ILoginUserInfo applicationUser;
 
-        public UpdateInfoCommandValidator(IEventTypeRepository eventTypeRepository, ILoginUserInfo applicationUser)
+        public UpdateInfoCommandValidator(IPersistenceProvider persistenceProvider, ILoginUserInfo applicationUser)
         {
-            this.eventTypeRepository = eventTypeRepository;
+            this.persistenceProvider = persistenceProvider;
             this.applicationUser = applicationUser;
 
             RuleFor(m => m.Name).NotEmpty();
@@ -80,7 +80,7 @@ namespace MeetMe.Application.EventTypes.Commands
 
         private async Task<bool> CheckNotUsed(UpdateInfoCommand command, CancellationToken cancellationToken)
         {
-            var listEvents = await eventTypeRepository.GetEventTypeListByUserId(applicationUser.Id);
+            var listEvents = await persistenceProvider.GetEventTypeListByUserId(applicationUser.Id);
 
             var isUsed = listEvents.Count(e =>
             e.Id != command.Id &&

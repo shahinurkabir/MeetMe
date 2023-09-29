@@ -11,20 +11,20 @@ namespace MeetMe.Application.EventTypes.Queries
 {
     public class GetEventTypeListQuery : IRequest<List<EventType>>
     {
-        public Guid  OwnerId { get; set; }
+        public Guid OwnerId { get; set; }
     };
 
     public class GetEventTypeListQueryHandler : IRequestHandler<GetEventTypeListQuery, List<EventType>>
     {
-        private readonly IEventTypeRepository _eventTypeRepository;
+        private readonly IPersistenceProvider persistenceProvider;
 
-        public GetEventTypeListQueryHandler(IEventTypeRepository eventTypeRepository)
+        public GetEventTypeListQueryHandler(IPersistenceProvider persistenceProvider)
         {
-            _eventTypeRepository = eventTypeRepository;
+            this.persistenceProvider = persistenceProvider;
         }
         public async Task<List<EventType>> Handle(GetEventTypeListQuery request, CancellationToken cancellationToken)
         {
-            var list = await _eventTypeRepository.GetEventTypeListByUserId(request.OwnerId);
+            var list = await persistenceProvider.GetEventTypeListByUserId(request.OwnerId);
             return list;
         }
     }

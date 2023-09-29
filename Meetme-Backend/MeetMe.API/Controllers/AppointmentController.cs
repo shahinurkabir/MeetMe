@@ -17,13 +17,13 @@ namespace MeetMe.API.Controllers
     public class AppointmentController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly IAppointmentRepository appointmentsRepository;
+        private readonly IPersistenceProvider persistenceProvider;
         private readonly ILoginUserInfo loginUserInfo;
 
-        public AppointmentController(IMediator mediator, IAppointmentRepository appointmentsRepository, ILoginUserInfo loginUserInfo)
+        public AppointmentController(IMediator mediator, IPersistenceProvider persistenceProvider, ILoginUserInfo loginUserInfo)
         {
             this.mediator = mediator;
-            this.appointmentsRepository = appointmentsRepository;
+            this.persistenceProvider = persistenceProvider;
             this.loginUserInfo = loginUserInfo;
         }
 
@@ -33,7 +33,7 @@ namespace MeetMe.API.Controllers
         public async Task<List<AppointmentDetailsDto>?> GetMyAppointmentList()
         {
             var loginUserId = loginUserInfo.Id;
-            var result = await appointmentsRepository.GetAppointmentsByUserId(loginUserId);
+            var result = await persistenceProvider.GetAppointmentsByUserId(loginUserId);
             return result;
         }
 

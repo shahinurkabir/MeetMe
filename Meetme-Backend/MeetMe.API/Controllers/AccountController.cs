@@ -19,20 +19,14 @@ namespace MeetMe.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly IUserRepository userRepository;
+        private readonly IPersistenceProvider persistenceProvider;
         private readonly IConfiguration configuration;
         private readonly ILoginUserInfo userInfo;
 
-        public AccountController
-        (
-            IMediator mediator,
-            IUserRepository userRepository,
-            IConfiguration configuration,
-            ILoginUserInfo userInfo
-        )
+        public AccountController(IMediator mediator, IPersistenceProvider persistenceProvider,IConfiguration configuration, ILoginUserInfo userInfo)
         {
             this.mediator = mediator;
-            this.userRepository = userRepository;
+            this.persistenceProvider = persistenceProvider;
             this.configuration = configuration;
             this.userInfo = userInfo;
         }
@@ -42,7 +36,7 @@ namespace MeetMe.API.Controllers
         [Route("token")]
         public async Task<TokenResponse?> GetToken(TokenRequest tokenRequest)
         {
-            var userEntity = await userRepository.GetUserByLoginId(tokenRequest.UserId);
+            var userEntity = await persistenceProvider.GetUserByLoginId(tokenRequest.UserId);
 
             if (userEntity == null || userEntity.Password != tokenRequest.Password) return null;
 
@@ -76,7 +70,7 @@ namespace MeetMe.API.Controllers
         {
             var commandResult = await mediator.Send(updateProfileCommand);
 
-            var userEntity = await userRepository.GetUserById(userInfo.Id);
+            var userEntity = await persistenceProvider.GetUserById(userInfo.Id);
 
             var response = new UpdateProfileResponse
             {
@@ -92,7 +86,7 @@ namespace MeetMe.API.Controllers
         {
             var command = new UpdateUserSlugCommand { BaseURI = uri };
 
-            var validator = new UpdateUserUriCommandValidator(userRepository, userInfo);
+            var validator = new UpdateUserUriCommandValidator(persistenceProvider, userInfo);
             var result = await validator.ValidateAsync(command);
 
             if (result.IsValid) { return new OkResult(); }
@@ -106,7 +100,7 @@ namespace MeetMe.API.Controllers
         {
             var commandResult = await mediator.Send(updateAccountLinkCommand);
 
-            var userEntity = await userRepository.GetUserById(userInfo.Id);
+            var userEntity = await persistenceProvider.GetUserById(userInfo.Id);
 
             var response = new UpdateProfileResponse
             {

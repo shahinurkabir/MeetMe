@@ -18,14 +18,12 @@ namespace MeetMe.API.Controllers
     {
         private readonly IMediator mediator;
         private readonly ILoginUserInfo loginUser;
-        private readonly IUserRepository userRepository;
-        private readonly IEventTypeRepository eventTypeRepository;
-        public EventTypeController(IMediator mediator, ILoginUserInfo loginUser, IUserRepository userRepository, IEventTypeRepository eventTypeRepository)
+        private readonly IPersistenceProvider persistenceProvider;
+        public EventTypeController(IMediator mediator, ILoginUserInfo loginUser, IPersistenceProvider persistenceProvider)
         {
             this.mediator = mediator;
             this.loginUser = loginUser;
-            this.userRepository = userRepository;
-            this.eventTypeRepository = eventTypeRepository;
+            this.persistenceProvider = persistenceProvider;
         }
 
         [HttpGet]
@@ -44,7 +42,7 @@ namespace MeetMe.API.Controllers
         [Route("{userURI}/list")]
         public async Task<UserProfileDetailResponse?> GetListByBaseURI(string userURI)
         {
-            var userEnttiy = await userRepository.GetUserBySlug(userURI);
+            var userEnttiy = await persistenceProvider.GetUserBySlug(userURI);
 
             if (userEnttiy == null) return null;
 
@@ -85,7 +83,7 @@ namespace MeetMe.API.Controllers
         [Route("{getBySlugName}/{slug}")]
         public async Task<EventType> GetDetails(string slug)
         {
-            var result = await  eventTypeRepository.GetEventTypeBySlug(slug);
+            var result = await persistenceProvider.GetEventTypeBySlug(slug);
 
             return result;
         }

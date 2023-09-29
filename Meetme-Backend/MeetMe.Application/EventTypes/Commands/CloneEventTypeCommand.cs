@@ -23,19 +23,19 @@ namespace MeetMe.Application.EventTypes.Commands
 
     public class CloneEventTypeCommandHandler : IRequestHandler<CloneEventTypeCommand, Guid>
     {
-        private readonly IEventTypeRepository _eventTypeRepository;
+        private readonly IPersistenceProvider persistenceProvider;
         private readonly IDateTimeService _dateTimeService;
         private readonly ILoginUserInfo _applicationUserInfo;
 
-        public CloneEventTypeCommandHandler(IEventTypeRepository eventTypeRepository, IDateTimeService dateTimeService, ILoginUserInfo applicationUserInfo)
+        public CloneEventTypeCommandHandler(IPersistenceProvider persistenceProvider, IDateTimeService dateTimeService, ILoginUserInfo applicationUserInfo)
         {
-            _eventTypeRepository = eventTypeRepository;
+            this.persistenceProvider = persistenceProvider;
             _dateTimeService = dateTimeService;
             _applicationUserInfo = applicationUserInfo;
         }
         public async Task<Guid> Handle(CloneEventTypeCommand request, CancellationToken cancellationToken)
         {
-            var eventType = await _eventTypeRepository.GetEventTypeById(request.eventTypeId);
+            var eventType = await persistenceProvider.GetEventTypeById(request.eventTypeId);
 
             if (eventType == null)
             {
@@ -47,7 +47,7 @@ namespace MeetMe.Application.EventTypes.Commands
 
             var cloneEventTypeEntity = CloneEventType(eventType, newSlug, newEventTypeId);
 
-            await _eventTypeRepository.AddNewEventType(cloneEventTypeEntity);
+            await persistenceProvider.AddNewEventType(cloneEventTypeEntity);
 
             return newEventTypeId;
         }
@@ -112,7 +112,7 @@ namespace MeetMe.Application.EventTypes.Commands
         {
             var newSlug = $"{slug}-clone";
 
-            var listEventForThisUser = await _eventTypeRepository.GetEventTypeListByUserId(_applicationUserInfo.Id);
+            var listEventForThisUser = await persistenceProvider.GetEventTypeListByUserId(_applicationUserInfo.Id);
 
             if (listEventForThisUser == null || listEventForThisUser.Any())
             {

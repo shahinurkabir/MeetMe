@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Interface;
+using FluentValidation.Validators;
 
 namespace MeetMe.Application.EventTypes.Queries
 {
@@ -17,17 +18,17 @@ namespace MeetMe.Application.EventTypes.Queries
 
     public class GetEventTypeQuestionsQueryHandler : IRequestHandler<GetEventTypeQuestionsQuery, List<EventTypeQuestion>>
     {
-        private readonly IEventQuestionRepository _eventQuestionRepository;
+        private readonly IPersistenceProvider persistenceProvider;
         private readonly ILoginUserInfo _userInfo;
 
-        public GetEventTypeQuestionsQueryHandler(IEventQuestionRepository eventQuestionRepository, ILoginUserInfo userInfo)
+        public GetEventTypeQuestionsQueryHandler(IPersistenceProvider persistenceProvider, ILoginUserInfo userInfo)
         {
-            _eventQuestionRepository = eventQuestionRepository;
+            this.persistenceProvider = persistenceProvider;
             _userInfo = userInfo;
         }
         public async Task<List<EventTypeQuestion>> Handle(GetEventTypeQuestionsQuery request, CancellationToken cancellationToken)
         {
-            var listQuestion =await _eventQuestionRepository.GetQuestionsByEventId(request.EventTypeId);
+            var listQuestion =await persistenceProvider.GetQuestionsByEventId(request.EventTypeId);
             return listQuestion;
         }
     }

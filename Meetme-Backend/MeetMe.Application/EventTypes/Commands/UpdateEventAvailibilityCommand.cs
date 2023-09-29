@@ -26,23 +26,18 @@ namespace MeetMe.Application.EventTypes.Commands
 
     public class UpdateAvailabilityCommandHandler : IRequestHandler<UpdateEventAvailabilityCommand, bool>
     {
-        private readonly IEventTypeRepository _eventTypeRepository;
+        private readonly IPersistenceProvider persistenceProvider;
         private readonly ILoginUserInfo _loginUser;
 
-        public UpdateAvailabilityCommandHandler
-        (
-            IEventTypeRepository eventTypeRepository,
-            ILoginUserInfo loginUser
-
-        )
+        public UpdateAvailabilityCommandHandler(IPersistenceProvider persistenceProvider, ILoginUserInfo loginUser)
         {
-            _eventTypeRepository = eventTypeRepository;
+            this.persistenceProvider = persistenceProvider;
             _loginUser = loginUser;
         }
 
         public async Task<bool> Handle(UpdateEventAvailabilityCommand request, CancellationToken cancellationToken)
         {
-            var eventTypeEntity = await _eventTypeRepository.GetEventTypeById(request.Id);
+            var eventTypeEntity = await persistenceProvider.GetEventTypeById(request.Id);
 
             if (eventTypeEntity == null)
             {
@@ -54,7 +49,7 @@ namespace MeetMe.Application.EventTypes.Commands
 
             var scheduleDetails = MapCommandToEntity(eventTypeEntity.Id, request);
 
-            await _eventTypeRepository.UpdateEventAvailability(eventTypeEntity, scheduleDetails);
+            await persistenceProvider.UpdateEventAvailability(eventTypeEntity, scheduleDetails);
 
             return true;
 

@@ -17,15 +17,15 @@ namespace MeetMe.Application.EventTypes.Queries
 
     public class EventTypeDetailQueryHandler : IRequestHandler<GetEventTypeDetailQuery, EventType>
     {
-        private readonly IEventTypeRepository _eventTypeRepository;
+        private readonly IPersistenceProvider persistenceProvider;
 
-        public EventTypeDetailQueryHandler(IEventTypeRepository eventTypeRepository)
+        public EventTypeDetailQueryHandler(IPersistenceProvider persistenceProvider)
         {
-            _eventTypeRepository = eventTypeRepository;
+            this.persistenceProvider = persistenceProvider;
         }
         public async Task<EventType> Handle(GetEventTypeDetailQuery request, CancellationToken cancellationToken)
         {
-            var eventType = await _eventTypeRepository.GetEventTypeById(request.EventTypeId);
+            var eventType = await persistenceProvider.GetEventTypeById(request.EventTypeId);
 
             return eventType;
         }

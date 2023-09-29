@@ -17,19 +17,19 @@ namespace MeetMe.Application.Availabilities.Commands
 
     public class CloneAvailabilityCommandHandler : IRequestHandler<CloneAvailabilityCommand, Guid>
     {
-        private readonly IAvailabilityRepository _availabilityRepository;
+        private readonly IPersistenceProvider persistenceProvider;
         private readonly ILoginUserInfo _applicationUserInfo;
 
-        public CloneAvailabilityCommandHandler(IAvailabilityRepository availabilityRepository, ILoginUserInfo applicationUserInfo)
+        public CloneAvailabilityCommandHandler(IPersistenceProvider persistenceProvider, ILoginUserInfo applicationUserInfo)
         {
-            _availabilityRepository = availabilityRepository;
+            this.persistenceProvider = persistenceProvider;
             _applicationUserInfo = applicationUserInfo;
         }
         public async Task<Guid> Handle(CloneAvailabilityCommand request, CancellationToken cancellationToken)
         {
             var newId = Guid.NewGuid();
 
-            var availabilityEntity = await _availabilityRepository.GetAvailability(request.Id);
+            var availabilityEntity = await persistenceProvider.GetAvailability(request.Id);
 
             if (availabilityEntity == null)
             {
@@ -56,7 +56,7 @@ namespace MeetMe.Application.Availabilities.Commands
                 }).ToList()
             };
 
-            await _availabilityRepository.AddAvailability(cloneModel);
+            await persistenceProvider.AddAvailability(cloneModel);
 
             return newId;
         }

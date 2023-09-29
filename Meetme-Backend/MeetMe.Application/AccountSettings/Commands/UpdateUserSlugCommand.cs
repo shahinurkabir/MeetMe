@@ -13,18 +13,18 @@ namespace MeetMe.Application.AccountSettings
 
     public class UpdateUserSlugCommandHandler : IRequestHandler<UpdateUserSlugCommand, bool>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IPersistenceProvider persistenceProvider;
         private readonly ILoginUserInfo _userInfo;
 
-        public UpdateUserSlugCommandHandler(IUserRepository userRepository, ILoginUserInfo userInfo)
+        public UpdateUserSlugCommandHandler(IPersistenceProvider persistenceProvider, ILoginUserInfo userInfo)
         {
-            _userRepository = userRepository;
+            this.persistenceProvider = persistenceProvider;
             _userInfo = userInfo;
         }
 
         public async Task<bool> Handle(UpdateUserSlugCommand request, CancellationToken cancellationToken)
         {
-            var userEntity = await _userRepository.GetUserByLoginId(_userInfo.UserId);
+            var userEntity = await persistenceProvider.GetUserByLoginId(_userInfo.UserId);
 
             if (userEntity == null)
             {
@@ -32,7 +32,7 @@ namespace MeetMe.Application.AccountSettings
             }
             userEntity.BaseURI = request.BaseURI;
 
-            await _userRepository.UpdateUser(userEntity);
+            await persistenceProvider.UpdateUser(userEntity);
 
             return true;
 
@@ -42,15 +42,15 @@ namespace MeetMe.Application.AccountSettings
     public class UpdateUserUriCommandValidator : AbstractValidator<UpdateUserSlugCommand>
     {
 
-        public UpdateUserUriCommandValidator(IUserRepository userRepository, ILoginUserInfo userInfo)
+        public UpdateUserUriCommandValidator(IPersistenceProvider persistenceProvider, ILoginUserInfo userInfo)
         {
             RuleFor(m => m.BaseURI).NotEmpty().WithMessage("Link can not be empty");
-            RuleFor(m => m.BaseURI).MustAsync(async (command, slug, token) => (await IsSlugAvailable(userRepository, slug,userInfo.UserId))).WithMessage("Link is already used");
+            RuleFor(m => m.BaseURI).MustAsync(async (command, slug, token) => (await IsSlugAvailable(persistenceProvider, slug,userInfo.UserId))).WithMessage("Link is already used");
         }
 
-        private async Task<bool> IsSlugAvailable(IUserRepository userRepository,string slug,string userId)
+        private async Task<bool> IsSlugAvailable(IPersistenceProvider persistenceProvider,string slug,string userId)
         {
-            var userEntity = await userRepository.GetUserBySlug(slug);
+            var userEntity = await persistenceProvider.GetUserBySlug(slug);
 
             return userEntity==null || userEntity.UserID == userId;
 

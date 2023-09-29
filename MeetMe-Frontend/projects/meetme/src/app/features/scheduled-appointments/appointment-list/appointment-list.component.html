@@ -7,32 +7,17 @@
       <span class="date-time">{{appointment.appointmentDateTime}}</span>
       <span class="event-type">{{appointment.eventTypeTitle}}</span>
       <span class="invitee-name">{{appointment.inviteeName}}</span>
+      <span class="invitee-name">{{appointment.status}}</span>
       <span class="toggle-icon" [ngClass]="{'expanded': appointment.isExpanded, 'collapsed': !appointment.isExpanded}">+</span>
     </div>
     <div class="appointment-details" [ngClass]="{'expanded': appointment.isExpanded,'collapsed': !appointment.isExpanded}">
       <label>Cancellation Reason</label>
       <textarea [(ngModel)]="appointment.cancellationReason" placeholder="Reason"></textarea>
       <div class="actions">
-        <button class="cancel-button" (click)="cancelAppointment(appointment.id)">Cancel</button>
-        <button class="reschedule-button" (click)="rescheduleAppointment(appointment.id)">Reschedule</button>
+        <button *ngIf="appointment.status==='active'" class="cancel-button" (click)="cancelAppointment(appointment)">Cancel</button>
+        <button *ngIf="appointment.status==='active'" class="reschedule-button" (click)="rescheduleAppointment(appointment.id)">Reschedule</button>
       </div>
     </div>
   </li>
 </ul>
  
-<!-- <h1>Appointment List</h1>
-<ul>
-  <li *ngFor="let appointment of appointments; let i=index;">
-    {{appointment.appointmentDateTime}} -
-    {{appointment.eventTypeTitle}} -
-    {{appointment.inviteeName}}
-    <div>
-      <label>Cancellation Reason</label>
-      <br>
-      <textarea [(ngModel)]="cancellationReason" placeholder="Reason"></textarea>
-      <br>
-      <button (click)="cancelAppointment(appointment.id)">Cancel</button>
-    </div>
-    <br>
-  </li>
-</ul> -->

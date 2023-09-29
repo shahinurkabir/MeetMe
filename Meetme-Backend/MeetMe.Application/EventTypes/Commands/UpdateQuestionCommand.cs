@@ -24,17 +24,15 @@ namespace MeetMe.Application.EventTypes.Commands
 
     public class UpdateQuestionCommandHandler : IRequestHandler<UpdateQuestionCommand, bool>
     {
-        private readonly IEventTypeRepository _eventTypeRepository;
-        private readonly IEventQuestionRepository _eventQuestionRepository;
+        private readonly IPersistenceProvider persistenceProvider;
 
-        public UpdateQuestionCommandHandler(IEventTypeRepository eventTypeRepository, IEventQuestionRepository eventQuestionRepository)
+        public UpdateQuestionCommandHandler(IPersistenceProvider persistenceProvider)
         {
-            _eventTypeRepository = eventTypeRepository;
-            _eventQuestionRepository = eventQuestionRepository;
+            this.persistenceProvider = persistenceProvider;
         }
         public async Task<bool> Handle(UpdateQuestionCommand request, CancellationToken cancellationToken)
         {
-            var eventTypeEntity = await _eventTypeRepository.GetEventTypeById(request.EventTypeId);
+            var eventTypeEntity = await persistenceProvider.GetEventTypeById(request.EventTypeId);
 
             if (eventTypeEntity == null)
                 throw new MeetMeException("Invalid event");
@@ -43,7 +41,7 @@ namespace MeetMe.Application.EventTypes.Commands
 
             listQuestionEntities = listQuestionEntities.FindAll(x => x.SystemDefinedYN == false);
 
-            await _eventQuestionRepository.ResetEventQuestions(request.EventTypeId, listQuestionEntities);
+            await persistenceProvider.ResetEventQuestions(request.EventTypeId, listQuestionEntities);
 
             return true;
         }

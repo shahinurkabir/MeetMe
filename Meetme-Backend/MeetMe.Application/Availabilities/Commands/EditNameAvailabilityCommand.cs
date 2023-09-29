@@ -12,16 +12,16 @@ namespace MeetMe.Application.Availabilities.Commands
 
     public class EditNameAvailabilityCommandHandler : IRequestHandler<EditNameAvailabilityCommand, bool>
     {
-        private readonly IAvailabilityRepository availabilityRepository;
+        private readonly IPersistenceProvider persistenceProvider;
 
-        public EditNameAvailabilityCommandHandler(IAvailabilityRepository availabilityRepository)
+        public EditNameAvailabilityCommandHandler(IPersistenceProvider persistenceProvider)
         {
-            this.availabilityRepository = availabilityRepository;
+            this.persistenceProvider = persistenceProvider;
         }
         public async Task<bool> Handle(EditNameAvailabilityCommand request, CancellationToken cancellationToken)
         {
 
-            await availabilityRepository.UpdateAvailabilityName(request.Id, request.Name);
+            await persistenceProvider.UpdateAvailabilityName(request.Id, request.Name);
 
             return true;
 

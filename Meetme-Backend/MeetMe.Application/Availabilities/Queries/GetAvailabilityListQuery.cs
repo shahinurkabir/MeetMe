@@ -15,15 +15,15 @@ namespace MeetMe.Application.Availabilities.Queries
     }
     public class GetAvailabilityListQueryHandler : IRequestHandler<GetAvailabilityListQuery, List<Availability>>
     {
-        private readonly IAvailabilityRepository _availabilityRepository;
+        private readonly IPersistenceProvider persistenceProvider;
 
-        public GetAvailabilityListQueryHandler(IAvailabilityRepository availabilityRepository)
+        public GetAvailabilityListQueryHandler(IPersistenceProvider persistenceProvider)
         {
-            _availabilityRepository = availabilityRepository;
+            this.persistenceProvider = persistenceProvider;
         }
         public async Task<List<Availability>> Handle(GetAvailabilityListQuery request, CancellationToken cancellationToken)
         {
-            var listOfAvailability = await _availabilityRepository.GetListByUserId(request.UserId);
+            var listOfAvailability = await persistenceProvider.GetListByUserId(request.UserId);
 
             return listOfAvailability;
         }

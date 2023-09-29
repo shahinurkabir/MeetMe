@@ -20,16 +20,16 @@ namespace MeetMe.Application.AccountSettings.Queries
 
     public class ProfileDetailQueryHandler : IRequestHandler<ProfileDetailQuery, AccountProfileDto>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IPersistenceProvider persistenceProvider;
 
-        public ProfileDetailQueryHandler(IUserRepository userRepository)
+        public ProfileDetailQueryHandler(IPersistenceProvider persistenceProvider )
         {
-            _userRepository = userRepository;
+            this.persistenceProvider = persistenceProvider;
         }
 
         public async Task<AccountProfileDto> Handle(ProfileDetailQuery request, CancellationToken cancellationToken)
         {
-            var userEntity=await _userRepository.GetUserById(request.Id);
+            var userEntity=await persistenceProvider.GetUserById(request.Id);
 
             if (userEntity==null)
             {
@@ -55,16 +55,16 @@ namespace MeetMe.Application.AccountSettings.Queries
     }
     public class ProfileDetailsQueryBaseURIHandler : IRequestHandler<ProfileDetailQueryByName, AccountProfileDto>
     {
-        private readonly IUserRepository userRepository;
+        private readonly IPersistenceProvider persistenceProvider;
 
-        public ProfileDetailsQueryBaseURIHandler(IUserRepository userRepository)
+        public ProfileDetailsQueryBaseURIHandler(IPersistenceProvider persistenceProvider)
         {
-            this.userRepository = userRepository;
+            this.persistenceProvider = persistenceProvider;
         }
 
         public async Task<AccountProfileDto> Handle(ProfileDetailQueryByName request, CancellationToken cancellationToken)
         {
-            var userEntity = await userRepository.GetUserBySlug(request.Name);
+            var userEntity = await persistenceProvider.GetUserBySlug(request.Name);
 
             if (userEntity == null)
             {

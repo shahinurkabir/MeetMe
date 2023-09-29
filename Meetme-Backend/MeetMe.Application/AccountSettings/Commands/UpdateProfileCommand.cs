@@ -21,17 +21,17 @@ namespace MeetMe.Application.AccountSettings
 
     public class UpdateProfileCommandHandler : IRequestHandler<UpdateProfileCommand, bool>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IPersistenceProvider persistenceProvider;
         private readonly ILoginUserInfo _userInfo;
 
-        public UpdateProfileCommandHandler(IUserRepository userRepository, ILoginUserInfo userInfo)
+        public UpdateProfileCommandHandler(IPersistenceProvider persistenceProvider, ILoginUserInfo userInfo)
         {
-            _userRepository = userRepository;
+            this.persistenceProvider = persistenceProvider;
             _userInfo = userInfo;
         }
         public async Task<bool> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
         {
-            var userEntity = await _userRepository.GetUserByLoginId(_userInfo.UserId);
+            var userEntity = await persistenceProvider.GetUserByLoginId(_userInfo.UserId);
 
             if (userEntity == null)
             {
@@ -42,7 +42,7 @@ namespace MeetMe.Application.AccountSettings
             userEntity.TimeZone = request.TimeZone;
             userEntity.WelcomeText = request.WelcomeText;
 
-            await _userRepository.UpdateUser(userEntity);
+            await persistenceProvider.UpdateUser(userEntity);
 
             return true;
 

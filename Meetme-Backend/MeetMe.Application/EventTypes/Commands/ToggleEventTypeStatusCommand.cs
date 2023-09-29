@@ -21,15 +21,15 @@ namespace MeetMe.Application.EventTypes.Commands
 
     public class ToggleEventTypeStatusCommandHandler : IRequestHandler<ToggleEventTypeStatusCommand, bool>
     {
-        private readonly IEventTypeRepository _eventTypeRepository;
+        private readonly IPersistenceProvider persistenceProvider;
 
-        public ToggleEventTypeStatusCommandHandler(IEventTypeRepository eventTypeRepository)
+        public ToggleEventTypeStatusCommandHandler(IPersistenceProvider persistenceProvider)
         {
-            _eventTypeRepository = eventTypeRepository;
+            this.persistenceProvider = persistenceProvider;
         }
         public async Task<bool> Handle(ToggleEventTypeStatusCommand request, CancellationToken cancellationToken)
         {
-            var eventType = await _eventTypeRepository.GetEventTypeById(request.eventTypeId);
+            var eventType = await persistenceProvider.GetEventTypeById(request.eventTypeId);
 
             if (eventType == null)
             {
@@ -37,7 +37,7 @@ namespace MeetMe.Application.EventTypes.Commands
             }
             eventType.ActiveYN = !eventType.ActiveYN;
 
-            await _eventTypeRepository.UpdateEventType(eventType);
+            await persistenceProvider.UpdateEventType(eventType);
 
             return await Task.FromResult(true);
         }

@@ -16,7 +16,7 @@ export interface ICreateAppointmentCommand {
 
 export interface ICancelAppointmentCommand {
     id: string
-    cancellationReason:string
+    cancellationReason:string|null
 }
 
 export interface IAppointmentDetailsDto {

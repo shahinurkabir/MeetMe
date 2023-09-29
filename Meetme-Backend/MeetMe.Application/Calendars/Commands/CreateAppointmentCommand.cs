@@ -29,11 +29,11 @@ namespace MeetMe.Application.Calendars.Commands
     }
     public class CreateAppoimentCommandHandler : IRequestHandler<CreateAppointmentCommand, Guid>
     {
-        private readonly IAppointmentRepository _appointmentsRepository;
+        private readonly IPersistenceProvider persistenceProvider;
 
-        public CreateAppoimentCommandHandler(IAppointmentRepository appointmentsRepository)
+        public CreateAppoimentCommandHandler(IPersistenceProvider persistenceProvider)
         {
-            _appointmentsRepository = appointmentsRepository;
+            this.persistenceProvider = persistenceProvider;
         }
         public async Task<Guid> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken)
         {
@@ -41,7 +41,7 @@ namespace MeetMe.Application.Calendars.Commands
             DateTime startTimeUTC = request.StartTime.ToUniversalTime();
             DateTime endTimeUTC = startTimeUTC.AddMinutes(request.MeetingDuration);
 
-            var isTimeConflicling = await _appointmentsRepository.IsTimeBooked(request.EventTypeId, startTimeUTC, endTimeUTC);
+            var isTimeConflicling = await persistenceProvider.IsTimeBooked(request.EventTypeId, startTimeUTC, endTimeUTC);
 
             if (isTimeConflicling == true)
             {
@@ -64,7 +64,7 @@ namespace MeetMe.Application.Calendars.Commands
                 DateCreated = DateTime.UtcNow
             };
 
-            await _appointmentsRepository.AddAppointment(entity);
+            await persistenceProvider.AddAppointment(entity);
 
             return newId;
         }

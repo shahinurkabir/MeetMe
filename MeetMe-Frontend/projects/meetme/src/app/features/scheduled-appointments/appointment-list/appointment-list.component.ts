@@ -44,10 +44,10 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
         }
       })
   }
-  cancelAppointment(id: string) {
+  cancelAppointment(appointment: IAppointmentDetailsDto) {
     let cancelAppointmentCommand: ICancelAppointmentCommand = {
-      id: id,
-      cancellationReason: this.cancellationReason
+      id: appointment.id,
+      cancellationReason: appointment.cancellationReason
     }
 
     this.appointmentService.cancelAppointment(cancelAppointmentCommand)

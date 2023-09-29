@@ -20,16 +20,16 @@ namespace MeetMe.Application.Availabilities.Commands
 
     public class UpdateAvailabilityCommandHandler : IRequestHandler<UpdateAvailabilityCommand, bool>
     {
-        private readonly IAvailabilityRepository _availabilityRepository;
+        private readonly IPersistenceProvider persistenceProvider;
 
-        public UpdateAvailabilityCommandHandler(IAvailabilityRepository availabilityRepository)
+        public UpdateAvailabilityCommandHandler(IPersistenceProvider persistenceProvider)
         {
-            _availabilityRepository = availabilityRepository;
+            this.persistenceProvider = persistenceProvider;
         }
         public async Task<bool> Handle(UpdateAvailabilityCommand request, CancellationToken cancellationToken)
         {
 
-            var entity = await _availabilityRepository.GetAvailability(request.Id);
+            var entity = await persistenceProvider.GetAvailability(request.Id);
 
             if (entity == null)
             {
@@ -49,7 +49,7 @@ namespace MeetMe.Application.Availabilities.Commands
             entity.TimeZone = request.TimeZone;
             entity.Details = listScheduleRuleItems;
 
-            await _availabilityRepository.UpdateAvailability(entity);
+            await persistenceProvider.UpdateAvailability(entity);
 
             return true;
 

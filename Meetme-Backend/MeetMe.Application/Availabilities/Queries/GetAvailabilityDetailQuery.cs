@@ -14,15 +14,15 @@ namespace MeetMe.Application.Availabilities.Queries
 
     public class GetAvailabilityDetailQueryHandler : IRequestHandler<GetAvailabilityDetailQuery, Availability>
     {
-        private readonly IAvailabilityRepository _availabilityRepository;
+        private readonly IPersistenceProvider persistenceProvider;
 
-        public GetAvailabilityDetailQueryHandler(IAvailabilityRepository availabilityRepository)
+        public GetAvailabilityDetailQueryHandler(IPersistenceProvider persistenceProvider)
         {
-            _availabilityRepository = availabilityRepository;
+            this.persistenceProvider = persistenceProvider;
         }
         public async Task<Availability> Handle(GetAvailabilityDetailQuery request, CancellationToken cancellationToken)
         {
-            var availability = await _availabilityRepository.GetAvailability(request.Id);
+            var availability = await persistenceProvider.GetAvailability(request.Id);
 
             return availability;
         }
