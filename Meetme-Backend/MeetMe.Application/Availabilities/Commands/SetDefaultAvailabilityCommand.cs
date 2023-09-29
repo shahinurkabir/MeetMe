@@ -2,7 +2,7 @@
 using MeetMe.Core.Interface;
 using MeetMe.Core.Persistence.Interface;
 
-namespace MeetMe.Application.Availabilities.Commands.SetDefault
+namespace MeetMe.Application.Availabilities.Commands
 {
     public class SetDefaultAvailabilityCommand : IRequest<bool>
     {
@@ -21,11 +21,11 @@ namespace MeetMe.Application.Availabilities.Commands.SetDefault
         }
         public async Task<bool> Handle(SetDefaultAvailabilityCommand request, CancellationToken cancellationToken)
         {
-            
+
             await _availabilityRepository.SetDefaultAvailability(request.Id, _userInfo.Id);
 
             return true;
-            
+
         }
     }
 

@@ -5,7 +5,7 @@ using MeetMe.Core.Interface;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 
-namespace MeetMe.Application.EventTypes.Commands.Update
+namespace MeetMe.Application.EventTypes.Commands
 {
     public class UpdateEventAvailabilityCommand : IRequest<bool>
     {

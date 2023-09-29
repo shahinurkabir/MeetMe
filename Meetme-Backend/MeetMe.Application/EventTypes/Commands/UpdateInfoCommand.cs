@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MeetMe.Application.EventTypes.Commands.Update
+namespace MeetMe.Application.EventTypes.Commands
 {
     public class UpdateInfoCommand : IRequest<bool>
     {

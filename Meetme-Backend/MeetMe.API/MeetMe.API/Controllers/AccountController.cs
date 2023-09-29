@@ -3,7 +3,7 @@ using MeetMe.API.Models;
 using MeetMe.Application.AccountSettings;
 using MeetMe.Application.AccountSettings.Dtos;
 using MeetMe.Application.AccountSettings.Queries;
-using MeetMe.Application.Availabilities.Commands.Update;
+using MeetMe.Application.Availabilities.Commands;
 using MeetMe.Core.Constants;
 using MeetMe.Core.Interface;
 using MeetMe.Core.Persistence.Entities;
@@ -90,7 +90,7 @@ namespace MeetMe.API.Controllers
         [Route("uri-available/{uri}")]
         public async Task<ActionResult> LinkAvailable(string uri)
         {
-            var command = new UpdateUserUriCommand { BaseURI = uri };
+            var command = new UpdateUserSlugCommand { BaseURI = uri };
 
             var validator = new UpdateUserUriCommandValidator(userRepository, userInfo);
             var result = await validator.ValidateAsync(command);
@@ -102,7 +102,7 @@ namespace MeetMe.API.Controllers
 
         [HttpPost]
         [Route("update-uri")]
-        public async Task<UpdateProfileResponse?> UpdateURI(UpdateUserUriCommand updateAccountLinkCommand)
+        public async Task<UpdateProfileResponse?> UpdateURI(UpdateUserSlugCommand updateAccountLinkCommand)
         {
             var commandResult = await mediator.Send(updateAccountLinkCommand);
 

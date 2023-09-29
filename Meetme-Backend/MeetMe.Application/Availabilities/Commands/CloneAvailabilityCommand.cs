@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Interface;
+using MeetMe.Core.Exceptions;
 
-namespace MeetMe.Application.Availabilities.Commands.Clone
+namespace MeetMe.Application.Availabilities.Commands
 {
     public class CloneAvailabilityCommand : IRequest<Guid>
     {
@@ -28,26 +29,31 @@ namespace MeetMe.Application.Availabilities.Commands.Clone
         {
             var newId = Guid.NewGuid();
 
-            var originalModel = await _availabilityRepository.GetAvailability(request.Id);
+            var availabilityEntity = await _availabilityRepository.GetAvailability(request.Id);
 
-            var cloneName = $"{originalModel.Name} [ Clone ]";
+            if (availabilityEntity == null)
+            {
+                throw new MeetMeException("Availability not found");
+
+            }
+
+            var cloneName = $"{availabilityEntity.Name} [ Clone ]";
 
             var cloneModel = new Availability
             {
                 Id = newId,
                 Name = cloneName,
                 OwnerId = _applicationUserInfo.Id,
-                TimeZone = originalModel.TimeZone,
-                Details = originalModel.Details.Select(e =>
-                                     new AvailabilityDetail
-                                     {
-                                         AvailabilityId = newId,
-                                         DayType = e.DayType,
-                                         Value = e.Value,
-                                         From = e.From,
-                                         To = e.To,
-                                         StepId = e.StepId
-                                     }).ToList()
+                TimeZone = availabilityEntity.TimeZone,
+                Details = availabilityEntity.Details.Select(e => new AvailabilityDetail
+                {
+                    AvailabilityId = newId,
+                    DayType = e.DayType,
+                    Value = e.Value,
+                    From = e.From,
+                    To = e.To,
+                    StepId = e.StepId
+                }).ToList()
             };
 
             await _availabilityRepository.AddAvailability(cloneModel);

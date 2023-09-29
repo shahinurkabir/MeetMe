@@ -22,9 +22,9 @@ namespace MeetMe.Application.Availabilities.Queries
         }
         public async Task<Availability> Handle(GetAvailabilityDetailQuery request, CancellationToken cancellationToken)
         {
-            var ruleInfo = await _availabilityRepository.GetAvailability(request.Id);
+            var availability = await _availabilityRepository.GetAvailability(request.Id);
 
-            return ruleInfo;
+            return availability;
         }
     }
 }

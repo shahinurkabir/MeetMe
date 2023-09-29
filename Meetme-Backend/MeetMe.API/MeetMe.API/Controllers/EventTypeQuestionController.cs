@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using MeetMe.Application.EventTypes.Commands.Update;
+using MeetMe.Application.EventTypes.Commands;
 using MeetMe.Application.EventTypes.Queries;
 using MeetMe.Core.Persistence.Entities;
 using Microsoft.AspNetCore.Http;

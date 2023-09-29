@@ -6,7 +6,7 @@ using MeetMe.Core.Constant;
 using MeetMe.Core.Constants;
 using FluentValidation;
 
-namespace MeetMe.Application.Availabilities.Commands.Create
+namespace MeetMe.Application.Availabilities.Commands
 {
     public class CreateAvailabilityCommand : IRequest<Guid>
     {
@@ -20,7 +20,7 @@ namespace MeetMe.Application.Availabilities.Commands.Create
         private readonly ILoginUserInfo _applicationUserInfo;
 
         public CreateAvailabilityCommandHandler(
-            IAvailabilityRepository availabilityRepository, 
+            IAvailabilityRepository availabilityRepository,
             ILoginUserInfo applicationUserInfo
             )
         {
@@ -39,7 +39,7 @@ namespace MeetMe.Application.Availabilities.Commands.Create
                 OwnerId = _applicationUserInfo.Id,
                 TimeZone = request.timeZone,
                 IsDefault = false,
-                Details=GetDefaultWeeklySchedule(newId)
+                Details = GetDefaultWeeklySchedule(newId)
             };
 
             await _availabilityRepository.AddAvailability(entity);
@@ -72,7 +72,7 @@ namespace MeetMe.Application.Availabilities.Commands.Create
 
             return listWeekDaysConfig;
         }
-        
+
     }
 
     public class CreateAvailabilityCommandValidator : AbstractValidator<CreateAvailabilityCommand>

@@ -3,22 +3,17 @@ using MeetMe.Core.Persistence.Entities;
 using MediatR;
 using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Exceptions;
-using MeetMe.Core.Constant;
 using MeetMe.Core.Constants;
 using FluentValidation;
 
-namespace MeetMe.Application.EventTypes.Commands.Create
+namespace MeetMe.Application.EventTypes.Commands
 {
     public class CreateEventTypeCommand : IRequest<Guid>
     {
         public string Name { get; set; } = null!;
-
         public string? Description { get; set; }
-
         public string? Location { get; set; }
-
         public string Slug { get; set; } = null!;
-
         public string EventColor { get; set; } = null!;
         public bool ActiveYN { get; set; }
         public string TimeZoneName { get; set; } = null!;
@@ -27,8 +22,6 @@ namespace MeetMe.Application.EventTypes.Commands.Create
         {
             return !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(EventColor);
         }
-
-
     }
 
     public class CreateEventTypeCommandHandler : IRequestHandler<CreateEventTypeCommand, Guid>
@@ -63,7 +56,7 @@ namespace MeetMe.Application.EventTypes.Commands.Create
                 throw new MeetMeException("There is no availability configured yet.");
             }
 
-            var defaultAvailability = listOfAvailabilities.FirstOrDefault(e => e.IsDefault)?? listOfAvailabilities.First();
+            var defaultAvailability = listOfAvailabilities.FirstOrDefault(e => e.IsDefault) ?? listOfAvailabilities.First();
 
             EventType eventTypeInfo = MapCommandToEntity(newEventTypeId, defaultAvailability, request);
 
@@ -104,7 +97,7 @@ namespace MeetMe.Application.EventTypes.Commands.Create
 
         private List<EventTypeAvailabilityDetail> MapDefaultScheduleToEntity(Guid eventTypeId, List<AvailabilityDetail> availabilityDetails)
         {
-            return  availabilityDetails.Select(e => new EventTypeAvailabilityDetail
+            return availabilityDetails.Select(e => new EventTypeAvailabilityDetail
             {
                 Id = Guid.NewGuid(),
                 EventTypeId = eventTypeId,
@@ -117,7 +110,7 @@ namespace MeetMe.Application.EventTypes.Commands.Create
 
         }
 
-        private  List<EventTypeQuestion> GetDefaultQuestion()
+        private List<EventTypeQuestion> GetDefaultQuestion()
         {
             var questions = new List<EventTypeQuestion>()
             {
@@ -172,7 +165,7 @@ namespace MeetMe.Application.EventTypes.Commands.Create
         {
             var listEvents = await eventTypeRepository.GetEventTypeListByUserId(applicationUser.Id);
 
-            var isUsed = listEvents.Count(e =>
+            var isUsed = listEvents != null && listEvents.Count(e =>
             e.Slug.Equals(command.Slug, StringComparison.InvariantCultureIgnoreCase)) > 0;
 
             return isUsed == false;

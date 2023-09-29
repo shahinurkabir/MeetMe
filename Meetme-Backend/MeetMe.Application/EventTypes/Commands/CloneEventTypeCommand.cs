@@ -9,7 +9,7 @@ using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Exceptions;
 
-namespace MeetMe.Application.EventTypes.Commands.Clone
+namespace MeetMe.Application.EventTypes.Commands
 {
     public class CloneEventTypeCommand : IRequest<Guid>
     {
@@ -114,7 +114,7 @@ namespace MeetMe.Application.EventTypes.Commands.Clone
 
             var listEventForThisUser = await _eventTypeRepository.GetEventTypeListByUserId(_applicationUserInfo.Id);
 
-            if (!listEventForThisUser.Any())
+            if (listEventForThisUser == null || listEventForThisUser.Any())
             {
                 return newSlug;
             }

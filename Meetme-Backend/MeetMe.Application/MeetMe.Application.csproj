@@ -39,8 +39,4 @@
     <ProjectReference Include="..\MeetMe.Core\MeetMe.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="EventTypes\Commands\Queries\" />
-  </ItemGroup>
-
 </Project>

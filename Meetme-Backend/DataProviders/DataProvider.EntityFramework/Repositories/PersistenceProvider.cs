@@ -358,37 +358,7 @@ namespace DataProvider.EntityFramework.Repositories
             var userEntity = await _bookingDbContext.Set<User>().FindAsync(id);
             return userEntity;
         }
-        //private static AppointmentDetailsDto ToAppointmentDto(Appointment x)
-        //{
-
-        //    var dto = new AppointmentDetailsDto
-        //    {
-        //        Id = x.Id,
-        //        EventTypeId = x.EventTypeId,
-        //        InviteeName = x.InviteeName,
-        //        InviteeEmail = x.InviteeEmail,
-        //        StartTimeUTC = x.StartTimeUTC,
-        //        EndTimeUTC = x.EndTimeUTC,
-        //        InviteeTimeZone = x.InviteeTimeZone,
-        //        GuestEmails = x.GuestEmails,
-        //        Note = x.Note,
-        //        Status = x.Status.ToString(),
-        //        DateCreated = x.DateCreated,
-        //        DateCancelled = x.DateCancelled,
-        //        CancellationReason = x.CancellationReason,
-        //        EventTypeTitle = x.EventType.Name,
-        //        EventTypeDescription = x.EventType.Description,
-        //        EventTypeLocation = x.EventType.Location,
-        //        EventTypeDuration = x.EventType.Duration,
-        //        EventTypeColor = x.EventType.EventColor,
-        //        EventTypeTimeZone = x.EventType.TimeZone,
-        //        EventOwnerId = x.EventType.OwnerId,
-        //        EventOwnerName = x.EventType.User.UserName,
-        //        AppointmentDateTime = x.InviteeTimeZone.ToAppointmentTimeRangeText(x.EventType.Duration, x.StartTimeUTC),
-        //    };
-
-        //    return dto;
-        //}
+       
 
     }
 }

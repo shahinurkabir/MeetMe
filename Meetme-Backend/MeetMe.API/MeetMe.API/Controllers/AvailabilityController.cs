@@ -2,13 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Interface;
-using MeetMe.Application.Availabilities.Commands.Create;
-using MeetMe.Application.Availabilities.Commands.Update;
 using MeetMe.Application.Availabilities.Queries;
-using MeetMe.Application.Availabilities.Commands.EditName;
-using MeetMe.Application.Availabilities.Commands.Clone;
-using MeetMe.Application.Availabilities.Commands.Delete;
-using MeetMe.Application.Availabilities.Commands.SetDefault;
+using MeetMe.Application.Availabilities.Commands;
 
 namespace MeetMe.API.Controllers
 {

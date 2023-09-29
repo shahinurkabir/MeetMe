@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeetMe.Core.Persistence
+namespace MeetMe.Core.Services
 {
     public class InMemoryDatabase
     {
@@ -33,7 +33,7 @@ namespace MeetMe.Core.Persistence
         }
 
         #region Appointment
-        public async Task<Appointment> GetAppointment(Guid id)
+        public async Task<Appointment?> GetAppointment(Guid id)
         {
             lock (_lockObjectRef)
             {
@@ -77,7 +77,7 @@ namespace MeetMe.Core.Persistence
             }
         }
 
-        public async Task<List<AppointmentDetailsDto>> GetAppointmentsOfEventTypeByDateRange(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
+        public async Task<List<AppointmentDetailsDto>?> GetAppointmentsOfEventTypeByDateRange(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
         {
             lock (_lockObjectRef)
             {
@@ -154,7 +154,7 @@ namespace MeetMe.Core.Persistence
         #endregion
 
         #region Availability
-        public async Task<Availability> GetAvailability(Guid id)
+        public async Task<Availability?> GetAvailability(Guid id)
         {
             lock (_lockObjectRef)
             {
@@ -244,7 +244,8 @@ namespace MeetMe.Core.Persistence
         #endregion
 
         #region event type
-        public async Task<EventType> GetEventTypeById(Guid eventTypeId)
+
+        public async Task<EventType?> GetEventTypeById(Guid eventTypeId)
         {
             lock (_lockObjectRef)
             {
@@ -252,7 +253,7 @@ namespace MeetMe.Core.Persistence
                 return eventType;
             }
         }
-        public async Task<List<EventTypeQuestion>> GetQuestionsByEventId(Guid eventTypeId)
+        public async Task<List<EventTypeQuestion>?> GetQuestionsByEventId(Guid eventTypeId)
         {
             lock (_lockObjectRef)
             {
@@ -289,7 +290,7 @@ namespace MeetMe.Core.Persistence
 
         }
 
-        public async Task<EventType> GetEventTypeBySlug(string slug)
+        public async Task<EventType?> GetEventTypeBySlug(string slug)
         {
             lock (_lockObjectRef)
             {
@@ -298,7 +299,7 @@ namespace MeetMe.Core.Persistence
             }
         }
 
-        public async Task<List<EventType>> GetEventTypeListByUserId(Guid userId)
+        public async Task<List<EventType>?> GetEventTypeListByUserId(Guid userId)
         {
             lock (_lockObjectRef)
             {
@@ -321,11 +322,12 @@ namespace MeetMe.Core.Persistence
                 return true;
             }
         }
-        
+
         #endregion
 
 
         #region User
+
         public async Task<User?> GetUserBySlug(string URI)
         {
             lock (_lockObjectRef)
@@ -353,14 +355,14 @@ namespace MeetMe.Core.Persistence
             }
         }
 
-        public async Task<List<Availability>> GetListByUserId(Guid userId)
+        public async Task<List<Availability>?> GetListByUserId(Guid userId)
         {
             lock (_lockObjectRef)
             {
                 return _inMemoryDatabase.AvailabilityData.Where(e => e.OwnerId == userId).ToList();
             }
         }
-        public async Task<List<User>> GetUserList()
+        public async Task<List<User>?> GetUserList()
         {
             lock (_lockObjectRef)
             {

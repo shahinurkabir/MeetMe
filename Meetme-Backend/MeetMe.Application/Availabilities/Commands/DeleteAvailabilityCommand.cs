@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using MeetMe.Core.Persistence.Interface;
 
-namespace MeetMe.Application.Availabilities.Commands.Delete
+namespace MeetMe.Application.Availabilities.Commands
 {
     public class DeleteAvailabilityCommand : IRequest<bool>
     {
@@ -23,7 +23,7 @@ namespace MeetMe.Application.Availabilities.Commands.Delete
 
             if (entity == null)
             {
-                throw new Exception("Invalid rule id provided");
+                throw new Exception("Invalid id provided");
             }
 
             var result = await _availabilityRepository.DeleteAvailability(entity);

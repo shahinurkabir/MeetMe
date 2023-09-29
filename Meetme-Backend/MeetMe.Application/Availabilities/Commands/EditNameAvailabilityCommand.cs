@@ -2,7 +2,7 @@
 using MediatR;
 using MeetMe.Core.Persistence.Interface;
 
-namespace MeetMe.Application.Availabilities.Commands.EditName
+namespace MeetMe.Application.Availabilities.Commands
 {
     public class EditNameAvailabilityCommand : IRequest<bool>
     {
@@ -20,11 +20,11 @@ namespace MeetMe.Application.Availabilities.Commands.EditName
         }
         public async Task<bool> Handle(EditNameAvailabilityCommand request, CancellationToken cancellationToken)
         {
-            
+
             await availabilityRepository.UpdateAvailabilityName(request.Id, request.Name);
 
             return true;
-            
+
         }
     }
     public class EditNameAvailabilityCommandValidator : AbstractValidator<EditNameAvailabilityCommand>

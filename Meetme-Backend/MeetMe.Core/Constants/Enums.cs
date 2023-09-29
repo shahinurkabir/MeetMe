@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MeetMe.Core.Constant
+namespace MeetMe.Core.Constants
 {
     public class Enums
     {

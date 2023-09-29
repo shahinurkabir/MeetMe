@@ -3,17 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using MeetMe.Application.EventTypes.Queries;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Interface;
-using MeetMe.Application.EventTypes.Commands.Create;
 using Microsoft.AspNetCore.Authorization;
 using MeetMe.Core.Persistence.Interface;
 using MeetMe.Application.AccountSettings.Dtos;
 using MeetMe.API.Models;
-using MeetMe.Application.EventTypes.Commands.Update;
 using MeetMe.Application.EventTypes.Dtos;
-using MeetMe.Application.EventTypes.Commands.Clone;
-using MeetMe.Application.EventTypes.Commands.Manage;
-using MeetMe.Application.EventTypes.Commands.Delete;
-using MeetMe.Application.AccountSettings.Queries;
+using MeetMe.Application.EventTypes.Commands;
 
 namespace MeetMe.API.Controllers
 {
@@ -43,17 +38,6 @@ namespace MeetMe.API.Controllers
 
             return result;
         }
-
-
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("calendar/{user_uri}")]
-        //public async Task<AccountProfileDto?> GetUserCalendar(string user_uri)
-        //{
-        //    var response = await mediator.Send(new ProfileDetailQueryByBaseURI { BaseURI = user_uri });
-
-        //    return response;
-        //}
 
         [AllowAnonymous]
         [HttpGet]

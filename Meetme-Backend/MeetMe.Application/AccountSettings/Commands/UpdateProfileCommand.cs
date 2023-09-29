@@ -17,8 +17,6 @@ namespace MeetMe.Application.AccountSettings
         public string UserName { get; set; } = null!;
         public string TimeZone { get; set; } = null!;
         public string? WelcomeText { get; set; }
-
-
     }
 
     public class UpdateProfileCommandHandler : IRequestHandler<UpdateProfileCommand, bool>

@@ -4,7 +4,7 @@ using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Interface;
 using FluentValidation;
 
-namespace MeetMe.Application.Availabilities.Commands.Update
+namespace MeetMe.Application.Availabilities.Commands
 {
     public class UpdateAvailabilityCommand : IRequest<bool>
     {
@@ -31,7 +31,10 @@ namespace MeetMe.Application.Availabilities.Commands.Update
 
             var entity = await _availabilityRepository.GetAvailability(request.Id);
 
-            if (entity == null) throw new Core.Exceptions.MeetMeException("Invalid schedule provided.");
+            if (entity == null)
+            {
+                throw new Core.Exceptions.MeetMeException("Invalid schedule provided.");
+            }
 
             var listScheduleRuleItems = request.Details.Select(e => new AvailabilityDetail
             {

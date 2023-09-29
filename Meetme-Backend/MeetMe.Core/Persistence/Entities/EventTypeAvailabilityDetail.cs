@@ -18,10 +18,7 @@ namespace MeetMe.Core.Persistence.Entities
         public double From { get; set; }
         public double To { get; set; }
 
-        //[JsonIgnore]
-        //public EventTypeAvailability Availability { get; set; } 
-
         [JsonIgnore]
-        public EventType EventType { get; set; }
+        public EventType EventType { get; set; }=null!;
     }
 }

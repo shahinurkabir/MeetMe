@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using FluentValidation.Validators;
 using MediatR;
-using MeetMe.Application.Services;
 using MeetMe.Core.Exceptions;
 using MeetMe.Core.Interface;
 using MeetMe.Core.Persistence.Entities;

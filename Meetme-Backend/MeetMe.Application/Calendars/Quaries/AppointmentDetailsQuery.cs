@@ -6,13 +6,11 @@ using MeetMe.Core.Persistence.Interface;
 
 namespace MeetMe.Application.Calendars.Quaries
 {
-    //create command class for get appointment  details with id type guid
     public class AppointmentDetailsQuery : IRequest<AppointmentDetailsDto>
     {
         public Guid Id { get; set; }
     }
 
-    // create a class for handle the request
     public class AppointmentDetailsQueryHandler : IRequestHandler<AppointmentDetailsQuery, AppointmentDetailsDto>
     {
         private readonly IAppointmentRepository _appointmentsRepository;
