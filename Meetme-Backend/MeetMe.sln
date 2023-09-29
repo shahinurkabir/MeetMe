@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{DC19932F-D67
 		..\sql\BookingDb.sql = ..\sql\BookingDb.sql
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataProvider.InMemoryData", "DataProviders\DataProvider.InMemoryData\DataProvider.InMemoryData.csproj", "{7ED0DCD4-3D1F-49C2-B314-58FAE71A7F95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,10 @@ Global
 		{B313940E-65F6-42EC-A82D-B06DFD3A9B26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B313940E-65F6-42EC-A82D-B06DFD3A9B26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B313940E-65F6-42EC-A82D-B06DFD3A9B26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7ED0DCD4-3D1F-49C2-B314-58FAE71A7F95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ED0DCD4-3D1F-49C2-B314-58FAE71A7F95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ED0DCD4-3D1F-49C2-B314-58FAE71A7F95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ED0DCD4-3D1F-49C2-B314-58FAE71A7F95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +68,7 @@ Global
 		{3CD21330-3945-4F3A-BDBD-3EEA191884D4} = {E66684FA-0E24-4868-BA98-AB3B52A7BBA9}
 		{C9911508-2028-4A74-A86C-10A57A86C340} = {E66684FA-0E24-4868-BA98-AB3B52A7BBA9}
 		{B313940E-65F6-42EC-A82D-B06DFD3A9B26} = {E8D059D6-F62D-4C30-8034-61E656132048}
+		{7ED0DCD4-3D1F-49C2-B314-58FAE71A7F95} = {E66684FA-0E24-4868-BA98-AB3B52A7BBA9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3BED16DA-9F2E-41CE-B197-A1E09A4A4B14}

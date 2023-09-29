@@ -1,4 +1,5 @@
 using DataProvider.EntityFramework;
+using DataProvider.InMemoryData;
 using MeetMe.API.Middlewares;
 using MeetMe.API.Models;
 using MeetMe.Application;
@@ -65,7 +66,8 @@ builder.Services.AddScoped<ICacheService, InMemoryCacheService>();
 builder.Services.AddScoped<IDateTimeService, DateTimeService>();
 
 builder.Services.RegisterApplication();
-builder.Services.UseEFCoreSQLServer(dbConnectionString);
+builder.Services.UseInMemoryData();
+//builder.Services.UseEFCoreSQLServer(dbConnectionString);
 
 
 builder.Services.AddCors(e => e.AddPolicy("AllowAll",
