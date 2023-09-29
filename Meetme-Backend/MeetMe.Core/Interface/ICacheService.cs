@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeetMe.Core.Interface.Caching
+namespace MeetMe.Core.Interface
 {
     public interface ICacheService
     {

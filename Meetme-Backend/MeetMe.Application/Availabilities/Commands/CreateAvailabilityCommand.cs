@@ -2,7 +2,6 @@
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Interface;
-using MeetMe.Core.Constant;
 using MeetMe.Core.Constants;
 using FluentValidation;
 

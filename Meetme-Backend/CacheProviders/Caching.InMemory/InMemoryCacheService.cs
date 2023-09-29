@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Threading.Tasks;
-using MeetMe.Core.Interface.Caching;
+using MeetMe.Core.Interface;
 
 namespace MeetMe.Caching.InMemory
 {
