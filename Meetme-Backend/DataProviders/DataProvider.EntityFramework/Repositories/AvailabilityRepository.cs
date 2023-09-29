@@ -6,9 +6,9 @@ namespace DataProvider.EntityFramework.Repositories
 {
     public class AvailabilityRepository : IAvailabilityRepository
     {
-        private readonly BookingDbContext _bookingDbContext;
+        private readonly MeetMeDbContext _bookingDbContext;
 
-        public AvailabilityRepository(BookingDbContext bookingDbContext)
+        public AvailabilityRepository(MeetMeDbContext bookingDbContext)
         {
             _bookingDbContext = bookingDbContext;
         }

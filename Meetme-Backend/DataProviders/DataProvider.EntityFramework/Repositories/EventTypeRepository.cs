@@ -11,9 +11,9 @@ namespace DataProvider.EntityFramework.Repositories
 {
     public class EventTypeRepository : IEventTypeRepository
     {
-        private readonly BookingDbContext _bookingDbContext;
+        private readonly MeetMeDbContext _bookingDbContext;
 
-        public EventTypeRepository(BookingDbContext bookingDbContext)
+        public EventTypeRepository(MeetMeDbContext bookingDbContext)
         {
             _bookingDbContext = bookingDbContext;
         }

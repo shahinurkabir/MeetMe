@@ -65,7 +65,7 @@ builder.Services.AddScoped<ICacheService, InMemoryCacheService>();
 builder.Services.AddScoped<IDateTimeService, DateTimeService>();
 
 builder.Services.RegisterApplication();
-builder.Services.RegisterDBPersistence(dbConnectionString);
+builder.Services.UseEFCoreSQLServer(dbConnectionString);
 
 
 builder.Services.AddCors(e => e.AddPolicy("AllowAll",

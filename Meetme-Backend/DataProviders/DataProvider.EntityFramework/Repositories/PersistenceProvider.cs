@@ -13,9 +13,9 @@ namespace DataProvider.EntityFramework.Repositories
 {
     public class PersistenceProviderEntityFrameWork : IPersistenceProvider
     {
-        private readonly BookingDbContext _bookingDbContext;
+        private readonly MeetMeDbContext _bookingDbContext;
 
-        public PersistenceProviderEntityFrameWork(BookingDbContext bookingDbContext)
+        public PersistenceProviderEntityFrameWork(MeetMeDbContext bookingDbContext)
         {
             _bookingDbContext = bookingDbContext;
         }

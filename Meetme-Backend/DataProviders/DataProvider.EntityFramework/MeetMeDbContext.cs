@@ -13,9 +13,9 @@ using DataProvider.EntityFramework.Extensions;
 
 namespace DataProvider.EntityFramework
 {
-    public class BookingDbContext : DbContext
+    public class MeetMeDbContext : DbContext
     {
-        public BookingDbContext(DbContextOptions<BookingDbContext> dbContextOptions) : base(dbContextOptions)
+        public MeetMeDbContext(DbContextOptions<MeetMeDbContext> dbContextOptions) : base(dbContextOptions)
         {
 
         }

@@ -11,15 +11,14 @@ namespace DataProvider.EntityFramework
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection RegisterDBPersistence(this IServiceCollection  services,string connectionString)
+        public static IServiceCollection UseEFCoreSQLServer(this IServiceCollection  services,string connectionString)
         {
-            services.AddDbContext<BookingDbContext>(option => option.UseSqlServer(connectionString));
+            services.AddDbContext<MeetMeDbContext>(option => option.UseSqlServer(connectionString));
 
             services.AddScoped<IEventTypeRepository, EventTypeRepository>();
             services.AddScoped<IEventQuestionRepository, EventQuestionRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
-            //services.AddScoped<IEventTypeAvailabilityRepository, EventTypeAvailabilityDetailRepository>();
             services.AddScoped<IAppointmentRepository,AppointmentRepository>();
 
             return services;

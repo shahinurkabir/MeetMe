@@ -8,9 +8,9 @@ namespace DataProvider.EntityFramework.Repositories
 {
     public class AppointmentRepository : IAppointmentRepository
     {
-        private readonly BookingDbContext _bookingDbContext;
+        private readonly MeetMeDbContext _bookingDbContext;
 
-        public AppointmentRepository(BookingDbContext bookingDbContext)
+        public AppointmentRepository(MeetMeDbContext bookingDbContext)
         {
             this._bookingDbContext = bookingDbContext;
         }
