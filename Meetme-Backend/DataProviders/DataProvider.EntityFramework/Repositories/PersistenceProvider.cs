@@ -13,16 +13,16 @@ namespace DataProvider.EntityFramework.Repositories
 {
     public class PersistenceProviderEntityFrameWork : IPersistenceProvider
     {
-        private readonly MeetMeDbContext _bookingDbContext;
+        private readonly MeetMeDbContext _dbContext;
 
         public PersistenceProviderEntityFrameWork(MeetMeDbContext bookingDbContext)
         {
-            _bookingDbContext = bookingDbContext;
+            _dbContext = bookingDbContext;
         }
         public async Task<bool> AddAvailability(Availability availability)
         {
-            await _bookingDbContext.AddAsync(availability);
-            _bookingDbContext.SaveChanges();
+            await _dbContext.AddAsync(availability);
+            _dbContext.SaveChanges();
 
             return true;
 
@@ -30,16 +30,16 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<bool> UpdateAvailability(Availability availability)
         {
-            var listScheduleLineItem = await _bookingDbContext.Set<AvailabilityDetail>()
+            var listScheduleLineItem = await _dbContext.Set<AvailabilityDetail>()
                 .Where(e => e.AvailabilityId == availability.Id)
                 .ToListAsync();
 
-            _bookingDbContext.RemoveRange(listScheduleLineItem);
+            _dbContext.RemoveRange(listScheduleLineItem);
 
-            _bookingDbContext.Update(availability);
+            _dbContext.Update(availability);
 
             // update time schedule of all event type availability those are related to this schedule rule
-            var listEventType = await _bookingDbContext.Set<EventType>()
+            var listEventType = await _dbContext.Set<EventType>()
                 .Where(e => e.AvailabilityId == availability.Id)
                 .Include(e => e.EventTypeAvailabilityDetails)
                 .ToListAsync();
@@ -58,7 +58,7 @@ namespace DataProvider.EntityFramework.Repositories
                 }));
             }
 
-            _bookingDbContext.SaveChanges();
+            _dbContext.SaveChanges();
 
             return true;
         }
@@ -68,7 +68,7 @@ namespace DataProvider.EntityFramework.Repositories
             availability.IsDeleted = true;
 
             // detach all event type availability those are related from this schedule rule
-            var listEventType = await _bookingDbContext.Set<EventType>()
+            var listEventType = await _dbContext.Set<EventType>()
                 .Where(e => e.AvailabilityId == availability.Id)
                 .ToListAsync();
 
@@ -77,7 +77,7 @@ namespace DataProvider.EntityFramework.Repositories
                 eventTypeItem.AvailabilityId = null;
             }
 
-            await _bookingDbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
@@ -91,7 +91,7 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<Availability> GetAvailability(Guid ruleId)
         {
-            var scheduleRule = await _bookingDbContext.Set<Availability>()
+            var scheduleRule = await _dbContext.Set<Availability>()
                 .Include(e => e.Details)
                 .Where(e => e.Id == ruleId)
                 .FirstOrDefaultAsync();
@@ -101,7 +101,7 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<bool> UpdateAvailabilityName(Guid id, string nameToUpdate)
         {
-            var entity = await _bookingDbContext.Set<Availability>()
+            var entity = await _dbContext.Set<Availability>()
                 .FindAsync(id);
 
             if (entity == null)
@@ -111,7 +111,7 @@ namespace DataProvider.EntityFramework.Repositories
 
             entity.Name = nameToUpdate;
 
-            await _bookingDbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true;
 
@@ -133,7 +133,7 @@ namespace DataProvider.EntityFramework.Repositories
 
             entity.IsDefault = true;
 
-            await _bookingDbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true;
 
@@ -141,7 +141,7 @@ namespace DataProvider.EntityFramework.Repositories
 
         private async Task<List<Availability>> GetAvailabilityList(Guid userId)
         {
-            var list = await _bookingDbContext.Set<Availability>()
+            var list = await _dbContext.Set<Availability>()
                 .Include(e => e.Details)
                 .Where(e => e.OwnerId == userId)
                 .ToListAsync();
@@ -151,9 +151,9 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<bool> AddNewEventType(EventType eventTypeInfo)
         {
-            await _bookingDbContext.AddAsync(eventTypeInfo);
+            await _dbContext.AddAsync(eventTypeInfo);
 
-            await _bookingDbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true;
 
@@ -161,7 +161,7 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<EventType> GetEventTypeById(Guid eventTypeId)
         {
-            var entity = await _bookingDbContext.Set<EventType>()
+            var entity = await _dbContext.Set<EventType>()
                 .Where(e => e.Id == eventTypeId)
                 .Include(e => e.EventTypeAvailabilityDetails)
                 .Include(e => e.Questions)
@@ -172,7 +172,7 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<EventType> GetEventTypeBySlug(string slug)
         {
-            var entity = await _bookingDbContext.Set<EventType>()
+            var entity = await _dbContext.Set<EventType>()
                 .Where(e => e.Slug == slug)
                 .Include(e => e.EventTypeAvailabilityDetails)
                 .Include(e => e.Questions)
@@ -183,9 +183,9 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<bool> UpdateEventType(EventType eventTypeInfo)
         {
-            _bookingDbContext.Update(eventTypeInfo);
+            _dbContext.Update(eventTypeInfo);
 
-            await _bookingDbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
@@ -194,27 +194,27 @@ namespace DataProvider.EntityFramework.Repositories
         {
             var eventTypeId = eventTypeInfo.Id;
 
-            var existingAvailabilityDetails = await _bookingDbContext.Set<EventTypeAvailabilityDetail>()
+            var existingAvailabilityDetails = await _dbContext.Set<EventTypeAvailabilityDetail>()
               .Where(e => e.EventTypeId == eventTypeId)
               .ToListAsync();
 
             if (existingAvailabilityDetails.Any())
             {
-                _bookingDbContext.RemoveRange(existingAvailabilityDetails);
+                _dbContext.RemoveRange(existingAvailabilityDetails);
 
             }
-            await _bookingDbContext.AddRangeAsync(scheduleDetails);
+            await _dbContext.AddRangeAsync(scheduleDetails);
 
-            _bookingDbContext.Update(eventTypeInfo);
+            _dbContext.Update(eventTypeInfo);
 
-            await _bookingDbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
 
         public async Task<List<EventType>> GetEventTypeListByUserId(Guid userId)
         {
-            var result = await _bookingDbContext.Set<EventType>()
+            var result = await _dbContext.Set<EventType>()
                 .Where(e => e.OwnerId == userId)
                 .ToListAsync();
 
@@ -223,64 +223,64 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<List<EventTypeQuestion>> GetQuestionsByEventId(Guid eventTypeId)
         {
-            return await _bookingDbContext.Set<EventTypeQuestion>()
+            return await _dbContext.Set<EventTypeQuestion>()
                 .Where(e => e.EventTypeId == eventTypeId)
                 .ToListAsync();
         }
 
         public async Task<bool> ResetEventQuestions(Guid eventTypeId, List<EventTypeQuestion> questions)
         {
-            var listOfQuestion = await _bookingDbContext.Set<EventTypeQuestion>()
+            var listOfQuestion = await _dbContext.Set<EventTypeQuestion>()
                .Where(e => e.EventTypeId == eventTypeId && e.SystemDefinedYN == false)
                .ToListAsync();
 
             if (listOfQuestion.Any())
             {
-                _bookingDbContext.RemoveRange(listOfQuestion);
+                _dbContext.RemoveRange(listOfQuestion);
 
             }
-            await _bookingDbContext.AddRangeAsync(questions);
+            await _dbContext.AddRangeAsync(questions);
 
-            await _bookingDbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
 
         public async Task<bool> AddAppointment(Appointment appointment)
         {
-            await _bookingDbContext.Set<Appointment>().AddAsync(appointment);
+            await _dbContext.Set<Appointment>().AddAsync(appointment);
 
-            await _bookingDbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
 
         public async Task<bool> DeleteAppointment(Guid id)
         {
-            await _bookingDbContext.Set<Appointment>().Where(x => x.Id == id).ExecuteDeleteAsync();
-            return await _bookingDbContext.SaveChangesAsync() > 0;
+            await _dbContext.Set<Appointment>().Where(x => x.Id == id).ExecuteDeleteAsync();
+            return await _dbContext.SaveChangesAsync() > 0;
         }
 
         public async Task<Appointment> GetAppointment(Guid id)
         {
-            return await _bookingDbContext.Set<Appointment>().FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbContext.Set<Appointment>().FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<bool> IsTimeBooked(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
         {
-            return await _bookingDbContext.Set<Appointment>()
+            return await _dbContext.Set<Appointment>()
                 .AnyAsync(x => x.EventTypeId == eventTypeId && x.StartTimeUTC >= startDateUTC && x.EndTimeUTC <= endDateUTC);
         }
 
         public async Task<bool> UpdateAppointment(Appointment appointment)
         {
-            _bookingDbContext.Set<Appointment>().Update(appointment);
-            return await _bookingDbContext.SaveChangesAsync() > 0;
+            _dbContext.Set<Appointment>().Update(appointment);
+            return await _dbContext.SaveChangesAsync() > 0;
         }
 
         public async Task<AppointmentDetailsDto?> GetAppointmentDetails(Guid id)
         {
-            var result = await _bookingDbContext.Set<Appointment>()
+            var result = await _dbContext.Set<Appointment>()
                  .Where(x => x.Id == id)
                  .Include(x => x.EventType)
                  .ThenInclude(x => x.User)
@@ -293,7 +293,7 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<List<AppointmentDetailsDto>?> GetAppointmentsByUserId(Guid userId)
         {
-            var result = await _bookingDbContext.Set<Appointment>()
+            var result = await _dbContext.Set<Appointment>()
                   .Include(x => x.EventType)
                   .ThenInclude(x => x.User)
                   .Where(x => x.EventType.User.Id == userId)
@@ -304,19 +304,19 @@ namespace DataProvider.EntityFramework.Repositories
         }
         public async Task<List<AppointmentDetailsDto>?> GetAppointmentsOfEventTypeByDateRange(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
         {
-            var result = await _bookingDbContext.Set<Appointment>()
+            var result = await _dbContext.Set<Appointment>()
                   .Include(x => x.EventType)
                   .ThenInclude(x => x.User)
                   .Where(x => x.EventTypeId == eventTypeId && x.StartTimeUTC >= startDateUTC && x.EndTimeUTC <= endDateUTC)
-                  .Select(x => AppointmentDetailsDto.New(x,x.EventType!,x.EventType!.User))
+                  //.Select(x => AppointmentDetailsDto.New(x,x.EventType!,x.EventType!.User))
                   .ToListAsync();
-
-            return result;
+            return result?.Select(x => AppointmentDetailsDto.New(x, x.EventType!, x.EventType!.User)).ToList();
+            // return result;
         }
 
         public async Task<User?> GetUserByLoginId(string userId)
         {
-            var user = await _bookingDbContext.Set<User>()
+            var user = await _dbContext.Set<User>()
                 .FirstOrDefaultAsync(x => x.UserID == userId);
 
             return user;
@@ -324,14 +324,14 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<User?> GetUserBySlug(string URI)
         {
-            var entity = await _bookingDbContext.Set<User>()
+            var entity = await _dbContext.Set<User>()
                 .FirstOrDefaultAsync(e => e.BaseURI.ToLower() == URI.ToLower());
             return entity;
         }
 
         public async Task<bool> IsUserSlugAvailable(string URI, Guid id)
         {
-            var entity = await _bookingDbContext.Set<User>()
+            var entity = await _dbContext.Set<User>()
                             .FirstOrDefaultAsync(e => e.BaseURI.ToLower() == URI.ToLower());
 
             if (entity == null) return true;
@@ -340,25 +340,43 @@ namespace DataProvider.EntityFramework.Repositories
         }
         public async Task<List<User>> GetUserList()
         {
-            var list = await _bookingDbContext.Set<User>().ToListAsync();
+            var list = await _dbContext.Set<User>().ToListAsync();
             return list;
         }
 
         public async Task<bool> UpdateUser(User userEntity)
         {
-            _bookingDbContext.Set<User>().Update(userEntity);
+            _dbContext.Set<User>().Update(userEntity);
 
-            await _bookingDbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
 
         public async Task<User?> GetUserById(Guid id)
         {
-            var userEntity = await _bookingDbContext.Set<User>().FindAsync(id);
+            var userEntity = await _dbContext.Set<User>().FindAsync(id);
             return userEntity;
         }
-       
+
+        public async Task<bool> AddNewUser(User userEntity)
+        {
+
+            this._dbContext.Set<User>().Add(userEntity);
+            await this._dbContext.SaveChangesAsync();
+
+            return true;
+
+        }
+
+        public void EnsureDbCreated()
+        {
+            this._dbContext.Database.EnsureCreated();
+
+            if (_dbContext.Set<User>().Any()) return;
+
+        }
+
 
     }
 }

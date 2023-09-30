@@ -4,6 +4,7 @@ namespace MeetMe.Core.Persistence.Interface
 {
     public interface IUserRepository
     {
+        Task<bool> AddNewUser(User userEntity);
         Task<List<User>?> GetUserList();
         Task<User?> GetUserById(Guid id);
         Task<User?> GetUserByLoginId(string userId);

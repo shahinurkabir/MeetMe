@@ -4,7 +4,7 @@ namespace MeetMe.Core.Persistence.Interface
 {
     public interface IPersistenceProvider :IAvailabilityRepository, IEventTypeRepository, IEventQuestionRepository, IAppointmentRepository,IUserRepository
     {
-        
+        void EnsureDbCreated();
     }
 
 }

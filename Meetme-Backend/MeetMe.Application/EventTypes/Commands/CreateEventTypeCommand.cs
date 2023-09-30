@@ -24,13 +24,13 @@ namespace MeetMe.Application.EventTypes.Commands
         }
     }
 
-    public class CreateEventTypeCommandHandler : IRequestHandler<CreateEventTypeCommand, Guid>
+    public class CreateEventTypeCommandHanlder : IRequestHandler<CreateEventTypeCommand, Guid>
     {
         private readonly IPersistenceProvider persistenceProvider;
         private readonly ILoginUserInfo _applicationUser;
         private readonly IDateTimeService _dateTimeService;
 
-        public CreateEventTypeCommandHandler(
+        public CreateEventTypeCommandHanlder(
             IPersistenceProvider persistenceProvider,
             ILoginUserInfo applicationUser,
             IDateTimeService dateTimeService

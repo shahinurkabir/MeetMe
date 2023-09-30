@@ -1,31 +1,30 @@
 ﻿using MeetMe.Core.Persistence.Entities;
 
-namespace DataProvider.InMemoryData
+namespace DataProvider.InMemoryData;
+
+public class InMemoryDatabase
 {
-    public class InMemoryDatabase
+    public InMemoryDatabase()
     {
-        public InMemoryDatabase()
+        UserData.Add(new User
         {
-            UserData.Add(new User
-            {
-                Id = Guid.NewGuid(),
-                UserName = "Test User",
-                UserID = "admin",
-                Password = "123",
-                BaseURI = "shahinur-kabir",
-                TimeZone = "asia/dhaka",
-                WelcomeText = "Please do book an appointment to talk about something."
-            });
-        }
-
-        public List<Availability> AvailabilityData { get; } = new List<Availability>();
-        public List<Appointment> AppointmentData { get; } = new List<Appointment>();
-        public List<EventTypeQuestion> EventQuestionData { get; } = new List<EventTypeQuestion>();
-        public List<EventType> EventTypeData { get; } = new List<EventType>();
-        public List<User> UserData { get; } = new List<User>();
-
+            Id = Guid.NewGuid(),
+            UserName = "Test User",
+            UserID = "admin",
+            Password = "123",
+            BaseURI = "shahinur-kabir",
+            TimeZone = "asia/dhaka",
+            WelcomeText = "Please do book an appointment to talk about something."
+        });
     }
 
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+    public List<Availability> AvailabilityData { get; } = new List<Availability>();
+    public List<Appointment> AppointmentData { get; } = new List<Appointment>();
+    public List<EventTypeQuestion> EventQuestionData { get; } = new List<EventTypeQuestion>();
+    public List<EventType> EventTypeData { get; } = new List<EventType>();
+    public List<User> UserData { get; } = new List<User>();
 
 }
+
+
+

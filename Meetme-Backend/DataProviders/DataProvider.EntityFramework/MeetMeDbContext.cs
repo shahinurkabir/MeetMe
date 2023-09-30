@@ -15,13 +15,24 @@ namespace DataProvider.EntityFramework
 {
     public class MeetMeDbContext : DbContext
     {
+        //private readonly string connectionString;
+
+        //public MeetMeDbContext(string connectionString)
+        //{
+        //    this.connectionString = connectionString;
+        //}
         public MeetMeDbContext(DbContextOptions<MeetMeDbContext> dbContextOptions) : base(dbContextOptions)
         {
 
         }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+           // optionsBuilder.UseSqlServer(connectionString);
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof( EventTypeEntityConfiguration).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof( EventTypeConfiguration).Assembly);
 
             modelBuilder.Entity<EventType>().HasQueryFilter(e => !e.IsDeleted);
 
@@ -34,5 +45,7 @@ namespace DataProvider.EntityFramework
             }
 
         }
+
+
     }
 }

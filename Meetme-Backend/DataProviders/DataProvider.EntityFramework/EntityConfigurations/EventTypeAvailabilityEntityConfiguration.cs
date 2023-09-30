@@ -4,16 +4,30 @@ using MeetMe.Core.Persistence.Entities;
 
 namespace DataProvider.EntityFramework.EntityConfigurations
 {
-    public class EventTypeAvailabilityEntityConfiguration : IEntityTypeConfiguration<EventTypeAvailabilityDetail>
+    public class EventTypeAvailabilityDetailConfiguration : IEntityTypeConfiguration<EventTypeAvailabilityDetail>
     {
         public void Configure(EntityTypeBuilder<EventTypeAvailabilityDetail> builder)
         {
-            builder.ToTable("EventTypeAvailabilityDetail");
-            builder.HasKey(e => e.Id);
-            builder.HasOne(e => e.EventType)
-                .WithMany(e => e.EventTypeAvailabilityDetails)
-                .HasForeignKey(f => f.EventTypeId)
-                .OnDelete(DeleteBehavior.SetNull);
+            builder.ToTable("EventTypeAvailabilityDetails"); // Set the table name
+            builder.HasKey(ead => ead.Id); // Set the primary key
+
+            // Configure properties
+            builder.Property(ead => ead.Id).IsRequired().HasColumnType("uniqueidentifier");
+            builder.Property(ead => ead.EventTypeId).HasColumnType("uniqueidentifier");
+            builder.Property(ead => ead.DayType).IsRequired().HasColumnType("varchar(15)");
+            builder.Property(ead => ead.Value).IsRequired().HasColumnType("varchar(15)");
+            builder.Property(ead => ead.StepId).HasColumnType("smallint");
+            builder.Property(ead => ead.From).HasColumnType("float");
+            builder.Property(ead => ead.To).HasColumnType("float");
+
+            // Configure foreign key relationship
+            builder.HasOne(ead => ead.EventType)
+                   .WithMany(et => et.EventTypeAvailabilityDetails)
+                   .HasForeignKey(ead => ead.EventTypeId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
+
+
 }

@@ -5,10 +5,13 @@ using MeetMe.API.Models;
 using MeetMe.Application;
 using MeetMe.Caching.InMemory;
 using MeetMe.Core.Interface;
+using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,7 +52,7 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 
-var dbConnectionString = builder.Configuration.GetConnectionString("BookingDB")??"";// TODO: handle null more gracefully later
+//var dbConnectionString = builder.Configuration.GetConnectionString("MeetMeDb") ?? "";
 
 RegisterJwtAuthentication(builder);
 RegisterAuthorization(builder);
@@ -65,9 +68,12 @@ builder.Services.AddScoped<ILoginUserInfo, LoginUserInfo>();
 builder.Services.AddScoped<ICacheService, InMemoryCacheService>();
 builder.Services.AddScoped<IDateTimeService, DateTimeService>();
 
+//builder.Services.UseInMemoryData();
+
+//builder.Services.UseEFCoreSQLServer(builder.Configuration.GetConnectionString("MeetMeDb")!);
+builder.Services.UseEFCoreSQLite(builder.Configuration.GetConnectionString("MeetMeDb")!);
+
 builder.Services.RegisterApplication();
-builder.Services.UseInMemoryData();
-//builder.Services.UseEFCoreSQLServer(dbConnectionString);
 
 
 builder.Services.AddCors(e => e.AddPolicy("AllowAll",
@@ -98,6 +104,15 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var serviceScope = app.Services.CreateScope())
+{
+    var dbProvider = serviceScope.ServiceProvider.GetRequiredService<IPersistenceProvider>();
+    var seedDataService = serviceScope.ServiceProvider.GetRequiredService<SeedDataService>();
+
+    dbProvider.EnsureDbCreated();
+    await seedDataService.SeedData();
+}
 
 app.Run();
 

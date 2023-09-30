@@ -381,6 +381,20 @@ namespace DataProvider.InMemoryData
             }
         }
 
+        public async Task<bool> AddNewUser(User userEntity)
+        {
+            lock (_lockObjectRef)
+            {
+                _inMemoryDatabase.UserData.Add(userEntity);
+
+                return true;
+            }
+
+        }
+        public void EnsureDbCreated()
+        {
+        }
+
         #endregion
 
     }
