@@ -22,7 +22,26 @@ namespace MeetMe.Core.Services
             this.dateTimeService = dateTimeService;
         }
 
-        public async Task SeedData()
+        public async Task<bool> RunAsync(string userTimeZoneName)
+        {
+            Guid adminUserId = await AddAdminUser(userTimeZoneName);
+
+            Guid availabilityId = await AddNewDefaultAvilability(adminUserId, userTimeZoneName);
+
+            await AddNewEventType(adminUserId, availabilityId);
+
+            return true;
+        }
+
+
+        public async Task<bool> IsDataSeededAsync()
+        {
+            var result = await persistenceProvider.GetUserList();
+
+            return result != null && result.Any();
+        }
+
+        private async Task<Guid> AddAdminUser(string timeZoneName)
         {
             var adminUserId = Guid.NewGuid();
             var _ = await persistenceProvider.AddNewUser(new Persistence.Entities.User
@@ -30,75 +49,39 @@ namespace MeetMe.Core.Services
                 Id = adminUserId,
                 UserID = "admin",
                 Password = "123",
-                UserName = "admin",
-                BaseURI = "meetme-admin",
-                TimeZone = "Asia/Dhaka",
+                UserName = "administrator",
+                BaseURI = "admin",
+                TimeZone = timeZoneName,
                 WelcomeText = "Please do book an appointment to talk about something."
 
             });
-
+            return adminUserId;
+        }
+        private async Task<Guid> AddNewDefaultAvilability(Guid adminUserId, string timeZoneName)
+        {
             var availabilityId = Guid.NewGuid();
-            var result = await persistenceProvider.AddAvailability(new Persistence.Entities.Availability
+
+            var result = await persistenceProvider.AddAvailability(new Availability
             {
                 Id = availabilityId,
                 IsDefault = true,
                 IsDeleted = false,
                 Name = "Availability Schedule - Default",
                 OwnerId = adminUserId,
-                TimeZone = "Asia/Dhaka",
-
-                Details = new List<Persistence.Entities.AvailabilityDetail>
-                 {
-                     new Persistence.Entities.AvailabilityDetail
-                     {
-                      DayType = Constants.Events.SCHEDULE_DATETYPE_WEEKDAY,
-                      Value = "Monday",
-                      From = 540,// 9AM
-                      To = 1020, // 5PM
-                      StepId = 0,
-                     },
-                     new Persistence.Entities.AvailabilityDetail
-                     {
-                      DayType = Constants.Events.SCHEDULE_DATETYPE_WEEKDAY,
-                      Value = "Tuesday",
-                      From = 540,// 9AM
-                      To = 1020, // 5PM
-                      StepId = 0,
-                     },
-                      new Persistence.Entities.AvailabilityDetail
-                     {
-                      DayType = Constants.Events.SCHEDULE_DATETYPE_WEEKDAY,
-                      Value = "Wednesday",
-                      From = 540,// 9AM
-                      To = 1020, // 5PM
-                      StepId = 0,
-                     },
-                      new Persistence.Entities.AvailabilityDetail
-                     {
-                      DayType = Constants.Events.SCHEDULE_DATETYPE_WEEKDAY,
-                      Value = "Thursday",
-                      From = 540,// 9AM
-                      To = 1020, // 5PM
-                      StepId = 0,
-                     },
-                      new Persistence.Entities.AvailabilityDetail
-                     {
-                      DayType = Constants.Events.SCHEDULE_DATETYPE_WEEKDAY,
-                      Value = "Friday",
-                      From = 540,// 9AM
-                      To = 1020, // 5PM
-                      StepId = 0,
-                     }
-                 }
+                TimeZone = timeZoneName,
+                Details = Events.WeekDays.Select(day => new AvailabilityDetail
+                {
+                    DayType = Events.SCHEDULE_DATETYPE_WEEKDAY,
+                    Value = day.Value,
+                    From = 540,// 9AM
+                    To = 1020, // 5PM
+                    StepId = 0,
+                }).ToList()
             });
-
-            await EventType(adminUserId, availabilityId);
-
-            await Task.CompletedTask;
+            return availabilityId;
         }
 
-
-        private async Task EventType(Guid adminUserId, Guid availabilityId)
+        private async Task AddNewEventType(Guid adminUserId, Guid availabilityId)
         {
             var newEventTypeId = Guid.NewGuid();
 
@@ -181,6 +164,33 @@ namespace MeetMe.Core.Services
 
             return questions;
         }
+        private Availability GetDefaultAvailability(Guid userId, string timeZoneName)
+        {
+            var availabilityId = Guid.NewGuid();
+
+            var availability = new Availability
+            {
+                Id = availabilityId,
+                IsDefault = true,
+                IsDeleted = false,
+                Name = "Availability Schedule - Default",
+                OwnerId = userId,
+                TimeZone = timeZoneName,
+                Details = Events.WeekDays.Select(day => new AvailabilityDetail
+                {
+                    DayType = Events.SCHEDULE_DATETYPE_WEEKDAY,
+                    Value = day.Value,
+                    From = 540,// 9AM
+                    To = 1020, // 5PM
+                    StepId = 0,
+                }).ToList()
+            };
+
+            return availability;
+
+        }
+
+
     }
 }
 

@@ -30,7 +30,6 @@ namespace MeetMe.Core.Persistence.Entities
         public int Duration { get; set; }
         public int BufferTimeBefore { get; set; }
         public int BufferTimeAfter { get; set; }
-        //public string? CustomAvailability { get; set; }
         public Guid? AvailabilityId { get; set; }
         public Guid CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }

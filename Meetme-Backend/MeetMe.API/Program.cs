@@ -1,3 +1,4 @@
+using DataProvider.DynamoDB;
 using DataProvider.EntityFramework;
 using DataProvider.InMemoryData;
 using MeetMe.API.Middlewares;
@@ -5,6 +6,7 @@ using MeetMe.API.Models;
 using MeetMe.Application;
 using MeetMe.Caching.InMemory;
 using MeetMe.Core.Interface;
+using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -67,12 +69,13 @@ builder.Services.AddScoped<ILoginUserInfo, LoginUserInfo>();
 
 builder.Services.AddScoped<ICacheService, InMemoryCacheService>();
 builder.Services.AddScoped<IDateTimeService, DateTimeService>();
+builder.Services.AddScoped<SeedDataService, SeedDataService>();
 
 //builder.Services.UseInMemoryData();
 
 //builder.Services.UseEFCoreSQLServer(builder.Configuration.GetConnectionString("MeetMeDb")!);
-builder.Services.UseEFCoreSQLite(builder.Configuration.GetConnectionString("MeetMeDb")!);
-
+//builder.Services.UseEFCoreSQLite(builder.Configuration.GetConnectionString("MeetMeDb-sqlite")!);
+builder.Services.UseAWSDynamoDB(builder.Configuration["AWSDynamoDB:AccessKey"], builder.Configuration["AWSDynamoDB:SecretKey"], builder.Configuration["AWSDynamoDB:EndpointUrl"], builder.Configuration["AWSDynamoDB:RegionName"]);
 builder.Services.RegisterApplication();
 
 
@@ -97,6 +100,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    RunMigrationAddSeedingDataAsync(app, "Asia/Dhaka");
 }
 
 
@@ -105,17 +110,33 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-using (var serviceScope = app.Services.CreateScope())
-{
-    var dbProvider = serviceScope.ServiceProvider.GetRequiredService<IPersistenceProvider>();
-    var seedDataService = serviceScope.ServiceProvider.GetRequiredService<SeedDataService>();
 
-    dbProvider.EnsureDbCreated();
-    await seedDataService.SeedData();
-}
+//using (var serviceScope = app.Services.CreateScope())
+//{
+//    var dbProvider = serviceScope.ServiceProvider.GetRequiredService<IPersistenceProvider>();
+//    var seedDataService = serviceScope.ServiceProvider.GetRequiredService<SeedDataService>();
+
+//    dbProvider.EnsureDbCreated();
+//    await seedDataService.RunAsync();
+
+//}
 
 app.Run();
 
+static void RunMigrationAddSeedingDataAsync(WebApplication builder, string timeZoneName)
+{
+    using var serviceScope = builder.Services.CreateScope();
+    var dbProvider = serviceScope.ServiceProvider.GetRequiredService<IPersistenceProvider>();
+    var seedDataService = serviceScope.ServiceProvider.GetRequiredService<SeedDataService>();
+    dbProvider.EnsureDbCreated();
+
+    var isDataSeeded = seedDataService.IsDataSeededAsync().Result;
+    if (isDataSeeded)
+    {
+        return;
+    }
+    var result = seedDataService.RunAsync(timeZoneName).Result;
+}
 
 static void RegisterJwtAuthentication(WebApplicationBuilder builder)
 {

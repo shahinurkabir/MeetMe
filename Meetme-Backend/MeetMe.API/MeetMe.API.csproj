@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CacheProviders\Caching.InMemory\Caching.InMemory.csproj" />
+    <ProjectReference Include="..\DataProvider.DynamoDB\DataProvider.DynamoDB.csproj" />
     <ProjectReference Include="..\DataProviders\DataProvider.Dapper\DataProvider.Dapper.csproj" />
     <ProjectReference Include="..\DataProviders\DataProvider.EntityFramework\DataProvider.EntityFramework.csproj" />
     <ProjectReference Include="..\DataProviders\DataProvider.InMemoryData\DataProvider.InMemoryData.csproj" />
