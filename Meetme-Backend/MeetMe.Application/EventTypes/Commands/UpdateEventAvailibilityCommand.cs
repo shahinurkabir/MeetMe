@@ -41,15 +41,16 @@ namespace MeetMe.Application.EventTypes.Commands
 
             if (eventTypeEntity == null)
             {
-
                 throw new MeetMeException("Event Type is not found.");
             }
 
             eventTypeEntity = MapCommandToEntity(eventTypeEntity, request);
 
-            var scheduleDetails = MapCommandToEntity(eventTypeEntity.Id, request);
+            //var scheduleDetails = MapCommandToEntity(eventTypeEntity.Id, request);
 
-            await persistenceProvider.UpdateEventAvailability(eventTypeEntity, scheduleDetails);
+            //eventTypeEntity.EventTypeAvailabilityDetails = scheduleDetails;
+
+            await persistenceProvider.UpdateEventAvailability(eventTypeEntity);
 
             return true;
 
@@ -68,16 +69,17 @@ namespace MeetMe.Application.EventTypes.Commands
             entityTypeExisting.TimeZone = request.TimeZone;
             entityTypeExisting.AvailabilityId = request.AvailabilityId;
 
+            entityTypeExisting.EventTypeAvailabilityDetails = MapCommandToEntity( request);
+
             return entityTypeExisting;
 
         }
 
-        private List<EventTypeAvailabilityDetail> MapCommandToEntity(Guid eventTypeId, UpdateEventAvailabilityCommand request)
+        private List<EventTypeAvailabilityDetail> MapCommandToEntity( UpdateEventAvailabilityCommand request)
         {
             return request.AvailabilityDetails.Select(e => new EventTypeAvailabilityDetail
             {
-                Id = Guid.NewGuid(),
-                EventTypeId = eventTypeId,
+                EventTypeId = request.Id,
                 DayType = e.DayType,
                 Value = e.Value,
                 From = e.From,

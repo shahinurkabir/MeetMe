@@ -73,9 +73,9 @@ builder.Services.AddScoped<SeedDataService, SeedDataService>();
 
 //builder.Services.UseInMemoryData();
 
-//builder.Services.UseEFCoreSQLServer(builder.Configuration.GetConnectionString("MeetMeDb")!);
+builder.Services.UseEFCoreSQLServer(builder.Configuration.GetConnectionString("MeetMeDb")!);
 //builder.Services.UseEFCoreSQLite(builder.Configuration.GetConnectionString("MeetMeDb-sqlite")!);
-builder.Services.UseAWSDynamoDB(builder.Configuration["AWSDynamoDB:AccessKey"], builder.Configuration["AWSDynamoDB:SecretKey"], builder.Configuration["AWSDynamoDB:EndpointUrl"], builder.Configuration["AWSDynamoDB:RegionName"]);
+//builder.Services.UseAWSDynamoDB(builder.Configuration["AWSDynamoDB:AccessKey"], builder.Configuration["AWSDynamoDB:SecretKey"], builder.Configuration["AWSDynamoDB:EndpointUrl"], builder.Configuration["AWSDynamoDB:RegionName"]);
 builder.Services.RegisterApplication();
 
 

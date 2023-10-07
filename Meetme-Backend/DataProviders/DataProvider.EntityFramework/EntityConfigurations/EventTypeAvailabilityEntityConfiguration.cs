@@ -12,19 +12,35 @@ namespace DataProvider.EntityFramework.EntityConfigurations
             builder.HasKey(ead => ead.Id); // Set the primary key
 
             // Configure properties
-            builder.Property(ead => ead.Id).IsRequired().HasColumnType("uniqueidentifier");
-            builder.Property(ead => ead.EventTypeId).HasColumnType("uniqueidentifier");
-            builder.Property(ead => ead.DayType).IsRequired().HasColumnType("varchar(15)");
-            builder.Property(ead => ead.Value).IsRequired().HasColumnType("varchar(15)");
-            builder.Property(ead => ead.StepId).HasColumnType("smallint");
-            builder.Property(ead => ead.From).HasColumnType("float");
-            builder.Property(ead => ead.To).HasColumnType("float");
+            builder.Property(ead => ead.Id)
+                .IsRequired()
+                .HasColumnType("INTEGER");
+
+            builder.Property(ead => ead.EventTypeId)
+                .HasColumnType("uniqueidentifier");
+
+            builder.Property(ead => ead.DayType)
+                .IsRequired()
+                .HasColumnType("varchar(15)");
+
+            builder.Property(ead => ead.Value)
+                .IsRequired()
+                .HasColumnType("varchar(15)");
+
+            builder.Property(ead => ead.StepId)
+                .HasColumnType("smallint");
+            
+            builder.Property(ead => ead.From)
+                .HasColumnType("float");
+
+            builder.Property(ead => ead.To)
+                .HasColumnType("float");
 
             // Configure foreign key relationship
             builder.HasOne(ead => ead.EventType)
                    .WithMany(et => et.EventTypeAvailabilityDetails)
-                   .HasForeignKey(ead => ead.EventTypeId)
-                   .OnDelete(DeleteBehavior.Restrict);
+                   .HasForeignKey(ead => ead.EventTypeId);
+                   //.OnDelete(DeleteBehavior.Restrict);
 
         }
     }

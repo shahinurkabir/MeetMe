@@ -1,11 +1,15 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace MeetMe.Core.Persistence.Entities
 {
     public class EventTypeAvailabilityDetail
     {
-        public Guid Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
         public Guid EventTypeId { get; set; }
 
         /// <summary>

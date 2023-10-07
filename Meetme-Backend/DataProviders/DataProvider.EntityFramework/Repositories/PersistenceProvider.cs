@@ -34,7 +34,10 @@ namespace DataProvider.EntityFramework.Repositories
                 .Where(e => e.AvailabilityId == availability.Id)
                 .ToListAsync();
 
-            _dbContext.RemoveRange(listScheduleLineItem);
+            if (listScheduleLineItem.Any())
+            {
+                _dbContext.RemoveRange(listScheduleLineItem);
+            }
 
             _dbContext.Update(availability);
 
@@ -46,7 +49,8 @@ namespace DataProvider.EntityFramework.Repositories
 
             foreach (var eventTypeItem in listEventType)
             {
-                eventTypeItem.EventTypeAvailabilityDetails.Clear();
+                _dbContext.RemoveRange(eventTypeItem.EventTypeAvailabilityDetails);
+
                 eventTypeItem.EventTypeAvailabilityDetails.AddRange(availability.Details.Select(e => new EventTypeAvailabilityDetail
                 {
                     EventTypeId = eventTypeItem.Id,
@@ -82,14 +86,14 @@ namespace DataProvider.EntityFramework.Repositories
             return true;
         }
 
-        public async Task<List<Availability>> GetListByUserId(Guid userId)
+        public async Task<List<Availability>?> GetListByUserId(Guid userId)
         {
             var list = await GetAvailabilityList(userId);
 
             return list;
         }
 
-        public async Task<Availability> GetAvailability(Guid ruleId)
+        public async Task<Availability?> GetAvailability(Guid ruleId)
         {
             var scheduleRule = await _dbContext.Set<Availability>()
                 .Include(e => e.Details)
@@ -159,7 +163,7 @@ namespace DataProvider.EntityFramework.Repositories
 
         }
 
-        public async Task<EventType> GetEventTypeById(Guid eventTypeId)
+        public async Task<EventType?> GetEventTypeById(Guid eventTypeId)
         {
             var entity = await _dbContext.Set<EventType>()
                 .Where(e => e.Id == eventTypeId)
@@ -170,7 +174,7 @@ namespace DataProvider.EntityFramework.Repositories
             return entity;
         }
 
-        public async Task<EventType> GetEventTypeBySlug(string slug)
+        public async Task<EventType?> GetEventTypeBySlug(string slug)
         {
             var entity = await _dbContext.Set<EventType>()
                 .Where(e => e.Slug == slug)
@@ -190,12 +194,12 @@ namespace DataProvider.EntityFramework.Repositories
             return true;
         }
 
-        public async Task<bool> UpdateEventAvailability(EventType eventTypeInfo, List<EventTypeAvailabilityDetail> scheduleDetails)
+        public async Task<bool> UpdateEventAvailability(EventType eventTypeInfo)
         {
-            var eventTypeId = eventTypeInfo.Id;
+            //var eventTypeId = eventTypeInfo.Id;
 
             var existingAvailabilityDetails = await _dbContext.Set<EventTypeAvailabilityDetail>()
-              .Where(e => e.EventTypeId == eventTypeId)
+              .Where(e => e.EventTypeId == eventTypeInfo.Id)
               .ToListAsync();
 
             if (existingAvailabilityDetails.Any())
@@ -203,7 +207,6 @@ namespace DataProvider.EntityFramework.Repositories
                 _dbContext.RemoveRange(existingAvailabilityDetails);
 
             }
-            await _dbContext.AddRangeAsync(scheduleDetails);
 
             _dbContext.Update(eventTypeInfo);
 
@@ -212,7 +215,7 @@ namespace DataProvider.EntityFramework.Repositories
             return true;
         }
 
-        public async Task<List<EventType>> GetEventTypeListByUserId(Guid userId)
+        public async Task<List<EventType>?> GetEventTypeListByUserId(Guid userId)
         {
             var result = await _dbContext.Set<EventType>()
                 .Where(e => e.OwnerId == userId)
@@ -221,7 +224,7 @@ namespace DataProvider.EntityFramework.Repositories
             return result;
         }
 
-        public async Task<List<EventTypeQuestion>> GetQuestionsByEventId(Guid eventTypeId)
+        public async Task<List<EventTypeQuestion>?> GetQuestionsByEventId(Guid eventTypeId)
         {
             return await _dbContext.Set<EventTypeQuestion>()
                 .Where(e => e.EventTypeId == eventTypeId)
@@ -261,7 +264,7 @@ namespace DataProvider.EntityFramework.Repositories
             return await _dbContext.SaveChangesAsync() > 0;
         }
 
-        public async Task<Appointment> GetAppointment(Guid id)
+        public async Task<Appointment?> GetAppointment(Guid id)
         {
             return await _dbContext.Set<Appointment>().FirstOrDefaultAsync(x => x.Id == id);
         }
@@ -296,7 +299,7 @@ namespace DataProvider.EntityFramework.Repositories
             var result = await _dbContext.Set<Appointment>()
                   .Include(x => x.EventType)
                   .ThenInclude(x => x.User)
-                  .Where(x => x.EventType.User.Id == userId)
+                  .Where(x => x.EventType!.User.Id == userId)
                   .Select(x => AppointmentDetailsDto.New(x, x.EventType!, x.EventType!.User))
                   .ToListAsync();
 
@@ -308,10 +311,9 @@ namespace DataProvider.EntityFramework.Repositories
                   .Include(x => x.EventType)
                   .ThenInclude(x => x.User)
                   .Where(x => x.EventTypeId == eventTypeId && x.StartTimeUTC >= startDateUTC && x.EndTimeUTC <= endDateUTC)
-                  //.Select(x => AppointmentDetailsDto.New(x,x.EventType!,x.EventType!.User))
                   .ToListAsync();
+
             return result?.Select(x => AppointmentDetailsDto.New(x, x.EventType!, x.EventType!.User)).ToList();
-            // return result;
         }
 
         public async Task<User?> GetUserByLoginId(string userId)
@@ -338,7 +340,7 @@ namespace DataProvider.EntityFramework.Repositories
 
             return entity.Id == id;
         }
-        public async Task<List<User>> GetUserList()
+        public async Task<List<User>?> GetUserList()
         {
             var list = await _dbContext.Set<User>().ToListAsync();
             return list;

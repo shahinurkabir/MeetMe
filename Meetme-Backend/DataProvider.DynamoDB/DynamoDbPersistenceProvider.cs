@@ -211,7 +211,7 @@ namespace DataProvider.DynamoDB
         {
             throw new NotImplementedException();
         }
-        public Task<bool> UpdateEventAvailability(EventType eventTypeInfo, List<EventTypeAvailabilityDetail> scheduleDetails)
+        public Task<bool> UpdateEventAvailability(EventType eventTypeInfo)
         {
             throw new NotImplementedException();
         }

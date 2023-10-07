@@ -127,7 +127,6 @@ namespace MeetMe.Core.Services
         {
             return availabilityDetails.Select(e => new EventTypeAvailabilityDetail
             {
-                Id = Guid.NewGuid(),
                 EventTypeId = eventTypeId,
                 DayType = e.DayType,
                 Value = e.Value,

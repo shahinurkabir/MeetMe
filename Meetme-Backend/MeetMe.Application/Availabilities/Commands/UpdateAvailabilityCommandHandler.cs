@@ -28,7 +28,6 @@ namespace MeetMe.Application.Availabilities.Commands
         }
         public async Task<bool> Handle(UpdateAvailabilityCommand request, CancellationToken cancellationToken)
         {
-
             var entity = await persistenceProvider.GetAvailability(request.Id);
 
             if (entity == null)
@@ -47,6 +46,7 @@ namespace MeetMe.Application.Availabilities.Commands
 
             entity.Name = request.Name;
             entity.TimeZone = request.TimeZone;
+
             entity.Details = listScheduleRuleItems;
 
             await persistenceProvider.UpdateAvailability(entity);

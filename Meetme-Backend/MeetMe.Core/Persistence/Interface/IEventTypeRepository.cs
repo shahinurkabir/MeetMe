@@ -11,7 +11,7 @@ namespace MeetMe.Core.Persistence.Interface
         Task<List<EventType>?> GetEventTypeListByUserId(Guid userId);
         Task<EventType?> GetEventTypeById(Guid eventTypeId);
         Task<bool> UpdateEventType(EventType eventTypeInfo);
-        Task<bool> UpdateEventAvailability(EventType eventTypeInfo, List<EventTypeAvailabilityDetail> scheduleDetails);
+        Task<bool> UpdateEventAvailability(EventType eventTypeInfo);
         Task<EventType?> GetEventTypeBySlug(string slug);
     }
 }

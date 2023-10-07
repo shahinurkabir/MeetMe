@@ -41,23 +41,23 @@ namespace DataProvider.EntityFramework.EntityConfigurations
             // Configure relationships
             builder.HasMany(e => e.Questions)
                    .WithOne()
-                   .HasForeignKey(q => q.EventTypeId)
-                   .OnDelete(DeleteBehavior.Restrict);
+                   .HasForeignKey(q => q.EventTypeId);
+            //.OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(e => e.EventTypeAvailabilityDetails)
                    .WithOne()
-                   .HasForeignKey(ead => ead.EventTypeId)
-                   .OnDelete(DeleteBehavior.Restrict);
+                   .HasForeignKey(ead => ead.EventTypeId);
+            //.OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(e => e.Appointments)
                    .WithOne(a => a.EventType)
-                   .HasForeignKey(a => a.EventTypeId)
-                   .OnDelete(DeleteBehavior.Restrict);
+                   .HasForeignKey(a => a.EventTypeId);
+            //.OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(e => e.User)
                    .WithMany()
-                   .HasForeignKey(e => e.CreatedBy)
-                   .OnDelete(DeleteBehavior.Restrict);
+                   .HasForeignKey(e => e.CreatedBy);
+                   //.OnDelete(DeleteBehavior.Restrict);
             
 
         }

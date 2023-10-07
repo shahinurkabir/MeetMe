@@ -206,11 +206,11 @@ namespace DataProvider.InMemoryData
             }
         }
 
-        public async Task<bool> UpdateEventAvailability(EventType eventTypeInfo, List<EventTypeAvailabilityDetail> scheduleDetails)
+        public async Task<bool> UpdateEventAvailability(EventType eventTypeInfo)
         {
             lock (_lockObjectRef)
             {
-                eventTypeInfo.EventTypeAvailabilityDetails = scheduleDetails;
+                //eventTypeInfo.EventTypeAvailabilityDetails = scheduleDetails;
 
                 var result = UpdateEventType(eventTypeInfo).Result;
 
