@@ -34,7 +34,6 @@ namespace MeetMe.Application.EventTypes.Commands
             this.persistenceProvider = persistenceProvider;
             _loginUser = loginUser;
         }
-
         public async Task<bool> Handle(UpdateEventAvailabilityCommand request, CancellationToken cancellationToken)
         {
             var eventTypeEntity = await persistenceProvider.GetEventTypeById(request.Id);
@@ -46,19 +45,12 @@ namespace MeetMe.Application.EventTypes.Commands
 
             eventTypeEntity = MapCommandToEntity(eventTypeEntity, request);
 
-            //var scheduleDetails = MapCommandToEntity(eventTypeEntity.Id, request);
-
-            //eventTypeEntity.EventTypeAvailabilityDetails = scheduleDetails;
-
             await persistenceProvider.UpdateEventAvailability(eventTypeEntity);
 
             return true;
-
         }
-
         private EventType MapCommandToEntity(EventType entityTypeExisting, UpdateEventAvailabilityCommand request)
         {
-
             entityTypeExisting.DateForwardKind = request.DateForwardKind;
             entityTypeExisting.ForwardDuration = request.ForwardDuration;
             entityTypeExisting.Duration = request.Duration;
@@ -74,7 +66,6 @@ namespace MeetMe.Application.EventTypes.Commands
             return entityTypeExisting;
 
         }
-
         private List<EventTypeAvailabilityDetail> MapCommandToEntity( UpdateEventAvailabilityCommand request)
         {
             return request.AvailabilityDetails.Select(e => new EventTypeAvailabilityDetail
@@ -86,9 +77,6 @@ namespace MeetMe.Application.EventTypes.Commands
                 To = e.To,
                 StepId = e.StepId
             }).ToList();
-
         }
-
     }
-
 }

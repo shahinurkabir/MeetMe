@@ -196,8 +196,6 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<bool> UpdateEventAvailability(EventType eventTypeInfo)
         {
-            //var eventTypeId = eventTypeInfo.Id;
-
             var existingAvailabilityDetails = await _dbContext.Set<EventTypeAvailabilityDetail>()
               .Where(e => e.EventTypeId == eventTypeInfo.Id)
               .ToListAsync();
