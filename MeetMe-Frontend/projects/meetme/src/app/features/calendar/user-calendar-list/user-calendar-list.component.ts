@@ -19,12 +19,12 @@ export class UserCalendarListComponent implements OnInit,OnDestroy {
     private route: ActivatedRoute,
     private authService: AuthService
     ) {
-      this.authService.loginChanged$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(res => {
-        this.baseUri = this.authService.baseUri;
-        this.userName = this.authService.userName;
-      } );
+      // this.authService.loginChanged$
+      // .pipe(takeUntil(this.destroyed$))
+      // .subscribe(res => {
+      //   this.baseUri = this.authService.baseUri;
+      //   this.userName = this.authService.userName;
+      // } );
      }
 
   ngOnInit(): void {
@@ -34,7 +34,7 @@ export class UserCalendarListComponent implements OnInit,OnDestroy {
   }
   
   loadData(){
-    this.eventTypeService.getListByBaseURI(this.baseUri)
+    this.eventTypeService.getListByUserSlug(this.baseUri)
     .pipe(takeUntil(this.destroyed$))
     .subscribe({
       next: response => {

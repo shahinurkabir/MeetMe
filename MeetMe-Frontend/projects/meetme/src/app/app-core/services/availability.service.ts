@@ -16,7 +16,7 @@ export class AvailabilityService extends DataService {
         super(http)
     }
     getList(): Observable<Array<IAvailability>> {
-        let url: string = `${this.baseURI}/list`
+        let url: string = `${this.baseURI}/me`
         return this.doGet(url)
     }
 

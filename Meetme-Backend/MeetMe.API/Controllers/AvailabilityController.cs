@@ -21,7 +21,7 @@ namespace MeetMe.API.Controllers
         }
 
         [HttpGet]
-        [Route("list")]
+        [Route("me")]
         public async Task<List<Availability>> GetList()
         {
             var queryCommand = new GetAvailabilityListQuery { UserId = applicationUserInfo.Id };

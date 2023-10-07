@@ -57,7 +57,7 @@ namespace MeetMe.Core.Dtos
                 EventTypeDuration = eventType.Duration,
                 EventTypeColor = eventType.EventColor,
                 EventTypeTimeZone = eventType.TimeZone,
-                EventOwnerId = eventType.OwnerId,
+                EventOwnerId = appointment.OwnerId,
                 EventOwnerName = user.UserName,
                 AppointmentDateTime = appointment.InviteeTimeZone.ToAppointmentTimeRangeText(eventType.Duration, appointment.StartTimeUTC),
             };

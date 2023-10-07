@@ -23,5 +23,8 @@ namespace MeetMe.Core.Persistence.Entities
 
         [JsonIgnore]
         public List<EventType> EventTypes { get; set; }
+
+        [JsonIgnore]
+        public List<Appointment> Appointments { get; set; }
     }
 }

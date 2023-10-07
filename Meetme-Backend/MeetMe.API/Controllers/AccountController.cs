@@ -54,6 +54,8 @@ namespace MeetMe.API.Controllers
 
             return response;
         }
+
+        [AllowAnonymous]
         [HttpGet]
         [Route("profile/{name}")]
         public async Task<AccountProfileDto?> GetProfileByName(string name)

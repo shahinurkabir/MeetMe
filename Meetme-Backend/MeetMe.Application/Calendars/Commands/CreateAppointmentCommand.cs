@@ -3,6 +3,7 @@ using FluentValidation.Validators;
 using MediatR;
 using MeetMe.Application.AccountSettings.Dtos;
 using MeetMe.Core.Exceptions;
+using MeetMe.Core.Interface;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using System;
@@ -20,7 +21,7 @@ namespace MeetMe.Application.Calendars.Commands
         public Guid EventTypeId { get; set; }
         public string InviteeName { get; set; } = null!;
         public string InviteeEmail { get; set; } = null!;
-        public string  InviteeTimeZone { get; set; } = null!;
+        public string InviteeTimeZone { get; set; } = null!;
         public string? GuestEmails { get; set; }
         public DateTime StartTime { get; set; }
         public int MeetingDuration { get; set; }
@@ -41,12 +42,18 @@ namespace MeetMe.Application.Calendars.Commands
             DateTime startTimeUTC = request.StartTime.ToUniversalTime();
             DateTime endTimeUTC = startTimeUTC.AddMinutes(request.MeetingDuration);
 
+            var eventType = await persistenceProvider.GetEventTypeById(request.EventTypeId);
+            if (eventType == null)
+            {
+                throw new MeetMeException("The selected event type is not available");
+            }
             var isTimeConflicling = await persistenceProvider.IsTimeBooked(request.EventTypeId, startTimeUTC, endTimeUTC);
 
             if (isTimeConflicling == true)
             {
                 throw new MeetMeException("The selected time slot is not available");
             }
+
             var newId = Guid.NewGuid();
 
             var entity = new Appointment
@@ -58,10 +65,11 @@ namespace MeetMe.Application.Calendars.Commands
                 InviteeTimeZone = request.InviteeTimeZone,
                 GuestEmails = request.GuestEmails,
                 Status = AppointmentStatus.Active,
-                StartTimeUTC =startTimeUTC,
+                StartTimeUTC = startTimeUTC,
                 EndTimeUTC = endTimeUTC,
                 Note = request.Note,
-                DateCreated = DateTime.UtcNow
+                DateCreated = DateTime.UtcNow,
+                OwnerId = eventType.OwnerId
             };
 
             await persistenceProvider.AddAppointment(entity);

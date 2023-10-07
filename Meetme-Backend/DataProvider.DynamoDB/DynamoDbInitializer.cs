@@ -10,10 +10,10 @@ namespace DataProvider.DynamoDB
     public class DynamoDbInitializer
     {
         private readonly AmazonDynamoDBClient client;
-        private readonly string tableName_User = nameof(User);
-        private readonly string tableName_Availability = nameof(Availability);
-        private readonly string tableName_EventType = nameof(EventType);
-        private readonly string tableName_Appointment = nameof(Appointment);
+        private readonly string tableName_User = DynamoDbTableIndexConstants.User.TableName;
+        private readonly string tableName_Availability = DynamoDbTableIndexConstants.Availability.TableName;
+        private readonly string tableName_EventType = DynamoDbTableIndexConstants.EventType.TableName;
+        private readonly string tableName_Appointment = DynamoDbTableIndexConstants.Appointment.TableName;
 
 
         public DynamoDbInitializer(AmazonDynamoDBClient client)
@@ -48,17 +48,23 @@ namespace DataProvider.DynamoDB
                 AttributeDefinitions = new List<AttributeDefinition>  {
                 new AttributeDefinition
                 {
-                    AttributeName = "Id",
+                    AttributeName = DynamoDbTableIndexConstants.Appointment.PrimaryKey,
                     AttributeType = ScalarAttributeType.S
                 },
                 new AttributeDefinition
                 {
-                    AttributeName = "EventTypeId",
+                    AttributeName = DynamoDbTableIndexConstants.Appointment.EventTypeId,
                     AttributeType = ScalarAttributeType.S
                 },
                 new AttributeDefinition
                 {
-                    AttributeName = "Status",
+                    AttributeName = DynamoDbTableIndexConstants.Appointment.Status,
+                    AttributeType = ScalarAttributeType.S
+                }
+                ,
+                new AttributeDefinition
+                {
+                    AttributeName = DynamoDbTableIndexConstants.Appointment.AppointmentDate,
                     AttributeType = ScalarAttributeType.S
                 }
                 },
@@ -66,60 +72,82 @@ namespace DataProvider.DynamoDB
                 {
                 new KeySchemaElement
                 {
-                    AttributeName = "Id",
+                    AttributeName = DynamoDbTableIndexConstants.Appointment.PrimaryKey,
                     KeyType = KeyType.HASH // Primary key
                 }
                 },
                 ProvisionedThroughput = new ProvisionedThroughput
                 {
-                    ReadCapacityUnits = 5,  // Adjust as needed
-                    WriteCapacityUnits = 5  // Adjust as needed
+                    ReadCapacityUnits = 5,
+                    WriteCapacityUnits = 5
                 },
                 GlobalSecondaryIndexes = new List<GlobalSecondaryIndex>
                 {
                 new GlobalSecondaryIndex
                 {
-                IndexName = "EventTypeIdIndex",
+                IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.Appointment.TableName,DynamoDbTableIndexConstants.Appointment.EventTypeId),
                 KeySchema = new List<KeySchemaElement>
                 {
                     new KeySchemaElement
                     {
-                    AttributeName = "EventTypeId",
-                    KeyType = KeyType.HASH // GSI hash key
+                    AttributeName = DynamoDbTableIndexConstants.Appointment.EventTypeId,
+                    KeyType = KeyType.HASH
                 }
                 },
                 Projection = new Projection
                 {
-                ProjectionType = ProjectionType.ALL // Include all attributes
+                ProjectionType = ProjectionType.ALL
                 },
                 ProvisionedThroughput = new ProvisionedThroughput
                 {
-                ReadCapacityUnits = 5,  // Adjust as needed
-                WriteCapacityUnits = 5  // Adjust as needed
+                ReadCapacityUnits = 5,
+                WriteCapacityUnits = 5
                 }
                 },
                 new GlobalSecondaryIndex
                 {
-                IndexName = "StatusIndex",
+                IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.Appointment.TableName,DynamoDbTableIndexConstants.Appointment.Status),
                 KeySchema = new List<KeySchemaElement>
                 {
                 new KeySchemaElement
                 {
-                    AttributeName = "Status",
+                    AttributeName = DynamoDbTableIndexConstants.Appointment.Status,
                     KeyType = KeyType.HASH // GSI hash key
                 }
                 },
                 Projection = new Projection
                 {
-                ProjectionType = ProjectionType.ALL // Include all attributes
+                ProjectionType = ProjectionType.ALL
                 },
                 ProvisionedThroughput = new ProvisionedThroughput
                 {
-                    ReadCapacityUnits = 5,  // Adjust as needed
-                    WriteCapacityUnits = 5  // Adjust as needed
+                    ReadCapacityUnits = 5,
+                    WriteCapacityUnits = 5
+                }
+                },
+                 new GlobalSecondaryIndex
+                {
+                IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.Appointment.TableName,DynamoDbTableIndexConstants.Appointment.AppointmentDate),
+                KeySchema = new List<KeySchemaElement>
+                {
+                new KeySchemaElement
+                {
+                    AttributeName = DynamoDbTableIndexConstants.Appointment.AppointmentDate,
+                    KeyType = KeyType.HASH // GSI hash key
+                }
+                },
+                Projection = new Projection
+                {
+                ProjectionType = ProjectionType.ALL
+                },
+                ProvisionedThroughput = new ProvisionedThroughput
+                {
+                    ReadCapacityUnits = 5,
+                    WriteCapacityUnits = 5
                 }
                 }
-            }
+            },
+
 
             };
 
@@ -134,22 +162,22 @@ namespace DataProvider.DynamoDB
                 AttributeDefinitions = new List<AttributeDefinition>  {
                 new AttributeDefinition
                 {
-                    AttributeName = "Id",
+                    AttributeName = DynamoDbTableIndexConstants.EventType.PrimaryKey,
                     AttributeType = ScalarAttributeType.S
                 },
                 new AttributeDefinition
                 {
-                    AttributeName = "Slug",
+                    AttributeName = DynamoDbTableIndexConstants.EventType.Slug,
                     AttributeType = ScalarAttributeType.S
                 },
                 new AttributeDefinition
                 {
-                    AttributeName = "AvailabilityId",
+                    AttributeName = DynamoDbTableIndexConstants.EventType.AvailabilityId,
                     AttributeType = ScalarAttributeType.S
                 },
                  new AttributeDefinition
                 {
-                    AttributeName = "OwnerId",
+                    AttributeName = DynamoDbTableIndexConstants.EventType.OwnerId,
                     AttributeType = ScalarAttributeType.S
                 }
                 },
@@ -157,78 +185,78 @@ namespace DataProvider.DynamoDB
                 {
                 new KeySchemaElement
                 {
-                    AttributeName = "Id",
+                    AttributeName = DynamoDbTableIndexConstants.Availability.PrimaryKey,
                     KeyType = KeyType.HASH // Primary key
                 }
                 },
                 ProvisionedThroughput = new ProvisionedThroughput
                 {
-                    ReadCapacityUnits = 5,  // Adjust as needed
-                    WriteCapacityUnits = 5  // Adjust as needed
+                    ReadCapacityUnits = 5,
+                    WriteCapacityUnits = 5
                 },
                 GlobalSecondaryIndexes = new List<GlobalSecondaryIndex>
                 {
                 new GlobalSecondaryIndex
                 {
-                IndexName = "SlugIndex",
+                IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.EventType.TableName,DynamoDbTableIndexConstants.EventType.Slug),
                 KeySchema = new List<KeySchemaElement>
                 {
                     new KeySchemaElement
                     {
-                    AttributeName = "Slug",
+                    AttributeName = DynamoDbTableIndexConstants.EventType.Slug,
                     KeyType = KeyType.HASH // GSI hash key
                 }
                 },
                 Projection = new Projection
                 {
-                ProjectionType = ProjectionType.ALL // Include all attributes
+                ProjectionType = ProjectionType.ALL
                 },
                 ProvisionedThroughput = new ProvisionedThroughput
                 {
-                ReadCapacityUnits = 5,  // Adjust as needed
-                WriteCapacityUnits = 5  // Adjust as needed
+                ReadCapacityUnits = 5,
+                WriteCapacityUnits = 5
                 }
                 },
                 new GlobalSecondaryIndex
                 {
-                IndexName = "AvailabilityIdIndex",
+                 IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.EventType.TableName,DynamoDbTableIndexConstants.EventType.AvailabilityId),
                 KeySchema = new List<KeySchemaElement>
                 {
                 new KeySchemaElement
                 {
-                    AttributeName = "AvailabilityId",
+                    AttributeName =DynamoDbTableIndexConstants.EventType.AvailabilityId,
                     KeyType = KeyType.HASH // GSI hash key
                 }
                 },
                 Projection = new Projection
                 {
-                ProjectionType = ProjectionType.ALL // Include all attributes
+                ProjectionType = ProjectionType.ALL
                 },
                 ProvisionedThroughput = new ProvisionedThroughput
                 {
-                    ReadCapacityUnits = 5,  // Adjust as needed
-                    WriteCapacityUnits = 5  // Adjust as needed
+                    ReadCapacityUnits = 5,
+                    WriteCapacityUnits = 5
                 }
                 },
                  new GlobalSecondaryIndex
                 {
-                IndexName = "OwnerIdIndex",
+                IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.EventType.TableName,DynamoDbTableIndexConstants.EventType.OwnerId),
                 KeySchema = new List<KeySchemaElement>
                 {
                     new KeySchemaElement
                     {
-                    AttributeName = "OwnerId",
-                    KeyType = KeyType.HASH // GSI hash key
+                    AttributeName =DynamoDbTableIndexConstants.EventType.OwnerId,
+                    KeyType = KeyType.HASH
                 }
                 },
                 Projection = new Projection
                 {
-                ProjectionType = ProjectionType.ALL // Include all attributes
+                ProjectionType = ProjectionType.ALL
                 },
                 ProvisionedThroughput = new ProvisionedThroughput
                 {
-                ReadCapacityUnits = 5,  // Adjust as needed
-                WriteCapacityUnits = 5  // Adjust as needed
+                ReadCapacityUnits = 5,
+                WriteCapacityUnits = 5
                 }
                 },
             }
@@ -245,12 +273,12 @@ namespace DataProvider.DynamoDB
                 AttributeDefinitions = new List<AttributeDefinition>  {
                 new AttributeDefinition
                 {
-                    AttributeName = "Id",
+                    AttributeName = DynamoDbTableIndexConstants.Availability.PrimaryKey,
                     AttributeType = ScalarAttributeType.S
                 },
                 new AttributeDefinition
                 {
-                    AttributeName = "OwnerId",
+                    AttributeName = DynamoDbTableIndexConstants.Availability.OwnerId,
                     AttributeType = ScalarAttributeType.S
                 }
                 },
@@ -258,36 +286,36 @@ namespace DataProvider.DynamoDB
                 {
                 new KeySchemaElement
                 {
-                    AttributeName = "Id",
-                    KeyType = KeyType.HASH // Primary key
+                    AttributeName = DynamoDbTableIndexConstants.Availability.PrimaryKey,
+                    KeyType = KeyType.HASH
                 }
                 },
                 ProvisionedThroughput = new ProvisionedThroughput
                 {
-                    ReadCapacityUnits = 5,  // Adjust as needed
-                    WriteCapacityUnits = 5  // Adjust as needed
+                    ReadCapacityUnits = 5,
+                    WriteCapacityUnits = 5
                 },
                 GlobalSecondaryIndexes = new List<GlobalSecondaryIndex>
                 {
                 new GlobalSecondaryIndex
                 {
-                IndexName = "OwnerIdIndex",
+                IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.Availability.TableName,DynamoDbTableIndexConstants.Availability.OwnerId),
                 KeySchema = new List<KeySchemaElement>
                 {
                     new KeySchemaElement
                     {
-                    AttributeName = "OwnerId",
-                    KeyType = KeyType.HASH // GSI hash key
+                    AttributeName = DynamoDbTableIndexConstants.Availability.OwnerId,
+                    KeyType = KeyType.HASH
                 }
                 },
                 Projection = new Projection
                 {
-                ProjectionType = ProjectionType.ALL // Include all attributes
+                ProjectionType = ProjectionType.ALL
                 },
                 ProvisionedThroughput = new ProvisionedThroughput
                 {
-                ReadCapacityUnits = 5,  // Adjust as needed
-                WriteCapacityUnits = 5  // Adjust as needed
+                ReadCapacityUnits = 5,
+                WriteCapacityUnits = 5
                 }
                 },
 
@@ -296,6 +324,66 @@ namespace DataProvider.DynamoDB
             };
 
             await CreateTableAsync(request);
+        }
+        private async Task CreateUserTableAsync(string tableName)
+        {
+            var request = new CreateTableRequest
+            {
+                TableName = tableName,
+                AttributeDefinitions = new List<AttributeDefinition> {
+                    new AttributeDefinition(DynamoDbTableIndexConstants.User.PrimaryKey, ScalarAttributeType.S),
+                    new AttributeDefinition(DynamoDbTableIndexConstants.User.UserId, ScalarAttributeType.S),
+                    new AttributeDefinition(DynamoDbTableIndexConstants.User.BaseURI, ScalarAttributeType.S)
+                },
+                KeySchema = new List<KeySchemaElement>
+                {
+                    new KeySchemaElement(DynamoDbTableIndexConstants.User.PrimaryKey, KeyType.HASH)
+                },
+                ProvisionedThroughput = new ProvisionedThroughput
+                {
+                    ReadCapacityUnits = 5,
+                    WriteCapacityUnits = 5
+                },
+                GlobalSecondaryIndexes = new List<GlobalSecondaryIndex>  {
+                    new GlobalSecondaryIndex
+                    {
+                        IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.User.TableName, DynamoDbTableIndexConstants.User.UserId),
+                        KeySchema = new List<KeySchemaElement>
+                        {
+                            new KeySchemaElement(DynamoDbTableIndexConstants.User.UserId, KeyType.HASH) // Hash key for GSI
+                        },
+                        Projection = new Projection
+                        {
+                            ProjectionType = ProjectionType.ALL
+                        },
+                        ProvisionedThroughput = new ProvisionedThroughput
+                        {
+                            ReadCapacityUnits = 5,
+                            WriteCapacityUnits = 5
+                        }
+                    },
+                    new GlobalSecondaryIndex
+                    {
+                        IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.User.TableName, DynamoDbTableIndexConstants.User.BaseURI),
+                        KeySchema = new List<KeySchemaElement>
+                        {
+                            new KeySchemaElement(DynamoDbTableIndexConstants.User.BaseURI, KeyType.HASH) // Hash key for GSI
+                        },
+                        Projection = new Projection
+                        {
+                            ProjectionType = ProjectionType.ALL
+                        },
+                        ProvisionedThroughput = new ProvisionedThroughput
+                        {
+                            ReadCapacityUnits = 5,
+                            WriteCapacityUnits = 5
+                        }
+                    }
+    }
+            };
+
+            await CreateTableAsync(request);
+
         }
         private async Task<bool> IsExistAsync(string tableName)
         {
@@ -308,68 +396,6 @@ namespace DataProvider.DynamoDB
             {
                 return false;
             }
-        }
-        private async Task CreateUserTableAsync(string tableName)
-        {
-            var request = new CreateTableRequest
-            {
-                TableName = tableName,
-                AttributeDefinitions = new List<AttributeDefinition> {
-                    new AttributeDefinition("Id", ScalarAttributeType.S),
-                    new AttributeDefinition("UserID", ScalarAttributeType.S),
-                    new AttributeDefinition("BaseURI", ScalarAttributeType.S)
-                },
-                KeySchema = new List<KeySchemaElement>
-                {
-                    new KeySchemaElement("Id", KeyType.HASH)
-                },
-                ProvisionedThroughput = new ProvisionedThroughput
-                {
-                    ReadCapacityUnits = 5, // Adjust read capacity units as needed
-                    WriteCapacityUnits = 5 // Adjust write capacity units as needed
-                },
-                GlobalSecondaryIndexes = new List<GlobalSecondaryIndex>  {
-                    new GlobalSecondaryIndex
-                    {
-                        IndexName = "UserIDIndex", // Replace with your desired index name
-                        KeySchema = new List<KeySchemaElement>
-                        {
-                            new KeySchemaElement("UserID", KeyType.HASH) // Hash key for GSI
-                        },
-                        Projection = new Projection
-                        {
-                            ProjectionType = ProjectionType.ALL // Adjust projection type as needed
-                        },
-                        ProvisionedThroughput = new ProvisionedThroughput
-                        {
-                            ReadCapacityUnits = 5, // Adjust read capacity for GSI
-                            WriteCapacityUnits = 5 // Adjust write capacity for GSI
-                        }
-                    },
-                    new GlobalSecondaryIndex
-                    {
-                        IndexName = "BaseURIIndex", // Replace with your desired index name
-                        KeySchema = new List<KeySchemaElement>
-                        {
-                            new KeySchemaElement("BaseURI", KeyType.HASH) // Hash key for GSI
-                        },
-                        Projection = new Projection
-                        {
-                            ProjectionType = ProjectionType.ALL // Adjust projection type as needed
-                        },
-                        ProvisionedThroughput = new ProvisionedThroughput
-                        {
-                            ReadCapacityUnits = 5, // Adjust read capacity for GSI
-                            WriteCapacityUnits = 5 // Adjust write capacity for GSI
-                        }
-                    }
-    }
-            };
-
-            // var response = await client.CreateTableAsync(request
-
-            await CreateTableAsync(request);
-
         }
         private async Task CreateTableAsync(CreateTableRequest createTableRequest)
         {

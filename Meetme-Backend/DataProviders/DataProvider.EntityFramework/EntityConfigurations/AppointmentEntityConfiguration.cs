@@ -18,6 +18,9 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
         builder.Property(a => a.EventTypeId)
                .IsRequired()
                .HasColumnType("uniqueidentifier");
+        builder.Property(a => a.OwnerId)
+              .IsRequired()
+              .HasColumnType("uniqueidentifier");
 
         builder.Property(a => a.InviteeName)
                .IsRequired()
@@ -63,6 +66,11 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
         builder.HasOne(a => a.EventType)
                .WithMany(et => et.Appointments)
                .HasForeignKey(a => a.EventTypeId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(a => a.User)
+               .WithMany(et => et.Appointments)
+               .HasForeignKey(a => a.OwnerId)
                .OnDelete(DeleteBehavior.Restrict);
 
     }

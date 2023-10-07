@@ -9,6 +9,7 @@ using MeetMe.Application.AccountSettings.Dtos;
 using MeetMe.API.Models;
 using MeetMe.Application.EventTypes.Dtos;
 using MeetMe.Application.EventTypes.Commands;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace MeetMe.API.Controllers
 {
@@ -27,7 +28,7 @@ namespace MeetMe.API.Controllers
         }
 
         [HttpGet]
-        [Route("list")]
+        [Route("me")]
         public async Task<List<EventType>> GetList()
         {
             var eventTypeListQuery = new GetEventTypeListQuery { OwnerId = loginUser.Id };
@@ -39,16 +40,16 @@ namespace MeetMe.API.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("{userURI}/list")]
-        public async Task<UserProfileDetailResponse?> GetListByBaseURI(string userURI)
+        [Route("user/{slug}")]
+        public async Task<UserProfileDetailResponse?> GetListByUserSlug( string slug)
         {
-            var userEnttiy = await persistenceProvider.GetUserBySlug(userURI);
+            var userEnttiy = await persistenceProvider.GetUserBySlug(slug);
 
             if (userEnttiy == null) return null;
 
             var userProfileInfo = new AccountProfileDto
             {
-                BaseURI = userURI,
+                BaseURI = slug,
                 UserName = userEnttiy.UserName,
                 TimeZone = userEnttiy.TimeZone,
                 WelcomeText = userEnttiy.WelcomeText
@@ -67,9 +68,9 @@ namespace MeetMe.API.Controllers
             return result;
         }
 
-
+        [AllowAnonymous]
         [HttpGet]
-        [Route("{id}")]
+        [Route("detailById/{id}")]
         public async Task<EventType> GetDetails(Guid id)
         {
             var calendarDetailQuery = new GetEventTypeDetailQuery { EventTypeId = id }; ;
@@ -79,8 +80,9 @@ namespace MeetMe.API.Controllers
             return result;
         }
 
+        [AllowAnonymous]
         [HttpGet]
-        [Route("{getBySlugName}/{slug}")]
+        [Route("detailBySlug/{slug}")]
         public async Task<EventType> GetDetails(string slug)
         {
             var result = await persistenceProvider.GetEventTypeBySlug(slug);

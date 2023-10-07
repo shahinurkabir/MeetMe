@@ -322,17 +322,17 @@ namespace DataProvider.EntityFramework.Repositories
             return user;
         }
 
-        public async Task<User?> GetUserBySlug(string URI)
+        public async Task<User?> GetUserBySlug(string slug)
         {
             var entity = await _dbContext.Set<User>()
-                .FirstOrDefaultAsync(e => e.BaseURI.ToLower() == URI.ToLower());
+                .FirstOrDefaultAsync(e => e.BaseURI.ToLower() == slug.ToLower());
             return entity;
         }
 
-        public async Task<bool> IsUserSlugAvailable(string URI, Guid id)
+        public async Task<bool> IsUserSlugAvailable(string slug, Guid id)
         {
             var entity = await _dbContext.Set<User>()
-                            .FirstOrDefaultAsync(e => e.BaseURI.ToLower() == URI.ToLower());
+                            .FirstOrDefaultAsync(e => e.BaseURI.ToLower() == slug.ToLower());
 
             if (entity == null) return true;
 

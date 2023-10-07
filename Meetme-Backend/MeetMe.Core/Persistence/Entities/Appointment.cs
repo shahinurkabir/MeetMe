@@ -17,8 +17,12 @@ namespace MeetMe.Core.Persistence.Entities
         public string? Note { get; set; }
         public DateTime? DateCancelled { get; set; }
         public string? CancellationReason { get; set; }
+        public Guid OwnerId { get; set; }
 
         [JsonIgnore]
         public EventType? EventType { get; set; }
+
+        [JsonIgnore]
+        public User? User { get; set; }
     }
 }

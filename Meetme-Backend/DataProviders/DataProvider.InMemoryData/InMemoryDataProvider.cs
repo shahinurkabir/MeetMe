@@ -210,8 +210,6 @@ namespace DataProvider.InMemoryData
         {
             lock (_lockObjectRef)
             {
-                //eventTypeInfo.EventTypeAvailabilityDetails = scheduleDetails;
-
                 var result = UpdateEventType(eventTypeInfo).Result;
 
                 return true;
@@ -319,11 +317,11 @@ namespace DataProvider.InMemoryData
 
         #region User
 
-        public async Task<User?> GetUserBySlug(string URI)
+        public async Task<User?> GetUserBySlug(string slug)
         {
             lock (_lockObjectRef)
             {
-                var user = _inMemoryDatabase.UserData.FirstOrDefault(e => e.BaseURI == URI);
+                var user = _inMemoryDatabase.UserData.FirstOrDefault(e => e.BaseURI == slug);
                 return user;
             }
         }
@@ -361,9 +359,17 @@ namespace DataProvider.InMemoryData
             }
         }
 
-        public Task<bool> IsUserSlugAvailable(string link, Guid id)
+        public async Task<bool> IsUserSlugAvailable(string slug, Guid id)
         {
-            throw new NotImplementedException();
+            lock (_lockObjectRef)
+            {
+                var entity =  _inMemoryDatabase.UserData
+                                .FirstOrDefault(e => e.BaseURI.ToLower() == slug.ToLower());
+
+                if (entity == null) return true;
+
+                return entity.Id == id;
+            }
         }
         public async Task<bool> UpdateUser(User userEntity)
         {

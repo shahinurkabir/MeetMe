@@ -20,20 +20,20 @@ export class EventTypeService extends DataService {
   }
 
   getList(): Observable<Array<IEventType>> {
-    let url = `${this.eventTypeURI}/list`
+    let url = `${this.eventTypeURI}/me`
     return this.http.get<Array<IEventType>>(url);
   }
-  getListByBaseURI(base_uri:string): Observable<IUserProfileDetailResponse> {
-    let url = `${this.eventTypeURI}/${base_uri}/list`
+  getListByUserSlug(base_uri:string): Observable<IUserProfileDetailResponse> {
+    let url = `${this.eventTypeURI}/user/${base_uri}`
     return this.http.get<IUserProfileDetailResponse>(url);
   }
   getById(id: string): Observable<IEventType> {
-    let url = `${this.eventTypeURI}/${id}`
+    let url = `${this.eventTypeURI}/detailById/${id}`
     return this.http.get<IEventType>(url);
   }
   
   getBySlugName(slug: string): Observable<IEventType> {
-    let url = `${this.eventTypeURI}/getBySlugName/${slug}`
+    let url = `${this.eventTypeURI}/detailBySlug/${slug}`
     return this.http.get<IEventType>(url);
   }
   addNew(command: ICreateEventTypeCommand): Observable<string> {
