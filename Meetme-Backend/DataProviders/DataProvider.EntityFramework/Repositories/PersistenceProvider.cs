@@ -317,7 +317,7 @@ namespace DataProvider.EntityFramework.Repositories
         public async Task<User?> GetUserByLoginId(string userId)
         {
             var user = await _dbContext.Set<User>()
-                .FirstOrDefaultAsync(x => x.UserID == userId);
+                .FirstOrDefaultAsync(x => x.UserId == userId);
 
             return user;
         }

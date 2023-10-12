@@ -52,7 +52,7 @@ namespace MeetMe.Application.AccountSettings
         {
             var userEntity = await persistenceProvider.GetUserBySlug(slug);
 
-            return userEntity==null || userEntity.UserID == userId;
+            return userEntity==null || userEntity.UserId == userId;
 
         }
 

@@ -72,12 +72,11 @@ builder.Services.AddScoped<IDateTimeService, DateTimeService>();
 builder.Services.AddScoped<SeedDataService, SeedDataService>();
 
 //builder.Services.UseInMemoryData();
-
-builder.Services.UseEFCoreSQLServer(builder.Configuration.GetConnectionString("MeetMeDb")!);
+//builder.Services.UseEFCoreSQLServer(builder.Configuration.GetConnectionString("MeetMeDb")!);
 //builder.Services.UseEFCoreSQLite(builder.Configuration.GetConnectionString("MeetMeDb-sqlite")!);
-//builder.Services.UseAWSDynamoDB(builder.Configuration["AWSDynamoDB:AccessKey"], builder.Configuration["AWSDynamoDB:SecretKey"], builder.Configuration["AWSDynamoDB:EndpointUrl"], builder.Configuration["AWSDynamoDB:RegionName"]);
-builder.Services.RegisterApplication();
+builder.Services.UseDynamoDB(builder.Configuration["AWSDynamoDB:AccessKey"], builder.Configuration["AWSDynamoDB:SecretKey"], builder.Configuration["AWSDynamoDB:EndpointUrl"], builder.Configuration["AWSDynamoDB:RegionName"]);
 
+builder.Services.RegisterApplication();
 
 builder.Services.AddCors(e => e.AddPolicy("AllowAll",
              builder =>
@@ -104,22 +103,10 @@ if (app.Environment.IsDevelopment())
     RunMigrationAddSeedingDataAsync(app, "Asia/Dhaka");
 }
 
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-
-//using (var serviceScope = app.Services.CreateScope())
-//{
-//    var dbProvider = serviceScope.ServiceProvider.GetRequiredService<IPersistenceProvider>();
-//    var seedDataService = serviceScope.ServiceProvider.GetRequiredService<SeedDataService>();
-
-//    dbProvider.EnsureDbCreated();
-//    await seedDataService.RunAsync();
-
-//}
 
 app.Run();
 

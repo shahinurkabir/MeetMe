@@ -10,7 +10,7 @@ public class InMemoryDatabase
         {
             Id = Guid.NewGuid(),
             UserName = "Test User",
-            UserID = "admin",
+            UserId = "admin",
             Password = "123",
             BaseURI = "shahinur-kabir",
             TimeZone = "asia/dhaka",

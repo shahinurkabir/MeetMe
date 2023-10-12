@@ -17,7 +17,7 @@ namespace DataProvider.EntityFramework.EntityConfigurations
 
             // Configure properties
             builder.Property(u => u.Id).IsRequired().HasColumnType("uniqueidentifier");
-            builder.Property(u => u.UserID).IsRequired().HasColumnType("varchar(30)");
+            builder.Property(u => u.UserId).IsRequired().HasColumnType("varchar(30)");
             builder.Property(u => u.Password).IsRequired().HasColumnType("varchar(30)");
             builder.Property(u => u.BaseURI).IsRequired().HasColumnType("varchar(30)");
             builder.Property(u => u.TimeZone).IsRequired().HasColumnType("varchar(100)");

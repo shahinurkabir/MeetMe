@@ -10,7 +10,7 @@ namespace DataProvider.DynamoDB
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection UseAWSDynamoDB(this IServiceCollection services, string accessKey, string secretKey, string endpoint_url, string region_name)
+        public static IServiceCollection UseDynamoDB(this IServiceCollection services, string accessKey, string secretKey, string endpoint_url, string region_name)
         {
             services.AddScoped<AmazonDynamoDBClient>(sp => new AmazonDynamoDBClient(accessKey, secretKey, new AmazonDynamoDBConfig { ServiceURL = endpoint_url, AuthenticationRegion = region_name }));
             services.AddScoped<DynamoDbInitializer, DynamoDbInitializer>();

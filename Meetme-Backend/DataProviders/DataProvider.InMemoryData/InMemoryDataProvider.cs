@@ -339,7 +339,7 @@ namespace DataProvider.InMemoryData
         {
             lock (_lockObjectRef)
             {
-                var user = _inMemoryDatabase.UserData.FirstOrDefault(e => e.UserID == userId);
+                var user = _inMemoryDatabase.UserData.FirstOrDefault(e => e.UserId == userId);
                 return user;
             }
         }

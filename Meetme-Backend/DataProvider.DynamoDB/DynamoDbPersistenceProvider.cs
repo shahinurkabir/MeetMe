@@ -1,12 +1,16 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
+using Amazon.Extensions.NETCore.Setup;
 using Amazon.DynamoDBv2.Model;
 using Amazon.DynamoDBv2.Model.Internal.MarshallTransformations;
 using MeetMe.Core.Dtos;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
-
+using System.Linq;
+using Amazon;
+using System.Runtime.InteropServices;
+using DataProvider.DynamoDB;
 namespace DataProvider.DynamoDB
 {
     public class DynamoDbPersistenceProvider : IPersistenceProvider
@@ -28,6 +32,7 @@ namespace DataProvider.DynamoDB
         }
 
         #region Users
+
         public async Task<User?> GetUserById(Guid id)
         {
             var user = await dynamoDBContext.LoadAsync<User>(id);
@@ -36,20 +41,20 @@ namespace DataProvider.DynamoDB
 
         public async Task<User?> GetUserByLoginId(string userId)
         {
-            var response = await dynamoDBContext
-                .QueryAsync<User>(userId, new DynamoDBOperationConfig { IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.User.TableName, DynamoDbTableIndexConstants.User.UserId) })
-                .GetRemainingAsync();
+            var indexName = DynamoDbTableAndIndexConstants.GetIndexName(DynamoDbTableAndIndexConstants.User_Table, DynamoDbTableAndIndexConstants.User_UserId);
 
-            return response.FirstOrDefault();
+            var response = await dynamoDBContext.GetItem<User>(userId, indexName);
+
+            return response;
         }
 
         public async Task<User?> GetUserBySlug(string slug)
         {
-            var response = await dynamoDBContext
-                 .QueryAsync<User>(slug, new DynamoDBOperationConfig { IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.User.TableName,DynamoDbTableIndexConstants.User.BaseURI)  })
-                 .GetRemainingAsync();
+            var indexName = DynamoDbTableAndIndexConstants.GetIndexName(DynamoDbTableAndIndexConstants.User_Table, DynamoDbTableAndIndexConstants.User_BaseURI);
 
-            return response.FirstOrDefault();
+            var response = await dynamoDBContext.GetItem<User>(slug, indexName);
+
+            return response;
         }
 
         public async Task<List<User>?> GetUserList()
@@ -63,12 +68,12 @@ namespace DataProvider.DynamoDB
         }
         public async Task<bool> AddNewUser(User userEntity)
         {
-            await dynamoDBContext.SaveAsync(userEntity);
+            await dynamoDBContext.SaveChangesAsync(userEntity);
             return true;
         }
         public async Task<bool> UpdateUser(User userEntity)
         {
-            await dynamoDBContext.SaveAsync(userEntity);
+            await dynamoDBContext.SaveChangesAsync(userEntity);
             return true;
         }
         public async Task<bool> IsUserSlugAvailable(string slug, Guid id)
@@ -85,61 +90,59 @@ namespace DataProvider.DynamoDB
         #region Availability
         public async Task<bool> AddAvailability(Availability availability)
         {
-            await dynamoDBContext.SaveAsync(availability);
+            await dynamoDBContext.SaveChangesAsync(availability);
             return true;
         }
         public async Task<bool> AddNewEventType(EventType eventTypeInfo)
         {
-            await dynamoDBContext.SaveAsync(eventTypeInfo);
+            await dynamoDBContext.SaveChangesAsync(eventTypeInfo);
             return true;
         }
+
         public async Task<bool> DeleteAvailability(Availability availability)
         {
             availability.IsDeleted = true;
 
-            // detach all event type availability those are related from this schedule rule
+            // Detach all event type availability that is related to this schedule rule
             var listEventType = await GetEventTypeListByUserId(availability.OwnerId);
 
             if (listEventType != null)
             {
-                foreach (var eventTypeItem in listEventType)
+                foreach (var eventTypeItem in listEventType.Where(item => item.AvailabilityId == availability.Id))
                 {
-                    if (eventTypeItem.AvailabilityId == availability.Id)
-                    {
-                        eventTypeItem.AvailabilityId = null;
-                    }
+                    eventTypeItem.AvailabilityId = null;
                 }
-                await dynamoDBContext.SaveAsync(listEventType);
+
+                await dynamoDBContext.SaveChangesAsync(listEventType);
             }
 
-            await dynamoDBContext.SaveAsync(availability);
-
-
+            await dynamoDBContext.SaveChangesAsync(availability);
 
             return true;
         }
+
         public async Task<Availability?> GetAvailability(Guid id)
         {
-            var availability = await dynamoDBContext.LoadAsync<Availability>(id);
+            var availability = await dynamoDBContext.GetById<Availability>(id);
             return availability;
         }
         public async Task<List<Availability>?> GetListByUserId(Guid userId)
         {
-            var response = await dynamoDBContext
-                .QueryAsync<Availability>(userId, new DynamoDBOperationConfig { IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.Availability.TableName, DynamoDbTableIndexConstants.Availability.OwnerId) })
-                .GetRemainingAsync();
+            var indexName = DynamoDbTableAndIndexConstants.GetIndexName(DynamoDbTableAndIndexConstants.Availability_Table, DynamoDbTableAndIndexConstants.Availability_OwnerId);
+
+            var response = await dynamoDBContext.GetList<Availability>(userId, indexName);
 
             return response;
         }
         public async Task<bool> UpdateAvailability(Availability availability)
         {
-            await dynamoDBContext.SaveAsync(availability);
+            await dynamoDBContext.SaveChangesAsync(availability);
             return true;
         }
 
         public async Task<bool> UpdateAvailabilityName(Guid id, string nameToUpdate)
         {
-            var entity = await dynamoDBContext.LoadAsync<Availability>(id);
+            var entity = await dynamoDBContext.GetById<Availability>(id);
 
             if (entity == null)
             {
@@ -148,34 +151,33 @@ namespace DataProvider.DynamoDB
 
             entity.Name = nameToUpdate;
 
-            await dynamoDBContext.SaveAsync(entity);
+            var result=await dynamoDBContext.SaveChangesAsync(entity);
 
-            return true;
+            return result;
         }
 
         public async Task<bool> SetDefaultAvailability(Guid id, Guid userId)
         {
             var listAvailabilityForUser = await GetListByUserId(userId);
 
-            if (listAvailabilityForUser == null)
+            if (listAvailabilityForUser == null || !listAvailabilityForUser.Any())
             {
                 return false;
             }
-            var entity = listAvailabilityForUser?.FirstOrDefault(e => e.Id == id);
+
+            var entity = listAvailabilityForUser.FirstOrDefault(e => e.Id == id);
 
             if (entity == null)
-
             {
                 return false;
             }
 
-            listAvailabilityForUser?.ForEach(e => e.IsDefault = false);
+            foreach (var availability in listAvailabilityForUser)
+            {
+                availability.IsDefault = availability.Id == id;
+            }
 
-            entity.IsDefault = true;
-
-            var batchWritter = dynamoDBContext.CreateBatchWrite<Availability>();
-            batchWritter.AddPutItems(listAvailabilityForUser);
-            await batchWritter.ExecuteAsync();
+            var result = await dynamoDBContext.SaveChangesAsync(listAvailabilityForUser);
 
             return true;
         }
@@ -187,35 +189,35 @@ namespace DataProvider.DynamoDB
         public async Task<EventType?> GetEventTypeById(Guid eventTypeId)
         {
 
-            var eventType = await dynamoDBContext.LoadAsync<EventType>(eventTypeId);
+            var eventType = await dynamoDBContext.GetById<EventType>(eventTypeId);
             return eventType;
         }
 
         public async Task<EventType?> GetEventTypeBySlug(string slug)
         {
-            var response = await dynamoDBContext
-                .QueryAsync<EventType>(slug, new DynamoDBOperationConfig { IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.EventType.TableName, DynamoDbTableIndexConstants.EventType.Slug) })
-                .GetRemainingAsync();
+            var indexName = DynamoDbTableAndIndexConstants.GetIndexName(DynamoDbTableAndIndexConstants.EventType_Table, DynamoDbTableAndIndexConstants.EventType_Slug);
 
-            return response.FirstOrDefault();
+            var response = await dynamoDBContext.GetItem<EventType>(slug, indexName);
+
+            return response;
         }
 
         public async Task<List<EventType>?> GetEventTypeListByUserId(Guid userId)
         {
-            var response = await dynamoDBContext
-                .QueryAsync<EventType>(userId, new DynamoDBOperationConfig { IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.EventType.TableName, DynamoDbTableIndexConstants.EventType.OwnerId) })
-                .GetRemainingAsync();
+            var indexName = DynamoDbTableAndIndexConstants.GetIndexName(DynamoDbTableAndIndexConstants.EventType_Table, DynamoDbTableAndIndexConstants.EventType_OwnerId);
+
+            var response = await dynamoDBContext.GetList<EventType>(userId, indexName);
 
             return response;
         }
         public async Task<bool> UpdateEventType(EventType eventTypeInfo)
         {
-            await dynamoDBContext.SaveAsync(eventTypeInfo);
+            await dynamoDBContext.SaveChangesAsync(eventTypeInfo);
             return true;
         }
         public async Task<bool> UpdateEventAvailability(EventType eventTypeInfo)
         {
-            await dynamoDBContext.SaveAsync(eventTypeInfo);
+            await dynamoDBContext.SaveChangesAsync(eventTypeInfo);
             return true;
         }
         public Task<bool> ResetEventQuestions(Guid eventTypeId, List<EventTypeQuestion> questions)
@@ -234,31 +236,36 @@ namespace DataProvider.DynamoDB
 
         public async Task<Appointment?> GetAppointment(Guid id)
         {
-            var appointment = await dynamoDBContext.LoadAsync<Appointment>(id);
+            var appointment = await dynamoDBContext.GetById<Appointment>(id);
             return appointment;
         }
         public async Task<bool> AddAppointment(Appointment appointment)
         {
-            await dynamoDBContext.SaveAsync(appointment);
+            await dynamoDBContext.SaveChangesAsync(appointment);
             return true;
         }
 
         public async Task<bool> IsTimeBooked(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
         {
-            // Build the query filter
-            var queryFilter = new QueryFilter();
-            queryFilter.AddCondition( DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.Appointment.TableName, DynamoDbTableIndexConstants.Appointment.EventTypeId), QueryOperator.Equal, eventTypeId);
-            queryFilter.AddCondition(DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.Appointment.TableName, DynamoDbTableIndexConstants.Appointment.AppointmentDate), QueryOperator.Between, startDateUTC.DateTime, endDateUTC.DateTime);
+            var indexAppointmentEventTypeId = DynamoDbTableAndIndexConstants.GetIndexName(DynamoDbTableAndIndexConstants.Appointment_Table, DynamoDbTableAndIndexConstants.Appointment_EventTypeId);
 
-            // Perform the query with the combined filter
-            var listAppointment = await dynamoDBContext.QueryAsync<Appointment>(queryFilter).GetRemainingAsync();
+            var date1 = startDateUTC.UtcDateTime;
+            var date2 = endDateUTC.UtcDateTime;
+
+            var conditions = new List<ScanCondition>
+            {
+                new ScanCondition( DynamoDbTableAndIndexConstants.Appointment_EventTypeId, ScanOperator.Equal, eventTypeId),
+                new ScanCondition(DynamoDbTableAndIndexConstants.Appointment_AppointmentDate, ScanOperator.Between, date1, date2)
+            };
+
+            var listAppointment = await dynamoDBContext.GetList<Appointment>(eventTypeId, indexAppointmentEventTypeId, conditions.ToArray());
 
             return listAppointment.Any();
 
         }
         public async Task<bool> UpdateAppointment(Appointment appointment)
         {
-            await dynamoDBContext.SaveAsync(appointment);
+            await dynamoDBContext.SaveChangesAsync(appointment);
             return true;
         }
         public async Task<bool> DeleteAppointment(Guid id)
@@ -269,17 +276,17 @@ namespace DataProvider.DynamoDB
 
         public async Task<AppointmentDetailsDto?> GetAppointmentDetails(Guid id)
         {
-            var appointmentEntity = await dynamoDBContext.LoadAsync<Appointment>(id);
+            var appointmentEntity = await dynamoDBContext.GetById<Appointment>(id);
 
             if (appointmentEntity == null)
             {
                 return null;
             }
 
-            var eventTypeEntity = await dynamoDBContext.LoadAsync<EventType>(appointmentEntity.EventTypeId);
-            var eventOwnerEntity = await dynamoDBContext.LoadAsync<User>(eventTypeEntity.OwnerId);
+            var eventTypeEntity = await dynamoDBContext.GetById<EventType>(appointmentEntity.EventTypeId);
+            var eventOwnerEntity = await dynamoDBContext.GetById<User>(eventTypeEntity!.OwnerId);
 
-            var result = AppointmentDetailsDto.New(appointmentEntity, eventTypeEntity, eventOwnerEntity);
+            var result = AppointmentDetailsDto.New(appointmentEntity, eventTypeEntity, eventOwnerEntity!);
 
             return result;
 
@@ -289,43 +296,28 @@ namespace DataProvider.DynamoDB
         {
             //TODO:this method is not optimized, need to be refactored
 
-            var userRetrevalTask = GetUserById(userId);
-            var eventTypeRetrevalTask = GetEventTypeListByUserId(userId);
+            var userEntityRequestTask = GetUserById(userId);
+            var eventTypeRequestTask = GetEventTypeListByUserId(userId);
 
-            await Task.WhenAll(userRetrevalTask, eventTypeRetrevalTask);
+            await Task.WhenAll(userEntityRequestTask, eventTypeRequestTask);
 
-            if (userRetrevalTask.Result == null || eventTypeRetrevalTask.Result == null)
+            if (userEntityRequestTask.Result == null || eventTypeRequestTask.Result == null)
             {
                 return null;
             }
 
-            var userEntity = userRetrevalTask.Result;
-            var listEventType = eventTypeRetrevalTask.Result;
+            var userEntity = userEntityRequestTask.Result;
+            var listEventType = eventTypeRequestTask.Result;
+            var indexAppointmentOwnerId = DynamoDbTableAndIndexConstants.GetIndexName(DynamoDbTableAndIndexConstants.Appointment_Table, DynamoDbTableAndIndexConstants.Appointment_OwnerId);
 
-            var listAppointment = await dynamoDBContext
-                .QueryAsync<Appointment>(userId, new DynamoDBOperationConfig { IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.Appointment.TableName,DynamoDbTableIndexConstants.Appointment.OwnerId) })
-                .GetRemainingAsync();
+            var listAppointment = await dynamoDBContext.GetList<Appointment>(userId, indexAppointmentOwnerId);
 
             if (listAppointment == null)
             {
                 return null;
             }
 
-            var listAppointmentDetails = new List<AppointmentDetailsDto>();
-
-            foreach (var appointment in listAppointment)
-            {
-                var eventTypeEntity = listEventType.FirstOrDefault(e => e.Id == appointment.EventTypeId);
-
-                if (eventTypeEntity == null)
-                {
-                    continue;
-                }
-
-                var appointmentDetails = AppointmentDetailsDto.New(appointment, eventTypeEntity, userEntity);
-
-                listAppointmentDetails.Add(appointmentDetails);
-            }
+            List<AppointmentDetailsDto> listAppointmentDetails = ToConvertAppointDetailsViewModel(userEntity, listEventType, listAppointment);
 
             return listAppointmentDetails;
         }
@@ -334,6 +326,9 @@ namespace DataProvider.DynamoDB
         {
             //TODO:this method is not optimized, need to be refactored
 
+            var indexAppointmentEventTypeId = DynamoDbTableAndIndexConstants.GetIndexName(DynamoDbTableAndIndexConstants.Appointment_Table, DynamoDbTableAndIndexConstants.Appointment_EventTypeId);
+            var date1 = startDateUTC.UtcDateTime;
+            var date2 = endDateUTC.UtcDateTime;
             var eventType = await GetEventTypeById(eventTypeId);
 
             if (eventType == null)
@@ -344,15 +339,15 @@ namespace DataProvider.DynamoDB
             var userRetrevalTask = GetUserById(eventType.OwnerId);
             var eventTypeRetrevalTask = GetEventTypeListByUserId(eventType.OwnerId);
 
-            // Build the query filter
-            var queryFilter = new QueryFilter();
-            queryFilter.AddCondition(DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.Appointment.TableName, DynamoDbTableIndexConstants.Appointment.EventTypeId), QueryOperator.Equal, eventTypeId);
-            queryFilter.AddCondition(DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.Appointment.TableName, DynamoDbTableIndexConstants.Appointment.AppointmentDate), QueryOperator.Between, startDateUTC.DateTime, endDateUTC.DateTime);
 
-            // Perform the query with the combined filter
-            var appointmentRetrevalTask = dynamoDBContext.QueryAsync<Appointment>(queryFilter).GetRemainingAsync();
+            var listConditions = new List<ScanCondition> {
+                    new ScanCondition(DynamoDbTableAndIndexConstants.Appointment_EventTypeId, ScanOperator.Equal,eventTypeId),
+                    new ScanCondition(DynamoDbTableAndIndexConstants.Appointment_AppointmentDate, ScanOperator.Between, startDateUTC.UtcDateTime, endDateUTC.UtcDateTime)
+                };
 
-            await Task.WhenAll(userRetrevalTask, appointmentRetrevalTask,eventTypeRetrevalTask);
+            var appointmentRetrevalTask = dynamoDBContext.GetList<Appointment>(eventTypeId, indexAppointmentEventTypeId, listConditions.ToArray());
+
+            await Task.WhenAll(userRetrevalTask, appointmentRetrevalTask, eventTypeRetrevalTask);
 
 
             var userEntity = userRetrevalTask.Result;
@@ -363,6 +358,12 @@ namespace DataProvider.DynamoDB
             {
                 return null;
             }
+            List<AppointmentDetailsDto> listAppointmentDetails = ToConvertAppointDetailsViewModel(userEntity, listEventType, listAppointment);
+
+            return listAppointmentDetails;
+        }
+        private static List<AppointmentDetailsDto> ToConvertAppointDetailsViewModel(User userEntity, List<EventType> listEventType, List<Appointment> listAppointment)
+        {
             var listAppointmentDetails = new List<AppointmentDetailsDto>();
 
             foreach (var appointment in listAppointment)
@@ -382,7 +383,9 @@ namespace DataProvider.DynamoDB
             return listAppointmentDetails;
         }
 
+
         #endregion
+
 
     }
 

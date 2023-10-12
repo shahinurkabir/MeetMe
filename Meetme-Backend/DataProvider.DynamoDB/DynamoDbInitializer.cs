@@ -6,14 +6,13 @@ using MeetMe.Core.Persistence.Entities;
 
 namespace DataProvider.DynamoDB
 {
-
     public class DynamoDbInitializer
     {
         private readonly AmazonDynamoDBClient client;
-        private readonly string tableName_User = DynamoDbTableIndexConstants.User.TableName;
-        private readonly string tableName_Availability = DynamoDbTableIndexConstants.Availability.TableName;
-        private readonly string tableName_EventType = DynamoDbTableIndexConstants.EventType.TableName;
-        private readonly string tableName_Appointment = DynamoDbTableIndexConstants.Appointment.TableName;
+        private readonly string tableName_User = DynamoDbTableAndIndexConstants.User_Table;
+        private readonly string tableName_Availability = DynamoDbTableAndIndexConstants.Availability_Table;
+        private readonly string tableName_EventType = DynamoDbTableAndIndexConstants.EventType_Table;
+        private readonly string tableName_Appointment = DynamoDbTableAndIndexConstants.Appointment_Table;
 
 
         public DynamoDbInitializer(AmazonDynamoDBClient client)
@@ -40,41 +39,62 @@ namespace DataProvider.DynamoDB
 
         }
 
+        private static AttributeDefinition GetAttributeDefinition(string attributeName, ScalarAttributeType type)
+        {
+            return new AttributeDefinition
+            {
+                AttributeName = attributeName,
+                AttributeType = type
+            };
+        }
+        private static KeySchemaElement GetKeySchemaElement(string attributeName, KeyType type)
+        {
+            return new KeySchemaElement
+            {
+                AttributeName = attributeName,
+                KeyType = type
+            };
+        }
+        private static GlobalSecondaryIndex GetGlobalSecondaryIndex(string tableName, string fieldName, KeyType keyType, ProjectionType projectionType, long readCapacity, long writeCapcity, params string[] rangeKeys)
+        {
+            var keySchema = new List<KeySchemaElement>();
+            keySchema.Add(GetKeySchemaElement(fieldName, keyType));
+            foreach (var r in rangeKeys)
+            {
+                keySchema.Add(GetKeySchemaElement(r, KeyType.RANGE));
+            }
+            return new GlobalSecondaryIndex
+            {
+                IndexName = DynamoDbTableAndIndexConstants.GetIndexName(tableName, fieldName),
+                KeySchema = keySchema,
+                Projection = new Projection
+                {
+                    ProjectionType = projectionType
+                },
+                ProvisionedThroughput = new ProvisionedThroughput
+                {
+                    ReadCapacityUnits = readCapacity,
+                    WriteCapacityUnits = writeCapcity
+                }
+            };
+
+
+        }
         private async Task CreateAppointmentTableAsync(string tableName)
         {
             var request = new CreateTableRequest
             {
                 TableName = tableName,
                 AttributeDefinitions = new List<AttributeDefinition>  {
-                new AttributeDefinition
-                {
-                    AttributeName = DynamoDbTableIndexConstants.Appointment.PrimaryKey,
-                    AttributeType = ScalarAttributeType.S
-                },
-                new AttributeDefinition
-                {
-                    AttributeName = DynamoDbTableIndexConstants.Appointment.EventTypeId,
-                    AttributeType = ScalarAttributeType.S
-                },
-                new AttributeDefinition
-                {
-                    AttributeName = DynamoDbTableIndexConstants.Appointment.Status,
-                    AttributeType = ScalarAttributeType.S
-                }
-                ,
-                new AttributeDefinition
-                {
-                    AttributeName = DynamoDbTableIndexConstants.Appointment.AppointmentDate,
-                    AttributeType = ScalarAttributeType.S
-                }
+                    GetAttributeDefinition( DynamoDbTableAndIndexConstants.Appointment_PrimaryKey,ScalarAttributeType.S),
+                    GetAttributeDefinition( DynamoDbTableAndIndexConstants.Appointment_EventTypeId,ScalarAttributeType.S),
+                    GetAttributeDefinition( DynamoDbTableAndIndexConstants.Appointment_Status,ScalarAttributeType.S),
+                    GetAttributeDefinition( DynamoDbTableAndIndexConstants.Appointment_AppointmentDate,ScalarAttributeType.S),
+                    GetAttributeDefinition( DynamoDbTableAndIndexConstants.Appointment_OwnerId,ScalarAttributeType.S)
                 },
                 KeySchema = new List<KeySchemaElement>
                 {
-                new KeySchemaElement
-                {
-                    AttributeName = DynamoDbTableIndexConstants.Appointment.PrimaryKey,
-                    KeyType = KeyType.HASH // Primary key
-                }
+                    GetKeySchemaElement(DynamoDbTableAndIndexConstants.Appointment_PrimaryKey,KeyType.HASH)
                 },
                 ProvisionedThroughput = new ProvisionedThroughput
                 {
@@ -83,71 +103,11 @@ namespace DataProvider.DynamoDB
                 },
                 GlobalSecondaryIndexes = new List<GlobalSecondaryIndex>
                 {
-                new GlobalSecondaryIndex
-                {
-                IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.Appointment.TableName,DynamoDbTableIndexConstants.Appointment.EventTypeId),
-                KeySchema = new List<KeySchemaElement>
-                {
-                    new KeySchemaElement
-                    {
-                    AttributeName = DynamoDbTableIndexConstants.Appointment.EventTypeId,
-                    KeyType = KeyType.HASH
-                }
+                    GetGlobalSecondaryIndex(tableName, DynamoDbTableAndIndexConstants.Appointment_EventTypeId, KeyType.HASH, ProjectionType.ALL, 5, 5,DynamoDbTableAndIndexConstants.Appointment_AppointmentDate),
+                    GetGlobalSecondaryIndex(tableName, DynamoDbTableAndIndexConstants.Appointment_Status, KeyType.HASH, ProjectionType.ALL, 5, 5),
+                   // GetGlobalSecondaryIndex(tableName, DynamoDbTableAndIndexConstants.Appointment_AppointmentDate, KeyType.RANGE, ProjectionType.ALL, 5, 5),
+                    GetGlobalSecondaryIndex(tableName, DynamoDbTableAndIndexConstants.Appointment_OwnerId, KeyType.HASH, ProjectionType.ALL, 5, 5),
                 },
-                Projection = new Projection
-                {
-                ProjectionType = ProjectionType.ALL
-                },
-                ProvisionedThroughput = new ProvisionedThroughput
-                {
-                ReadCapacityUnits = 5,
-                WriteCapacityUnits = 5
-                }
-                },
-                new GlobalSecondaryIndex
-                {
-                IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.Appointment.TableName,DynamoDbTableIndexConstants.Appointment.Status),
-                KeySchema = new List<KeySchemaElement>
-                {
-                new KeySchemaElement
-                {
-                    AttributeName = DynamoDbTableIndexConstants.Appointment.Status,
-                    KeyType = KeyType.HASH // GSI hash key
-                }
-                },
-                Projection = new Projection
-                {
-                ProjectionType = ProjectionType.ALL
-                },
-                ProvisionedThroughput = new ProvisionedThroughput
-                {
-                    ReadCapacityUnits = 5,
-                    WriteCapacityUnits = 5
-                }
-                },
-                 new GlobalSecondaryIndex
-                {
-                IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.Appointment.TableName,DynamoDbTableIndexConstants.Appointment.AppointmentDate),
-                KeySchema = new List<KeySchemaElement>
-                {
-                new KeySchemaElement
-                {
-                    AttributeName = DynamoDbTableIndexConstants.Appointment.AppointmentDate,
-                    KeyType = KeyType.HASH // GSI hash key
-                }
-                },
-                Projection = new Projection
-                {
-                ProjectionType = ProjectionType.ALL
-                },
-                ProvisionedThroughput = new ProvisionedThroughput
-                {
-                    ReadCapacityUnits = 5,
-                    WriteCapacityUnits = 5
-                }
-                }
-            },
-
 
             };
 
@@ -159,35 +119,17 @@ namespace DataProvider.DynamoDB
             var request = new CreateTableRequest
             {
                 TableName = tableName,
-                AttributeDefinitions = new List<AttributeDefinition>  {
-                new AttributeDefinition
+                AttributeDefinitions = new List<AttributeDefinition>
                 {
-                    AttributeName = DynamoDbTableIndexConstants.EventType.PrimaryKey,
-                    AttributeType = ScalarAttributeType.S
-                },
-                new AttributeDefinition
-                {
-                    AttributeName = DynamoDbTableIndexConstants.EventType.Slug,
-                    AttributeType = ScalarAttributeType.S
-                },
-                new AttributeDefinition
-                {
-                    AttributeName = DynamoDbTableIndexConstants.EventType.AvailabilityId,
-                    AttributeType = ScalarAttributeType.S
-                },
-                 new AttributeDefinition
-                {
-                    AttributeName = DynamoDbTableIndexConstants.EventType.OwnerId,
-                    AttributeType = ScalarAttributeType.S
-                }
+                    GetAttributeDefinition( DynamoDbTableAndIndexConstants.EventType_PrimaryKey,ScalarAttributeType.S),
+                    GetAttributeDefinition( DynamoDbTableAndIndexConstants.EventType_Slug,ScalarAttributeType.S),
+                    GetAttributeDefinition( DynamoDbTableAndIndexConstants.EventType_AvailabilityId,ScalarAttributeType.S),
+                    GetAttributeDefinition( DynamoDbTableAndIndexConstants.EventType_OwnerId,ScalarAttributeType.S)
                 },
                 KeySchema = new List<KeySchemaElement>
                 {
-                new KeySchemaElement
-                {
-                    AttributeName = DynamoDbTableIndexConstants.Availability.PrimaryKey,
-                    KeyType = KeyType.HASH // Primary key
-                }
+                    GetKeySchemaElement(DynamoDbTableAndIndexConstants.EventType_PrimaryKey,KeyType.HASH)
+
                 },
                 ProvisionedThroughput = new ProvisionedThroughput
                 {
@@ -196,70 +138,10 @@ namespace DataProvider.DynamoDB
                 },
                 GlobalSecondaryIndexes = new List<GlobalSecondaryIndex>
                 {
-                new GlobalSecondaryIndex
-                {
-                IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.EventType.TableName,DynamoDbTableIndexConstants.EventType.Slug),
-                KeySchema = new List<KeySchemaElement>
-                {
-                    new KeySchemaElement
-                    {
-                    AttributeName = DynamoDbTableIndexConstants.EventType.Slug,
-                    KeyType = KeyType.HASH // GSI hash key
+                    GetGlobalSecondaryIndex(tableName, DynamoDbTableAndIndexConstants.EventType_Slug, KeyType.HASH, ProjectionType.ALL, 5, 5),
+                    GetGlobalSecondaryIndex(tableName, DynamoDbTableAndIndexConstants.EventType_AvailabilityId    , KeyType.HASH, ProjectionType.ALL, 5, 5),
+                    GetGlobalSecondaryIndex(tableName, DynamoDbTableAndIndexConstants.EventType_OwnerId, KeyType.HASH, ProjectionType.ALL, 5, 5),
                 }
-                },
-                Projection = new Projection
-                {
-                ProjectionType = ProjectionType.ALL
-                },
-                ProvisionedThroughput = new ProvisionedThroughput
-                {
-                ReadCapacityUnits = 5,
-                WriteCapacityUnits = 5
-                }
-                },
-                new GlobalSecondaryIndex
-                {
-                 IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.EventType.TableName,DynamoDbTableIndexConstants.EventType.AvailabilityId),
-                KeySchema = new List<KeySchemaElement>
-                {
-                new KeySchemaElement
-                {
-                    AttributeName =DynamoDbTableIndexConstants.EventType.AvailabilityId,
-                    KeyType = KeyType.HASH // GSI hash key
-                }
-                },
-                Projection = new Projection
-                {
-                ProjectionType = ProjectionType.ALL
-                },
-                ProvisionedThroughput = new ProvisionedThroughput
-                {
-                    ReadCapacityUnits = 5,
-                    WriteCapacityUnits = 5
-                }
-                },
-                 new GlobalSecondaryIndex
-                {
-                IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.EventType.TableName,DynamoDbTableIndexConstants.EventType.OwnerId),
-                KeySchema = new List<KeySchemaElement>
-                {
-                    new KeySchemaElement
-                    {
-                    AttributeName =DynamoDbTableIndexConstants.EventType.OwnerId,
-                    KeyType = KeyType.HASH
-                }
-                },
-                Projection = new Projection
-                {
-                ProjectionType = ProjectionType.ALL
-                },
-                ProvisionedThroughput = new ProvisionedThroughput
-                {
-                ReadCapacityUnits = 5,
-                WriteCapacityUnits = 5
-                }
-                },
-            }
 
             };
 
@@ -270,25 +152,15 @@ namespace DataProvider.DynamoDB
             var request = new CreateTableRequest
             {
                 TableName = tableName,
-                AttributeDefinitions = new List<AttributeDefinition>  {
-                new AttributeDefinition
+                AttributeDefinitions = new List<AttributeDefinition>
                 {
-                    AttributeName = DynamoDbTableIndexConstants.Availability.PrimaryKey,
-                    AttributeType = ScalarAttributeType.S
-                },
-                new AttributeDefinition
-                {
-                    AttributeName = DynamoDbTableIndexConstants.Availability.OwnerId,
-                    AttributeType = ScalarAttributeType.S
-                }
+                    GetAttributeDefinition( DynamoDbTableAndIndexConstants.Availability_PrimaryKey,ScalarAttributeType.S),
+                    GetAttributeDefinition( DynamoDbTableAndIndexConstants.Availability_OwnerId,ScalarAttributeType.S)
                 },
                 KeySchema = new List<KeySchemaElement>
                 {
-                new KeySchemaElement
-                {
-                    AttributeName = DynamoDbTableIndexConstants.Availability.PrimaryKey,
-                    KeyType = KeyType.HASH
-                }
+                    GetKeySchemaElement(DynamoDbTableAndIndexConstants.Availability_PrimaryKey,KeyType.HASH)
+
                 },
                 ProvisionedThroughput = new ProvisionedThroughput
                 {
@@ -297,29 +169,9 @@ namespace DataProvider.DynamoDB
                 },
                 GlobalSecondaryIndexes = new List<GlobalSecondaryIndex>
                 {
-                new GlobalSecondaryIndex
-                {
-                IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.Availability.TableName,DynamoDbTableIndexConstants.Availability.OwnerId),
-                KeySchema = new List<KeySchemaElement>
-                {
-                    new KeySchemaElement
-                    {
-                    AttributeName = DynamoDbTableIndexConstants.Availability.OwnerId,
-                    KeyType = KeyType.HASH
-                }
-                },
-                Projection = new Projection
-                {
-                ProjectionType = ProjectionType.ALL
-                },
-                ProvisionedThroughput = new ProvisionedThroughput
-                {
-                ReadCapacityUnits = 5,
-                WriteCapacityUnits = 5
-                }
-                },
+                    GetGlobalSecondaryIndex(tableName, DynamoDbTableAndIndexConstants.Availability_OwnerId, KeyType.HASH, ProjectionType.ALL, 5, 5),
 
-            }
+                }
 
             };
 
@@ -330,56 +182,26 @@ namespace DataProvider.DynamoDB
             var request = new CreateTableRequest
             {
                 TableName = tableName,
-                AttributeDefinitions = new List<AttributeDefinition> {
-                    new AttributeDefinition(DynamoDbTableIndexConstants.User.PrimaryKey, ScalarAttributeType.S),
-                    new AttributeDefinition(DynamoDbTableIndexConstants.User.UserId, ScalarAttributeType.S),
-                    new AttributeDefinition(DynamoDbTableIndexConstants.User.BaseURI, ScalarAttributeType.S)
+                AttributeDefinitions = new List<AttributeDefinition>
+                {
+                    GetAttributeDefinition(DynamoDbTableAndIndexConstants.User_PrimaryKey, ScalarAttributeType.S),
+                    GetAttributeDefinition(DynamoDbTableAndIndexConstants.User_UserId, ScalarAttributeType.S),
+                    GetAttributeDefinition(DynamoDbTableAndIndexConstants.User_BaseURI, ScalarAttributeType.S)
                 },
                 KeySchema = new List<KeySchemaElement>
                 {
-                    new KeySchemaElement(DynamoDbTableIndexConstants.User.PrimaryKey, KeyType.HASH)
+                    GetKeySchemaElement(DynamoDbTableAndIndexConstants.User_PrimaryKey, KeyType.HASH)
                 },
                 ProvisionedThroughput = new ProvisionedThroughput
                 {
                     ReadCapacityUnits = 5,
                     WriteCapacityUnits = 5
                 },
-                GlobalSecondaryIndexes = new List<GlobalSecondaryIndex>  {
-                    new GlobalSecondaryIndex
-                    {
-                        IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.User.TableName, DynamoDbTableIndexConstants.User.UserId),
-                        KeySchema = new List<KeySchemaElement>
-                        {
-                            new KeySchemaElement(DynamoDbTableIndexConstants.User.UserId, KeyType.HASH) // Hash key for GSI
-                        },
-                        Projection = new Projection
-                        {
-                            ProjectionType = ProjectionType.ALL
-                        },
-                        ProvisionedThroughput = new ProvisionedThroughput
-                        {
-                            ReadCapacityUnits = 5,
-                            WriteCapacityUnits = 5
-                        }
-                    },
-                    new GlobalSecondaryIndex
-                    {
-                        IndexName = DynamoDbTableIndexConstants.GetIndexName(DynamoDbTableIndexConstants.User.TableName, DynamoDbTableIndexConstants.User.BaseURI),
-                        KeySchema = new List<KeySchemaElement>
-                        {
-                            new KeySchemaElement(DynamoDbTableIndexConstants.User.BaseURI, KeyType.HASH) // Hash key for GSI
-                        },
-                        Projection = new Projection
-                        {
-                            ProjectionType = ProjectionType.ALL
-                        },
-                        ProvisionedThroughput = new ProvisionedThroughput
-                        {
-                            ReadCapacityUnits = 5,
-                            WriteCapacityUnits = 5
-                        }
-                    }
-    }
+                GlobalSecondaryIndexes = new List<GlobalSecondaryIndex>
+                {
+                    GetGlobalSecondaryIndex(tableName, DynamoDbTableAndIndexConstants.User_UserId, KeyType.HASH, ProjectionType.ALL, 5, 5),
+                    GetGlobalSecondaryIndex(tableName, DynamoDbTableAndIndexConstants.User_BaseURI, KeyType.HASH, ProjectionType.ALL, 5, 5)
+                }
             };
 
             await CreateTableAsync(request);

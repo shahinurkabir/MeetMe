@@ -47,7 +47,7 @@ namespace MeetMe.Core.Services
             var _ = await persistenceProvider.AddNewUser(new Persistence.Entities.User
             {
                 Id = adminUserId,
-                UserID = "admin",
+                UserId = "admin",
                 Password = "123",
                 UserName = "administrator",
                 BaseURI = "admin",

@@ -127,7 +127,7 @@ namespace MeetMe.API.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypeName.Id,user.Id.ToString()),
-                new Claim(ClaimTypeName.UserId,user.UserID),
+                new Claim(ClaimTypeName.UserId,user.UserId),
                 new Claim(ClaimTypeName.UserName,user.UserName),
                 new Claim(ClaimTypeName.BaseURI,user.BaseURI),
                 new Claim(ClaimTypeName.TimeZone,user.TimeZone),
