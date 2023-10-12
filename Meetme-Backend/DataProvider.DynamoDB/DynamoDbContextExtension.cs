@@ -1,4 +1,5 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
+using MeetMe.Core.Persistence.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,22 @@ namespace DataProvider.DynamoDB
 {
     public static class DynamoDbContextExtension
     {
+        public static async Task<bool> SaveChangesAsync<T>(this IDynamoDBContext dynamoDBContext, T entityToSave)
+        {
+            await dynamoDBContext.SaveAsync(entityToSave);
+            return true;
+        }
+        public static async Task<bool> SaveChangesAsync<T>(this IDynamoDBContext dynamoDBContext, List<T> entitiesToSave)
+        {
+            var batchWritter = dynamoDBContext.CreateBatchWrite<T>();
+
+            batchWritter.AddPutItems(entitiesToSave);
+
+            await batchWritter.ExecuteAsync();
+            
+            return true;
+        }
+
         public static async Task<T?> GetById<T>(this IDynamoDBContext dynamoDBContext, object id)
         {
             var item = await dynamoDBContext.LoadAsync<T>(id);

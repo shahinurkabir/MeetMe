@@ -151,7 +151,7 @@ namespace DataProvider.DynamoDB
 
             entity.Name = nameToUpdate;
 
-            var result=await dynamoDBContext.SaveChangesAsync(entity);
+            var result = await dynamoDBContext.SaveChangesAsync(entity);
 
             return result;
         }
@@ -327,8 +327,7 @@ namespace DataProvider.DynamoDB
             //TODO:this method is not optimized, need to be refactored
 
             var indexAppointmentEventTypeId = DynamoDbTableAndIndexConstants.GetIndexName(DynamoDbTableAndIndexConstants.Appointment_Table, DynamoDbTableAndIndexConstants.Appointment_EventTypeId);
-            var date1 = startDateUTC.UtcDateTime;
-            var date2 = endDateUTC.UtcDateTime;
+
             var eventType = await GetEventTypeById(eventTypeId);
 
             if (eventType == null)
@@ -336,19 +335,16 @@ namespace DataProvider.DynamoDB
                 return null;
             }
 
-            var userRetrevalTask = GetUserById(eventType.OwnerId);
-            var eventTypeRetrevalTask = GetEventTypeListByUserId(eventType.OwnerId);
-
-
             var listConditions = new List<ScanCondition> {
                     new ScanCondition(DynamoDbTableAndIndexConstants.Appointment_EventTypeId, ScanOperator.Equal,eventTypeId),
                     new ScanCondition(DynamoDbTableAndIndexConstants.Appointment_AppointmentDate, ScanOperator.Between, startDateUTC.UtcDateTime, endDateUTC.UtcDateTime)
                 };
 
+            var userRetrevalTask = GetUserById(eventType.OwnerId);
+            var eventTypeRetrevalTask = GetEventTypeListByUserId(eventType.OwnerId);
             var appointmentRetrevalTask = dynamoDBContext.GetList<Appointment>(eventTypeId, indexAppointmentEventTypeId, listConditions.ToArray());
 
             await Task.WhenAll(userRetrevalTask, appointmentRetrevalTask, eventTypeRetrevalTask);
-
 
             var userEntity = userRetrevalTask.Result;
             var listAppointment = appointmentRetrevalTask.Result;
