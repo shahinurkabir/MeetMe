@@ -80,7 +80,7 @@ namespace MeetMe.Application.EventTypes.Commands
 
         private async Task<bool> CheckNotUsed(UpdateInfoCommand command, CancellationToken cancellationToken)
         {
-            var listEvents = await persistenceProvider.GetEventTypeListByUserId(applicationUser.Id);
+            var listEvents = await persistenceProvider.GetEventTypeListByUser(applicationUser.Id);
 
             var isUsed = listEvents.Count(e =>
             e.Id != command.Id &&

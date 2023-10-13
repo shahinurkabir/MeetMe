@@ -13,7 +13,7 @@ namespace MeetMe.Core.Persistence.Interface
         Task<bool> DeleteAvailability(Availability availability);
 
         Task<Availability?> GetAvailability(Guid id);
-        Task<List<Availability>?> GetListByUserId(Guid userId);
+        Task<List<Availability>?> GetAvailabilityListByUser(Guid userId);
         Task<bool> UpdateAvailabilityName(Guid id ,string nameToUpdate );
 
         Task<bool> SetDefaultAvailability(Guid id, Guid userId);

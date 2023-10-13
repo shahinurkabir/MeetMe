@@ -86,7 +86,7 @@ namespace DataProvider.EntityFramework.Repositories
             return true;
         }
 
-        public async Task<List<Availability>?> GetListByUserId(Guid userId)
+        public async Task<List<Availability>?> GetAvailabilityListByUser(Guid userId)
         {
             var list = await GetAvailabilityList(userId);
 
@@ -213,7 +213,7 @@ namespace DataProvider.EntityFramework.Repositories
             return true;
         }
 
-        public async Task<List<EventType>?> GetEventTypeListByUserId(Guid userId)
+        public async Task<List<EventType>?> GetEventTypeListByUser(Guid userId)
         {
             var result = await _dbContext.Set<EventType>()
                 .Where(e => e.OwnerId == userId)
@@ -292,7 +292,7 @@ namespace DataProvider.EntityFramework.Repositories
 
         }
 
-        public async Task<List<AppointmentDetailsDto>?> GetAppointmentsByUserId(Guid userId)
+        public async Task<List<AppointmentDetailsDto>?> GetAppointmentListByUser(Guid userId)
         {
             var result = await _dbContext.Set<Appointment>()
                   .Include(x => x.EventType)

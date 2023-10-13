@@ -72,9 +72,9 @@ builder.Services.AddScoped<IDateTimeService, DateTimeService>();
 builder.Services.AddScoped<SeedDataService, SeedDataService>();
 
 //builder.Services.UseInMemoryData();
-//builder.Services.UseEFCoreSQLServer(builder.Configuration.GetConnectionString("MeetMeDb")!);
+builder.Services.UseEFCoreSQLServer(builder.Configuration.GetConnectionString("MeetMeDb")!);
 //builder.Services.UseEFCoreSQLite(builder.Configuration.GetConnectionString("MeetMeDb-sqlite")!);
-builder.Services.UseDynamoDB(builder.Configuration["AWSDynamoDB:AccessKey"], builder.Configuration["AWSDynamoDB:SecretKey"], builder.Configuration["AWSDynamoDB:EndpointUrl"], builder.Configuration["AWSDynamoDB:RegionName"]);
+//builder.Services.UseDynamoDB(builder.Configuration["AWSDynamoDB:AccessKey"], builder.Configuration["AWSDynamoDB:SecretKey"], builder.Configuration["AWSDynamoDB:EndpointUrl"], builder.Configuration["AWSDynamoDB:RegionName"]);
 
 builder.Services.RegisterApplication();
 
@@ -100,7 +100,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 
-    RunMigrationAddSeedingDataAsync(app, "Asia/Dhaka");
+    EnsureDbCreatedAddSeedingData(app, "Asia/Dhaka"); // can be able change timezone later after login via profile page.
 }
 
 app.UseAuthentication();
@@ -110,11 +110,12 @@ app.MapControllers();
 
 app.Run();
 
-static void RunMigrationAddSeedingDataAsync(WebApplication builder, string timeZoneName)
+static void EnsureDbCreatedAddSeedingData(WebApplication builder, string timeZoneName)
 {
     using var serviceScope = builder.Services.CreateScope();
     var dbProvider = serviceScope.ServiceProvider.GetRequiredService<IPersistenceProvider>();
     var seedDataService = serviceScope.ServiceProvider.GetRequiredService<SeedDataService>();
+   
     dbProvider.EnsureDbCreated();
 
     var isDataSeeded = seedDataService.IsDataSeededAsync().Result;

@@ -47,7 +47,7 @@ namespace DataProvider.InMemoryData
             }
         }
 
-        public async Task<List<AppointmentDetailsDto>?> GetAppointmentsByUserId(Guid userId)
+        public async Task<List<AppointmentDetailsDto>?> GetAppointmentListByUser(Guid userId)
         {
             lock (_lockObjectRef)
             {
@@ -288,7 +288,7 @@ namespace DataProvider.InMemoryData
             }
         }
 
-        public async Task<List<EventType>?> GetEventTypeListByUserId(Guid userId)
+        public async Task<List<EventType>?> GetEventTypeListByUser(Guid userId)
         {
             lock (_lockObjectRef)
             {
@@ -344,7 +344,7 @@ namespace DataProvider.InMemoryData
             }
         }
 
-        public async Task<List<Availability>?> GetListByUserId(Guid userId)
+        public async Task<List<Availability>?> GetAvailabilityListByUser(Guid userId)
         {
             lock (_lockObjectRef)
             {

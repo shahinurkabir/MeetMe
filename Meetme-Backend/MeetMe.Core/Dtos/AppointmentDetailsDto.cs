@@ -42,14 +42,14 @@ namespace MeetMe.Core.Dtos
                 EventTypeId = appointment.EventTypeId,
                 InviteeName = appointment.InviteeName,
                 InviteeEmail = appointment.InviteeEmail,
-                StartTimeUTC = appointment.StartTimeUTC.ToUniversalTime(),
-                EndTimeUTC = appointment.EndTimeUTC.ToUniversalTime(),
+                StartTimeUTC = appointment.StartTimeUTC.ToUtcIfLocal(),
+                EndTimeUTC = appointment.EndTimeUTC.ToUtcIfLocal(),
                 InviteeTimeZone = appointment.InviteeTimeZone,
                 GuestEmails = appointment.GuestEmails,
                 Note = appointment.Note,
                 Status = appointment.Status.ToString(),
-                DateCreated = appointment.DateCreated,
-                DateCancelled = appointment.DateCancelled,
+                DateCreated = appointment.DateCreated.ToUtcIfLocal(),
+                DateCancelled = appointment.DateCancelled?.ToUtcIfLocal(),
                 CancellationReason = appointment.CancellationReason,
                 EventTypeTitle = eventType.Name,
                 EventTypeDescription = eventType.Description,
@@ -59,7 +59,7 @@ namespace MeetMe.Core.Dtos
                 EventTypeTimeZone = eventType.TimeZone,
                 EventOwnerId = appointment.OwnerId,
                 EventOwnerName = user.UserName,
-                AppointmentDateTime = appointment.InviteeTimeZone.ToAppointmentTimeRangeText(eventType.Duration, appointment.StartTimeUTC.ToUniversalTime()),
+                AppointmentDateTime = appointment.InviteeTimeZone.ToAppointmentTimeRangeText(eventType.Duration, appointment.StartTimeUTC.ToUtcIfLocal()),
             };
 
         }

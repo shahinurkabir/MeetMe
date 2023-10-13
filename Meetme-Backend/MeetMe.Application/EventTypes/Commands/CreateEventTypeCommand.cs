@@ -46,7 +46,7 @@ namespace MeetMe.Application.EventTypes.Commands
         {
             var newEventTypeId = Guid.NewGuid();
 
-            var listOfAvailabilities = await persistenceProvider.GetListByUserId(_applicationUser.Id);
+            var listOfAvailabilities = await persistenceProvider.GetAvailabilityListByUser(_applicationUser.Id);
 
             if (listOfAvailabilities == null || !listOfAvailabilities.Any())
             {
@@ -159,7 +159,7 @@ namespace MeetMe.Application.EventTypes.Commands
 
         private async Task<bool> CheckNotUsed(CreateEventTypeCommand command, CancellationToken cancellationToken)
         {
-            var listEvents = await persistenceProvider.GetEventTypeListByUserId(applicationUser.Id);
+            var listEvents = await persistenceProvider.GetEventTypeListByUser(applicationUser.Id);
 
             var isUsed = listEvents != null && listEvents.Count(e =>
             e.Slug.Equals(command.Slug, StringComparison.InvariantCultureIgnoreCase)) > 0;

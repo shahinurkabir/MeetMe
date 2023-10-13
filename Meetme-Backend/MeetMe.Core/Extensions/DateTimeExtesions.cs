@@ -49,5 +49,15 @@ namespace MeetMe.Core.Extensions
 
             return appointmentTimeRange;
         }
+
+        public static DateTime ToUtcIfLocal(this DateTime dateTime)
+        {
+            if (dateTime.Kind == DateTimeKind.Local)
+            {
+                return dateTime.ToUniversalTime();
+            }
+            return dateTime;
+        }
+
     }
 }

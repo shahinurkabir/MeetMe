@@ -112,7 +112,7 @@ namespace MeetMe.Application.EventTypes.Commands
         {
             var newSlug = $"{slug}-clone";
 
-            var listEventForThisUser = await persistenceProvider.GetEventTypeListByUserId(_applicationUserInfo.Id);
+            var listEventForThisUser = await persistenceProvider.GetEventTypeListByUser(_applicationUserInfo.Id);
 
             if (listEventForThisUser == null || listEventForThisUser.Any())
             {

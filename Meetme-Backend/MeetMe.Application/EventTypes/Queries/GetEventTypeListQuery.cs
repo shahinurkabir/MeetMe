@@ -24,7 +24,7 @@ namespace MeetMe.Application.EventTypes.Queries
         }
         public async Task<List<EventType>> Handle(GetEventTypeListQuery request, CancellationToken cancellationToken)
         {
-            var list = await persistenceProvider.GetEventTypeListByUserId(request.OwnerId);
+            var list = await persistenceProvider.GetEventTypeListByUser(request.OwnerId);
             return list;
         }
     }

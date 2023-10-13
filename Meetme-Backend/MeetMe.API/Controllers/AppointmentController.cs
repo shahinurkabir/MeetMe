@@ -33,7 +33,7 @@ namespace MeetMe.API.Controllers
         public async Task<List<AppointmentDetailsDto>?> GetMyAppointmentList()
         {
             var loginUserId = loginUserInfo.Id;
-            var result = await persistenceProvider.GetAppointmentsByUserId(loginUserId);
+            var result = await persistenceProvider.GetAppointmentListByUser(loginUserId);
             return result;
         }
 

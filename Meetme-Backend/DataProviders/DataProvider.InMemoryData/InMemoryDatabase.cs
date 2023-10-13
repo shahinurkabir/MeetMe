@@ -9,10 +9,10 @@ public class InMemoryDatabase
         UserData.Add(new User
         {
             Id = Guid.NewGuid(),
-            UserName = "Test User",
+            UserName = "System Admin",
             UserId = "admin",
             Password = "123",
-            BaseURI = "shahinur-kabir",
+            BaseURI = "admin-meetme",
             TimeZone = "asia/dhaka",
             WelcomeText = "Please do book an appointment to talk about something."
         });

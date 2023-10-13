@@ -104,7 +104,7 @@ namespace DataProvider.DynamoDB
             availability.IsDeleted = true;
 
             // Detach all event type availability that is related to this schedule rule
-            var listEventType = await GetEventTypeListByUserId(availability.OwnerId);
+            var listEventType = await GetEventTypeListByUser(availability.OwnerId);
 
             if (listEventType != null)
             {
@@ -126,7 +126,7 @@ namespace DataProvider.DynamoDB
             var availability = await dynamoDBContext.GetById<Availability>(id);
             return availability;
         }
-        public async Task<List<Availability>?> GetListByUserId(Guid userId)
+        public async Task<List<Availability>?> GetAvailabilityListByUser(Guid userId)
         {
             var indexName = DynamoDbTableAndIndexConstants.GetIndexName(DynamoDbTableAndIndexConstants.Availability_Table, DynamoDbTableAndIndexConstants.Availability_OwnerId);
 
@@ -158,7 +158,7 @@ namespace DataProvider.DynamoDB
 
         public async Task<bool> SetDefaultAvailability(Guid id, Guid userId)
         {
-            var listAvailabilityForUser = await GetListByUserId(userId);
+            var listAvailabilityForUser = await GetAvailabilityListByUser(userId);
 
             if (listAvailabilityForUser == null || !listAvailabilityForUser.Any())
             {
@@ -202,7 +202,7 @@ namespace DataProvider.DynamoDB
             return response;
         }
 
-        public async Task<List<EventType>?> GetEventTypeListByUserId(Guid userId)
+        public async Task<List<EventType>?> GetEventTypeListByUser(Guid userId)
         {
             var indexName = DynamoDbTableAndIndexConstants.GetIndexName(DynamoDbTableAndIndexConstants.EventType_Table, DynamoDbTableAndIndexConstants.EventType_OwnerId);
 
@@ -292,12 +292,12 @@ namespace DataProvider.DynamoDB
 
         }
 
-        public async Task<List<AppointmentDetailsDto>?> GetAppointmentsByUserId(Guid userId)
+        public async Task<List<AppointmentDetailsDto>?> GetAppointmentListByUser(Guid userId)
         {
             //TODO:this method is not optimized, need to be refactored
 
             var userEntityRequestTask = GetUserById(userId);
-            var eventTypeRequestTask = GetEventTypeListByUserId(userId);
+            var eventTypeRequestTask = GetEventTypeListByUser(userId);
 
             await Task.WhenAll(userEntityRequestTask, eventTypeRequestTask);
 
@@ -341,7 +341,7 @@ namespace DataProvider.DynamoDB
                 };
 
             var userRetrevalTask = GetUserById(eventType.OwnerId);
-            var eventTypeRetrevalTask = GetEventTypeListByUserId(eventType.OwnerId);
+            var eventTypeRetrevalTask = GetEventTypeListByUser(eventType.OwnerId);
             var appointmentRetrevalTask = dynamoDBContext.GetList<Appointment>(eventTypeId, indexAppointmentEventTypeId, listConditions.ToArray());
 
             await Task.WhenAll(userRetrevalTask, appointmentRetrevalTask, eventTypeRetrevalTask);
