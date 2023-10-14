@@ -11,11 +11,11 @@ namespace MeetMe.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EventTypeScheduleController : ControllerBase
+    public class EventTypeAvailabilityController : ControllerBase
     {
         private readonly IMediator mediator;
 
-        public EventTypeScheduleController(IMediator mediator)
+        public EventTypeAvailabilityController(IMediator mediator)
         {
             this.mediator = mediator;
         }
