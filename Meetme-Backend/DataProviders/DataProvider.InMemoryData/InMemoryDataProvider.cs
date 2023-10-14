@@ -68,7 +68,7 @@ namespace DataProvider.InMemoryData
             }
         }
 
-        public async Task<List<AppointmentDetailsDto>?> GetAppointmentsOfEventTypeByDateRange(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
+        public async Task<List<AppointmentDetailsDto>?> GetAppointmentListByEventType(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
         {
             lock (_lockObjectRef)
             {
@@ -283,7 +283,7 @@ namespace DataProvider.InMemoryData
         {
             lock (_lockObjectRef)
             {
-                var eventType = _inMemoryDatabase.EventTypeData.FirstOrDefault(e => e.Slug == slug);
+                var eventType = _inMemoryDatabase.EventTypeData.FirstOrDefault(e => e.Slug.Equals(slug, StringComparison.CurrentCultureIgnoreCase));
                 return eventType;
             }
         }
@@ -321,7 +321,7 @@ namespace DataProvider.InMemoryData
         {
             lock (_lockObjectRef)
             {
-                var user = _inMemoryDatabase.UserData.FirstOrDefault(e => e.BaseURI == slug);
+                var user = _inMemoryDatabase.UserData.FirstOrDefault(e => e.BaseURI.Equals(slug, StringComparison.CurrentCultureIgnoreCase));
                 return user;
             }
         }
@@ -363,8 +363,8 @@ namespace DataProvider.InMemoryData
         {
             lock (_lockObjectRef)
             {
-                var entity =  _inMemoryDatabase.UserData
-                                .FirstOrDefault(e => e.BaseURI.ToLower() == slug.ToLower());
+                var entity = _inMemoryDatabase.UserData
+                                .FirstOrDefault(e => e.BaseURI.Equals(slug, StringComparison.CurrentCultureIgnoreCase));
 
                 if (entity == null) return true;
 

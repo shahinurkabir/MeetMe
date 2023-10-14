@@ -83,7 +83,7 @@ namespace MeetMe.API.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("detailBySlug/{slug}")]
-        public async Task<EventType> GetDetails(string slug)
+        public async Task<EventType?> GetDetails(string slug)
         {
             var result = await persistenceProvider.GetEventTypeBySlug(slug);
 
@@ -154,7 +154,5 @@ namespace MeetMe.API.Controllers
             return result;
 
         }
-
-
     }
 }

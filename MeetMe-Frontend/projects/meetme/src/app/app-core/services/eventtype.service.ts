@@ -23,6 +23,7 @@ export class EventTypeService extends DataService {
     let url = `${this.eventTypeURI}/me`
     return this.http.get<Array<IEventType>>(url);
   }
+  
   getListByUserSlug(base_uri:string): Observable<IUserProfileDetailResponse> {
     let url = `${this.eventTypeURI}/user/${base_uri}`
     return this.http.get<IUserProfileDetailResponse>(url);
@@ -36,16 +37,15 @@ export class EventTypeService extends DataService {
     let url = `${this.eventTypeURI}/detailBySlug/${slug}`
     return this.http.get<IEventType>(url);
   }
+
   addNew(command: ICreateEventTypeCommand): Observable<string> {
     let url = `${this.eventTypeURI}`
-
     return this.doPost(url, command);
 
   }
 
   update(updateEventType: IUpdateEventCommand): Observable<boolean> {
     let url = `${this.eventTypeURI}/${updateEventType.id}`;
-
     return this.doPut(url, updateEventType);
 
   }
@@ -70,20 +70,23 @@ export class EventTypeService extends DataService {
     let url = `${this.eventTypeQuestionURI}/${updateEventQuestionsCommand.eventTypeId}`
     return this.doPost(url, updateEventQuestionsCommand);
   }
+
   toggleStatus(eventTypeId: string): Observable<boolean> {
     let url = `${this.eventTypeURI}/${eventTypeId}/toggle-status`
     return this.doPut(url, null);
   }
+
   clone(eventTypeId: string): Observable<string> {
     let url = `${this.eventTypeURI}/${eventTypeId}/clone`
     return this.doPut(url, null);
   }
+
   delete(eventTypeId: string): Observable<boolean> {
     let url = `${this.eventTypeURI}/${eventTypeId}/delete`
     return this.doPut(url, null);
   }
 
-  getCalendarAvailability(eventTypeId: string, timezone: string, from: string, to: string): Observable<Array<IEventTimeAvailability>> {
+  getEventAvailabilityCalendar(eventTypeId: string, timezone: string, from: string, to: string): Observable<Array<IEventTimeAvailability>> {
     let url: string = `${this.eventTypeURI}/${eventTypeId}/calendar-availability?timezone=${timezone}&from=${from}&to=${to}`
     return this.doGet(url)
 }

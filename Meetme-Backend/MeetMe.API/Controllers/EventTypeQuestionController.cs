@@ -12,11 +12,11 @@ namespace MeetMe.API.Controllers
     public class EventTypeQuestionController : ControllerBase
     {
         private readonly IMediator mediator;
-
         public EventTypeQuestionController(IMediator mediator)
         {
             this.mediator = mediator;
         }
+
         [HttpGet]
         [Route("{id}")]
         public async Task<List<EventTypeQuestion>> GetQuestionList(Guid id)

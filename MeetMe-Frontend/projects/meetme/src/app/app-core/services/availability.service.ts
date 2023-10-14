@@ -29,6 +29,7 @@ export class AvailabilityService extends DataService {
         let url: string = `${this.baseURI}/${command.id}/editname`;
         return this.doPost(url, command);
     }
+    
     clone(command: ICloneAvailabilityCommand): Observable<string> {
         let url: string = `${this.baseURI}/${command.id}/clone`;
         return this.doPost(url, command);

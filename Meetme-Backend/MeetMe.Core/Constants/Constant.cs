@@ -15,14 +15,14 @@ namespace MeetMe.Core.Constants
             {5,"Friday" },
             {6,"Saturday" }
         };
-        public const int BufferTimeDuration = 0;// minutes
-        public const int MeetingDuration = 30; // minutes
-        public const int ForwardDuration = 24 * 60 * 60; // 60 days
+        public const int BufferTimeDuration = 0;  // minutes
+        public const int MeetingDuration = 30;   // minutes
+        public const int ForwardDuration = 24 * 60 * 60;  // 60 days
         public const string SCHEDULE_DATETYPE_WEEKDAY = "weekday";
         public const string SCHEDULE_DATETYPE_DATE = "date";
 
-        public const string MEETING_FROM_TIMESPAN = "9:00:00";
-        public const string MEETING_TO_TIMESPAN = "17:00:00";
+        public const string MEETING_FROM_TIMESPAN = "9:00:00";  //9:00 AM
+        public const string MEETING_TO_TIMESPAN = "17:00:00";  //5:00 PM
 
         public static class ForwandDateKInd
         {
@@ -35,7 +35,6 @@ namespace MeetMe.Core.Constants
         {
             public const string Active = "active";
             public const string Cancelled = "cancelled";
-            //public const string Rescheduled = "recheduled";
         }
 
 

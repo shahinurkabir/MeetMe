@@ -17,11 +17,4 @@ export abstract class DataService {
     let bodyStrigify = JSON.stringify(body);
     return this.http.put<boolean>(url, bodyStrigify, options);
   }
-
-  // protected setHeaders(options: any) {
-  //   options["headers"] = new HttpHeaders()
-  //     .append('Accept', 'application/json')
-  //     .append('Content-Type', 'application/json')
-  //   //.append('Authorization', `bearer ${this.auth.getToken()}`
-  // }
 }

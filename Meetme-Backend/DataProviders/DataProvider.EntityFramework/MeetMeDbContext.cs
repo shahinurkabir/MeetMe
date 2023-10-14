@@ -15,12 +15,6 @@ namespace DataProvider.EntityFramework
 {
     public class MeetMeDbContext : DbContext
     {
-        //private readonly string connectionString;
-
-        //public MeetMeDbContext(string connectionString)
-        //{
-        //    this.connectionString = connectionString;
-        //}
         public MeetMeDbContext(DbContextOptions<MeetMeDbContext> dbContextOptions) : base(dbContextOptions)
         {
 
@@ -28,7 +22,6 @@ namespace DataProvider.EntityFramework
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-           // optionsBuilder.UseSqlServer(connectionString);
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

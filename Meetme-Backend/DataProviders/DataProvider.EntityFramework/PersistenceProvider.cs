@@ -124,6 +124,11 @@ namespace DataProvider.EntityFramework.Repositories
         {
             var listAvailabilityForUser = await GetAvailabilityList(userId);
 
+            if (listAvailabilityForUser == null || !listAvailabilityForUser.Any())
+            {
+                return false;
+            }
+
             var entity = listAvailabilityForUser.FirstOrDefault(e => e.Id == id);
 
             if (entity == null)
@@ -132,10 +137,7 @@ namespace DataProvider.EntityFramework.Repositories
                 return false;
             }
 
-            //Reset all availability to non-default
-            listAvailabilityForUser.ForEach(e => e.IsDefault = false);
-
-            entity.IsDefault = true;
+            listAvailabilityForUser.ForEach(e => e.IsDefault = e.Id == id);
 
             await _dbContext.SaveChangesAsync();
 
@@ -264,7 +266,8 @@ namespace DataProvider.EntityFramework.Repositories
 
         public async Task<Appointment?> GetAppointment(Guid id)
         {
-            return await _dbContext.Set<Appointment>().FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbContext.Set<Appointment>()
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<bool> IsTimeBooked(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
@@ -303,7 +306,7 @@ namespace DataProvider.EntityFramework.Repositories
 
             return result;
         }
-        public async Task<List<AppointmentDetailsDto>?> GetAppointmentsOfEventTypeByDateRange(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
+        public async Task<List<AppointmentDetailsDto>?> GetAppointmentListByEventType(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
         {
             var result = await _dbContext.Set<Appointment>()
                   .Include(x => x.EventType)
@@ -325,14 +328,14 @@ namespace DataProvider.EntityFramework.Repositories
         public async Task<User?> GetUserBySlug(string slug)
         {
             var entity = await _dbContext.Set<User>()
-                .FirstOrDefaultAsync(e => e.BaseURI.ToLower() == slug.ToLower());
+                .FirstOrDefaultAsync(e => e.BaseURI.Equals(slug));
             return entity;
         }
 
         public async Task<bool> IsUserSlugAvailable(string slug, Guid id)
         {
             var entity = await _dbContext.Set<User>()
-                            .FirstOrDefaultAsync(e => e.BaseURI.ToLower() == slug.ToLower());
+                .FirstOrDefaultAsync(e => e.BaseURI.Equals(slug));
 
             if (entity == null) return true;
 

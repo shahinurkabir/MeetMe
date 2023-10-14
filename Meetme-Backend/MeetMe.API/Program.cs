@@ -18,16 +18,14 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "MeetMe API", Version = "v1" });
+
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -37,6 +35,7 @@ builder.Services.AddSwaggerGen(option =>
         BearerFormat = "JWT",
         Scheme = "Bearer"
     });
+
     option.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -53,39 +52,31 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
-
-//var dbConnectionString = builder.Configuration.GetConnectionString("MeetMeDb") ?? "";
-
 RegisterJwtAuthentication(builder);
+
 RegisterAuthorization(builder);
 
 builder.Services.AddControllers();
 builder.Services.AddMemoryCache();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-builder.Services.AddScoped<ILoginUserInfo, LoginUserInfo>();
-
-builder.Services.AddScoped<ICacheService, InMemoryCacheService>();
-builder.Services.AddScoped<IDateTimeService, DateTimeService>();
-builder.Services.AddScoped<SeedDataService, SeedDataService>();
+RegisterServices(builder);
 
 //builder.Services.UseInMemoryData();
-builder.Services.UseEFCoreSQLServer(builder.Configuration.GetConnectionString("MeetMeDb")!);
+//builder.Services.UseEFCoreSQLServer(builder.Configuration.GetConnectionString("MeetMeDb")!);
 //builder.Services.UseEFCoreSQLite(builder.Configuration.GetConnectionString("MeetMeDb-sqlite")!);
-//builder.Services.UseDynamoDB(builder.Configuration["AWSDynamoDB:AccessKey"], builder.Configuration["AWSDynamoDB:SecretKey"], builder.Configuration["AWSDynamoDB:EndpointUrl"], builder.Configuration["AWSDynamoDB:RegionName"]);
+builder.Services.UseDynamoDB(builder.Configuration["AWSDynamoDB:AccessKey"], builder.Configuration["AWSDynamoDB:SecretKey"], builder.Configuration["AWSDynamoDB:EndpointUrl"], builder.Configuration["AWSDynamoDB:RegionName"]);
 
 builder.Services.RegisterApplication();
 
 builder.Services.AddCors(e => e.AddPolicy("AllowAll",
-             builder =>
-             {
-                 builder
-                 .AllowAnyOrigin()
-                 .AllowAnyMethod()
-                 .AllowAnyHeader();
-             }));
+    builder =>
+      {
+          builder
+          .AllowAnyOrigin()
+          .AllowAnyMethod()
+          .AllowAnyHeader();
+      }));
 
 
 var app = builder.Build();
@@ -100,7 +91,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 
-    EnsureDbCreatedAddSeedingData(app, "Asia/Dhaka"); // can be able change timezone later after login via profile page.
+    EnsureDbCreatedAddSeedingData(app, "Asia/Dhaka"); // To be able to change timezone later after login via profile page.
 }
 
 app.UseAuthentication();
@@ -115,7 +106,7 @@ static void EnsureDbCreatedAddSeedingData(WebApplication builder, string timeZon
     using var serviceScope = builder.Services.CreateScope();
     var dbProvider = serviceScope.ServiceProvider.GetRequiredService<IPersistenceProvider>();
     var seedDataService = serviceScope.ServiceProvider.GetRequiredService<SeedDataService>();
-   
+
     dbProvider.EnsureDbCreated();
 
     var isDataSeeded = seedDataService.IsDataSeededAsync().Result;
@@ -164,4 +155,15 @@ static void RegisterAuthorization(WebApplicationBuilder builder)
             .RequireAuthenticatedUser()
             .Build();
     });
+}
+
+static void RegisterServices(WebApplicationBuilder builder)
+{
+    builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+    builder.Services.AddScoped<ILoginUserInfo, LoginUserInfo>();
+
+    builder.Services.AddScoped<ICacheService, InMemoryCacheService>();
+    builder.Services.AddScoped<IDateTimeService, DateTimeService>();
+    builder.Services.AddScoped<SeedDataService, SeedDataService>();
 }

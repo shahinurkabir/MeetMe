@@ -17,7 +17,6 @@ namespace DataProvider.EntityFramework
             services.AddDbContext<MeetMeDbContext>(option => option.UseSqlServer(connectionString));
             services.AddScoped<IPersistenceProvider, PersistenceProviderEntityFrameWork>();
             services.AddScoped<SeedDataService, SeedDataService>();
-          // services.AddScoped<IPersistenceProvider>(sp => new PersistenceProviderEntityFrameWork(new MeetMeDbContext(connectionString)));
 
             return services;
 
@@ -27,7 +26,6 @@ namespace DataProvider.EntityFramework
             services.AddDbContext<MeetMeDbContext>(option => option.UseSqlite(connectionString));
             services.AddScoped<IPersistenceProvider, PersistenceProviderEntityFrameWork>();
             services.AddScoped<SeedDataService, SeedDataService>();
-            // services.AddScoped<IPersistenceProvider>(sp => new PersistenceProviderEntityFrameWork(new MeetMeDbContext(connectionString)));
 
             return services;
 

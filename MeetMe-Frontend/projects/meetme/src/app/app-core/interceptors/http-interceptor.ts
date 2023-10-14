@@ -26,7 +26,6 @@ export class HttpRequestInterceptor implements HttpInterceptor {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': `bearer ${this.auth.accessToken}`
-
       }
     });
 

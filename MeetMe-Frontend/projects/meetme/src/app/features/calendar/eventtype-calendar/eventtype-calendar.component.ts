@@ -241,7 +241,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   }
   private fetchCalendarAvailability(fromDate: string, toDate: string): void {
     this.eventTypeService
-      .getCalendarAvailability(this.eventTypeId, this.selectedTimeZoneName, fromDate, toDate)
+      .getEventAvailabilityCalendar(this.eventTypeId, this.selectedTimeZoneName, fromDate, toDate)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (response) => {

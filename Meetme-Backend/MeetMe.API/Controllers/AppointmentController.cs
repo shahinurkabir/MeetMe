@@ -27,7 +27,6 @@ namespace MeetMe.API.Controllers
             this.loginUserInfo = loginUserInfo;
         }
 
-
         [HttpGet]
         [Route("me")]
         public async Task<List<AppointmentDetailsDto>?> GetMyAppointmentList()
@@ -36,7 +35,6 @@ namespace MeetMe.API.Controllers
             var result = await persistenceProvider.GetAppointmentListByUser(loginUserId);
             return result;
         }
-
 
         [HttpGet]
         [Route("eventtype/{id}")]
@@ -63,8 +61,6 @@ namespace MeetMe.API.Controllers
             var result = await mediator.Send(createAppointmentCommand);
             return result;
         }
-
-
 
         [AllowAnonymous]
         [HttpPost]

@@ -58,7 +58,10 @@ namespace DataProvider.DynamoDB
         private static GlobalSecondaryIndex GetGlobalSecondaryIndex(string tableName, string fieldName, KeyType keyType, ProjectionType projectionType, long readCapacity, long writeCapcity, params string[] rangeKeys)
         {
             var keySchema = new List<KeySchemaElement>();
+            
             keySchema.Add(GetKeySchemaElement(fieldName, keyType));
+
+
             foreach (var r in rangeKeys)
             {
                 keySchema.Add(GetKeySchemaElement(r, KeyType.RANGE));
@@ -105,7 +108,6 @@ namespace DataProvider.DynamoDB
                 {
                     GetGlobalSecondaryIndex(tableName, DynamoDbTableAndIndexConstants.Appointment_EventTypeId, KeyType.HASH, ProjectionType.ALL, 5, 5,DynamoDbTableAndIndexConstants.Appointment_AppointmentDate),
                     GetGlobalSecondaryIndex(tableName, DynamoDbTableAndIndexConstants.Appointment_Status, KeyType.HASH, ProjectionType.ALL, 5, 5),
-                   // GetGlobalSecondaryIndex(tableName, DynamoDbTableAndIndexConstants.Appointment_AppointmentDate, KeyType.RANGE, ProjectionType.ALL, 5, 5),
                     GetGlobalSecondaryIndex(tableName, DynamoDbTableAndIndexConstants.Appointment_OwnerId, KeyType.HASH, ProjectionType.ALL, 5, 5),
                 },
 

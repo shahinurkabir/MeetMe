@@ -11,7 +11,7 @@ namespace MeetMe.Core.Persistence.Interface
         Task<bool> DeleteAppointment(Guid id);
         Task<AppointmentDetailsDto?> GetAppointmentDetails(Guid id);
         Task<bool> IsTimeBooked(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC);
-        Task<List<AppointmentDetailsDto>?> GetAppointmentsOfEventTypeByDateRange(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC);
+        Task<List<AppointmentDetailsDto>?> GetAppointmentListByEventType(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC);
         Task<List<AppointmentDetailsDto>?> GetAppointmentListByUser(Guid userId);
     }
 }

@@ -322,7 +322,7 @@ namespace DataProvider.DynamoDB
             return listAppointmentDetails;
         }
 
-        public async Task<List<AppointmentDetailsDto>?> GetAppointmentsOfEventTypeByDateRange(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
+        public async Task<List<AppointmentDetailsDto>?> GetAppointmentListByEventType(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
         {
             //TODO:this method is not optimized, need to be refactored
 

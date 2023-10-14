@@ -33,8 +33,11 @@ namespace MeetMe.Application.EventTypes.Queries
         public async Task<List<TimeSlotRangeDto>> Handle(TimeSlotRangeQuery request, CancellationToken cancellationToken)
         {
             var (tempFromUTC, tempToUTC) = ConvertToUniversalTime(request.FromDate, request.ToDate, request.TimeZone);
+
             var eventTypeEntity = await persistenceProvider.GetEventTypeById(request.EventTypeId);
-            var appointmentList = await persistenceProvider.GetAppointmentsOfEventTypeByDateRange(request.EventTypeId, tempFromUTC, tempToUTC);
+            
+            var appointmentList = await persistenceProvider.GetAppointmentListByEventType(request.EventTypeId, tempFromUTC, tempToUTC);
+            
             var bufferTime = eventTypeEntity!.BufferTimeAfter;
             var meetingDuration = eventTypeEntity.Duration;
 
