@@ -1,4 +1,5 @@
-﻿using MeetMe.Core.Dtos;
+﻿using MeetMe.Core.Constants;
+using MeetMe.Core.Dtos;
 using MeetMe.Core.Extensions;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
@@ -270,7 +271,7 @@ namespace DataProvider.EntityFramework.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<bool> IsTimeBooked(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
+        public async Task<bool> IsTimeBooked(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC)
         {
             return await _dbContext.Set<Appointment>()
                 .AnyAsync(x => x.EventTypeId == eventTypeId && x.StartTimeUTC >= startDateUTC && x.EndTimeUTC <= endDateUTC);
@@ -306,12 +307,16 @@ namespace DataProvider.EntityFramework.Repositories
 
             return result;
         }
-        public async Task<List<AppointmentDetailsDto>?> GetAppointmentListByEventType(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
+        public async Task<List<AppointmentDetailsDto>?> GetAppointmentListByEventType(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC)
         {
             var result = await _dbContext.Set<Appointment>()
                   .Include(x => x.EventType)
                   .ThenInclude(x => x.User)
-                  .Where(x => x.EventTypeId == eventTypeId && x.StartTimeUTC >= startDateUTC && x.EndTimeUTC <= endDateUTC)
+                  .Where(x => x.Status != Events.AppointmentStatus.Cancelled &&
+                              x.EventTypeId == eventTypeId && 
+                              x.StartTimeUTC >= startDateUTC && 
+                              x.EndTimeUTC <= endDateUTC
+                        )
                   .ToListAsync();
 
             return result?.Select(x => AppointmentDetailsDto.New(x, x.EventType!, x.EventType!.User)).ToList();

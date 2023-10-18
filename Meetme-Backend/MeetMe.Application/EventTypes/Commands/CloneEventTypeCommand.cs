@@ -74,7 +74,7 @@ namespace MeetMe.Application.EventTypes.Commands
                 TimeZone = eventType.TimeZone,
                 DateFrom = eventType.DateFrom,
                 DateTo = eventType.DateTo,
-                CreatedAt = _dateTimeService.GetCurrentTime,
+                CreatedAt = _dateTimeService.GetCurrentTimeUtc,
                 CreatedBy = _applicationUserInfo.Id,
                 UpdatedAt = _dateTimeService.GetCurrentTimeUtc,
             };

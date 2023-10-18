@@ -6,7 +6,7 @@ namespace MeetMe.Core.Interface
 {
     public interface IDateTimeService
     {
-        DateTime GetCurrentTime { get; }
+       // DateTime GetCurrentTime { get; }
         DateTime GetCurrentTimeUtc { get; }
     }
 }

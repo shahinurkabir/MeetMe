@@ -11,6 +11,8 @@ using System.Linq;
 using Amazon;
 using System.Runtime.InteropServices;
 using DataProvider.DynamoDB;
+using MeetMe.Core.Constants;
+
 namespace DataProvider.DynamoDB
 {
     public class DynamoDbPersistenceProvider : IPersistenceProvider
@@ -245,22 +247,22 @@ namespace DataProvider.DynamoDB
             return true;
         }
 
-        public async Task<bool> IsTimeBooked(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
+        public async Task<bool> IsTimeBooked(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC)
         {
             var indexAppointmentEventTypeId = DynamoDbTableAndIndexConstants.GetIndexName(DynamoDbTableAndIndexConstants.Appointment_Table, DynamoDbTableAndIndexConstants.Appointment_EventTypeId);
 
-            var date1 = startDateUTC.UtcDateTime;
-            var date2 = endDateUTC.UtcDateTime;
+            // var date1 = startDateUTC.UtcDateTime;
+            //var date2 = endDateUTC.UtcDateTime;
 
             var conditions = new List<ScanCondition>
             {
                 new ScanCondition( DynamoDbTableAndIndexConstants.Appointment_EventTypeId, ScanOperator.Equal, eventTypeId),
-                new ScanCondition(DynamoDbTableAndIndexConstants.Appointment_AppointmentDate, ScanOperator.Between, date1, date2)
+                new ScanCondition(DynamoDbTableAndIndexConstants.Appointment_AppointmentDate, ScanOperator.Between, startDateUTC, endDateUTC)
             };
 
             var listAppointment = await dynamoDBContext.GetList<Appointment>(eventTypeId, indexAppointmentEventTypeId, conditions.ToArray());
 
-            return listAppointment.Any();
+            return listAppointment != null && listAppointment.Any();
 
         }
         public async Task<bool> UpdateAppointment(Appointment appointment)
@@ -322,7 +324,7 @@ namespace DataProvider.DynamoDB
             return listAppointmentDetails;
         }
 
-        public async Task<List<AppointmentDetailsDto>?> GetAppointmentListByEventType(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
+        public async Task<List<AppointmentDetailsDto>?> GetAppointmentListByEventType(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC)
         {
             //TODO:this method is not optimized, need to be refactored
 
@@ -336,8 +338,9 @@ namespace DataProvider.DynamoDB
             }
 
             var listConditions = new List<ScanCondition> {
+                    new ScanCondition(DynamoDbTableAndIndexConstants.Appointment_Status,ScanOperator.NotEqual,Events.AppointmentStatus.Cancelled),
                     new ScanCondition(DynamoDbTableAndIndexConstants.Appointment_EventTypeId, ScanOperator.Equal,eventTypeId),
-                    new ScanCondition(DynamoDbTableAndIndexConstants.Appointment_AppointmentDate, ScanOperator.Between, startDateUTC.UtcDateTime, endDateUTC.UtcDateTime)
+                    new ScanCondition(DynamoDbTableAndIndexConstants.Appointment_AppointmentDate, ScanOperator.Between, startDateUTC, endDateUTC)
                 };
 
             var userRetrevalTask = GetUserById(eventType.OwnerId);

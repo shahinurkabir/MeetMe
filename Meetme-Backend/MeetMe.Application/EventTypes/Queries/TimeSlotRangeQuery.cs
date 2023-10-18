@@ -52,7 +52,7 @@ namespace MeetMe.Application.EventTypes.Queries
             return result;
         }
 
-        private static (DateTimeOffset, DateTimeOffset) ConvertToUniversalTime(string fromDate, string toDate, string timeZoneId)
+        private static (DateTime, DateTime) ConvertToUniversalTime(string fromDate, string toDate, string timeZoneId)
         {
             var tempFromDate = DateTime.Parse(fromDate);
             var tempToDate = DateTime.Parse(toDate);
@@ -61,7 +61,7 @@ namespace MeetMe.Application.EventTypes.Queries
             return (tempFromUTC, tempToUTC);
         }
 
-        private static (DateTimeOffset, DateTimeOffset) ConvertToUserTime(string fromDate, string toDate, TimeZoneInfo userTimeZone, TimeZoneInfo calendarTimeZone)
+        private static (DateTime, DateTime) ConvertToUserTime(string fromDate, string toDate, TimeZoneInfo userTimeZone, TimeZoneInfo calendarTimeZone)
         {
             var tempFromDate = DateTime.Parse(fromDate);
             var tempToDate = DateTime.Parse(toDate);

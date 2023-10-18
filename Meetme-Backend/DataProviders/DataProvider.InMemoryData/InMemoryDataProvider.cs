@@ -1,4 +1,5 @@
-﻿using MeetMe.Core.Dtos;
+﻿using MeetMe.Core.Constants;
+using MeetMe.Core.Dtos;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using System;
@@ -68,14 +69,18 @@ namespace DataProvider.InMemoryData
             }
         }
 
-        public async Task<List<AppointmentDetailsDto>?> GetAppointmentListByEventType(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
+        public async Task<List<AppointmentDetailsDto>?> GetAppointmentListByEventType(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC)
         {
             lock (_lockObjectRef)
             {
                 var eventType = _inMemoryDatabase.EventTypeData.FirstOrDefault(e => e.Id == eventTypeId);
 
                 var listAppointment = _inMemoryDatabase.AppointmentData
-                    .Where(x => x.EventTypeId == eventTypeId && x.StartTimeUTC >= startDateUTC && x.EndTimeUTC <= endDateUTC)
+                    .Where(x => x.Status != Events.AppointmentStatus.Cancelled &&
+                            x.EventTypeId == eventTypeId &&
+                            x.StartTimeUTC >= startDateUTC &&
+                            x.EndTimeUTC <= endDateUTC
+                     )
                     .ToList();
 
                 var user = GetUserById(eventType!.OwnerId).Result;
@@ -133,7 +138,7 @@ namespace DataProvider.InMemoryData
                 return true;
             }
         }
-        public async Task<bool> IsTimeBooked(Guid eventTypeId, DateTimeOffset startDateUTC, DateTimeOffset endDateUTC)
+        public async Task<bool> IsTimeBooked(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC)
         {
             lock (_lockObjectRef)
             {

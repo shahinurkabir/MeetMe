@@ -21,7 +21,6 @@ namespace MeetMe.Core.Services
             this.persistenceProvider = persistenceProvider;
             this.dateTimeService = dateTimeService;
         }
-
         public async Task<bool> RunAsync(string userTimeZoneName)
         {
             Guid adminUserId = await AddAdminUser(userTimeZoneName);
@@ -32,15 +31,12 @@ namespace MeetMe.Core.Services
 
             return true;
         }
-
-
         public async Task<bool> IsDataSeededAsync()
         {
             var result = await persistenceProvider.GetUserList();
 
             return result != null && result.Any();
         }
-
         private async Task<Guid> AddAdminUser(string timeZoneName)
         {
             var adminUserId = Guid.NewGuid();
@@ -80,7 +76,6 @@ namespace MeetMe.Core.Services
             });
             return availabilityId;
         }
-
         private async Task AddNewEventType(Guid adminUserId, Guid availabilityId)
         {
             var newEventTypeId = Guid.NewGuid();
@@ -122,7 +117,6 @@ namespace MeetMe.Core.Services
                 Questions = listQuestions
             };
         }
-
         private List<EventTypeAvailabilityDetail> MapDefaultScheduleToEntity(Guid eventTypeId, List<AvailabilityDetail> availabilityDetails)
         {
             return availabilityDetails.Select(e => new EventTypeAvailabilityDetail
@@ -136,7 +130,6 @@ namespace MeetMe.Core.Services
             }).ToList();
 
         }
-
         private List<EventTypeQuestion> GetDefaultQuestion()
         {
             var questions = new List<EventTypeQuestion>()
