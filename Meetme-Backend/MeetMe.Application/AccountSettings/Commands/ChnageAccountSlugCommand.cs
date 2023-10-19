@@ -6,23 +6,23 @@ using MeetMe.Core.Persistence.Interface;
 
 namespace MeetMe.Application.AccountSettings
 {
-    public class UpdateUserSlugCommand : IRequest<bool>
+    public class ChnageAccountSlugCommand : IRequest<bool>
     {
         public string BaseURI { get; set; } = null!;
     }
 
-    public class UpdateUserSlugCommandHandler : IRequestHandler<UpdateUserSlugCommand, bool>
+    public class ChnageAccountSlugCommandHandler : IRequestHandler<ChnageAccountSlugCommand, bool>
     {
         private readonly IPersistenceProvider persistenceProvider;
         private readonly ILoginUserInfo _userInfo;
 
-        public UpdateUserSlugCommandHandler(IPersistenceProvider persistenceProvider, ILoginUserInfo userInfo)
+        public ChnageAccountSlugCommandHandler(IPersistenceProvider persistenceProvider, ILoginUserInfo userInfo)
         {
             this.persistenceProvider = persistenceProvider;
             _userInfo = userInfo;
         }
 
-        public async Task<bool> Handle(UpdateUserSlugCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(ChnageAccountSlugCommand request, CancellationToken cancellationToken)
         {
             var userEntity = await persistenceProvider.GetUserByLoginId(_userInfo.UserId);
 
@@ -39,10 +39,10 @@ namespace MeetMe.Application.AccountSettings
         }
     }
 
-    public class UpdateUserUriCommandValidator : AbstractValidator<UpdateUserSlugCommand>
+    public class ChnageAccountSlugCommandValidator : AbstractValidator<ChnageAccountSlugCommand>
     {
 
-        public UpdateUserUriCommandValidator(IPersistenceProvider persistenceProvider, ILoginUserInfo userInfo)
+        public ChnageAccountSlugCommandValidator(IPersistenceProvider persistenceProvider, ILoginUserInfo userInfo)
         {
             RuleFor(m => m.BaseURI).NotEmpty().WithMessage("Link can not be empty");
             RuleFor(m => m.BaseURI).MustAsync(async (command, slug, token) => (await IsSlugAvailable(persistenceProvider, slug,userInfo.UserId))).WithMessage("Link is already used");

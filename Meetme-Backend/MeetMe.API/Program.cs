@@ -63,9 +63,9 @@ builder.Services.AddSwaggerGen();
 RegisterServices(builder);
 
 //builder.Services.UseInMemoryData();
-//builder.Services.UseEFCoreSQLServer(builder.Configuration.GetConnectionString("MeetMeDb")!);
+builder.Services.UseEFCoreSQLServer(builder.Configuration.GetConnectionString("MeetMeDb")!);
 //builder.Services.UseEFCoreSQLite(builder.Configuration.GetConnectionString("MeetMeDb-sqlite")!);
-builder.Services.UseDynamoDB(builder.Configuration["AWSDynamoDB:AccessKey"], builder.Configuration["AWSDynamoDB:SecretKey"], builder.Configuration["AWSDynamoDB:EndpointUrl"], builder.Configuration["AWSDynamoDB:RegionName"]);
+//builder.Services.UseDynamoDB(builder.Configuration["AWSDynamoDB:AccessKey"], builder.Configuration["AWSDynamoDB:SecretKey"], builder.Configuration["AWSDynamoDB:EndpointUrl"], builder.Configuration["AWSDynamoDB:RegionName"]);
 
 builder.Services.RegisterApplication();
 

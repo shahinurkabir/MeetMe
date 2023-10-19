@@ -50,7 +50,7 @@ namespace MeetMe.API.Controllers
         [Route("profile")]
         public async Task<AccountProfileDto?> GetProfile()
         {
-            var response = await mediator.Send(new ProfileDetailQuery { Id = userInfo.Id });
+            var response = await mediator.Send(new AccountProfileDetailByIdQuery { Id = userInfo.Id });
 
             return response;
         }
@@ -60,7 +60,7 @@ namespace MeetMe.API.Controllers
         [Route("profile/{name}")]
         public async Task<AccountProfileDto?> GetProfileByName(string name)
         {
-            var response = await mediator.Send(new ProfileDetailQueryByName { Name = name });
+            var response = await mediator.Send(new AccountProfileDetailBySlugQuery { Name = name });
 
             return response;
         }
@@ -68,7 +68,7 @@ namespace MeetMe.API.Controllers
 
         [HttpPost]
         [Route("profile")]
-        public async Task<UpdateProfileResponse?> UpdateProfile(UpdateProfileCommand updateProfileCommand)
+        public async Task<UpdateProfileResponse?> UpdateProfile(UpdateAccountCommand updateProfileCommand)
         {
             var commandResult = await mediator.Send(updateProfileCommand);
 
@@ -86,9 +86,9 @@ namespace MeetMe.API.Controllers
         [Route("uri-available/{uri}")]
         public async Task<ActionResult> LinkAvailable(string uri)
         {
-            var command = new UpdateUserSlugCommand { BaseURI = uri };
+            var command = new ChnageAccountSlugCommand { BaseURI = uri };
 
-            var validator = new UpdateUserUriCommandValidator(persistenceProvider, userInfo);
+            var validator = new ChnageAccountSlugCommandValidator(persistenceProvider, userInfo);
             var result = await validator.ValidateAsync(command);
 
             if (result.IsValid) { return new OkResult(); }
@@ -98,7 +98,7 @@ namespace MeetMe.API.Controllers
 
         [HttpPost]
         [Route("update-uri")]
-        public async Task<UpdateProfileResponse?> UpdateURI(UpdateUserSlugCommand updateAccountLinkCommand)
+        public async Task<UpdateProfileResponse?> UpdateURI(ChnageAccountSlugCommand updateAccountLinkCommand)
         {
             var commandResult = await mediator.Send(updateAccountLinkCommand);
 
@@ -116,7 +116,7 @@ namespace MeetMe.API.Controllers
         [Route("{id}")]
         public async Task<AccountProfileDto?> GetUserById(Guid id)
         {
-            var response = await mediator.Send(new ProfileDetailQuery { Id = id });
+            var response = await mediator.Send(new AccountProfileDetailByIdQuery { Id = id });
 
             return response;
         }

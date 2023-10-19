@@ -102,8 +102,8 @@
         <!-- Calendar and Time Slots Section -->
         <div class="calendar-timeslots-wrapper">
           <section class="calendar-section">
-            <app-calendar (handlerDateClick)="onHandledCalendarClicked($event)"
-                        (handlerMonthChange)="onHandledMonthChange($event)"
+            <app-calendar (handlerDateClick)="onCalendarDayClicked($event)"
+                        (handlerMonthChange)="onMonthChange($event)"
                         [allowMultipleSelection]="false"></app-calendar>
                     <app-timezone-control #timezoneControl [selectedTimeZone]="selectedTimeZone"
                         [showHourFormatChangeOption]="true" (dataLoaded)="onLoadedTimezoneData($event)"
@@ -116,14 +116,14 @@
               <div class="time-slots">
                 <!-- First half of the day time slots -->
                 <button class="answerBtnsOff" (click)="onSelectedTimeSlot(slot)"
-                  *ngFor="let slot of day?.slots! | filter:'isDaySecondHalf':false">
+                  *ngFor="let slot of selectedDayAvailabilities?.slots! | filter:'isDaySecondHalf':false">
                   {{ slot.startTime }}
                 </button>
               </div>
               <div class="time-slots">
                 <!-- Second half of the day time slots -->
                 <button class="answerBtnsOff" (click)="onSelectedTimeSlot(slot)"
-                  *ngFor="let slot of day?.slots! | filter:'isDaySecondHalf':true">
+                  *ngFor="let slot of selectedDayAvailabilities?.slots! | filter:'isDaySecondHalf':true">
                   {{ slot.startTime }}
                 </button>
               </div>

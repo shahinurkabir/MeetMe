@@ -12,24 +12,24 @@ using System.Threading.Tasks;
 
 namespace MeetMe.Application.AccountSettings
 {
-    public class UpdateProfileCommand : IRequest<bool>
+    public class UpdateAccountCommand : IRequest<bool>
     {
         public string UserName { get; set; } = null!;
         public string TimeZone { get; set; } = null!;
         public string? WelcomeText { get; set; }
     }
 
-    public class UpdateProfileCommandHandler : IRequestHandler<UpdateProfileCommand, bool>
+    public class UpdateAccountCommandHandler : IRequestHandler<UpdateAccountCommand, bool>
     {
         private readonly IPersistenceProvider persistenceProvider;
         private readonly ILoginUserInfo _userInfo;
 
-        public UpdateProfileCommandHandler(IPersistenceProvider persistenceProvider, ILoginUserInfo userInfo)
+        public UpdateAccountCommandHandler(IPersistenceProvider persistenceProvider, ILoginUserInfo userInfo)
         {
             this.persistenceProvider = persistenceProvider;
             _userInfo = userInfo;
         }
-        public async Task<bool> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(UpdateAccountCommand request, CancellationToken cancellationToken)
         {
             var userEntity = await persistenceProvider.GetUserByLoginId(_userInfo.UserId);
 
@@ -48,9 +48,9 @@ namespace MeetMe.Application.AccountSettings
 
         }
     }
-    public class UpdateProfileCommandValidator : AbstractValidator<UpdateProfileCommand>
+    public class UpdateAccountCommandValidator : AbstractValidator<UpdateAccountCommand>
     {
-        public UpdateProfileCommandValidator()
+        public UpdateAccountCommandValidator()
         {
             RuleFor(m => m.UserName).NotEmpty().WithMessage("User name can not be empty");
             RuleFor(m => m.TimeZone).NotEmpty().WithMessage("TimeZone can not be empty");

@@ -156,32 +156,6 @@ namespace MeetMe.Core.Services
 
             return questions;
         }
-        private Availability GetDefaultAvailability(Guid userId, string timeZoneName)
-        {
-            var availabilityId = Guid.NewGuid();
-
-            var availability = new Availability
-            {
-                Id = availabilityId,
-                IsDefault = true,
-                IsDeleted = false,
-                Name = "Availability Schedule - Default",
-                OwnerId = userId,
-                TimeZone = timeZoneName,
-                Details = Events.WeekDays.Select(day => new AvailabilityDetail
-                {
-                    DayType = Events.SCHEDULE_DATETYPE_WEEKDAY,
-                    Value = day.Value,
-                    From = 540,// 9AM
-                    To = 1020, // 5PM
-                    StepId = 0,
-                }).ToList()
-            };
-
-            return availability;
-
-        }
-
 
     }
 }

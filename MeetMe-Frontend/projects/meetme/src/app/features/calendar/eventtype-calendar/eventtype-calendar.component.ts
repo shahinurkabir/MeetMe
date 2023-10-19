@@ -16,7 +16,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
   destroyed$: Subject<boolean> = new Subject<boolean>();
   availableTimeSlots: IEventTimeAvailability[] = [];
-  day: IEventTimeAvailability | undefined;
+  selectedDayAvailabilities: IEventTimeAvailability | undefined;
   selectedTimeZone: TimeZoneData | undefined;
   selectedYear: number = 0;
   selectedMonth: number = 0;
@@ -56,7 +56,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.eventTypeId = this.route.snapshot.queryParamMap.get("id") ?? "";
-    this.selectedDate = this.route.snapshot.queryParamMap.get('date');
+    this.selectedDate = this.route.snapshot.queryParamMap.get('date') ?? "";
     this.selectedYearMonth = this.route.snapshot.queryParamMap.get("month");
     this.eventTypeOwner = this.route.snapshot.paramMap.get("user") ?? "";
 
@@ -66,23 +66,23 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
   }
 
-  onHandledCalendarClicked(e: any) {
-    console.log(`day changed ${e}`);
+  onCalendarDayClicked(e: any) {
 
     if (Object.keys(e).length == 0) return;
 
     this.selectedDate = Object.keys(e)[Object.keys(e).length - 1];
+
     this.showAvailableTimeSlotsInDay();
 
     this.addParamDate();
   }
 
-  onHandledMonthChange(e: any) {
+  onMonthChange(e: any) {
 
     this.selectedYear = e.year;
     this.selectedMonth = e.month;
     this.addParamMonth();
-    this.loadEventAvailabileTimeSlots();
+    this.loadCalendarTimeSlots();
   }
 
   onLoadedTimezoneData(e: any) {
@@ -101,19 +101,45 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.updateTimeLocalTime();
   }
 
+  // onSelectedTimeSlot(e: ITimeSlot) {
+  //   this.selectedTimeSlot = e;
+  //   let fromTime = e.startTime;
+  //   let toTime = getTimeWithAMPM(new Date(new Date(e.startDateTime).setMinutes(this.eventTypeInfo?.duration!)), this.is24HourFormat, this.selectedTimeZoneName!);
+  //   let day = new Date(e.startDateTime).getDate();
+  //   let weekDay = new Date(e.startDateTime).getDay();
+  //   let dayOfWeek = day_of_week[weekDay];
+  //   let monthName = month_of_year[new Date(e.startDateTime).getMonth()];
+  //   let year = new Date(e.startDateTime).getFullYear();
+  //   this.selectedDateTime = `${fromTime} - ${toTime}, ${dayOfWeek},${monthName} ${day}, ${year}`;
+
+  // }
   onSelectedTimeSlot(e: ITimeSlot) {
     this.selectedTimeSlot = e;
-    let fromTime = e.startTime;
-    let toTime = getTimeWithAMPM(new Date(new Date(e.startDateTime).setMinutes(this.eventTypeInfo?.duration!)), this.is24HourFormat, this.selectedTimeZoneName!);
-    let day = new Date(e.startDateTime).getDate();
-    let weekDay = new Date(e.startDateTime).getDay();
-    let dayOfWeek = day_of_week[weekDay];
-    let monthName = month_of_year[new Date(e.startDateTime).getMonth()];
-    let year = new Date(e.startDateTime).getFullYear();
-    this.selectedDateTime = `${fromTime} - ${toTime}, ${dayOfWeek},${monthName} ${day}, ${year}`;
 
+    const startTime: string = e.startTime;
+    const endTime: string = this.calculateEndTime(
+      e.startDateTime,
+      this.eventTypeInfo?.duration!,
+      this.is24HourFormat,
+      this.selectedTimeZoneName!
+    );
+
+    const date: Date = new Date(e.startDateTime);
+    const day: number = date.getDate();
+    const weekDay: number = date.getDay();
+    const dayOfWeek: string = day_of_week[weekDay];
+    const monthName: string = month_of_year[date.getMonth()];
+    const year: number = date.getFullYear();
+
+    this.selectedDateTime = `${startTime} - ${endTime}, ${dayOfWeek}, ${monthName} ${day}, ${year}`;
   }
+  calculateEndTime(    startDateTime: string,    duration: number,    is24HourFormat: boolean,    selectedTimeZoneName: string  ): string {
+    const endDate: Date = new Date(startDateTime);
+    endDate.setMinutes(endDate.getMinutes() + duration);
 
+    return getTimeWithAMPM(endDate, is24HourFormat, selectedTimeZoneName);
+  }
+  
   onSubmitAppointmentForm(form: NgForm) {
 
     this.submitted = true;
@@ -210,7 +236,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       });
   }
 
-  private loadEventAvailabileTimeSlots() {
+  private loadCalendarTimeSlots() {
 
     const daysInMonth = getDaysInMonth(this.selectedYear, this.selectedMonth);
 
@@ -248,7 +274,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
           this.availableTimeSlots = response;
           this.updateTimeLocalTime();
           this.disableCalendarDaysForEmptySlot(fromDate, toDate, response);
-          //this.showAvailableTimeSlotsInDay();
+          this.showAvailableTimeSlotsInDay();
         },
         error: (error) => {
           console.log(error);
@@ -264,10 +290,8 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     const fromDateObj = new Date(fromDate);
     const toDateObj = new Date(toDate);
 
-    // Create an array of all days within the date range
     const allDaysInRange = getDaysInRange(fromDateObj, toDateObj);
 
-    // Extract the day numbers from availableTimeSlots
     const daysWithAvailability = availableTimeSlots.map((event) => new Date(event.date).getDate());
 
     // Filter out the days without availability
@@ -279,7 +303,8 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   }
 
   private showAvailableTimeSlotsInDay() {
-    this.day = this.availableTimeSlots.find(e => e.date == this.selectedDate);
+    if (!this.selectedDate) return;
+    this.selectedDayAvailabilities = this.availableTimeSlots.find(e => e.date == this.selectedDate);
   }
   private updateTimeLocalTime() {
     // Function to convert a single time slot
@@ -300,6 +325,8 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.availableTimeSlots.forEach((day) => {
       day.slots = day.slots.map(convertTimeSlot);
     });
+
+    console.log(this.availableTimeSlots);
   }
 
   private addParamMonth() {
