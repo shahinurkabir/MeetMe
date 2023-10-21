@@ -38,7 +38,7 @@ namespace MeetMe.Application.EventTypes.Queries
             
             var listOfAppointmentsBooked = await persistenceProvider.GetAppointmentListByEventType(request.EventTypeId, dateFromUTC, dateToUTC);
             
-            var bufferTimeAfterEachMeeting = eventTypeEntity!.BufferTimeAfter;
+            var bufferTimeInMinute = eventTypeEntity!.BufferTimeAfter;
             var meetingDuration = eventTypeEntity.Duration;
 
             var timeZoneInfo_User = TimeZoneInfo.FindSystemTimeZoneById(request.TimeZone);
@@ -46,7 +46,7 @@ namespace MeetMe.Application.EventTypes.Queries
 
             var (dateFrom_User, dateTo_User) = ConvertToUserTime(request.FromDate, request.ToDate, timeZoneInfo_User, timeZoneInfo_Calendar);
 
-            var listTimeSlots = GenerateTimeSlots(dateFrom_User, dateTo_User, meetingDuration, bufferTimeAfterEachMeeting, eventTypeEntity.EventTypeAvailabilityDetails);
+            var listTimeSlots = GenerateTimeSlots(dateFrom_User, dateTo_User, meetingDuration, bufferTimeInMinute, eventTypeEntity.EventTypeAvailabilityDetails);
            
             var result = FinalizeScheduleDates(timeZoneInfo_User, meetingDuration, listOfAppointmentsBooked!, ref listTimeSlots);
 

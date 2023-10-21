@@ -39,8 +39,8 @@ namespace DataProvider.EntityFramework.EntityConfigurations
             // Configure foreign key relationship
             builder.HasOne(ead => ead.EventType)
                    .WithMany(et => et.EventTypeAvailabilityDetails)
-                   .HasForeignKey(ead => ead.EventTypeId);
-                   //.OnDelete(DeleteBehavior.Restrict);
+                   .HasForeignKey(ead => ead.EventTypeId)
+                   .OnDelete(DeleteBehavior.Restrict);
 
         }
     }

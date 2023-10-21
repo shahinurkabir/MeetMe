@@ -56,8 +56,8 @@ namespace DataProvider.EntityFramework.EntityConfigurations
 
             builder.HasOne(e => e.User)
                    .WithMany()
-                   .HasForeignKey(e => e.CreatedBy);
-                   //.OnDelete(DeleteBehavior.Restrict);
+                   .HasForeignKey(e => e.CreatedBy)
+                   .OnDelete(DeleteBehavior.Restrict);
             
 
         }

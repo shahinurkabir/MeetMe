@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using static MeetMe.Core.Constants.Events;
 
@@ -26,6 +27,12 @@ namespace MeetMe.Application.Calendars.Commands
         public DateTime StartTime { get; set; }
         public int MeetingDuration { get; set; }
         public string? Note { get; set; }
+        public Dictionary<string, string> QuestionResponses { get; set; }
+
+        public CreateAppointmentCommand()
+        {
+            QuestionResponses = new Dictionary<string, string>();
+        }
 
     }
     public class CreateAppoimentCommandHandler : IRequestHandler<CreateAppointmentCommand, Guid>
@@ -69,7 +76,13 @@ namespace MeetMe.Application.Calendars.Commands
                 EndTimeUTC = endTimeUTC,
                 Note = request.Note,
                 DateCreated = DateTime.UtcNow,
-                OwnerId = eventType.OwnerId
+                OwnerId = eventType.OwnerId,
+                AppointmentQuestionaireItems = request.QuestionResponses.Select(x => new AppointmentQuestionaireItem
+                {
+                    AppointmentId = newId,
+                    QuestionName = x.Key,
+                    Answer = x.Value
+                }).ToList()
             };
 
             await persistenceProvider.AddAppointment(entity);

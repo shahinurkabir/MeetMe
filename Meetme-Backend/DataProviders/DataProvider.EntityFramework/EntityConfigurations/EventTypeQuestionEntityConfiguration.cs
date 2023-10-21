@@ -34,8 +34,8 @@ namespace DataProvider.EntityFramework.EntityConfigurations
             // Configure the many-to-one relationship with EventType
             builder.HasOne(eq => eq.EventType)
                    .WithMany(et => et.Questions)
-                   .HasForeignKey(eq => eq.EventTypeId);
-                   //.OnDelete(DeleteBehavior.Restrict);
+                   .HasForeignKey(eq => eq.EventTypeId)
+                   .OnDelete(DeleteBehavior.Restrict);
 
         }
     }

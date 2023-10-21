@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CalendarComponent, AppointmentService, TimezoneControlComponent, IEventTimeAvailability, TimeZoneData, EventTypeService, getTimeWithAMPM, IEventType, AccountService, IAccountProfileInfo, ITimeSlot, day_of_week, month_of_year, AlertService, ICreateAppointmentCommand, convertTimeZone, getDaysInMonth, getDateString, getCurrentDateInTimeZone, getDaysInRange } from '../../../app-core';
+import { CalendarComponent, AppointmentService, TimezoneControlComponent, IEventTimeAvailability, TimeZoneData, EventTypeService, getTimeWithAMPM, IEventType, AccountService, IAccountProfileInfo, ITimeSlot, day_of_week, month_of_year, AlertService, ICreateAppointmentCommand, convertTimeZone, getDaysInMonth, getDateString, getCurrentDateInTimeZone, getDaysInRange, IEventTypeQuestion, IEventAvailabilityDetailItemDto } from '../../../app-core';
 import { Subject, forkJoin, from, takeUntil } from 'rxjs';
 import { NgForm } from '@angular/forms';
 
@@ -40,6 +40,8 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   submitted: boolean = false;
   isSubmitting: boolean = false;
   isAppointmentCreated: boolean = false;
+  eventTypeAvailability: IEventAvailabilityDetailItemDto[]=[];
+  eventTypeQuestions: IEventTypeQuestion[]=[];
 
   constructor(
     private eventTypeService: EventTypeService,
@@ -101,18 +103,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.updateTimeLocalTime();
   }
 
-  // onSelectedTimeSlot(e: ITimeSlot) {
-  //   this.selectedTimeSlot = e;
-  //   let fromTime = e.startTime;
-  //   let toTime = getTimeWithAMPM(new Date(new Date(e.startDateTime).setMinutes(this.eventTypeInfo?.duration!)), this.is24HourFormat, this.selectedTimeZoneName!);
-  //   let day = new Date(e.startDateTime).getDate();
-  //   let weekDay = new Date(e.startDateTime).getDay();
-  //   let dayOfWeek = day_of_week[weekDay];
-  //   let monthName = month_of_year[new Date(e.startDateTime).getMonth()];
-  //   let year = new Date(e.startDateTime).getFullYear();
-  //   this.selectedDateTime = `${fromTime} - ${toTime}, ${dayOfWeek},${monthName} ${day}, ${year}`;
 
-  // }
   onSelectedTimeSlot(e: ITimeSlot) {
     this.selectedTimeSlot = e;
 
@@ -132,7 +123,9 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     const year: number = date.getFullYear();
 
     this.selectedDateTime = `${startTime} - ${endTime}, ${dayOfWeek}, ${monthName} ${day}, ${year}`;
+
   }
+
   calculateEndTime(    startDateTime: string,    duration: number,    is24HourFormat: boolean,    selectedTimeZoneName: string  ): string {
     const endDate: Date = new Date(startDateTime);
     endDate.setMinutes(endDate.getMinutes() + duration);
@@ -185,7 +178,8 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
         }
       });
   }
-  onCancelBooking(e: any) {
+
+  onCancelAppointmentEntry(e: any) {
     e.preventDefault();
     this.selectedTimeSlot = undefined;
     this.selectedDateTime = "";
@@ -223,13 +217,17 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   private loadEventDetails() {
     forkJoin([
       this.eventTypeService.getById(this.eventTypeId),
+      this.eventTypeService.getEventAvailability(this.eventTypeId),
+      this.eventTypeService.getEventQuetions(this.eventTypeId),
       this.accountService.getProfileByUserName(this.eventTypeOwner)
     ])
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (response) => {
           this.eventTypeInfo = response[0];
-          this.eventTypeOwnerInfo = response[1];
+          this.eventTypeAvailability = response[1];
+          this.eventTypeQuestions = response[2];
+          this.eventTypeOwnerInfo = response[3];
         },
         error: (error) => { console.log(error) },
         complete: () => { }

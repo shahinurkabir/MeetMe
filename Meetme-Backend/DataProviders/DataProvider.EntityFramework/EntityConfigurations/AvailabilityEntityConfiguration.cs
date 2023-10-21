@@ -21,8 +21,8 @@ public class AvailabilityConfiguration : IEntityTypeConfiguration<Availability>
         // Configure one-to-many relationship with AvailabilityDetail
         builder.HasMany(a => a.Details)
                .WithOne(ad => ad.Availability)
-               .HasForeignKey(ad => ad.AvailabilityId);
-               //.OnDelete(DeleteBehavior.Restrict);
+               .HasForeignKey(ad => ad.AvailabilityId)
+               .OnDelete(DeleteBehavior.Restrict);
 
     }
 }

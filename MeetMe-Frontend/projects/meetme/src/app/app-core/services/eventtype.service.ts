@@ -12,7 +12,7 @@ import { environment } from 'projects/meetme/src/environments/environment';
 })
 export class EventTypeService extends DataService {
   eventTypeURI = `${environment.apiBaseURI}/eventtype`;
-  eventTypeScheduleURI = `${environment.apiBaseURI}/eventtypeSchedule`;
+  eventTypeAvailabilityURI = `${environment.apiBaseURI}/EventTypeAvailability`;
   eventTypeQuestionURI = `${environment.apiBaseURI}/eventtypeQuestion`;
 
   constructor(http: HttpClient) {
@@ -51,12 +51,12 @@ export class EventTypeService extends DataService {
   }
 
   getEventAvailability(eventTypeId: string): Observable<Array<IEventAvailabilityDetailItemDto>> {
-    let url = `${this.eventTypeScheduleURI}/${eventTypeId}`
+    let url = `${this.eventTypeAvailabilityURI}/${eventTypeId}`
     return this.http.get<Array<IEventAvailabilityDetailItemDto>>(url);
   }
 
   updateAvailability(availabilityDetail: IUpdateEventAvailabilityCommand): Observable<boolean> {
-    let url = `${this.eventTypeScheduleURI}/${availabilityDetail.id}`;
+    let url = `${this.eventTypeAvailabilityURI}/${availabilityDetail.id}`;
     return this.doPost(url, availabilityDetail);
 
   }

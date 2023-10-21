@@ -1,4 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace MeetMe.Core.Persistence.Entities
 {
@@ -13,7 +16,7 @@ namespace MeetMe.Core.Persistence.Entities
         public DateTime StartTimeUTC { get; set; }
         public DateTime EndTimeUTC { get; set; }
         public string Status { get; set; } = null!;
-        public DateTime DateCreated { get; set; } 
+        public DateTime DateCreated { get; set; }
         public string? Note { get; set; }
         public DateTime? DateCancelled { get; set; }
         public string? CancellationReason { get; set; }
@@ -24,5 +27,23 @@ namespace MeetMe.Core.Persistence.Entities
 
         [JsonIgnore]
         public User? User { get; set; }
+
+        [JsonIgnore]
+        public List<AppointmentQuestionaireItem>? AppointmentQuestionaireItems { get; set; }
     }
+
+    public class AppointmentQuestionaireItem
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        public Guid AppointmentId { get; set; }
+        public string QuestionName { get; set; } = null!;
+        public string Answer { get; set; } = null!;
+
+        [JsonIgnore]
+        public Appointment? Appointment { get; set; }
+
+    }
+
 }
