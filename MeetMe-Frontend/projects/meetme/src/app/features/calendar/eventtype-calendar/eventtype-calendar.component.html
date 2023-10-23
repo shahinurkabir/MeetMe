@@ -1,4 +1,3 @@
-
 <div class="calendar-appointment-booking">
   <!-- Event Info Section -->
   <section class="event-info-section">
@@ -53,7 +52,7 @@
           <label for="inviteeName">Name *</label>
           <div class="form-control">
             <input type="text" autocomplete="off" spellcheck="false" #inviteeName="ngModel" required
-              [(ngModel)]="appointmentEntryModel.inviteeName" name="inviteeName" minlength="3">
+              [(ngModel)]="appointmentEntryModel!.inviteeName" name="inviteeName" minlength="3">
             <div *ngIf="submitted && inviteeName.errors" class="invalid-feedback">
               <div *ngIf="inviteeName.errors['required']">Name is required</div>
               <div *ngIf="inviteeName.errors['minlength']">Name should be at least 3 characters long</div>
@@ -64,7 +63,7 @@
           <label for="userName">Email *</label>
           <div class="form-control">
             <input type="text" autocomplete="off" spellcheck="false" #inviteeEmail="ngModel" required
-              [(ngModel)]="appointmentEntryModel.inviteeEmail" name="inviteeEmail" minlength="3">
+              [(ngModel)]="appointmentEntryModel!.inviteeEmail" name="inviteeEmail" minlength="3">
             <div *ngIf="submitted && inviteeEmail.errors" class="invalid-feedback">
               <div *ngIf="inviteeEmail.errors['required']">Email is required</div>
             </div>
@@ -76,10 +75,10 @@
             <ng-container *ngSwitchCase="questionItem?.questionType==null"></ng-container>
             <ng-container *ngSwitchCase="questionItem?.questionType==='Text'">
               <div class="form-group">
-                <label for="userName">{{questionItem?.name}} *</label>
+                <label for="userName">{{questionItem?.name}} </label>
                 <div class="form-control">
-                  <input type="text" autocomplete="off" spellcheck="false" #inviteeEmail="ngModel" required
-                    [(ngModel)]="appointmentEntryModel.inviteeEmail" name="inviteeEmail" minlength="3">
+                  <input type="text" autocomplete="off" spellcheck="false" 
+                  [id]="questionItem.id" [name]="questionItem.name" (change)="onAnswerSelectionChnaged($event)">
                   <div *ngIf="submitted && inviteeEmail.errors" class="invalid-feedback">
                     <div *ngIf="inviteeEmail.errors['required']">Email is required</div>
                   </div>
@@ -90,7 +89,7 @@
               <div class="form-group">
                 <label for="userName">{{questionItem?.name}} *</label>
                 <div class="form-control">
-                  <select id="meetingDuration" name="meetingDuration">
+                  <select [id]="questionItem.id" [name]="questionItem.name" (change)="onAnswerSelectionChnaged($event)">
                     <option [value]="optionItem" *ngFor="let optionItem of questionItem.options.split('~~')">
                       {{optionItem}}</option>
                   </select>
@@ -105,10 +104,10 @@
                 <label for="userName">{{questionItem?.name}} *</label>
                 <div class="form-control">
                   <div *ngFor="let optionItem of questionItem.options.split('~~')">
-                    {{optionItem}}<input type="checkbox" >
+                    {{optionItem}}
+                    <input [id]="questionItem.id" [name]="questionItem.name" (change)="onAnswerSelectionChnaged($event,true)"
+                      type="checkbox" [value]="optionItem">
                   </div>
-
-
                   <div *ngIf="submitted && inviteeEmail.errors" class="invalid-feedback">
                     <div *ngIf="inviteeEmail.errors['required']">This is required field</div>
                   </div>
@@ -120,11 +119,12 @@
                 <label for="userName">{{questionItem?.name}} *</label>
                 <div class="form-control">
                   <div *ngFor="let optionItem of questionItem.options.split('~~')">
-                    {{optionItem}}<input type="radio" >
+                    {{optionItem}}<input type="radio" (change)="onAnswerSelectionChnaged($event)" [value]="optionItem"
+                      [id]="questionItem.id" [name]="questionItem.name">
                   </div>
                   <div>
-                    Other<input type="text" id="huey" name="drone" value="huey"
-                      >
+                    <input type="radio" [value]="questionItem.id" [name]="questionItem.name">
+                    Other<input type="text" id="huey" name="drone" value="huey">
                   </div>
 
                   <div *ngIf="submitted && inviteeEmail.errors" class="invalid-feedback">
@@ -146,7 +146,7 @@
           <label for="note">Notes </label>
           <div class="form-control">
             <textarea [ngClass]="{ 'is-invalid': submitted && note.errors }" rows="5" #note="ngModel"
-              [(ngModel)]="appointmentEntryModel.note" id="note" name="note"></textarea>
+              [(ngModel)]="appointmentEntryModel!.note" id="note" name="note"></textarea>
           </div>
         </div>
 

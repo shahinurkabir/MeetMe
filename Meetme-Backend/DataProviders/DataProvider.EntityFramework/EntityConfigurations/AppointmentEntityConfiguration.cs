@@ -61,6 +61,9 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
 
         builder.Property(a => a.CancellationReason)
                .HasColumnType("varchar(255)");
+        builder.Property(a => a.QuestionResponse)
+               .HasColumnType("varchar(max)");
+        
 
         // Configure the many-to-one relationship with EventType
         builder.HasOne(a => a.EventType)

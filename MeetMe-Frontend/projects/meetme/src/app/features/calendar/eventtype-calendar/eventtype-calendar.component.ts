@@ -30,19 +30,14 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   eventTypeOwnerInfo: IAccountProfileInfo | undefined;
   selectedDateTime: string = "";
   selectedTimeSlot: ITimeSlot | undefined;
-  appointmentEntryModel: AppointmentEntryModel = {
-    inviteeName: "",
-    inviteeEmail: "",
-    guestEmails: "",
-    note: ""
+  appointmentEntryModel: AppointmentEntryModel | undefined;
 
-  };
   submitted: boolean = false;
   isSubmitting: boolean = false;
   isAppointmentCreated: boolean = false;
-  eventTypeAvailability: IEventAvailabilityDetailItemDto[]=[];
-  eventTypeQuestions: IEventTypeQuestion[]=[];
-
+  eventTypeAvailability: IEventAvailabilityDetailItemDto[] = [];
+  eventTypeQuestions: IEventTypeQuestion[] = [];
+  selectedCheckBoxes: any = {};
   constructor(
     private eventTypeService: EventTypeService,
     private calendarService: AppointmentService,
@@ -53,6 +48,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   ) {
 
     this.selectedTimeZoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    this.resetAppointmentEntryModel();
 
   }
 
@@ -126,13 +122,13 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
   }
 
-  calculateEndTime(    startDateTime: string,    duration: number,    is24HourFormat: boolean,    selectedTimeZoneName: string  ): string {
+  calculateEndTime(startDateTime: string, duration: number, is24HourFormat: boolean, selectedTimeZoneName: string): string {
     const endDate: Date = new Date(startDateTime);
     endDate.setMinutes(endDate.getMinutes() + duration);
 
     return getTimeWithAMPM(endDate, is24HourFormat, selectedTimeZoneName);
   }
-  
+
   onSubmitAppointmentForm(form: NgForm) {
 
     this.submitted = true;
@@ -141,7 +137,6 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // crate the command object with the data from the form
     let command: ICreateAppointmentCommand = {
       eventTypeId: this.eventTypeId,
       inviteeName: this.appointmentEntryModel?.inviteeName!,
@@ -150,30 +145,29 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       startTime: this.selectedTimeSlot?.startDateTime!,
       meetingDuration: this.eventTypeInfo?.duration!,
       guestEmails: this.appointmentEntryModel?.guestEmails,
-      note: this.appointmentEntryModel?.note
+      note: this.appointmentEntryModel?.note,
+       questionResponses: []
     };
 
-    //show the loading indicator
+    if (this.appointmentEntryModel?.questionResponses) {
+      for (const [key, value] of Object.entries(this.appointmentEntryModel?.questionResponses)) {
+        command.questionResponses?.push({ key: key, value: value });
+      }
+    }
     this.isSubmitting = true;
 
-    // call the calendar service to create the appointment
     this.calendarService
       .addAppointment(command)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (response) => {
-          // handle the successfull response
-          console.log(response);
-          this.apointmentCreated(response);
+          this.apointmentCreatedResponse(response);
           this.alertService.success("Appointment created successfully");
-        }
-        ,
+        },
         error: (error) => {
-          //handle the error response
           console.log(error)
         },
         complete: () => {
-          // hide the loading indicator when the call is completed
           this.isSubmitting = false;
         }
       });
@@ -185,10 +179,11 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.selectedDateTime = "";
     this.appointmentForm?.resetForm();
     this.appointmentForm?.form.markAsPristine();
+    this.resetAppointmentEntryModel();
     this.submitted = false;
   }
 
-  private apointmentCreated(appointmentId: string) {
+  private apointmentCreatedResponse(appointmentId: string) {
     this.router.navigate(["calendar/booking", this.eventTypeOwner, this.eventTypeInfo?.slug, appointmentId, "view"]);
   }
 
@@ -213,6 +208,42 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     }
   }
 
+  onAnswerSelectionChnaged(e: any, isMultipleChoice: boolean = false) {
+    let element = e.target as HTMLInputElement
+    let questionName = element.name.toString();
+    let selectedValue = element.value.toString();
+    let questionResponses = this.appointmentEntryModel?.questionResponses!
+
+    if (isMultipleChoice) {
+      this.handleMultipleChoice(questionName, selectedValue, questionResponses);
+    }
+    else {
+      questionResponses![questionName] = selectedValue;
+    }
+    console.log(questionResponses);
+  }
+  private handleMultipleChoice(questionName: string, selectedValue: string, questionResponses: { [id: string]: string }) {
+    let questionResponse = questionResponses![questionName];
+    let list = questionResponse?.split(",");
+    if (list?.length && list?.length > 0) {
+      let itemIndex = list.findIndex(e => e == selectedValue)
+      if (itemIndex > -1) {
+        list.splice(itemIndex, 1);
+      }
+      else {
+        list.push(selectedValue);
+      }
+      if (list.length == 0) {
+        delete questionResponses![questionName];
+      }
+      else {
+        questionResponses![questionName] = list.join(",");
+      }
+    }
+    else {
+      questionResponses![questionName] = selectedValue;
+    }
+  }
 
   private loadEventDetails() {
     forkJoin([
@@ -278,7 +309,6 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
           console.log(error);
         },
         complete: () => {
-          // Optionally, you can handle completion here.
         },
       });
   }
@@ -304,6 +334,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     if (!this.selectedDate) return;
     this.selectedDayAvailabilities = this.availableTimeSlots.find(e => e.date == this.selectedDate);
   }
+
   private updateTimeLocalTime() {
     // Function to convert a single time slot
     const convertTimeSlot = (slot: ITimeSlot) => {
@@ -341,6 +372,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       // do not trigger navigation
     });
   }
+
   private addParamDate() {
     // changes the route without moving from the current view or
     // triggering a navigation event,
@@ -355,6 +387,17 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       // do not trigger navigation
     });
   }
+
+  private resetAppointmentEntryModel() {
+    this.appointmentEntryModel = {
+      inviteeName: "",
+      inviteeEmail: "",
+      guestEmails: "",
+      note: "",
+      questionResponses: {}
+    };
+  }
+
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();
@@ -366,4 +409,5 @@ interface AppointmentEntryModel {
   inviteeEmail: string
   guestEmails?: string
   note?: string
+  questionResponses?: { [id: string]: string }
 }

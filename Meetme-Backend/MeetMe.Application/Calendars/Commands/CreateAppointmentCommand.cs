@@ -27,21 +27,23 @@ namespace MeetMe.Application.Calendars.Commands
         public DateTime StartTime { get; set; }
         public int MeetingDuration { get; set; }
         public string? Note { get; set; }
-        public Dictionary<string, string> QuestionResponses { get; set; }
+        public List<KeyValuePair<string, string>> QuestionResponses { get; set; }
 
         public CreateAppointmentCommand()
         {
-            QuestionResponses = new Dictionary<string, string>();
+            QuestionResponses = new List<KeyValuePair<string, string>>();
         }
 
     }
     public class CreateAppoimentCommandHandler : IRequestHandler<CreateAppointmentCommand, Guid>
     {
         private readonly IPersistenceProvider persistenceProvider;
+        private readonly IDateTimeService dateTimeService;
 
-        public CreateAppoimentCommandHandler(IPersistenceProvider persistenceProvider)
+        public CreateAppoimentCommandHandler(IPersistenceProvider persistenceProvider, IDateTimeService dateTimeService)
         {
             this.persistenceProvider = persistenceProvider;
+            this.dateTimeService = dateTimeService;
         }
         public async Task<Guid> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken)
         {
@@ -75,14 +77,9 @@ namespace MeetMe.Application.Calendars.Commands
                 StartTimeUTC = startTimeUTC,
                 EndTimeUTC = endTimeUTC,
                 Note = request.Note,
-                DateCreated = DateTime.UtcNow,
+                DateCreated = dateTimeService.GetCurrentTimeUtc,
                 OwnerId = eventType.OwnerId,
-                AppointmentQuestionaireItems = request.QuestionResponses.Select(x => new AppointmentQuestionaireItem
-                {
-                    AppointmentId = newId,
-                    QuestionName = x.Key,
-                    Answer = x.Value
-                }).ToList()
+                QuestionResponse = JsonSerializer.Serialize(request.QuestionResponses)
             };
 
             await persistenceProvider.AddAppointment(entity);

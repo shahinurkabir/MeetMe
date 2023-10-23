@@ -11,7 +11,8 @@ export interface ICreateAppointmentCommand {
     startTime: string
     meetingDuration: number
     guestEmails?:string
-    note?: string
+    note?: string,
+    questionResponses?: any[]
 }
 
 export interface ICancelAppointmentCommand {

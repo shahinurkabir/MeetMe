@@ -22,6 +22,8 @@ namespace MeetMe.Core.Persistence.Entities
         public string? CancellationReason { get; set; }
         public Guid OwnerId { get; set; }
 
+        public string? QuestionResponse { get; set; }
+
         [JsonIgnore]
         public EventType? EventType { get; set; }
 
@@ -30,7 +32,37 @@ namespace MeetMe.Core.Persistence.Entities
 
         [JsonIgnore]
         public List<AppointmentQuestionaireItem>? AppointmentQuestionaireItems { get; set; }
+
+        public Dictionary<string, List<string>> GetQuestionResponse()
+        {
+            if (string.IsNullOrEmpty(QuestionResponse))
+            {
+                return new Dictionary<string, List<string>>();
+            }
+            var questionResponse = JsonSerializer.Deserialize<Dictionary<string, List<string>>>(QuestionResponse);
+            if (questionResponse == null)
+            {
+                return new Dictionary<string, List<string>>();
+            }
+
+            //var result = new Dictionary<string, List<string>>();
+
+            //foreach (var item in questionResponse)
+            //{
+            //    result.Add(item.Key, item.Value.Split("~~").ToList());
+            //}
+
+            return questionResponse;
+
+        }
+
+        public void SetQuestionResponse(Dictionary<string, List<string>> questionResponse)
+        {
+            QuestionResponse = JsonSerializer.Serialize(questionResponse);
+        }
     }
+
+
 
     public class AppointmentQuestionaireItem
     {
