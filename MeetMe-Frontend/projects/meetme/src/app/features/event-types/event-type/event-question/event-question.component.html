@@ -36,8 +36,8 @@
                             <input type="text" style="pointer-events: none;">
                         </ng-container>
                         <ng-container *ngSwitchCase="item.questionType=='MultilineText'">
-                            <textarea id="w3review" name="w3review" rows="2">
-                    </textarea>
+                            <textarea  rows="2" style="pointer-events: none;">
+                        </textarea>
                         </ng-container>
                         <ng-container *ngSwitchCase="item.questionType=='ComboBox'">
                             <select></select>
@@ -47,7 +47,7 @@
                             <div class="question-item-options">
 
                                 <span class="option-item" *ngFor="let option of item.options;let index=index;">
-                                    {{option.text}}
+                                    <input type="{{item.questionType=='RadioButtons'?'radio':'checkbox'}}" placeholder="Other" style="pointer-events: none;"> {{option.text}}
                                 </span>
                                 <span class="option-item" *ngIf="item.otherOptionYN">
                                     <input type="text" placeholder="Other" style="pointer-events: none;">
@@ -103,13 +103,13 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <ng-container [ngSwitch]="true">
                     <ng-container *ngSwitchCase="selectedQuestion?.questionType==null"></ng-container>
                     <ng-container *ngSwitchCase="selectedQuestion.questionType==='ComboBox' ||
                                                 (selectedQuestion.questionType==='RadioButtons')||
                                                 (selectedQuestion.questionType==='CheckBoxes')">
-                                                
+
                         <div class="answer-set-list">
                             <div class="answer-set-list__answer-set-container" id="{{index}}" [draggable]="true"
                                 (dragstart)="onDragStart($event)" (dragover)="onDragOver($event)"
@@ -145,8 +145,7 @@
             <div class="form-group" style="color:#f69a9a">
                 <span *ngIf="selectedQuestionIndex>-1"><i class="fa fa-trash"></i>
 
-                    <a href="javascript:void(0)" 
-                        (click)="onRemoveQuestion($event)"><strong>Delete Quetion</strong></a>
+                    <a href="javascript:void(0)" (click)="onRemoveQuestion($event)"><strong>Delete Quetion</strong></a>
                 </span>
             </div>
             <!-- <button *ngIf="selectedQuestionIndex>-1" (click)="onRemoveQuestion()">Delete Quetion</button> -->

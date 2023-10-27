@@ -101,13 +101,8 @@
                   <label for="{{questionItem.id}}">{{questionItem?.name}} <span *ngIf="questionItem.requiredYN">*</span>
                   </label>
                   <div class="form-control">
-                    <!-- <input id="{{questionItem.id}}" type="text" autocomplete="off" spellcheck="false"
-                      (input)="onAnswerSelectionChnaged($event)" formControlName="{{questionItem.id}}"> -->
                       <textarea id="{{questionItem.id}}" [ngClass]="{ 'is-invalid': submitted && dynamicFields[questionItem.id!] }" rows="5" 
                       formControlName="{{questionItem.id}}" ></textarea>
-                    <!-- <div *ngIf="submitted && dynamicFields[questionItem.id!].errors" class="invalid-feedback">
-                      <div *ngIf="dynamicFields[questionItem.id!].errors!['required']">This is required field.</div>
-                    </div> -->
                   </div>
                 </div>
               </ng-container>
