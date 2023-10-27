@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IEventType, EventTypeService, AuthService, ModalService } from '../../../app-core';
+import { IEventType, EventTypeService, AuthService, ModalService, AlertService } from '../../../app-core';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -19,7 +19,8 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
     private eventTypeService: EventTypeService,
     private router: Router,
     private modalService: ModalService,
-    private authService: AuthService
+    private authService: AuthService,
+    private alertService: AlertService
   ) {
     this.modalService.reset();
     this.baseUri = this.authService.baseUri;
@@ -63,6 +64,7 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: response => {
           eventType.activeYN = !eventType.activeYN;
+          this.alertService.success(`Event Type ${eventType.activeYN?"Activated":"Deactivated"} successfully`);
         },
         error: (error) => { console.log(error) },
         complete: () => { }
@@ -73,6 +75,7 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
+          this.alertService.success("Event Type cloned successfully");
           let url = 'event-types/' + response;
           this.router.navigate([url]);
         },
@@ -85,6 +88,7 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
+          this.alertService.success("Event Type deleted successfully");
           this.loadEventTypes();
         },
         error: (error) => { console.log(error) },

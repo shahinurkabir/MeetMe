@@ -66,7 +66,7 @@ namespace MeetMe.Application.EventTypes.Commands
         {
             var listScheduleDetails = MapDefaultScheduleToEntity(newId, availability.Details);
 
-            var listQuestions = GetDefaultQuestion();
+           // var listQuestions = GetDefaultQuestion();
 
             return new EventType
             {
@@ -88,7 +88,6 @@ namespace MeetMe.Application.EventTypes.Commands
                 CreatedBy = _applicationUser.Id,
                 CreatedAt = _dateTimeService.GetCurrentTimeUtc,
                 EventTypeAvailabilityDetails = listScheduleDetails,
-                Questions = listQuestions
             };
         }
 

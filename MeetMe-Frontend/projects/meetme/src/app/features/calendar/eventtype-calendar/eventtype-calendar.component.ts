@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CalendarComponent, AppointmentService, TimezoneControlComponent, IEventTimeAvailability, TimeZoneData, EventTypeService, getTimeWithAMPM, IEventType, AccountService, IAccountProfileInfo, ITimeSlot, day_of_week, month_of_year, AlertService, ICreateAppointmentCommand, convertTimeZone, getDaysInMonth, getDateString, getCurrentDateInTimeZone, getDaysInRange, IEventTypeQuestion, IEventAvailabilityDetailItemDto, IAppointmentQuestionaireItemDto } from '../../../app-core';
-import { Subject, forkJoin,  takeUntil } from 'rxjs';
+import { CalendarComponent, AppointmentService, TimezoneControlComponent, IEventTimeAvailability, TimeZoneData, EventTypeService, IEventType, AccountService, IAccountProfileInfo, ITimeSlot, settings_day_of_week, settings_month_of_year, AlertService, ICreateAppointmentCommand, IEventTypeQuestion, IEventAvailabilityDetailItemDto, IAppointmentQuestionaireItemDto, DateFunction } from '../../../app-core';
+import { Subject, forkJoin, takeUntil } from 'rxjs';
 import { FormArray, FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 
 @Component({
@@ -120,8 +120,8 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     const date: Date = new Date(e.startDateTime);
     const day: number = date.getDate();
     const weekDay: number = date.getDay();
-    const dayOfWeek: string = day_of_week[weekDay];
-    const monthName: string = month_of_year[date.getMonth()];
+    const dayOfWeek: string = settings_day_of_week[weekDay];
+    const monthName: string = settings_month_of_year[date.getMonth()];
     const year: number = date.getFullYear();
 
     this.selectedDateTime = `${startTime} - ${endTime}, ${dayOfWeek}, ${monthName} ${day}, ${year}`;
@@ -260,7 +260,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     const endDate: Date = new Date(startDateTime);
     endDate.setMinutes(endDate.getMinutes() + duration);
 
-    return getTimeWithAMPM(endDate, is24HourFormat, selectedTimeZoneName);
+    return DateFunction.getTimeWithAMPM(endDate, is24HourFormat, selectedTimeZoneName);
   }
 
   private handleMultipleChoice(e: any, questionName: string, formGroup: FormGroup) {
@@ -314,7 +314,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       const toRemove = Object.keys(group.controls)[0];
       group.removeControl(toRemove)
     }
-    
+
     if (this.eventTypeQuestions.length || this.eventTypeQuestions.length == 0) {
       const questionResponsesFormGroup = this.formAppoinmentEntry?.get('questionResponses') as FormGroup;
       this.eventTypeQuestions.forEach((question) => {
@@ -330,16 +330,16 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
   private loadCalendarTimeSlots() {
 
-    const daysInMonth = getDaysInMonth(this.selectedYear, this.selectedMonth);
+    const daysInMonth = DateFunction.getDaysInMonth(this.selectedYear, this.selectedMonth);
 
-    let fromDate = getDateString(this.selectedYear, this.selectedMonth, 1);
-    const toDate = getDateString(this.selectedYear, this.selectedMonth, daysInMonth);
+    let fromDate = DateFunction.getDateString(this.selectedYear, this.selectedMonth, 1);
+    const toDate = DateFunction.getDateString(this.selectedYear, this.selectedMonth, daysInMonth);
 
-    let currentDate = getCurrentDateInTimeZone(this.selectedTimeZoneName);
+    let currentDate = DateFunction.getCurrentDateInTimeZone(this.selectedTimeZoneName);
     let isCurrentMonth = currentDate.getMonth() == this.selectedMonth && currentDate.getFullYear() == this.selectedYear;
 
     if (isCurrentMonth) {
-      fromDate = getDateString(this.selectedYear, this.selectedMonth, currentDate.getDate());
+      fromDate = DateFunction.getDateString(this.selectedYear, this.selectedMonth, currentDate.getDate());
     }
 
     this.fetchCalendarAvailability(fromDate, toDate);
@@ -381,7 +381,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     const fromDateObj = new Date(fromDate);
     const toDateObj = new Date(toDate);
 
-    const allDaysInRange = getDaysInRange(fromDateObj, toDateObj);
+    const allDaysInRange = DateFunction.getDaysInRange(fromDateObj, toDateObj);
 
     const daysWithAvailability = availableTimeSlots.map((event) => new Date(event.date).getDate());
 
@@ -401,8 +401,8 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   private updateTimeLocalTime() {
     // Function to convert a single time slot
     const convertTimeSlot = (slot: ITimeSlot) => {
-      const startDateTime = convertTimeZone(slot.startDateTime, this.selectedTimeZone?.name!);
-      const timeToStart = getTimeWithAMPM(new Date(slot.startDateTime), this.is24HourFormat, this.selectedTimeZone?.name!);
+      const startDateTime = DateFunction.convertTimeZone(slot.startDateTime, this.selectedTimeZone?.name!);
+      const timeToStart = DateFunction.getTimeWithAMPM(new Date(slot.startDateTime), this.is24HourFormat, this.selectedTimeZone?.name!);
       const hourOfDay = startDateTime.getHours();
       const isDaySecondHalf = timeToStart.includes('PM') || (hourOfDay >= 12 && hourOfDay < 24);
 

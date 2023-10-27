@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import { map, Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
-import { parseJwt } from '../utilities/functions';
 import { ClaimTypes } from '../utilities/keys';
 import { environment } from 'projects/meetme/src/environments/environment';
+import { CommonFunction } from '../utilities';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
     TOKEN_KEY = "token_data"
-    private loginChanged:Subject<boolean> = new Subject<boolean>();
+    private loginChanged: Subject<boolean> = new Subject<boolean>();
     readonly loginChanged$ = this.loginChanged.asObservable();
     constructor(private http: HttpClient, private router: Router) {
 
@@ -41,8 +41,8 @@ export class AuthService {
 
         return response;
     }
-    
-    resetToken(token:any) {
+
+    resetToken(token: any) {
         this.setTokenData(token);
     }
     private loginComplete(response: any): any {
@@ -53,20 +53,20 @@ export class AuthService {
 
         return response
     }
-  
+
     private setTokenData(response: any) {
 
         let expiredAt = (Math.floor((new Date).getTime() / 1000)) + response.expiredAt;
 
         try {
-            let jsonString = parseJwt(response.token);
+            let jsonString = CommonFunction.parseJwt(response.token);
             localStorage.setItem(ClaimTypes.ACCESS_TOKEN, response.token);
             localStorage.setItem(ClaimTypes.TOKEN_EXPIRES_AT, expiredAt);
             localStorage.setItem(ClaimTypes.USER_ID, jsonString["user_id"]);
             localStorage.setItem(ClaimTypes.BASE_URI, jsonString["base_uri"]);
             localStorage.setItem(ClaimTypes.USER_NAME, jsonString["user_name"]);
             localStorage.setItem(ClaimTypes.USER_TIMEZONE, jsonString["user_timezone"]);
-            
+
             this.loginChanged.next(true);
         }
         catch (e) {
@@ -95,7 +95,7 @@ export class AuthService {
         }
         return "";
     }
-    get userId(): string {  
+    get userId(): string {
         return localStorage.getItem(ClaimTypes.USER_ID) ?? "";
     }
     get userName(): string {
@@ -104,9 +104,9 @@ export class AuthService {
     get baseUri(): string {
         return localStorage.getItem(ClaimTypes.BASE_URI) ?? "";
     }
-   
+
     get userTimeZone(): string {
         return localStorage.getItem(ClaimTypes.USER_TIMEZONE) ?? "";
     }
-    
+
 }

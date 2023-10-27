@@ -34,8 +34,4 @@ namespace MeetMe.Core.Persistence.Entities
 
     }
 
-
-
-    
-
 }

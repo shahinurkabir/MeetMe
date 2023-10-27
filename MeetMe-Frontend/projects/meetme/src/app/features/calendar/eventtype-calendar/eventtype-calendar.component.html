@@ -82,6 +82,7 @@
           <ng-container *ngFor="let questionItem of eventTypeQuestions;let i=index;">
             <ng-container [ngSwitch]="true">
               <ng-container *ngSwitchCase="questionItem?.questionType==null"></ng-container>
+
               <ng-container *ngSwitchCase="questionItem?.questionType==='Text'">
                 <div class="form-group">
                   <label for="{{questionItem.id}}">{{questionItem?.name}} <span *ngIf="questionItem.requiredYN">*</span>
@@ -95,6 +96,22 @@
                   </div>
                 </div>
               </ng-container>
+              <ng-container *ngSwitchCase="questionItem?.questionType==='MultilineText'">
+                <div class="form-group">
+                  <label for="{{questionItem.id}}">{{questionItem?.name}} <span *ngIf="questionItem.requiredYN">*</span>
+                  </label>
+                  <div class="form-control">
+                    <!-- <input id="{{questionItem.id}}" type="text" autocomplete="off" spellcheck="false"
+                      (input)="onAnswerSelectionChnaged($event)" formControlName="{{questionItem.id}}"> -->
+                      <textarea id="{{questionItem.id}}" [ngClass]="{ 'is-invalid': submitted && dynamicFields[questionItem.id!] }" rows="5" 
+                      formControlName="{{questionItem.id}}" ></textarea>
+                    <!-- <div *ngIf="submitted && dynamicFields[questionItem.id!].errors" class="invalid-feedback">
+                      <div *ngIf="dynamicFields[questionItem.id!].errors!['required']">This is required field.</div>
+                    </div> -->
+                  </div>
+                </div>
+              </ng-container>
+
               <ng-container *ngSwitchCase="questionItem?.questionType==='ComboBox'">
                 <div class="form-group">
                   <label for="{{questionItem.id}}">{{questionItem?.name}} <span
@@ -103,7 +120,7 @@
                     <select id="{{questionItem.id}}" formControlName="{{questionItem.id}}"
                       (change)="onAnswerSelectionChnaged($event)">
                       <option value="">Select</option>
-                      <option [value]="optionItem" *ngFor="let optionItem of questionItem.options.split('~~')">
+                      <option [value]="optionItem" *ngFor="let optionItem of questionItem.options.split(',')">
                         {{optionItem}}</option>
                     </select>
                     <div *ngIf="submitted && dynamicFields[questionItem.id!].errors" class="invalid-feedback">
@@ -117,7 +134,7 @@
                   <label for="{{questionItem.id}}">{{questionItem?.name}} <span
                       *ngIf="questionItem.requiredYN">*</span></label>
                   <div class="form-control">
-                    <div *ngFor="let optionItem of questionItem.options.split('~~')">
+                    <div *ngFor="let optionItem of questionItem.options.split(',')">
                       {{optionItem}}
                       <input id="{{questionItem.id}}" (change)="onAnswerSelectionChnaged($event,true)" type="checkbox"
                         [value]="optionItem">
@@ -133,7 +150,7 @@
                   <label for="{{questionItem.id}}">{{questionItem?.name}} <span
                       *ngIf="questionItem.requiredYN">*</span></label>
                   <div class="form-control">
-                    <div *ngFor="let optionItem of questionItem.options.split('~~')">
+                    <div *ngFor="let optionItem of questionItem.options.split(',')">
                       {{optionItem}}
                       <input type="radio" (change)="onAnswerSelectionChnaged($event)" [value]="optionItem"
                         id="{{questionItem.id}}">

@@ -1,7 +1,7 @@
 import {  Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { AlertService, EventTypeService, IEventTypeQuestion, IUpdateEventQuestionCommand, ModalService, cloneObject } from 'projects/meetme/src/app/app-core';
+import { AlertService, CommonFunction, EventTypeService, IEventTypeQuestion, IUpdateEventQuestionCommand, ModalService,  settings_question_option_joining_char } from 'projects/meetme/src/app/app-core';
 
 import { Subject, takeUntil } from 'rxjs';
 
@@ -11,7 +11,6 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrls: ['./event-question.component.css']
 })
 export class EventQuestionComponent implements OnInit {
-  OPTION_JOINING_CHAR: string = "~~"
   eventTypeId: string = "";
   listSystemDefinedQuestion: IModelQuestionItem[] = [];
   listGeneralQuestion: IModelQuestionItem[] = [];
@@ -92,7 +91,7 @@ export class EventQuestionComponent implements OnInit {
         name: modelItem.name,
         eventTypeId: modelItem.eventTypeId,
         questionType: modelItem.questionType,
-        options: modelItem.options.map(e => e.text).join(this.OPTION_JOINING_CHAR),
+        options: modelItem.options.map(e => e.text).join(settings_question_option_joining_char),
         otherOptionYN: modelItem.otherOptionYN,
         requiredYN: modelItem.requiredYN,
         activeYN: modelItem.activeYN,
@@ -127,7 +126,7 @@ export class EventQuestionComponent implements OnInit {
   onEditQuestion(itemToEdit: IModelQuestionItem, index: number) {
     itemToEdit.displayOrder = index;
     this.selectedQuestionIndex = index;
-    this.selectedQuestion = cloneObject(itemToEdit);
+    this.selectedQuestion =CommonFunction.cloneObject(itemToEdit);
     this.modalService.open(this.MODAL_ID_EVENT_QUESTION);
   }
 
@@ -212,7 +211,7 @@ export class EventQuestionComponent implements OnInit {
   convertToModel(entityItem: IEventTypeQuestion): IModelQuestionItem {
     let optionItems: IModelOptionItem[] = [];
     if (entityItem.questionType !== "Text" && entityItem.questionType !== "MultilineText") {
-      optionItems = entityItem.options.split(this.OPTION_JOINING_CHAR).map(e => {
+      optionItems = entityItem.options.split(settings_question_option_joining_char).map(e => {
         let optionItem: IModelOptionItem = { text: e };
         return optionItem;
       });

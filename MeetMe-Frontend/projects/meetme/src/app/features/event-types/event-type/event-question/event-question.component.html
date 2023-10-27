@@ -43,7 +43,7 @@
                             <select></select>
                         </ng-container>
                         <ng-container *ngSwitchCase="(item.questionType==='RadioButtons')||
-            (item.questionType==='CheckBoxes')">
+                                                     (item.questionType==='CheckBoxes')">
                             <div class="question-item-options">
 
                                 <span class="option-item" *ngFor="let option of item.options;let index=index;">
@@ -103,18 +103,13 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="answerText">
-                        Answer Text *</label>
-                    <div class="form-control">
-                        Invitee can answer these following:
-                    </div>
-                </div>
+                
                 <ng-container [ngSwitch]="true">
                     <ng-container *ngSwitchCase="selectedQuestion?.questionType==null"></ng-container>
                     <ng-container *ngSwitchCase="selectedQuestion.questionType==='ComboBox' ||
-             (selectedQuestion.questionType==='RadioButtons')||
-            (selectedQuestion.questionType==='CheckBoxes')">
+                                                (selectedQuestion.questionType==='RadioButtons')||
+                                                (selectedQuestion.questionType==='CheckBoxes')">
+                                                
                         <div class="answer-set-list">
                             <div class="answer-set-list__answer-set-container" id="{{index}}" [draggable]="true"
                                 (dragstart)="onDragStart($event)" (dragover)="onDragOver($event)"
@@ -148,9 +143,10 @@
 
             </form>
             <div class="form-group" style="color:#f69a9a">
-                <span><i  class="fa fa-trash"></i>
+                <span *ngIf="selectedQuestionIndex>-1"><i class="fa fa-trash"></i>
 
-                    <a href="javascript:void(0)" *ngIf="selectedQuestionIndex>-1" (click)="onRemoveQuestion($event)"><strong>Delete Quetion</strong></a>
+                    <a href="javascript:void(0)" 
+                        (click)="onRemoveQuestion($event)"><strong>Delete Quetion</strong></a>
                 </span>
             </div>
             <!-- <button *ngIf="selectedQuestionIndex>-1" (click)="onRemoveQuestion()">Delete Quetion</button> -->

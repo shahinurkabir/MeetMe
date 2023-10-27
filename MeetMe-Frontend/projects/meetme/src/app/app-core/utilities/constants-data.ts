@@ -1,6 +1,5 @@
-import { Injectable } from "@angular/core";
 
-export const day_of_week: string[] = [
+export const settings_day_of_week: string[] = [
     "Sunday",
     "Monday",
     "Tuesday",
@@ -8,7 +7,7 @@ export const day_of_week: string[] = [
     "Thursday",
     "Friday",
     "Saturday"];
-export const month_of_year: string[] = [
+export const settings_month_of_year: string[] = [
     "January",
     "February",
     "March",
@@ -23,7 +22,7 @@ export const month_of_year: string[] = [
     "December"
 ];
 
-export const time_Slots_List: string[] = [
+export const settings_time_Slots_List: string[] = [
     "12:00am", "12:15am", "12:30am", "12:45am", "1:00am", "1:15am", "1:30am", "1:45am",
     "2:00am", "2:15am", "2:30am", "2:45am", "3:00am", "3:15am", "3:30am", "3:45am",
     "4:00am", "4:15am", "4:30am", "4:45am", "5:00am", "5:15am", "5:30am", "5:45am",
@@ -39,11 +38,11 @@ export const time_Slots_List: string[] = [
   ];
 
 
-export const meeting_day_type_weekday = 'weekday';
-export const meeting_day_type_date = 'date';
-export const default_meeting_duration = 30;
-export const default_meeting_forward_Duration_inDays = 60 * 24 * 60;
-export const default_meeting_buffertime = 15;
-export const default_startTime_minutes = 60 * 9 // 9:00am 
-export const default_endTime_Minutes = 60 * 17;// 5:00pm 
-
+export const settings_meeting_day_type_weekday = 'weekday';
+export const settings_meeting_day_type_date = 'date';
+export const settings_meeting_duration = 30;
+export const settings_meeting_forward_Duration_inDays = 60 * 24 * 60;
+export const settings_meeting_buffertime = 15;
+export const settings_starttime_minutes = 60 * 9 // 9:00am 
+export const settings_endtime_minutes = 60 * 17;// 5:00pm 
+export const settings_question_option_joining_char = ",";

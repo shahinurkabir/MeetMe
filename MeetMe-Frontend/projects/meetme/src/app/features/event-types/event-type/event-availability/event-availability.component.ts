@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { TimeZoneData, IUpdateEventAvailabilityCommand, ListItem, IAvailability, IEventAvailabilityDetailItemDto, IEventType, TimeAvailabilityComponent, EventTypeService, AvailabilityService, convertToDays, day_of_week, IAvailabilityDetails, meeting_day_type_weekday, default_startTime_minutes, default_endTime_Minutes, AlertService, CommonFunction } from 'projects/meetme/src/app/app-core';
+import { TimeZoneData, IUpdateEventAvailabilityCommand, ListItem, IAvailability, IEventAvailabilityDetailItemDto, IEventType, TimeAvailabilityComponent, EventTypeService, AvailabilityService,  settings_day_of_week, IAvailabilityDetails, settings_meeting_day_type_weekday, settings_starttime_minutes, settings_endtime_minutes, AlertService, CommonFunction } from 'projects/meetme/src/app/app-core';
 import { Observable, Subject, forkJoin, takeUntil } from 'rxjs';
 
 @Component({
@@ -110,7 +110,7 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
     this.customAvailability = this.convertEventScheduleToAvailabilitySchedule(this.model.timeZone, this.eventAvailabilityDetails);
 
     if (this.model.forwardDuration != null) {
-      this.forwardDurationInDays = convertToDays(this.model.forwardDuration);
+      this.forwardDurationInDays =CommonFunction.convertToDays(this.model.forwardDuration);
     }
     if (this.model.availabilityId != null) {
       this.isCustomAvailability = false;
@@ -135,12 +135,12 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
     };
 
     if (eventTimeAvailabilityDetails == undefined) {
-      day_of_week.forEach(day => {
+      settings_day_of_week.forEach(day => {
         let availabilityDetailItem: IAvailabilityDetails = {
-          dayType: meeting_day_type_weekday,
+          dayType: settings_meeting_day_type_weekday,
           value: day,
-          from: default_startTime_minutes,
-          to: default_endTime_Minutes,
+          from: settings_starttime_minutes,
+          to: settings_endtime_minutes,
           stepId: 0
         }
         availability.details.push(availabilityDetailItem);

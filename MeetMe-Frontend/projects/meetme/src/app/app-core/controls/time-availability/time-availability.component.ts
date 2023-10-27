@@ -1,13 +1,13 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { day_of_week, default_endTime_Minutes, default_startTime_minutes, meeting_day_type_date, meeting_day_type_weekday, month_of_year, time_Slots_List } from '../../utilities/default-data';
+import { settings_day_of_week, settings_endtime_minutes, settings_starttime_minutes, settings_meeting_day_type_date, settings_meeting_day_type_weekday, settings_month_of_year, settings_time_Slots_List } from '../../utilities/constants-data';
 import { TimeZoneData } from '../../interfaces/event-type-interfaces';
 import { ListItem } from '../../interfaces/list-item';
-import { date } from '../../utilities/date-functions';
 import { CalendarComponent } from '../calender/calendar.component';
 import { ModalService } from '../modal/modalService';
 import { ListOfTimeZone } from '../../utilities/timezone-data';
 import { IAvailability, IAvailabilityDetails } from '../../interfaces/availability-interfaces';
 import { ITimeIntervalInDay, ITimeInterval, ITimeIntervalsInMonth } from '../../interfaces/ITimeIntervalInDay';
+import { DateFunction } from '../../utilities';
 
 @Component({
   selector: 'app-time-availability',
@@ -15,12 +15,12 @@ import { ITimeIntervalInDay, ITimeInterval, ITimeIntervalsInMonth } from '../../
   styleUrls: ['./time-availability.component.scss']
 })
 export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
-  timeSlotsList: string[] = time_Slots_List
+  timeSlotsList: string[] = settings_time_Slots_List
   availability: IAvailability | undefined;
   timeZoneList: TimeZoneData[] = ListOfTimeZone;
   filterTimeZoneList: TimeZoneData[] = ListOfTimeZone;
-  weekDays = day_of_week;
-  monthNames = month_of_year
+  weekDays = settings_day_of_week;
+  monthNames = settings_month_of_year
   meetingDurations: ListItem[] = [];
   availabilityInWeek: ITimeIntervalInDay[] = [];
   availabilityInMonth: ITimeIntervalsInMonth[] = [];
@@ -71,7 +71,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     if (!this.availability?.details) return;
 
     let timeAvailabilityInWeek = this.availability?.details
-      .filter(e => e.dayType === meeting_day_type_weekday);
+      .filter(e => e.dayType === settings_meeting_day_type_weekday);
 
 
     timeAvailabilityInWeek?.forEach(item => {
@@ -83,7 +83,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     })
 
     let timeOverridesAvailability = this.availability?.details
-      .filter(e => e.dayType === meeting_day_type_date);
+      .filter(e => e.dayType === settings_meeting_day_type_date);
 
     timeOverridesAvailability?.forEach(item => {
       let intervalItem = this.getTimeIntervalItem(item.from, item.to);
@@ -98,7 +98,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   prepareMonthlyViewData() {
     let currentDate = new Date(this.selectedYear, this.selectedMonth, 1);
-    this.isCurrentMonth = date.isMonthCurrent(currentDate);
+    this.isCurrentMonth = DateFunction.isMonthCurrent(currentDate);
     let firstDayOfMonth = new Date(currentDate.setDate(1));
     let weekDay = new Date(firstDayOfMonth).getDay();
     let beginDateInCalendarMonth = new Date(currentDate.setDate((weekDay - 1) * (-1)));
@@ -107,11 +107,11 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
     for (let i = 1; i <= 42; i++) {
 
-      let shortMonth = month_of_year[dateIncremental.getMonth()].substring(0, 3);
+      let shortMonth = settings_month_of_year[dateIncremental.getMonth()].substring(0, 3);
 
       let dateName = `${dateIncremental.getFullYear()}-${shortMonth}-${dateIncremental.getDate()}`;
 
-      var weekdayName = day_of_week[dateIncremental.getDay()];
+      var weekdayName = settings_day_of_week[dateIncremental.getDay()];
       let isOverride = this.availabilityOverrides.findIndex(e => e.day == dateName) !== -1 ? true : false;
       let intervalsInDay: ITimeInterval[] = [];
 
@@ -133,7 +133,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
         }
         intervalsClone.push(item)
       });
-      let isPastDate = date.isDayPast(dateIncremental);
+      let isPastDate = DateFunction.isDayPast(dateIncremental);
       let calendarDay: ITimeIntervalsInMonth = {
         isOverride: isOverride,
         dateString: dateName,
@@ -153,8 +153,8 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   }
 
   onAddTimeInterval(timeInteralsInDay: ITimeIntervalInDay) {
-    let startTime_Minutes = default_startTime_minutes;
-    let endTime_Minutes = default_endTime_Minutes;
+    let startTime_Minutes = settings_starttime_minutes;
+    let endTime_Minutes = settings_endtime_minutes;
 
     let intervals = timeInteralsInDay.intervals;
 
@@ -340,7 +340,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     this.selectedDatesFromCalender = selectedDates
     if (this.selecteDateOverride) return;
 
-    let timeSlot = this.getTimeIntervalItem(default_startTime_minutes, default_endTime_Minutes)
+    let timeSlot = this.getTimeIntervalItem(settings_starttime_minutes, settings_endtime_minutes)
     this.selecteDateOverride = { day: '', isAvailable: true, intervals: [] }
     this.selecteDateOverride.intervals.push(timeSlot);
 
@@ -360,7 +360,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     dailyTimeAvailabilities.isAvailable = !dailyTimeAvailabilities.isAvailable;
     if (dailyTimeAvailabilities.isAvailable) {
       if (dailyTimeAvailabilities.intervals.length == 0)
-        dailyTimeAvailabilities.intervals.push(this.getTimeIntervalItem(default_startTime_minutes, default_endTime_Minutes));
+        dailyTimeAvailabilities.intervals.push(this.getTimeIntervalItem(settings_starttime_minutes, settings_endtime_minutes));
     }
   }
 
@@ -370,7 +370,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     this.availabilityInWeek.filter(e => e.isAvailable).forEach(weekday => {
       weekday.intervals.forEach(intervalITem => {
         let item: IAvailabilityDetails = {
-          dayType: meeting_day_type_weekday,
+          dayType: settings_meeting_day_type_weekday,
           value: weekday.day,
           from: intervalITem.startTimeInMinute,
           to: intervalITem.endTimeInMinute,
@@ -382,7 +382,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     this.availabilityOverrides.forEach(overrrideItem => {
       overrrideItem.intervals.forEach(intervalITem => {
         let item: IAvailabilityDetails = {
-          dayType: meeting_day_type_date,
+          dayType: settings_meeting_day_type_date,
           value: overrrideItem.day,
           from: intervalITem.startTimeInMinute,
           to: intervalITem.endTimeInMinute,
@@ -444,7 +444,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   private resetWeeklyTimeIntervals() {
     this.availabilityOverrides = [];
     this.availabilityInWeek = [];
-    day_of_week.forEach(weekDay => {
+    settings_day_of_week.forEach(weekDay => {
       let dailyTimeAvailabilities: ITimeIntervalInDay = {
         day: weekDay, isAvailable: false, intervals: []
       }
@@ -503,7 +503,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   getTimeIntervalsByDay(dateString: string): ITimeInterval[] | undefined {
     let date = new Date(dateString);
-    let weekDay = day_of_week[date.getDay()];
+    let weekDay = settings_day_of_week[date.getDay()];
 
     let intervalsInDay = Object.assign({}, this.availabilityInWeek.find(e => e.day == weekDay));
     return intervalsInDay?.intervals;
@@ -535,7 +535,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   onApplyWeekDayChanges() {
     let date = new Date(this.selecteDateOverride?.day!);
-    let weekDayName = day_of_week[date.getDay()];
+    let weekDayName = settings_day_of_week[date.getDay()];
     let weekDayInvevals = this.availabilityInWeek.find(e => e.day == weekDayName);
     let intervals = this.selecteDateOverride?.intervals.slice()!
     weekDayInvevals!.intervals = intervals;

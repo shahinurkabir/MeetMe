@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { day_of_week, month_of_year } from '../../utilities/default-data';
+import { settings_day_of_week, settings_month_of_year } from '../../utilities/constants-data';
 
 @Component({
   selector: 'app-calendar',
@@ -17,7 +17,7 @@ export class CalendarComponent implements OnInit {
   selectedMonth: number = 0
   selectedYear: number = 2023
   selectedYearMonth: string = "";
-  weekDays = day_of_week;
+  weekDays = settings_day_of_week;
   days_in_month: { [weekNo: string]: IDay[] } = {};
   timeZoneMame: string | undefined = undefined;
 
@@ -64,7 +64,7 @@ export class CalendarComponent implements OnInit {
   updateCalendar() {
     let calendarDay = new Date(this.selectedYear, this.selectedMonth, 1, 23, 59, 59, 999);
 
-    this.selectedYearMonth = month_of_year[this.selectedMonth] + " " + this.selectedYear;
+    this.selectedYearMonth = settings_month_of_year[this.selectedMonth] + " " + this.selectedYear;
     this.days_in_month = {};
 
     for (let i = 0; i < 7; i++) {
@@ -184,7 +184,7 @@ export class CalendarComponent implements OnInit {
   }
   private getShortDateString(dayNo: number): string {
 
-    let shortMonth = month_of_year[this.selectedMonth].substring(0, 3);
+    let shortMonth = settings_month_of_year[this.selectedMonth].substring(0, 3);
     let dayNoString = "0" + dayNo.toString();
     dayNoString = dayNoString.substring(dayNoString.length - 2, dayNoString.length);
     let date = `${this.selectedYear}-${shortMonth}-${dayNoString}`;
