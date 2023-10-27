@@ -28,11 +28,9 @@ namespace MeetMe.Application.Calendars.Commands
         public int MeetingDuration { get; set; }
         public string? Note { get; set; }
         public string? QuestionnaireContent { get; set; }
-       // public List<KeyValuePair<string, string>> QuestionResponses { get; set; }
 
         public CreateAppointmentCommand()
         {
-            //QuestionResponses = new List<KeyValuePair<string, string>>();
         }
 
     }
