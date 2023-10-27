@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace MeetMe.Core.Dtos
@@ -33,10 +34,12 @@ namespace MeetMe.Core.Dtos
         public DateTime? DateCancelled { get; set; }
         public string? CancellationReason { get; set; }
 
+        public List<AppointmentQuestionaireItemDto>? Questionnaires { get; set; }
+
         public static AppointmentDetailsDto New(Appointment appointment, EventType eventType, User user)
         {
 
-           return new AppointmentDetailsDto
+            var entity= new AppointmentDetailsDto
             {
                 Id = appointment.Id,
                 EventTypeId = appointment.EventTypeId,
@@ -62,6 +65,11 @@ namespace MeetMe.Core.Dtos
                 AppointmentDateTime = appointment.InviteeTimeZone.ToAppointmentTimeRangeText(eventType.Duration, appointment.StartTimeUTC.ToUtcIfLocal()),
             };
 
+            if (appointment.QuestionnaireContent != null)
+            {
+                entity.Questionnaires = JsonSerializer.Deserialize<List<AppointmentQuestionaireItemDto>>(appointment.QuestionnaireContent);
+            }
+            return entity;
         }
 
 

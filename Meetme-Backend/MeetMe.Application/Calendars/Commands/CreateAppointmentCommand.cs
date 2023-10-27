@@ -27,11 +27,12 @@ namespace MeetMe.Application.Calendars.Commands
         public DateTime StartTime { get; set; }
         public int MeetingDuration { get; set; }
         public string? Note { get; set; }
-        public List<KeyValuePair<string, string>> QuestionResponses { get; set; }
+        public string? QuestionnaireContent { get; set; }
+       // public List<KeyValuePair<string, string>> QuestionResponses { get; set; }
 
         public CreateAppointmentCommand()
         {
-            QuestionResponses = new List<KeyValuePair<string, string>>();
+            //QuestionResponses = new List<KeyValuePair<string, string>>();
         }
 
     }
@@ -79,7 +80,7 @@ namespace MeetMe.Application.Calendars.Commands
                 Note = request.Note,
                 DateCreated = dateTimeService.GetCurrentTimeUtc,
                 OwnerId = eventType.OwnerId,
-                QuestionResponse = JsonSerializer.Serialize(request.QuestionResponses)
+                QuestionnaireContent = request.QuestionnaireContent
             };
 
             await persistenceProvider.AddAppointment(entity);

@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CalendarComponent, AppointmentService, TimezoneControlComponent, IEventTimeAvailability, TimeZoneData, EventTypeService, getTimeWithAMPM, IEventType, AccountService, IAccountProfileInfo, ITimeSlot, day_of_week, month_of_year, AlertService, ICreateAppointmentCommand, convertTimeZone, getDaysInMonth, getDateString, getCurrentDateInTimeZone, getDaysInRange, IEventTypeQuestion, IEventAvailabilityDetailItemDto } from '../../../app-core';
-import { Subject, forkJoin, from, takeUntil } from 'rxjs';
-import { NgForm } from '@angular/forms';
+import { CalendarComponent, AppointmentService, TimezoneControlComponent, IEventTimeAvailability, TimeZoneData, EventTypeService, getTimeWithAMPM, IEventType, AccountService, IAccountProfileInfo, ITimeSlot, day_of_week, month_of_year, AlertService, ICreateAppointmentCommand, convertTimeZone, getDaysInMonth, getDateString, getCurrentDateInTimeZone, getDaysInRange, IEventTypeQuestion, IEventAvailabilityDetailItemDto, IAppointmentQuestionaireItemDto } from '../../../app-core';
+import { Subject, forkJoin,  takeUntil } from 'rxjs';
+import { FormArray, FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-event-type-calendar',
@@ -12,7 +12,6 @@ import { NgForm } from '@angular/forms';
 export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   @ViewChild(CalendarComponent, { static: true }) calendarComponent!: CalendarComponent;
   @ViewChild("timezoneControl", { static: true }) timezoneControl: TimezoneControlComponent | undefined;
-  @ViewChild("appointmentForm") appointmentForm: NgForm | undefined;
 
   destroyed$: Subject<boolean> = new Subject<boolean>();
   availableTimeSlots: IEventTimeAvailability[] = [];
@@ -30,25 +29,33 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   eventTypeOwnerInfo: IAccountProfileInfo | undefined;
   selectedDateTime: string = "";
   selectedTimeSlot: ITimeSlot | undefined;
-  appointmentEntryModel: AppointmentEntryModel | undefined;
-
   submitted: boolean = false;
   isSubmitting: boolean = false;
   isAppointmentCreated: boolean = false;
   eventTypeAvailability: IEventAvailabilityDetailItemDto[] = [];
   eventTypeQuestions: IEventTypeQuestion[] = [];
   selectedCheckBoxes: any = {};
+  formAppoinmentEntry: FormGroup;
+
   constructor(
     private eventTypeService: EventTypeService,
     private calendarService: AppointmentService,
     private accountService: AccountService,
     private alertService: AlertService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private formBuilder: FormBuilder,
   ) {
 
+    this.formAppoinmentEntry = this.formBuilder.group({
+      inviteeName: ['', Validators.required],
+      inviteeEmail: ['', Validators.required],
+      guestEmails: [''],
+      note: [''],
+      questionResponses: new FormGroup({})
+    });
+
     this.selectedTimeZoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    this.resetAppointmentEntryModel();
 
   }
 
@@ -99,7 +106,6 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.updateTimeLocalTime();
   }
 
-
   onSelectedTimeSlot(e: ITimeSlot) {
     this.selectedTimeSlot = e;
 
@@ -122,38 +128,31 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
   }
 
-  calculateEndTime(startDateTime: string, duration: number, is24HourFormat: boolean, selectedTimeZoneName: string): string {
-    const endDate: Date = new Date(startDateTime);
-    endDate.setMinutes(endDate.getMinutes() + duration);
-
-    return getTimeWithAMPM(endDate, is24HourFormat, selectedTimeZoneName);
-  }
-
-  onSubmitAppointmentForm(form: NgForm) {
+  onSubmitAppointmentForm() {
 
     this.submitted = true;
+    console.log(this.formAppoinmentEntry.value);
 
-    if (form.invalid) {
+    if (this.formAppoinmentEntry.invalid) {
       return;
     }
 
+    const questionnaireFormGroup = this.formAppoinmentEntry.get('questionResponses') as FormGroup;
+    const questionnaireFormGroupRowValues = questionnaireFormGroup.getRawValue();
+    const questionnaireResponseContent = this.getQuestionnaireResponseContent(questionnaireFormGroupRowValues);
+
     let command: ICreateAppointmentCommand = {
       eventTypeId: this.eventTypeId,
-      inviteeName: this.appointmentEntryModel?.inviteeName!,
-      inviteeEmail: this.appointmentEntryModel?.inviteeEmail!,
+      inviteeName: this.formAppoinmentEntry.get('inviteeName')?.value,
+      inviteeEmail: this.formAppoinmentEntry.get('inviteeEmail')?.value,
       inviteeTimeZone: this.selectedTimeZoneName!,
       startTime: this.selectedTimeSlot?.startDateTime!,
       meetingDuration: this.eventTypeInfo?.duration!,
-      guestEmails: this.appointmentEntryModel?.guestEmails,
-      note: this.appointmentEntryModel?.note,
-       questionResponses: []
+      guestEmails: this.formAppoinmentEntry.get('guestEmails')?.value,
+      note: this.formAppoinmentEntry.get('note')?.value,
+      questionnaireContent: questionnaireResponseContent
     };
 
-    if (this.appointmentEntryModel?.questionResponses) {
-      for (const [key, value] of Object.entries(this.appointmentEntryModel?.questionResponses)) {
-        command.questionResponses?.push({ key: key, value: value });
-      }
-    }
     this.isSubmitting = true;
 
     this.calendarService
@@ -173,16 +172,59 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       });
   }
 
+  onAnswerSelectionChnaged(e: any, isMultipleChoice: boolean = false) {
+    let element = e.target as HTMLInputElement
+    let questionName = element.id.toString();
+    let selectedValue = element.value.toString();
+
+    const questionResponseFormGroup = this.formAppoinmentEntry.get('questionResponses') as FormGroup;
+    if (isMultipleChoice) {
+      this.handleMultipleChoice(e, questionName, questionResponseFormGroup);
+    }
+    else {
+      questionResponseFormGroup.get(questionName)?.setValue(selectedValue);
+    }
+  }
+
+
   onCancelAppointmentEntry(e: any) {
     e.preventDefault();
     this.selectedTimeSlot = undefined;
     this.selectedDateTime = "";
-    this.appointmentForm?.resetForm();
-    this.appointmentForm?.form.markAsPristine();
-    this.resetAppointmentEntryModel();
+    this.resetQuestionnairesForm();
+    this.formAppoinmentEntry?.reset();
+    this.formAppoinmentEntry.markAsPristine();
     this.submitted = false;
   }
 
+  private getQuestionnaireResponseContent(questionResponses: any): string | undefined {
+
+    const questionoareResponseItemDtos: IAppointmentQuestionaireItemDto[] = [];
+
+    let content = undefined;
+
+    if (!questionResponses) return content;
+
+    for (const [key, value] of Object.entries(questionResponses)) {
+
+      if (!value) continue;
+
+      const isArrayResponse = Array.isArray(value);
+
+      if (isArrayResponse && value.length == 0) continue;
+
+      const response = isArrayResponse ? (value as string[]).join(",") : (value as string).toString();
+
+      questionoareResponseItemDtos.push({ questionId: key, answer: response, isMultipleChoice: isArrayResponse });
+    }
+
+    if (questionoareResponseItemDtos.length > 0) {
+      content = JSON.stringify(questionoareResponseItemDtos);
+    }
+
+    return content;
+
+  }
   private apointmentCreatedResponse(appointmentId: string) {
     this.router.navigate(["calendar/booking", this.eventTypeOwner, this.eventTypeInfo?.slug, appointmentId, "view"]);
   }
@@ -207,42 +249,39 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       this.calendarComponent.resetCalendar();
     }
   }
-
-  onAnswerSelectionChnaged(e: any, isMultipleChoice: boolean = false) {
-    let element = e.target as HTMLInputElement
-    let questionName = element.name.toString();
-    let selectedValue = element.value.toString();
-    let questionResponses = this.appointmentEntryModel?.questionResponses!
-
-    if (isMultipleChoice) {
-      this.handleMultipleChoice(questionName, selectedValue, questionResponses);
-    }
-    else {
-      questionResponses![questionName] = selectedValue;
-    }
-    console.log(questionResponses);
+  get f() {
+    return this.formAppoinmentEntry.controls;
   }
-  private handleMultipleChoice(questionName: string, selectedValue: string, questionResponses: { [id: string]: string }) {
-    let questionResponse = questionResponses![questionName];
-    let list = questionResponse?.split(",");
-    if (list?.length && list?.length > 0) {
-      let itemIndex = list.findIndex(e => e == selectedValue)
-      if (itemIndex > -1) {
-        list.splice(itemIndex, 1);
-      }
-      else {
-        list.push(selectedValue);
-      }
-      if (list.length == 0) {
-        delete questionResponses![questionName];
-      }
-      else {
-        questionResponses![questionName] = list.join(",");
-      }
+  get dynamicFields() {
+    let group = this.formAppoinmentEntry?.get('questionResponses') as FormGroup
+    return group.controls;
+  }
+  private calculateEndTime(startDateTime: string, duration: number, is24HourFormat: boolean, selectedTimeZoneName: string): string {
+    const endDate: Date = new Date(startDateTime);
+    endDate.setMinutes(endDate.getMinutes() + duration);
+
+    return getTimeWithAMPM(endDate, is24HourFormat, selectedTimeZoneName);
+  }
+
+  private handleMultipleChoice(e: any, questionName: string, formGroup: FormGroup) {
+
+    const selectedValue = e.target.value;
+    const selectedCheckBoxesControlArray = formGroup.get(questionName) as FormArray;
+
+    if (e.target.checked) {
+      selectedCheckBoxesControlArray.push(new FormControl(selectedValue));
     }
     else {
-      questionResponses![questionName] = selectedValue;
+      let i: number = 0;
+      selectedCheckBoxesControlArray.controls.forEach((item: any) => {
+        if (item.value == e.target.value) {
+          selectedCheckBoxesControlArray.removeAt(i);
+          return;
+        }
+        i++;
+      });
     }
+
   }
 
   private loadEventDetails() {
@@ -261,8 +300,32 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
           this.eventTypeOwnerInfo = response[3];
         },
         error: (error) => { console.log(error) },
-        complete: () => { }
+        complete: () => {
+
+          this.resetQuestionnairesForm();
+        }
       });
+  }
+
+  private resetQuestionnairesForm() {
+    let group = this.formAppoinmentEntry?.get('questionResponses') as FormGroup
+    group.reset();
+    while (Object.keys(group.controls).length) {
+      const toRemove = Object.keys(group.controls)[0];
+      group.removeControl(toRemove)
+    }
+    
+    if (this.eventTypeQuestions.length || this.eventTypeQuestions.length == 0) {
+      const questionResponsesFormGroup = this.formAppoinmentEntry?.get('questionResponses') as FormGroup;
+      this.eventTypeQuestions.forEach((question) => {
+        if (question.questionType == "CheckBoxes") {
+          questionResponsesFormGroup?.addControl(question.id!, this.formBuilder.array([], question.requiredYN ? Validators.required : null));
+        }
+        else {
+          questionResponsesFormGroup?.addControl(question.id!, this.formBuilder.control('', question.requiredYN ? Validators.required : null));
+        }
+      });
+    }
   }
 
   private loadCalendarTimeSlots() {
@@ -388,26 +451,8 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     });
   }
 
-  private resetAppointmentEntryModel() {
-    this.appointmentEntryModel = {
-      inviteeName: "",
-      inviteeEmail: "",
-      guestEmails: "",
-      note: "",
-      questionResponses: {}
-    };
-  }
-
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();
   }
-}
-
-interface AppointmentEntryModel {
-  inviteeName: string
-  inviteeEmail: string
-  guestEmails?: string
-  note?: string
-  questionResponses?: { [id: string]: string }
 }

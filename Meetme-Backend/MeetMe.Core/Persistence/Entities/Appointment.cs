@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 namespace MeetMe.Core.Persistence.Entities
 {
@@ -22,7 +23,8 @@ namespace MeetMe.Core.Persistence.Entities
         public string? CancellationReason { get; set; }
         public Guid OwnerId { get; set; }
 
-        public string? QuestionResponse { get; set; }
+        [JsonIgnore]
+        public string? QuestionnaireContent { get; set; }
 
         [JsonIgnore]
         public EventType? EventType { get; set; }
@@ -30,52 +32,10 @@ namespace MeetMe.Core.Persistence.Entities
         [JsonIgnore]
         public User? User { get; set; }
 
-        [JsonIgnore]
-        public List<AppointmentQuestionaireItem>? AppointmentQuestionaireItems { get; set; }
-
-        public Dictionary<string, List<string>> GetQuestionResponse()
-        {
-            if (string.IsNullOrEmpty(QuestionResponse))
-            {
-                return new Dictionary<string, List<string>>();
-            }
-            var questionResponse = JsonSerializer.Deserialize<Dictionary<string, List<string>>>(QuestionResponse);
-            if (questionResponse == null)
-            {
-                return new Dictionary<string, List<string>>();
-            }
-
-            //var result = new Dictionary<string, List<string>>();
-
-            //foreach (var item in questionResponse)
-            //{
-            //    result.Add(item.Key, item.Value.Split("~~").ToList());
-            //}
-
-            return questionResponse;
-
-        }
-
-        public void SetQuestionResponse(Dictionary<string, List<string>> questionResponse)
-        {
-            QuestionResponse = JsonSerializer.Serialize(questionResponse);
-        }
     }
 
 
 
-    public class AppointmentQuestionaireItem
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        public Guid AppointmentId { get; set; }
-        public string QuestionName { get; set; } = null!;
-        public string Answer { get; set; } = null!;
-
-        [JsonIgnore]
-        public Appointment? Appointment { get; set; }
-
-    }
+    
 
 }

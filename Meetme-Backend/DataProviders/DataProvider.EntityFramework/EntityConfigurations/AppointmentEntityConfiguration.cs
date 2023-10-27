@@ -61,7 +61,7 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
 
         builder.Property(a => a.CancellationReason)
                .HasColumnType("varchar(255)");
-        builder.Property(a => a.QuestionResponse)
+        builder.Property(a => a.QuestionnaireContent)
                .HasColumnType("varchar(max)");
         
 
@@ -76,10 +76,10 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
                .HasForeignKey(a => a.OwnerId)
                .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasMany(a => a.AppointmentQuestionaireItems)
-            .WithOne(et => et.Appointment)
-            .HasForeignKey(a => a.AppointmentId)
-            .OnDelete(DeleteBehavior.Restrict);
+        //builder.HasMany(a => a.AppointmentQuestionaireItems)
+        //    .WithOne(et => et.Appointment)
+        //    .HasForeignKey(a => a.AppointmentId)
+        //    .OnDelete(DeleteBehavior.Restrict);
 
     }
 }

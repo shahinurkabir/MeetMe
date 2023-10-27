@@ -12,7 +12,7 @@ export interface ICreateAppointmentCommand {
     meetingDuration: number
     guestEmails?:string
     note?: string,
-    questionResponses?: any[]
+    questionnaireContent?: string
 }
 
 export interface ICancelAppointmentCommand {
@@ -45,3 +45,10 @@ export interface IAppointmentDetailsDto {
         cancellationReason: string | null;
         isExpanded: boolean;
 }
+export interface IAppointmentQuestionaireItemDto {
+    questionId: string;
+    questionName?: string;
+    answer: string;
+    isMultipleChoice: boolean;
+}
+
