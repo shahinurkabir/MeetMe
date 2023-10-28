@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using MeetMe.Application.Calendars.Quaries.Dtos;
 using MeetMe.Core.Dtos;
 using MeetMe.Core.Extensions;
 using MeetMe.Core.Persistence.Interface;

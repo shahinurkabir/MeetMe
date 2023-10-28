@@ -6,6 +6,7 @@ using MeetMe.Core.Persistence.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,8 +22,11 @@ namespace MeetMe.Core.Services
             this.persistenceProvider = persistenceProvider;
             this.dateTimeService = dateTimeService;
         }
-        public async Task<bool> RunAsync(string userTimeZoneName)
+        public async Task<bool> EnsureSeedDataAsync(string userTimeZoneName)
         {
+            var hasDataInSystem = await HasUserInSystem();
+            if (hasDataInSystem) return true;
+
             Guid adminUserId = await AddAdminUser(userTimeZoneName);
 
             Guid availabilityId = await AddNewDefaultAvilability(adminUserId, userTimeZoneName);
@@ -31,7 +35,8 @@ namespace MeetMe.Core.Services
 
             return true;
         }
-        public async Task<bool> IsDataSeededAsync()
+
+        private async Task<bool> HasUserInSystem()
         {
             var result = await persistenceProvider.GetUserList();
 

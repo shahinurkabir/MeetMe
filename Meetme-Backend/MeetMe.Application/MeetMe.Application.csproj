@@ -39,4 +39,8 @@
     <ProjectReference Include="..\MeetMe.Core\MeetMe.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Calendars\Quaries\Dtos\" />
+  </ItemGroup>
+
 </Project>

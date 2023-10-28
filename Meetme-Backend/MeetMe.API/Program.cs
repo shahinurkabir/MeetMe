@@ -1,19 +1,14 @@
-using DataProvider.DynamoDB;
 using DataProvider.EntityFramework;
-using DataProvider.InMemoryData;
 using MeetMe.API.Middlewares;
 using MeetMe.API.Models;
 using MeetMe.Application;
 using MeetMe.Caching.InMemory;
 using MeetMe.Core.Interface;
-using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using MeetMe.Core.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -101,7 +96,7 @@ app.MapControllers();
 
 app.Run();
 
-static void EnsureDbCreatedAddSeedingData(WebApplication builder, string timeZoneName)
+static  void EnsureDbCreatedAddSeedingData(WebApplication builder, string timeZoneName)
 {
     using var serviceScope = builder.Services.CreateScope();
     var dbProvider = serviceScope.ServiceProvider.GetRequiredService<IPersistenceProvider>();
@@ -109,12 +104,7 @@ static void EnsureDbCreatedAddSeedingData(WebApplication builder, string timeZon
 
     dbProvider.EnsureDbCreated();
 
-    var isDataSeeded = seedDataService.IsDataSeededAsync().Result;
-    if (isDataSeeded)
-    {
-        return;
-    }
-    var result = seedDataService.RunAsync(timeZoneName).Result;
+    var result =seedDataService.EnsureSeedDataAsync(timeZoneName).Result;
 }
 
 static void RegisterJwtAuthentication(WebApplicationBuilder builder)

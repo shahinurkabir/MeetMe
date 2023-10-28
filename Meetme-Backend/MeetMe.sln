@@ -19,14 +19,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CacheProviders", "CacheProv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caching.InMemory", "CacheProviders\Caching.InMemory\Caching.InMemory.csproj", "{B313940E-65F6-42EC-A82D-B06DFD3A9B26}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{DC19932F-D676-4798-9FA5-95C4A6A09B29}"
-	ProjectSection(SolutionItems) = preProject
-		..\sql\BookingDb.sql = ..\sql\BookingDb.sql
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataProvider.InMemoryData", "DataProviders\DataProvider.InMemoryData\DataProvider.InMemoryData.csproj", "{7ED0DCD4-3D1F-49C2-B314-58FAE71A7F95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataProvider.DynamoDB", "DataProviders\DataProvider.DynamoDB\DataProvider.DynamoDB.csproj", "{7D36F1F8-8AF7-4622-8342-573EE74700B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataProvider.DynamoDB", "DataProviders\DataProvider.DynamoDB\DataProvider.DynamoDB.csproj", "{7D36F1F8-8AF7-4622-8342-573EE74700B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
