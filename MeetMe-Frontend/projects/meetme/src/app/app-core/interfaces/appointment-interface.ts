@@ -47,7 +47,7 @@ export interface IAppointmentDetailsDto {
 }
 export interface IAppointmentQuestionaireItemDto {
     questionId: string;
-    questionName?: string;
+    questionName: string;
     answer: string;
     isMultipleChoice: boolean;
 }

@@ -4,6 +4,7 @@ using MeetMe.Application.EventTypes.Queries;
 using MeetMe.Core.Interface;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,7 @@ namespace MeetMe.API.Controllers
         }
         [HttpGet]
         [Route("{id}")]
+        [AllowAnonymous]
         public async Task<List<EventTypeAvailabilityDetail>> GetEventAvailabilityDetail(Guid id)
         {
             var queryCommand = new GetEventTypeAvailabilityQuery { EvnetTypeId = id };

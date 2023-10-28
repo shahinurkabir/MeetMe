@@ -2,6 +2,7 @@
 using MeetMe.Application.EventTypes.Commands;
 using MeetMe.Application.EventTypes.Queries;
 using MeetMe.Core.Persistence.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,7 @@ namespace MeetMe.API.Controllers
 
         [HttpGet]
         [Route("{id}")]
+        [AllowAnonymous]
         public async Task<List<EventTypeQuestion>> GetQuestionList(Guid id)
         {
             var result = await mediator.Send(new GetEventTypeQuestionsQuery { EventTypeId = id });

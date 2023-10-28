@@ -160,7 +160,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (response) => {
-          this.apointmentCreatedResponse(response);
+          this.appointmentCreatedResponse(response);
           this.alertService.success("Appointment created successfully");
         },
         error: (error) => {
@@ -174,15 +174,15 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
   onAnswerSelectionChnaged(e: any, isMultipleChoice: boolean = false) {
     let element = e.target as HTMLInputElement
-    let questionName = element.id.toString();
+    let questionId = element.id.toString();
     let selectedValue = element.value.toString();
 
     const questionResponseFormGroup = this.formAppoinmentEntry.get('questionResponses') as FormGroup;
     if (isMultipleChoice) {
-      this.handleMultipleChoice(e, questionName, questionResponseFormGroup);
+      this.handleMultipleChoice(e, questionId, questionResponseFormGroup);
     }
     else {
-      questionResponseFormGroup.get(questionName)?.setValue(selectedValue);
+      questionResponseFormGroup.get(questionId)?.setValue(selectedValue);
     }
   }
 
@@ -210,12 +210,12 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       if (!value) continue;
 
       const isArrayResponse = Array.isArray(value);
-
       if (isArrayResponse && value.length == 0) continue;
 
       const response = isArrayResponse ? (value as string[]).join(",") : (value as string).toString();
-
-      questionoareResponseItemDtos.push({ questionId: key, answer: response, isMultipleChoice: isArrayResponse });
+      const questionName = this.eventTypeQuestions.find(e => e.id == key)?.name!;
+      questionoareResponseItemDtos.push({ questionId: key,questionName:questionName, answer: response, isMultipleChoice: isArrayResponse });
+    
     }
 
     if (questionoareResponseItemDtos.length > 0) {
@@ -225,7 +225,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     return content;
 
   }
-  private apointmentCreatedResponse(appointmentId: string) {
+  private appointmentCreatedResponse(appointmentId: string) {
     this.router.navigate(["calendar/booking", this.eventTypeOwner, this.eventTypeInfo?.slug, appointmentId, "view"]);
   }
 
@@ -249,6 +249,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       this.calendarComponent.resetCalendar();
     }
   }
+
   get f() {
     return this.formAppoinmentEntry.controls;
   }
@@ -357,6 +358,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     //     complete: () => { }
     //   });
   }
+
   private fetchCalendarAvailability(fromDate: string, toDate: string): void {
     this.eventTypeService
       .getEventAvailabilityCalendar(this.eventTypeId, this.selectedTimeZoneName, fromDate, toDate)

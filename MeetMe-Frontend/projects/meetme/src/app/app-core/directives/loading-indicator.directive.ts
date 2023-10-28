@@ -19,7 +19,8 @@ export class LoadingIndicatorDirective implements AfterViewInit {
       this.elementRef.nativeElement.appendChild(this.createLoadingIndicator());
     } else {
       const elToRemove = this.elementRef.nativeElement.querySelector('.dot-pulse')
-      this.elementRef.nativeElement.removeChild(elToRemove);
+      if (elToRemove)
+        this.elementRef.nativeElement.removeChild(elToRemove);
     }
   }
   createLoadingIndicator(): HTMLElement {
