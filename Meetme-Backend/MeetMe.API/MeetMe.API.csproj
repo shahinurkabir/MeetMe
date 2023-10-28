@@ -20,12 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ApplicationDomain\MeetMe.Application\MeetMe.Application.csproj" />
     <ProjectReference Include="..\CacheProviders\Caching.InMemory\Caching.InMemory.csproj" />
     <ProjectReference Include="..\DataProviders\DataProvider.Dapper\DataProvider.Dapper.csproj" />
     <ProjectReference Include="..\DataProviders\DataProvider.DynamoDB\DataProvider.DynamoDB.csproj" />
     <ProjectReference Include="..\DataProviders\DataProvider.EntityFramework\DataProvider.EntityFramework.csproj" />
     <ProjectReference Include="..\DataProviders\DataProvider.InMemoryData\DataProvider.InMemoryData.csproj" />
-    <ProjectReference Include="..\MeetMe.Application\MeetMe.Application.csproj" />
   </ItemGroup>
 
 </Project>

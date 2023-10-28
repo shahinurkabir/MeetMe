@@ -5,9 +5,9 @@ VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeetMe.API", "MeetMe.API\MeetMe.API.csproj", "{96872CDA-2D02-41D9-A237-57993A6D51E8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeetMe.Application", "MeetMe.Application\MeetMe.Application.csproj", "{DD75AFF7-48D5-408A-A142-19E9C6F542EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeetMe.Application", "ApplicationDomain\MeetMe.Application\MeetMe.Application.csproj", "{DD75AFF7-48D5-408A-A142-19E9C6F542EB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeetMe.Core", "MeetMe.Core\MeetMe.Core.csproj", "{ED9B882D-8FBC-40FE-BDAA-8B4A5F3BDB13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeetMe.Core", "ApplicationDomain\MeetMe.Core\MeetMe.Core.csproj", "{ED9B882D-8FBC-40FE-BDAA-8B4A5F3BDB13}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataProvider.EntityFramework", "DataProviders\DataProvider.EntityFramework\DataProvider.EntityFramework.csproj", "{3CD21330-3945-4F3A-BDBD-3EEA191884D4}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataProvider.InMemoryData", "DataProviders\DataProvider.InMemoryData\DataProvider.InMemoryData.csproj", "{7ED0DCD4-3D1F-49C2-B314-58FAE71A7F95}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataProvider.DynamoDB", "DataProviders\DataProvider.DynamoDB\DataProvider.DynamoDB.csproj", "{7D36F1F8-8AF7-4622-8342-573EE74700B0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApplicationDomain", "ApplicationDomain", "{A12C2889-5FDF-4479-ABB7-5D9BB508C0E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +68,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{DD75AFF7-48D5-408A-A142-19E9C6F542EB} = {A12C2889-5FDF-4479-ABB7-5D9BB508C0E6}
+		{ED9B882D-8FBC-40FE-BDAA-8B4A5F3BDB13} = {A12C2889-5FDF-4479-ABB7-5D9BB508C0E6}
 		{3CD21330-3945-4F3A-BDBD-3EEA191884D4} = {E66684FA-0E24-4868-BA98-AB3B52A7BBA9}
 		{C9911508-2028-4A74-A86C-10A57A86C340} = {E66684FA-0E24-4868-BA98-AB3B52A7BBA9}
 		{B313940E-65F6-42EC-A82D-B06DFD3A9B26} = {E8D059D6-F62D-4C30-8034-61E656132048}

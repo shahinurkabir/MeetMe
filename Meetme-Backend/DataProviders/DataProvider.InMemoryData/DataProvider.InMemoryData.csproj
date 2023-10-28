@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MeetMe.Core\MeetMe.Core.csproj" />
+    <ProjectReference Include="..\..\ApplicationDomain\MeetMe.Core\MeetMe.Core.csproj" />
   </ItemGroup>
 
 </Project>
