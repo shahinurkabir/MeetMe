@@ -15,6 +15,22 @@ namespace MeetMe.Core.Constants
             RadioButtons = 30,
             CheckBoxes = 35
         }
+        public enum AppointmentSearchType
+        {
+            All = 0,
+            Past = 1,
+            OnGoing = 2,
+            Upcoming = 3,
+            DateRange = 4,
+        }
+        public enum AppointmentFilterFor
+        {
+            All = 0,
+            EventType = 1,
+            Status = 2,
+            InviteeEmail = 3,
+        }
+
 
     }
 }

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AppointmentService, IAppointmentDetailsDto, ICancelAppointmentCommand } from '../../../app-core';
+import { AppointmentService, IAppointmentDetailsDto, IAppointmentSearchParametersDto, IAppointmentsPaginationResult, ICancelAppointmentCommand } from '../../../app-core';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -10,31 +10,41 @@ import { Subject, takeUntil } from 'rxjs';
 export class AppointmentListComponent implements OnInit, OnDestroy {
   destroyed$: Subject<boolean> = new Subject<boolean>();
 
-  appointments: IAppointmentDetailsDto[] = [];
+  appointmentsPaginationResult: IAppointmentsPaginationResult | undefined;
   cancellationReason: string = '';
-
+  timeZoneName: string = Intl.DateTimeFormat().resolvedOptions().timeZone;
   constructor(private appointmentService: AppointmentService
-  ) { }
+  ) {
+
+  }
 
   ngOnInit(): void {
     this.resetData();
     this.loadAppointments();
   }
 
-  toggleDetails(index: number): void {
-    this.appointments[index].isExpanded = !this.appointments[index].isExpanded;
+  toggleDetails(item: IAppointmentDetailsDto): void {
+    item.isExpanded = !item.isExpanded;
   }
   resetData() {
-    this.appointments = [];
     this.cancellationReason = '';
   }
 
   loadAppointments() {
-    this.appointmentService.getAppointments()
+    let pageNumber = 1;
+    let parameters: IAppointmentSearchParametersDto = {
+      status: '',
+      searchBy: 'P',
+      timeZone: this.timeZoneName,
+      inviteeEmail: '',
+      eventTypeIds: [],
+      filterBy: '',
+    }
+    this.appointmentService.getScheduleEvents(pageNumber, parameters)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
-          this.appointments = response;
+          this.appointmentsPaginationResult = response;
         },
         error: (error) => {
           console.log(error);

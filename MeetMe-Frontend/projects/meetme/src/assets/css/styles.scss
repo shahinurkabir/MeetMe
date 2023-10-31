@@ -10,7 +10,7 @@
 }
 
 body {
-    background-color: $background-color;
+    background-color: $neutral-color;
     color: #191919;
     position: relative;
 
@@ -44,7 +44,7 @@ a:visited {
     min-height: 100vh;
     margin: 0px auto;
     padding: 1px 0px;
-    background-color: white;
+    background-color: $primary-color;
 }
 
 nav {
@@ -188,7 +188,7 @@ nav ul li a.is-active {
 }
 
 input {
-    border: 1px solid lightgray;
+    border: 1px solid $secondary-color;
     -webkit-transition: 0.5s;
     transition: 0.5s;
     outline: none;
@@ -196,7 +196,7 @@ input {
 }
 
 button {
-    border: 1px solid lightgray;
+    border: 1px solid $secondary-color;
     -webkit-transition: 0.5s;
     transition: 0.5s;
     outline: none;
@@ -328,7 +328,7 @@ input.is-invalid , textarea.is-invalid, select.is-invalid {
 .form-group .form-control input,
 .form-group .form-control textarea,
 .form-group .form-control select  {
-    border: 1px solid lightgray;
+    border: 1px solid $secondary-color;
     -webkit-transition: 0.5s;
     transition: 0.5s;
     outline: none;
@@ -353,12 +353,12 @@ input.is-invalid , textarea.is-invalid, select.is-invalid {
 }
 
 .btn-primary {
-    background-color: cornflowerblue;
+    background-color: $accent-color;
     border: 1px solid darkgray;
 }
 
 .btn-default {
-    background-color: rgb(238, 240, 244);
+    background-color: $secondary-color;
     border: 1px solid darkgray;
 }
 

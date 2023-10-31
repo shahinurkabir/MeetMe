@@ -4,6 +4,7 @@ using MeetMe.Core.Extensions;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -296,7 +297,7 @@ namespace DataProvider.EntityFramework.Repositories
 
         }
 
-        public async Task<List<AppointmentDetailsDto>?> GetAppointmentListByUser(Guid userId)
+        public async Task<List<AppointmentDetailsDto>> GetAppointmentListByUser(Guid userId)
         {
             var result = await _dbContext.Set<Appointment>()
                   .Include(x => x.EventType)
@@ -307,19 +308,51 @@ namespace DataProvider.EntityFramework.Repositories
 
             return result;
         }
-        public async Task<List<AppointmentDetailsDto>?> GetAppointmentListByEventType(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC)
+        public async Task<List<AppointmentDetailsDto>> GetAppointmentListByEventType(Guid eventTypeId, DateTime startDateUTC, DateTime endDateUTC)
         {
             var result = await _dbContext.Set<Appointment>()
                   .Include(x => x.EventType)
                   .ThenInclude(x => x.User)
                   .Where(x => x.Status != Events.AppointmentStatus.Cancelled &&
-                              x.EventTypeId == eventTypeId && 
-                              x.StartTimeUTC >= startDateUTC && 
+                              x.EventTypeId == eventTypeId &&
+                              x.StartTimeUTC >= startDateUTC &&
                               x.EndTimeUTC <= endDateUTC
                         )
+                  .Select(x => AppointmentDetailsDto.New(x, x.EventType!, x.EventType!.User))
                   .ToListAsync();
 
-            return result?.Select(x => AppointmentDetailsDto.New(x, x.EventType!, x.EventType!.User)).ToList();
+            return result;
+        }
+        public async Task<(int, List<AppointmentDetailsDto>?)> GetAppintmentListByParameters(AppointmentSearchParametersDto searchParametersDto, int pageNumber, int pageSize)
+        {
+            var entity = _dbContext.Set<Appointment>()
+                  .Include(x => x.EventType)
+                  .ThenInclude(x => x.User)
+                  .AsQueryable();
+
+            entity = entity.Where(x => x.OwnerId == searchParametersDto.OwnerId);
+
+            if (!string.IsNullOrWhiteSpace(searchParametersDto.Status))
+            {
+                entity = entity.Where(x => x.Status == searchParametersDto.Status);
+            }
+            if (searchParametersDto.EventTypeIds.Any())
+            {
+                entity = entity.Where(x => searchParametersDto.EventTypeIds.Exists(e => e == x.EventTypeId));
+            }
+            entity = entity
+                    .Where(e => e.StartTimeUTC >= searchParametersDto.StartDate && e.EndTimeUTC <= searchParametersDto.EndDate)
+                    .OrderByDescending(e => e.StartTimeUTC);
+
+            var totalRecords = await entity.CountAsync();
+
+            var result = await entity.Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => AppointmentDetailsDto.New(x, x.EventType!, x.EventType!.User))
+                .ToListAsync();
+
+            return (totalRecords, result);
+
         }
 
         public async Task<User?> GetUserByLoginId(string userId)
@@ -384,6 +417,7 @@ namespace DataProvider.EntityFramework.Repositories
             if (_dbContext.Set<User>().Any()) return;
 
         }
+
 
 
     }

@@ -45,11 +45,26 @@ namespace MeetMe.Core.Extensions
             var dateTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(appointmentStartTime, TimeZoneInfo.Utc.Id, timeZoneName);
             var startTime = dateTime.ToString("hh:mm tt");
             var endTime = dateTime.AddMinutes(meetingDuration).ToString("hh:mm tt");
-            var appointmentTimeRange = $"{startTime} - {endTime}, {dateTime.ToString("dddd, MMMM dd, yyyy")}";
+            var appointmentTimeRange = $"{startTime} - {endTime}, {dateTime.ToString("dddd, dd MMMM yyyy")}";
 
             return appointmentTimeRange;
         }
+        public static string ToAppointmentDateText(this string timeZoneName, int meetingDuration, DateTime appointmentStartTime)
+        {
+            var dateTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(appointmentStartTime, TimeZoneInfo.Utc.Id, timeZoneName);
+            var startTime = dateTime.ToString("hh:mm tt");
+            var endTime = dateTime.AddMinutes(meetingDuration).ToString("hh:mm tt");
+            var appointmentTimeRange = dateTime.ToString("dddd, dd MMMM yyyy");
 
+            return appointmentTimeRange;
+        }
+        public static string ToAppointmentTimeText(this string timeZoneName, int meetingDuration, DateTime appointmentStartTime)
+        {
+            var dateTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(appointmentStartTime, TimeZoneInfo.Utc.Id, timeZoneName);
+            var startTime = dateTime.ToString("hh:mm tt");
+
+            return startTime;
+        }
         public static DateTime ToUtcIfLocal(this DateTime dateTime)
         {
             if (dateTime.Kind == DateTimeKind.Local)

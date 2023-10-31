@@ -406,6 +406,12 @@ namespace DataProvider.InMemoryData
         {
         }
 
+        public Task<(int, List<AppointmentDetailsDto>?)> GetAppintmentListByParameters(AppointmentSearchParametersDto searchParametersDto, int pageNumber, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+
         #endregion
 
     }

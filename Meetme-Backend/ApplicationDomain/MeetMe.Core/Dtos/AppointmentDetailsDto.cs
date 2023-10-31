@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace MeetMe.Core.Dtos
 {
+
     public class AppointmentDetailsDto
     {
         public Guid Id { get; set; }
@@ -28,6 +29,8 @@ namespace MeetMe.Core.Dtos
         public DateTime StartTimeUTC { get; set; }
         public DateTime EndTimeUTC { get; set; }
         public string AppointmentDateTime { get; set; } = null!;
+        public string AppointmentTime { get; set; } = null!;
+        public string AppointmentDate { get; set; } = null!;
         public string? Note { get; set; }
         public string Status { get; set; } = null!;
         public DateTime DateCreated { get; set; }
@@ -63,6 +66,8 @@ namespace MeetMe.Core.Dtos
                 EventOwnerId = appointment.OwnerId,
                 EventOwnerName = user.UserName,
                 AppointmentDateTime = appointment.InviteeTimeZone.ToAppointmentTimeRangeText(eventType.Duration, appointment.StartTimeUTC.ToUtcIfLocal()),
+                AppointmentDate = appointment.InviteeTimeZone.ToAppointmentDateText(eventType.Duration, appointment.StartTimeUTC.ToUtcIfLocal()),
+                AppointmentTime = appointment.InviteeTimeZone.ToAppointmentTimeText(eventType.Duration, appointment.StartTimeUTC.ToUtcIfLocal()),
             };
 
             if (appointment.QuestionnaireContent != null)

@@ -24,6 +24,9 @@ namespace MeetMe.Core.Constants
         public const string MEETING_FROM_TIMESPAN = "9:00:00";  //9:00 AM
         public const string MEETING_TO_TIMESPAN = "17:00:00";  //5:00 PM
 
+        public static class DefaulData { 
+            public const int Pagination_PageSize = 20;
+        }
         public static class ForwandDateKInd
         {
             public const string Moving = "moving";
@@ -37,8 +40,20 @@ namespace MeetMe.Core.Constants
             public const string Cancelled = "cancelled";
         }
 
-
-
+        public static class AppointmentSearchBy
+        {
+            public const string Past = "P";
+            public const string Upcoming = "U";
+            public const string Ongoing = "O";
+            public const string DateRange = "D";
+        }
+        public static class AppointmentFilterBy
+        {
+            public const string All = "A";
+            public const string EventType = "E";
+            public const string Status = "S";
+            public const string InviteeEmail = "I";
+        }
     }
 
     public static class ClaimTypeName
@@ -50,6 +65,7 @@ namespace MeetMe.Core.Constants
         public const string TimeZone = "user_timezone";
 
     }
+   
 
 
 }

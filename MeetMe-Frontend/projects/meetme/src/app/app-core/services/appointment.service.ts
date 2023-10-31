@@ -3,7 +3,8 @@ import { DataService } from "./data.service";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "projects/meetme/src/environments/environment";
-import { IAppointmentDetailsDto, ICancelAppointmentCommand, ICreateAppointmentCommand } from "../interfaces";
+import { IAppointmentDetailsDto, IAppointmentSearchParametersDto, IAppointmentsPaginationResult, ICancelAppointmentCommand, ICreateAppointmentCommand } from "../interfaces";
+import { NumberValueAccessor } from "@angular/forms";
 
 @Injectable({
     providedIn: 'root'
@@ -15,9 +16,9 @@ export class AppointmentService extends DataService {
         super(http)
     }
     
-    getAppointments(): Observable<IAppointmentDetailsDto[]> {
-        let url: string = `${this.calendarURI}/me`
-        return this.doGet(url)
+    getScheduleEvents(pageNumber:number,parameters:IAppointmentSearchParametersDto): Observable<IAppointmentsPaginationResult> {
+        let url: string = `${this.calendarURI}/schedule-event/${pageNumber}`
+        return this.doPost(url,parameters)
     }
     getAppointmentById(id: string): Observable<IAppointmentDetailsDto> {
         let url: string = `${this.calendarURI}/${id}/details`
