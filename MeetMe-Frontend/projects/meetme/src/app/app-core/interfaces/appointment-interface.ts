@@ -69,7 +69,7 @@ export interface IAppointmentsByDate {
 
 export interface IAppointmentSearchParametersDto {
     timeZone: string;
-    searchBy: string;
+    searchByDateOption?: string;
     startDate?: string ;
     endDate?: string ;
     filterBy: string;

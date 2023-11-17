@@ -40,12 +40,12 @@ namespace MeetMe.Core.Constants
             public const string Cancelled = "cancelled";
         }
 
-        public static class AppointmentSearchBy
+        public static class AppointmentSearchByDate
         {
-            public const string Past = "P";
-            public const string Upcoming = "U";
-            public const string Ongoing = "O";
-            public const string DateRange = "D";
+            public const string All = "all";
+            public const string Past = "past";
+            public const string Upcoming = "upcoming";
+            public const string DateRange = "daterange";
         }
         public static class AppointmentFilterBy
         {

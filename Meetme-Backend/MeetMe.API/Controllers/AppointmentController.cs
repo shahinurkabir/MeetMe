@@ -75,38 +75,38 @@ namespace MeetMe.API.Controllers
 
         [HttpPost]
         [Route("schedule-event/{pageNumber}")]
-        public async Task<AppointmentsPaginationResult> ScheduleEvents( int pageNumber, AppointmentSearchParametersDto scheduleEventSearchParameters)
+        public async Task<AppointmentsPaginationResult> ScheduleEvents(int pageNumber, AppointmentSearchParametersDto scheduleEventSearchParameters)
         {
             var loginUserId = loginUserInfo.Id;
-            scheduleEventSearchParameters.OwnerId = loginUserInfo.Id; 
+            scheduleEventSearchParameters.OwnerId = loginUserInfo.Id;
+            scheduleEventSearchParameters.TimeZone = loginUserInfo.TimeZone;
 
             var currentTimeUtc = DateTime.UtcNow;
 
-            if (scheduleEventSearchParameters.SearchBy==Events.AppointmentSearchBy.Ongoing)
+          
+            if (string.IsNullOrWhiteSpace(scheduleEventSearchParameters.SearchByDateOption) ||
+               scheduleEventSearchParameters.SearchByDateOption == Events.AppointmentSearchByDate.Upcoming)
             {
                 scheduleEventSearchParameters.StartDate = currentTimeUtc;
-                scheduleEventSearchParameters.EndDate = currentTimeUtc.AddHours(1);
+                scheduleEventSearchParameters.EndDate = DateTime.MaxValue;
             }
-            else if (scheduleEventSearchParameters.SearchBy == Events.AppointmentSearchBy.Upcoming)
-            {
-                scheduleEventSearchParameters.StartDate= currentTimeUtc;
-                scheduleEventSearchParameters.EndDate= DateTime.MaxValue;
-            }
-            else if (scheduleEventSearchParameters.SearchBy == Events.AppointmentSearchBy.Past)
+            else if (scheduleEventSearchParameters.SearchByDateOption == Events.AppointmentSearchByDate.Past)
             {
                 scheduleEventSearchParameters.StartDate = DateTime.MinValue;
                 scheduleEventSearchParameters.EndDate = currentTimeUtc;
             }
-            else if (scheduleEventSearchParameters.SearchBy == Events.AppointmentSearchBy.DateRange)
+            else if (scheduleEventSearchParameters.SearchByDateOption == Events.AppointmentSearchByDate.DateRange)
             {
                 scheduleEventSearchParameters.StartDate = scheduleEventSearchParameters.StartDate?.ToUniversalTime();
                 scheduleEventSearchParameters.EndDate = scheduleEventSearchParameters.EndDate?.ToUniversalTime();
             }
-            var command=new AppointmentListQuery
+            var command = new AppointmentListQuery
             {
                 SearchParameters = scheduleEventSearchParameters,
                 PageNumber = pageNumber,
-                PageSize=Events.DefaulData.Pagination_PageSize
+                PageSize = Events.DefaulData.Pagination_PageSize,
+               
+                
             };
 
             var result = await mediator.Send(command);
@@ -116,6 +116,6 @@ namespace MeetMe.API.Controllers
 
     }
 
-    
+
 
 }

@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace MeetMe.Application.Calendars.Quaries
 {
-    public class AppointmentListQuery:IRequest<AppointmentsPaginationResult>
+    public class AppointmentListQuery : IRequest<AppointmentsPaginationResult>
     {
         public AppointmentSearchParametersDto SearchParameters { get; set; } = null!;
-        public int PageNumber { get; set; }= 1;
-        public int PageSize { get; set; }= 20;
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 20;
     }
 
     public class AppointmentListQueryHandler : IRequestHandler<AppointmentListQuery, AppointmentsPaginationResult>
@@ -27,16 +27,16 @@ namespace MeetMe.Application.Calendars.Quaries
 
         public async Task<AppointmentsPaginationResult> Handle(AppointmentListQuery request, CancellationToken cancellationToken)
         {
-            var (totalRecords, result) = await persistenceProvider.GetAppintmentListByParameters(request.SearchParameters,request.PageNumber,request.PageSize);
+            var (totalRecords, result) = await persistenceProvider.GetAppintmentListByParameters(request.SearchParameters, request.PageNumber, request.PageSize);
 
             var paginationInfo = new PaginationInfo
             {
                 PageNumber = request.PageNumber,
                 PageSize = request.PageSize,
                 TotalRecords = totalRecords,
-                TotalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize),
+                TotalPages = totalRecords == 0?0:(int)Math.Ceiling((double)totalRecords / request.PageSize),
                 IsFirstPage = request.PageNumber == 1,
-                IsLastPage = request.PageNumber == (int)Math.Ceiling((double)totalRecords / request.PageSize)
+                IsLastPage = totalRecords == 0 ? true : (request.PageNumber == (int)Math.Ceiling((double)totalRecords / request.PageSize))
             };
 
             var paginationResult = new AppointmentsPaginationResult

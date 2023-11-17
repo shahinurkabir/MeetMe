@@ -16,10 +16,9 @@ namespace MeetMe.Core.Dtos
         /// <summary>
         /// P:Past
         /// U:Upcoming
-        /// O:Ongoing
         /// D:Date Range
         /// </summary>
-        public string SearchBy { get; set; } = "U";
+        public string? SearchByDateOption { get; set; } 
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 

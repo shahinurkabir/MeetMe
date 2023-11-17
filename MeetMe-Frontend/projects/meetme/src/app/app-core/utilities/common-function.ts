@@ -45,4 +45,7 @@ export class CommonFunction {
   static cloneObject<T>(a: T): T {
     return JSON.parse(JSON.stringify(a));
   }
+  static capitalizeFirstLetter(str: string) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
 }

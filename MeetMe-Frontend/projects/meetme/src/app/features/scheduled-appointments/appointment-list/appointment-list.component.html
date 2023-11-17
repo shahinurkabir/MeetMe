@@ -1,9 +1,74 @@
-<!-- appointment-list.component.html -->
-
 <h1>Appointment List</h1>
+<div class="data-filter-wrapper">
+  <div class="data-searchby-wrapper">
+    <div class="data-searchby-time-items">
+      <a>Upcoming</a>
+      <a>Past</a>
+      <a>Date Range</a>
+    </div>
+    <div class="data-toolbar-items">
+      <button>Export</button>
+      <button>Filter</button>
+    </div>
+  </div>
+  <div class="data-filterby-items">
+    <div class="data-filterby-item">
+      <label class="field-label">Event Type</label>
+      <span #toggleButtonEventTypesFilterWindow class="overly-opener" (click)="toggleEventTypesFilterWindow($event)">
+        {{filterByEventTypeText}}
+      </span>
+      <div *ngIf="filterByEventTypeYN" class="overlay">
+        <div #eventTypesFilterWindow class="overlay-content">
+          <form [formGroup]="entityTypesFilterForm">
+            <div *ngFor="let entityTypeControl of entityTypeListControls; let i = index;" formArrayName="entityTypesList">
+              <div [formGroupName]="i">
+                <input type="checkbox" formControlName="isSelected">
+                {{ entityTypeControl.get('entityText')?.value }}
+              </div>
+            </div>
+            <div class="actions">
+              <button (click)="onCancelFilter()">Cancel </button>
+              <button (click)="onApplyFilter()">Apply</button>
+            </div>
+          </form>
+      </div>
+      </div>
+    </div>
+    <div class="data-filterby-item">
+      <label class="field-label">Status</label>
+      <span #toggleButtonAppointmentStatusByFilterWindow class="overly-opener"
+        (click)="toggleAppointmentStatusFilterWindow($event)">
+        {{filterByStatusText}}
+      </span>
+      <div *ngIf="filterByAppointmentStatusYN" class="overlay">
+        <div #appointmentStatusByFilterWindow class="overlay-content">
+          <form [formGroup]="statusListFilterForm">
+            <div *ngFor="let statusControl of statusListControls; let i = index" formArrayName="statusList">
+              <div [formGroupName]="i">
+                <input type="checkbox" formControlName="isSelected">
+                {{ statusControl.get('statusText')?.value }}
+              </div>
+            </div>
+            <div class="actions">
+              <button (click)="onCancelStatusFilter()">Cancel </button>
+              <button (click)="onApplyStatusFilter()">Apply</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="data-filterby-item">
+      <span>Invitee Emails</span>
+    </div>
+    <div class="data-filterby-item">
+      <span>Clear Filters</span>
+    </div>
+  </div>
+</div>
+
 <ng-container *ngFor="let appointmentsByDate of appointmentsPaginationResult?.result; let i = index;">
   <div>
-  <h2>{{appointmentsByDate.date}}</h2>
+    <h2>{{appointmentsByDate.date}}</h2>
     <ul>
       <li *ngFor="let appointment of appointmentsByDate.appointments; let i = index;">
         <div class="appointment-header" (click)="toggleDetails(appointment)">

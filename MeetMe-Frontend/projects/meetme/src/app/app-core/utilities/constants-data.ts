@@ -46,3 +46,13 @@ export const settings_meeting_buffertime = 15;
 export const settings_starttime_minutes = 60 * 9 // 9:00am 
 export const settings_endtime_minutes = 60 * 17;// 5:00pm 
 export const settings_question_option_joining_char = ",";
+export const settings_appointment_status = {
+    active: "active",
+    cancelled: "cancelled",
+};
+export const settings_appointment_search_by_date_option = {
+    all: "all",
+    past: "past",
+    upcoming: "upcoming",
+    daterange: "daterange",
+};

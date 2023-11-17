@@ -15,7 +15,6 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
   @ViewChild('accountSettingsMenu') menu: ElementRef | undefined
    userName: string = "";
   constructor(
-    private eventTypeService: EventTypeService,
     private authService: AuthService,
     public modalService: ModalService,
     private renderer: Renderer2

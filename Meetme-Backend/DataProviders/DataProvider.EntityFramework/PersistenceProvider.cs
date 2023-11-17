@@ -338,7 +338,7 @@ namespace DataProvider.EntityFramework.Repositories
             }
             if (searchParametersDto.EventTypeIds.Any())
             {
-                entity = entity.Where(x => searchParametersDto.EventTypeIds.Exists(e => e == x.EventTypeId));
+                entity = entity.Where(x => searchParametersDto.EventTypeIds.Contains( x.EventTypeId));
             }
             entity = entity
                     .Where(e => e.StartTimeUTC >= searchParametersDto.StartDate && e.EndTimeUTC <= searchParametersDto.EndDate)

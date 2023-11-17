@@ -187,23 +187,64 @@ nav ul li a.is-active {
     background-color: brown;
 }
 
-input {
-    border: 1px solid $secondary-color;
-    -webkit-transition: 0.5s;
-    transition: 0.5s;
-    outline: none;
-    padding: 5px 6px;
-}
+// input {
+//     border: 1px solid $secondary-color;
+//     -webkit-transition: 0.5s;
+//     transition: 0.5s;
+//     outline: none;
+//     padding: 5px 6px;
+// }
 
-button {
-    border: 1px solid $secondary-color;
-    -webkit-transition: 0.5s;
-    transition: 0.5s;
-    outline: none;
-    padding: 5px 6px;
-    cursor: pointer;
-}
-
+// button {
+//     border: 1px solid $secondary-color;
+//     -webkit-transition: 0.5s;
+//     transition: 0.5s;
+//     outline: none;
+//     padding: 5px 6px;
+//     cursor: pointer;
+// }
+  /* Default Styles for Input Elements */
+  input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  /* Style for Focused Input Elements */
+  input:focus {
+    border-color: #007bff; /* Change border color when focused */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a shadow when focused */
+  }
+  
+  /* Style for Disabled Input Elements */
+  input:disabled {
+    background-color: #f2f2f2; /* Change background color when disabled */
+    color: #999; /* Change text color when disabled */
+    cursor: not-allowed; /* Change cursor style when disabled */
+  }
+  
+  /* Style for Placeholder Text */
+  input::placeholder {
+    color: #999; /* Change the color of placeholder text */
+  }
+  
+  /* Style for Valid Input (using HTML5 validation) */
+  input:valid {
+    border-color: #28a745; /* Change border color for valid input */
+  }
+  
+  /* Style for Invalid Input (using HTML5 validation) */
+  input:invalid {
+    border-color: #dc3545; /* Change border color for invalid input */
+  }
+  
+  /* Style for Hovered Input Elements */
+  input:hover {
+    background-color: #f9f9f9; /* Change background color when hovered */
+  }
+  
 input.is-invalid , textarea.is-invalid, select.is-invalid {
     border-color: #dc3545 !important;
 }
@@ -328,10 +369,10 @@ input.is-invalid , textarea.is-invalid, select.is-invalid {
 .form-group .form-control input,
 .form-group .form-control textarea,
 .form-group .form-control select  {
-    border: 1px solid $secondary-color;
-    -webkit-transition: 0.5s;
-    transition: 0.5s;
-    outline: none;
+   // border: 1px solid $secondary-color;
+   // -webkit-transition: 0.5s;
+   // transition: 0.5s;
+   // outline: none;
     width: 100%;
     padding: 7px 5px;
 }
