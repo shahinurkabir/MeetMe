@@ -16,9 +16,9 @@ export class AppointmentService extends DataService {
         super(http)
     }
     
-    getScheduleEvents(pageNumber:number,parameters:IAppointmentSearchParametersDto): Observable<IAppointmentsPaginationResult> {
-        let url: string = `${this.calendarURI}/schedule-event/${pageNumber}`
-        return this.doPost(url,parameters)
+    getScheduleEvents(queryParams:string): Observable<IAppointmentsPaginationResult> {
+        let url: string = `${this.calendarURI}/schedule-event?${queryParams}`
+        return this.doGet(url,)
     }
     getAppointmentById(id: string): Observable<IAppointmentDetailsDto> {
         let url: string = `${this.calendarURI}/${id}/details`

@@ -69,11 +69,12 @@ export interface IAppointmentsByDate {
 
 export interface IAppointmentSearchParametersDto {
     timeZone: string;
-    searchByDateOption?: string;
+    period: string;
     startDate?: string ;
     endDate?: string ;
-    filterBy: string;
+    //filterBy: string;
     eventTypeIds: string[];
-    status: string;
+    statusNames: string[];
     inviteeEmail: string | null;
+    pageNumber: number;
 }

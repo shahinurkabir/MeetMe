@@ -332,13 +332,13 @@ namespace DataProvider.EntityFramework.Repositories
 
             entity = entity.Where(x => x.OwnerId == searchParametersDto.OwnerId);
 
-            if (!string.IsNullOrWhiteSpace(searchParametersDto.Status))
+            if (searchParametersDto.StatusNames.Any())
             {
-                entity = entity.Where(x => x.Status == searchParametersDto.Status);
+                entity = entity.Where(x => searchParametersDto.StatusNames.Contains(x.Status));
             }
             if (searchParametersDto.EventTypeIds.Any())
             {
-                entity = entity.Where(x => searchParametersDto.EventTypeIds.Contains( x.EventTypeId));
+                entity = entity.Where(x => searchParametersDto.EventTypeIds.Contains(x.EventTypeId));
             }
             entity = entity
                     .Where(e => e.StartTimeUTC >= searchParametersDto.StartDate && e.EndTimeUTC <= searchParametersDto.EndDate)

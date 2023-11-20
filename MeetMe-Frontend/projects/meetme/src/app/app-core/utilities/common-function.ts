@@ -48,4 +48,43 @@ export class CommonFunction {
   static capitalizeFirstLetter(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
+  static convertToUriEncodedString(model: any): string {
+    const flattenArray = (key: string, array: any[]) =>
+      array.map((item, index) => `${key}[${index}]=${encodeURIComponent(item)}`).join('&');
+
+    const queryString = Object.keys(model)
+      .map(key => {
+        const value = model[key];
+
+        if (Array.isArray(value)) {
+          return flattenArray(key, value);
+        } else {
+          return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+        }
+      })
+      .join('&');
+
+    return queryString;
+  }
+
+  static generateQueryParamsFromObject(obj: any): { [key: string]: string } {
+    const queryParams: { [key: string]: string } = {};
+
+    Object.keys(obj).forEach(key => {
+      const value = obj[key];
+
+      if (Array.isArray(value)) {
+        // Handle array values with index-based notation
+        value.forEach((item, index) => {
+          queryParams[`${key}[${index}]`] = encodeURIComponent(item);
+        });
+      } else if (value !== undefined && value !== null) {
+        queryParams[key] = encodeURIComponent(value);
+      }
+    });
+
+    return queryParams;
+  }
+
+  // Example usage:
 }

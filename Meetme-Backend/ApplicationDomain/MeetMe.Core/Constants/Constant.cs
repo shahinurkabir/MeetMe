@@ -25,7 +25,7 @@ namespace MeetMe.Core.Constants
         public const string MEETING_TO_TIMESPAN = "17:00:00";  //5:00 PM
 
         public static class DefaulData { 
-            public const int Pagination_PageSize = 20;
+            public const int Pagination_PageSize = 20;// TODO : Need to move to config
         }
         public static class ForwandDateKInd
         {

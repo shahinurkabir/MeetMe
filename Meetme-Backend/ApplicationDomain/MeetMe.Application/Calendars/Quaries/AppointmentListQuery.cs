@@ -13,7 +13,7 @@ namespace MeetMe.Application.Calendars.Quaries
     {
         public AppointmentSearchParametersDto SearchParameters { get; set; } = null!;
         public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 20;
+        public int PageSize { get; set; }
     }
 
     public class AppointmentListQueryHandler : IRequestHandler<AppointmentListQuery, AppointmentsPaginationResult>
@@ -29,14 +29,21 @@ namespace MeetMe.Application.Calendars.Quaries
         {
             var (totalRecords, result) = await persistenceProvider.GetAppintmentListByParameters(request.SearchParameters, request.PageNumber, request.PageSize);
 
+            var totalPages = totalRecords == 0 ? 0 : (int)Math.Ceiling((double)totalRecords / request.PageSize);
             var paginationInfo = new PaginationInfo
             {
                 PageNumber = request.PageNumber,
                 PageSize = request.PageSize,
                 TotalRecords = totalRecords,
-                TotalPages = totalRecords == 0?0:(int)Math.Ceiling((double)totalRecords / request.PageSize),
+                TotalPages = totalPages,
                 IsFirstPage = request.PageNumber == 1,
-                IsLastPage = totalRecords == 0 ? true : (request.PageNumber == (int)Math.Ceiling((double)totalRecords / request.PageSize))
+                IsLastPage = totalRecords == 0 ? true : (request.PageNumber == (int)Math.Ceiling((double)totalRecords / request.PageSize)),
+                CurrentPageDataRangeText = totalRecords == 0 ? "0-0" : $"{((request.PageNumber - 1) * request.PageSize) + 1}-{((request.PageNumber * request.PageSize) > totalRecords ? totalRecords : (request.PageNumber * request.PageSize))} of {totalRecords} Events",
+                PagerLinks = Enumerable.Range(1, totalPages)
+                .Skip(request.PageNumber > 4 ? request.PageNumber - 4 : 0)
+                .Take(4)
+                .ToList()
+
             };
 
             var paginationResult = new AppointmentsPaginationResult

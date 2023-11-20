@@ -1,7 +1,8 @@
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import {  Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { AppointmentService, CommonFunction, EventTypeService, IAppointmentDetailsDto, IAppointmentSearchParametersDto, IAppointmentsPaginationResult, ICancelAppointmentCommand, IEventType, settings_appointment_search_by_date_option, settings_appointment_status } from '../../../app-core';
-import { Subject, forkJoin, takeUntil } from 'rxjs';
+import { Subject, forkJoin,  takeUntil } from 'rxjs';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-appointment-list',
@@ -38,13 +39,14 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   statusListFilterForm!: FormGroup;
   entityTypesFilterForm!: FormGroup;
   inviteeEmailsFilterForm!: FormGroup;
-
+  showFilterMenu: boolean = false;
   constructor(
     private appointmentService: AppointmentService,
     private eventTypeService: EventTypeService,
     private renderer: Renderer2,
     private fb: FormBuilder,
-    private cdr: ChangeDetectorRef
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
   ) {
 
     this.renderer.listen('window', 'click', (e: Event) => {
@@ -75,16 +77,18 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
 
   loadData() {
     const appointSearchParameters: IAppointmentSearchParametersDto = {
-      status: '',
-      searchByDateOption: this.searchByDateOption,
+      period: this.searchByDateOption,
+      statusNames: this.selectedAppointmentStatuses,
       timeZone: this.timeZoneName,
       inviteeEmail: '',
       eventTypeIds: [],
-      filterBy: '',
-    }
+      pageNumber: this.currentPageNumber
+    };
+
+    const queryParams = CommonFunction.convertToUriEncodedString(appointSearchParameters);
     forkJoin([
       this.eventTypeService.getList(),
-      this.appointmentService.getScheduleEvents(this.currentPageNumber, appointSearchParameters)
+      this.appointmentService.getScheduleEvents(queryParams)
     ])
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
@@ -153,18 +157,24 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
     this.configureEntityTypesFilterForm();
   }
 
+  onFilterDateOptionClick(filterDateOption: string) {
+    this.searchByDateOption = filterDateOption;
+    this.currentPageNumber = 1;
+    this.filterAppointments();
 
+  }
   filterAppointments() {
-    let pageNumber = 1;
     let parameters: IAppointmentSearchParametersDto = {
-      status: '',
-      searchByDateOption: this.searchByDateOption,
+      period: this.searchByDateOption,
+      statusNames: this.selectedAppointmentStatuses,
       timeZone: this.timeZoneName,
       inviteeEmail: '',
       eventTypeIds: this.selectedEventTypeIds,
-      filterBy: '',
+      pageNumber: this.currentPageNumber
     }
-    this.appointmentService.getScheduleEvents(pageNumber, parameters)
+    this.addQueryParamsToUrl(parameters);
+    let queryParams = CommonFunction.convertToUriEncodedString(parameters);
+    this.appointmentService.getScheduleEvents(queryParams)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
@@ -178,8 +188,6 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
         }
       })
   }
-
-
 
   cancelAppointment(appointment: IAppointmentDetailsDto) {
     let cancelAppointmentCommand: ICancelAppointmentCommand = {
@@ -215,20 +223,14 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   onApplyFilter() {
     this.filterByEventTypeYN = false;
     this.selectedEventTypeIds = [];
-    this.filterByEventTypeText = 'All Event Types';
-
+    this.currentPageNumber = 1;
     this.entityTypesFilterForm.value.entityTypesList.forEach((item: any) => {
       if (item.isSelected) {
         this.selectedEventTypeIds.push(item.entityValue);
       }
     });
 
-    let selectedEventTypeIdsCount = this.selectedEventTypeIds.length;
-
-    if (selectedEventTypeIdsCount == 1)
-      this.filterByEventTypeText = "1 Event Type";
-    else
-      this.filterByEventTypeText = selectedEventTypeIdsCount + " Event Types";
+    this.updateFilterFieldsText();
 
     this.filterAppointments();
 
@@ -238,25 +240,16 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   }
 
   updateFilterFieldsText() {
-    this.filterByEventTypeText = 'All Event Types';
-    this.filterByStatusText = 'Active Events';
-    this.filterByInviteeEmailText = 'All Invitee Emails';
 
-    let selectedEventTypeIdsCount = this.selectedEventTypeIds.length;
-    let selectedInviteeEmailsCount = this.selectedInviteeEmails.length;
+    if (this.selectedEventTypeIds.length == 0) {
+      this.filterByEventTypeText = 'All Event Types';
+    }
+    else {
+      this.filterByEventTypeText = this.selectedEventTypeIds.length == 1 ? '1 Event Type' : this.selectedEventTypeIds.length + ' Event Types';
+    }
+    this.filterByStatusText = this.selectedAppointmentStatuses.length == 1 ? CommonFunction.capitalizeFirstLetter(this.selectedAppointmentStatuses[0]) + " Event" : 'All Events';
 
-    if (selectedEventTypeIdsCount == 1)
-      this.filterByEventTypeText = "1 Event Type";
-    else
-      this.filterByEventTypeText = selectedEventTypeIdsCount + " Event Types";
-
-    if (selectedInviteeEmailsCount == 1)
-      this.filterByInviteeEmailText = "1 Invitee Email";
-    else
-      this.filterByInviteeEmailText = selectedInviteeEmailsCount + " Invitee Emails";
   }
-
-
 
   toggleAppointmentStatusFilterWindow(e: any) {
     e.preventDefault();
@@ -269,15 +262,16 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   onApplyStatusFilter() {
     this.filterByAppointmentStatusYN = false;
     this.selectedAppointmentStatuses = [];
+    this.currentPageNumber = 1;
     this.statusListFilterForm.value.statusList.forEach((item: any) => {
       if (item.isSelected) {
         this.selectedAppointmentStatuses.push(item.statusValue);
       }
     });
-
+    this.updateFilterFieldsText();
     this.filterAppointments();
 
-    this.filterByStatusText = this.selectedAppointmentStatuses.length == 1 ? CommonFunction.capitalizeFirstLetter(this.selectedAppointmentStatuses[0]) + " Event" : 'All Events';
+
   }
   onCancelStatusFilter() {
     this.filterByAppointmentStatusYN = false;
@@ -285,9 +279,33 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
 
   toggleInviteeEmailFilterWindow() {
   }
+
   toggleSearchByDateFilterWindow() {
   }
+  onClearFilter() {
+    this.selectedEventTypeIds = [];
+    this.selectedAppointmentStatuses = [settings_appointment_status.active];
+    this.updateFilterFieldsText();
+    this.filterAppointments();
+  }
+  onToggleFilterMenu() {
+    this.showFilterMenu = !this.showFilterMenu;
+  }
+  onPageLinkClick(pageNumber: number) {
+    this.currentPageNumber = pageNumber;
+    this.filterAppointments();
+  }
 
+  addQueryParamsToUrl(obj: IAppointmentSearchParametersDto) {
+    const queryParams = CommonFunction.generateQueryParamsFromObject(obj);
+
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: queryParams,
+      queryParamsHandling: ''
+    });
+
+  }
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();

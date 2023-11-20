@@ -5,4 +5,7 @@ export interface IPaginationInfo {
     totalPages: number;
     isLastPage: boolean;
     isFirstPage: boolean;
+    currentPageDataRangeText: string;
+    pagerLinks: number[];
+
 }
