@@ -1,0 +1,13 @@
+.calendars-container {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+}
+
+.isSelected {
+    background-color: blue;
+    color: white;
+}
+.isDifferentMonth {
+    color:gray
+}

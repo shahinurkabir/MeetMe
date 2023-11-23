@@ -30,6 +30,7 @@ namespace MeetMe.Application.Calendars.Quaries
             var (totalRecords, result) = await persistenceProvider.GetAppintmentListByParameters(request.SearchParameters, request.PageNumber, request.PageSize);
 
             var totalPages = totalRecords == 0 ? 0 : (int)Math.Ceiling((double)totalRecords / request.PageSize);
+
             var paginationInfo = new PaginationInfo
             {
                 PageNumber = request.PageNumber,

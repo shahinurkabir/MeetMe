@@ -80,38 +80,55 @@ textarea {
 }
 
 .data-filter-wrapper {
-  display: flex;
-  flex-direction: column;
-  background-color: #f4f4f4;
-  padding: 10px 7px;
+  // display: flex;
+  // flex-direction: column;
+  position: relative;
 }
+
+.date-range-selection-wrapper {
+  position: absolute;
+  justify-content: space-between;
+  padding: 10px 10px;
+  background-color: lightgrey;
+  z-index: 1;
+}
+
+.date-range-calendar-wrapper {
+  display: flex ;
+  flex-direction: row;
+}
+
 .data-searchby-wrapper {
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
 
-  border-bottom: 1px solid #ccc ;
-  
+  border-bottom: 1px solid #ccc;
+
 }
+
 .data-filterby-items {
-  display: flex ;
+  display: flex;
   justify-content: space-between;
   padding: 10px 0;
 }
+
 .data-filterby-item {
-  display: flex ;
-  flex-direction: column; 
+  display: flex;
+  flex-direction: column;
   position: relative;
 }
 
 .data-filterby-item .field-label {
   margin: 7px 0;
 }
-.data-filterby-item .overlay-opener {
-}
+
+.data-filterby-item .overlay-opener {}
+
 .is-open {
   display: block !important;
 }
+
 // filter and ovlerlay
 .overlay {
   //display: none;

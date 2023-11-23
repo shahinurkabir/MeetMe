@@ -127,7 +127,7 @@
   
   <mm-modal *ngIf="viewMode!=='readonly'" id="modal-override-dates" title="Date override intervals"
             (cancelEvent)="onCloseCalendarModal()" (confirmEvent)="onApplyCalendarDateChanges()">
-    <app-calendar (handlerDateClick)="onHandledCalendarClicked($event)" [selectedDates]="selectedDatesFromCalender"></app-calendar>
+    <app-calendar (SelectedDatesChanged)="onHandledCalendarClicked($event)" [selectedDates]="selectedDatesFromCalender"></app-calendar>
     <div class="override_date_intervals" *ngIf="selecteDateOverride">
       <ng-template *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay: selecteDateOverride}"></ng-template>
     </div>

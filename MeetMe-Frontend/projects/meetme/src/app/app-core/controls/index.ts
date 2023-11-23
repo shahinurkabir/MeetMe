@@ -6,3 +6,4 @@ export * from '../controls/timezone-control/timezone-control.component';
 export * from '../controls/alert/alert.service';
 export * from '../controls/alert/alert.component';
 export * from '../controls/alert/alert'
+export * from '../controls/multi-calendar/multi-calendar.component';

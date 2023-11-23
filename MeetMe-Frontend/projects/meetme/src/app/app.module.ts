@@ -19,6 +19,7 @@ import { CalendarLayoutComponent } from './layouts/calendar-layout/calendar-layo
 import { AlertComponent } from './app-core/controls/alert/alert.component';
 import { FilterPipe } from './app-core/pipes/filter.pipe';
 import { scheduled_Appointment_Components } from './features/scheduled-appointments';
+import { MultiCalendarComponent } from './app-core/controls/multi-calendar/multi-calendar.component';
 
 @NgModule({
     declarations: [
@@ -41,6 +42,7 @@ import { scheduled_Appointment_Components } from './features/scheduled-appointme
         scheduled_Appointment_Components,
         AlertComponent,
         LoadingIndicatorDirective,
+        MultiCalendarComponent,
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },

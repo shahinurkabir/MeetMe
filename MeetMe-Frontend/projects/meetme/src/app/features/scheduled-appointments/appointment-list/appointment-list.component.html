@@ -4,17 +4,37 @@
     <div class="data-searchby-time-items">
       <button (click)="onFilterDateOptionClick('upcoming')">Upcoming</button>
       <button (click)="onFilterDateOptionClick('past')">Past</button>
-      <button (click)="onFilterDateOptionClick('daterange')">Date Range</button>
+      <button #toggleButtonDateRangeSelectionWindow (click)="onFilterByDateRangeClick()">Date Range</button>
     </div>
     <div class="data-toolbar-items">
       <button>Export</button>
       <button (click)="onToggleFilterMenu()">Filter</button>
     </div>
+
+  </div>
+  <div #dateRangeSelectionWindow [style.display]="showDateSelectionWidget?'block':'none'"  class=" date-range-selection-wrapper">
+    <div class="">
+      <div class="date-range-calendar-wrapper">
+        <!-- <app-calendar #calender1 [selectedDates]="selectedDateOfCalendar1" [allowToggleDateSelection]="false"
+          (handlerDateClick)="handleCalendar1Click($event)">
+          </app-calendar>
+       
+       <app-calendar #calender2 [selectedDates]=" selectedDateOfCalendar2" [allowToggleDateSelection]="false"
+          (handlerDateClick)="handleCalendar2Click($event)">
+          </app-calendar> -->
+        <app-multi-calendar #multiCalendar [date1]="dateRange1" [date2]="dateRange2"
+          (SelectedDatesChanged)="onDateRangeChanged($event)"></app-multi-calendar>
+      </div>
+      <div>
+        <button (click)=" onCancelDateRangeFilter()">Cancel</button>
+        <button [disabled]="!isValidDateRange" (click)="onApplyDateRangeFilter()">Apply</button>
+      </div>
+    </div>
   </div>
   <div *ngIf="showFilterMenu" class="data-filterby-items">
     <div class="data-filterby-item">
       <label class="field-label">Event Type</label>
-      <span #toggleButtonEventTypesFilterWindow class="overly-opener" (click)="toggleEventTypesFilterWindow($event)">
+      <span #toggleButtonEventTypesFilterWindow class="overly-opener" (click)="onToggleEventTypesFilterWindow($event)">
         {{filterByEventTypeText}}
       </span>
       <div *ngIf="filterByEventTypeYN" class="overlay">
@@ -28,8 +48,8 @@
               </div>
             </div>
             <div class="actions">
-              <button (click)="onCancelFilter()">Cancel </button>
-              <button (click)="onApplyFilter()">Apply</button>
+              <button (click)="onEventTypeCancelFilter()">Cancel </button>
+              <button (click)="onEventTypeApplyFilter()">Apply</button>
             </div>
           </form>
         </div>
@@ -38,7 +58,7 @@
     <div class="data-filterby-item">
       <label class="field-label">Status</label>
       <span #toggleButtonAppointmentStatusByFilterWindow class="overly-opener"
-        (click)="toggleAppointmentStatusFilterWindow($event)">
+        (click)="onToggleAppointmentStatusFilterWindow($event)">
         {{filterByStatusText}}
       </span>
       <div *ngIf="filterByAppointmentStatusYN" class="overlay">
@@ -68,15 +88,15 @@
 </div>
 <div *ngIf="appointmentsPaginationResult" class="pagination-container">
   <div class="page-links">
-    <button (click)="onPageLinkClick(1)"
+    <button (click)="onPagerLinkClick(1)"
       [disabled]="appointmentsPaginationResult.paginationInfo.isFirstPage">First</button>
-    <button (click)="onPageLinkClick(appointmentsPaginationResult.paginationInfo.pageNumber-1)"
+    <button (click)="onPagerLinkClick(appointmentsPaginationResult.paginationInfo.pageNumber-1)"
       [disabled]="appointmentsPaginationResult.paginationInfo.isFirstPage">Previous</button>
     <button *ngFor="let pageLink of appointmentsPaginationResult.paginationInfo.pagerLinks;let i = index;"
-      (click)="onPageLinkClick(pageLink)">{{pageLink}}</button>
-    <button (click)="onPageLinkClick(appointmentsPaginationResult.paginationInfo.pageNumber+1)"
+      (click)="onPagerLinkClick(pageLink)">{{pageLink}}</button>
+    <button (click)="onPagerLinkClick(appointmentsPaginationResult.paginationInfo.pageNumber+1)"
       [disabled]="appointmentsPaginationResult.paginationInfo.isLastPage">Next</button>
-    <button (click)="onPageLinkClick(appointmentsPaginationResult.paginationInfo.totalPages)"
+    <button (click)="onPagerLinkClick(appointmentsPaginationResult.paginationInfo.totalPages)"
       [disabled]="appointmentsPaginationResult.paginationInfo.isLastPage">Last</button>
   </div>
   <div class="page-info">
@@ -88,7 +108,7 @@
     <h2>{{appointmentsByDate.date}}</h2>
     <ul>
       <li *ngFor="let appointment of appointmentsByDate.appointments; let i = index;">
-        <div class="appointment-header" (click)="toggleDetails(appointment)">
+        <div class="appointment-header" (click)="onToggleAppointmentDetails(appointment)">
           <span class="date-time">{{appointment.appointmentDateTime}}</span>
           <span class="event-type">{{appointment.eventTypeTitle}}</span>
           <span class="invitee-name">{{appointment.inviteeName}}</span>
@@ -102,9 +122,9 @@
           <textarea [(ngModel)]="appointment.cancellationReason" placeholder="Reason"></textarea>
           <div class="actions">
             <button *ngIf="appointment.status==='active'" class="cancel-button"
-              (click)="cancelAppointment(appointment)">Cancel</button>
+              (click)="onCancelAppointment(appointment)">Cancel</button>
             <button *ngIf="appointment.status==='active'" class="reschedule-button"
-              (click)="rescheduleAppointment(appointment.id)">Reschedule</button>
+              (click)="onRescheduleAppointment(appointment.id)">Reschedule</button>
           </div>
         </div>
       </li>
