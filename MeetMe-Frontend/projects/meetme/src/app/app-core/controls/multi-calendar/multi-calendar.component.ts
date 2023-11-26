@@ -9,21 +9,18 @@ import { settings_month_of_year } from '../../utilities';
 })
 export class MultiCalendarComponent implements OnInit {
   @Output() SelectedDatesChanged = new EventEmitter()
+
   selectedDates: { [id: string]: IDay } = {};
-  @Input() date1: Date = new Date(new Date().toISOString().split('T')[0]);
-  @Input() date2: Date = new Date(new Date().toISOString().split('T')[0]);
   calendar1MonthName: string = "";
   calendar2MonthName: string = "";
 
-  selectedMonth1: number = new Date().getMonth() + 1;
-  selectedYear1: number = new Date().getFullYear();
   calendar1: IDay[][] = [];
-  selectedDate1: IDay | null = null;
+  calendar1Month: number = new Date().getMonth() + 1;
+  calendar1Year: number = new Date().getFullYear();
 
-  selectedMonth2: number = new Date().getMonth() + 1;
-  selectedYear2: number = new Date().getFullYear();
   calendar2: IDay[][] = [];
-  selectedDate2: IDay | null = null;
+  calendar2Month: number = new Date().getMonth() + 1;
+  calendar2Year: number = new Date().getFullYear();
 
 
   days: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -46,70 +43,64 @@ export class MultiCalendarComponent implements OnInit {
   constructor() {
   }
   ngOnInit(): void {
-    this.selectedMonth1 = this.date1.getMonth() + 1;
-    this.selectedYear1 = this.date1.getFullYear();
-
-    this.selectedMonth2 = this.date2.getMonth() + 1;
-    this.selectedYear2 = this.date2.getFullYear();
-    this.updateCalendar();
   }
 
   initCalendar(date1: Date, date2: Date,selecteDates:{ [id: string]: IDay } ) {
-    this.selectedMonth1 = date1.getMonth() + 1;
-    this.selectedYear1 = date1.getFullYear();
+    this.calendar1Month = date1.getMonth() + 1;
+    this.calendar1Year = date1.getFullYear();
 
-    this.selectedMonth2 = date2.getMonth() + 1;
-    this.selectedYear2 = date2.getFullYear();
+    this.calendar2Month = date2.getMonth() + 1;
+    this.calendar2Year = date2.getFullYear();
     this.selectedDates = selecteDates;
     this.updateCalendar();
 
   }
 
   onClickPreviousMonth() {
-    if (this.selectedMonth1 - 1 < 1) {
-      this.selectedMonth1 = 12;
-      this.selectedYear1--;
+    if (this.calendar1Month - 1 < 1) {
+      this.calendar1Month = 12;
+      this.calendar1Year--;
     } else {
-      this.selectedMonth1--;
+      this.calendar1Month--;
     }
-    if (this.selectedMonth2 - 1 < 1) {
-      this.selectedMonth2 = 12;
-      this.selectedYear2--;
+    if (this.calendar2Month - 1 < 1) {
+      this.calendar2Month = 12;
+      this.calendar2Year--;
     } else {
-      this.selectedMonth2--;
+      this.calendar2Month--;
     }
     this.updateCalendar();
   }
   onClickNextMonth() {
-    if (this.selectedMonth1 + 1 > 12) {
-      this.selectedMonth1 = 1;
-      this.selectedYear1++;
+    if (this.calendar1Month + 1 > 12) {
+      this.calendar1Month = 1;
+      this.calendar1Year++;
     } else {
-      this.selectedMonth1++;
+      this.calendar1Month++;
     }
-    if (this.selectedMonth2 + 1 > 12) {
-      this.selectedMonth2 = 1;
-      this.selectedYear2++;
+    if (this.calendar2Month + 1 > 12) {
+      this.calendar2Month = 1;
+      this.calendar2Year++;
     } else {
-      this.selectedMonth2++;
+      this.calendar2Month++;
     }
     this.updateCalendar();
   }
 
 
   updateCalendar() {
-    this.calendar1MonthName = `${this.months[this.selectedMonth1 - 1]} ${this.selectedYear1}`;
-    this.calendar2MonthName = `${this.months[this.selectedMonth2 - 1]} ${this.selectedYear2}`;
+    this.calendar1MonthName = `${this.months[this.calendar1Month - 1]} ${this.calendar1Year}`;
+    this.calendar2MonthName = `${this.months[this.calendar2Month - 1]} ${this.calendar2Year}`;
     this.updateCalendar1();
     this.updateCalendar2();
     this.updateSelecteDateCalendar();
   }
   updateCalendar1() {
-    this.calendar1 = this.generateCalendar(this.selectedYear1, this.selectedMonth1);
+    this.calendar1 = this.generateCalendar(this.calendar1Year, this.calendar1Month);
   }
 
   updateCalendar2() {
-    this.calendar2 = this.generateCalendar(this.selectedYear2, this.selectedMonth2);
+    this.calendar2 = this.generateCalendar(this.calendar2Year, this.calendar2Month);
   }
 
   generateCalendar(year: number, month: number): IDay[][] {
@@ -149,9 +140,7 @@ export class MultiCalendarComponent implements OnInit {
   }
 
   selectDate(calendar: string, day: IDay) {
-    // day.isSelected = true;
 
-    console.log(day);
     this.selectedDates[day.date] = day;
 
     const keys = Object.keys(this.selectedDates);

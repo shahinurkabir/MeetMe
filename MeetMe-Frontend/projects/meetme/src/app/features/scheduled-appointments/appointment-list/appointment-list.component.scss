@@ -94,7 +94,7 @@ textarea {
 }
 
 .date-range-calendar-wrapper {
-  display: flex ;
+  display: flex;
   flex-direction: row;
 }
 
@@ -102,15 +102,32 @@ textarea {
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
-
+  align-items: center;
+  background-color: var(--secondary-color);
+  padding: 7px 10px;
   border-bottom: 1px solid #ccc;
+
+}
+
+.data-searchby-time-items {
+  display: flex;
+  gap: 10px;
+}
+
+.data-toolbar-items {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 
 }
 
 .data-filterby-items {
   display: flex;
   justify-content: space-between;
-  padding: 10px 0;
+  padding: 7px 10px;
+  background-color: var(--secondary-color);
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
 }
 
 .data-filterby-item {
@@ -118,22 +135,43 @@ textarea {
   flex-direction: column;
   position: relative;
 }
-
 .data-filterby-item .field-label {
   margin: 7px 0;
+  font-weight: bold;
 }
 
+.data-filterby-item .filter-column-container {
+  display: flex;
+  align-items: center;
+}
+
+.filter-column-container a:hover{
+  text-decoration: underline;
+}
+// .filter-column-container .arrow-icon {
+//   // color:var(--primary-color);
+// }
 .data-filterby-item .overlay-opener {}
 
 .is-open {
   display: block !important;
 }
 
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.page-links {
+  display: flex;
+  gap: 2px;
+}
+
 // filter and ovlerlay
 .overlay {
   //display: none;
   position: absolute;
-  top: 50px;
+  top: 60px;
   left: 0;
   width: 350px;
   //height: 100%;
@@ -148,4 +186,21 @@ textarea {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(143, 85, 85, 0.3);
+}
+
+.arrow-icon {
+  display: inline-flex;
+  margin-left: 6px;
+  font-size: 12px;
+  transition: transform 0.1s;
+  color:var(--primary-color);
+
+}
+button {
+  display: inline-flex;
+  align-items: center;
+}
+
+.is-open-filter.arrow-icon {
+  transform: rotate(180deg);
 }

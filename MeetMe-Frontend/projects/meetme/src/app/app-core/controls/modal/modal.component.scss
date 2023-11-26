@@ -50,7 +50,8 @@ mm-modal {
     }
 
     .mm-modal-footer {
-
+        display: flex;
+        gap: 10px;
         /* height: 34px; */
         padding: 5px;
         background-color: azure;

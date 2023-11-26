@@ -1,5 +1,18 @@
 @import "_variables";
 
+// Event colors
+:root {
+    --event-orange: orange;
+    --event-green: green;
+    --event-blue: blue;
+    --event-cyan: cyan;
+    --event-olive: olive;
+    --event-purple: purple;
+    --event-teal: teal;
+    --event-violet: violet;
+}
+
+
 * {
     margin: 0;
     padding: 0;
@@ -10,8 +23,8 @@
 }
 
 body {
-    background-color: $neutral-color;
-    color: #191919;
+    // background-color: $neutral-color;
+    // color: #191919;
     position: relative;
 
 
@@ -21,16 +34,18 @@ body.is-modal-open {
     overflow-y: hidden;
 }
 
-a {
-    color: $accent-color;
-    text-decoration: none;
-}
-a:hover {
-    text-decoration: underline;
-}
-a:visited {
-    color:$accent-color
-}
+// a {
+//     color: var(--accent-color);
+//     text-decoration: none;
+// }
+
+// a:hover {
+//     text-decoration: underline;
+// }
+
+// a:visited {
+//     color: var(--accent-color);
+// }
 
 // .layout_container {
 //     display: block;
@@ -40,22 +55,23 @@ a:visited {
 
 .layout {
     display: block;
-    width: 1024px;
+    //width: 1024px;
     min-height: 100vh;
-    margin: 0px auto;
-    padding: 1px 0px;
-    background-color: $primary-color;
+    //margin: 0px auto;
+    //padding: 1px 0px;
+    // background-color: $primary-color;
 }
 
 nav {
     display: flex;
     width: 100%;
-    padding: 3px 5px;
-    background-color: whitesmoke;
-    border-bottom: 1px solid lightgray;
+    //padding: 3px 5px;
+    background-color: var(--primary-color);
+    // border-bottom: 1px solid lightgray;
     justify-content: space-between;
     align-items: center;
     position: relative;
+    padding: 0 3px 0 0 ;
 }
 
 .logo {
@@ -75,26 +91,38 @@ nav ul li {
     margin: 10px 20px;
 }
 
-// nav ul.menu li a {
-//     text-decoration: none;
-//     color: #fff;
-//     padding: 20px 20px;
-// }
+nav ul.menu li a {
+    text-transform: uppercase;
+    //text-decoration: none;
+    color: var(--primary-text-color);
+    padding: 20px 20px;
+}
 
 nav ul li a {
-    text-decoration: none;
+    //text-decoration: none;
     // color: #fff;
+    color: var(--primary-text-color);
     padding: 20px 20px;
 
 }
 
 nav ul li a.is-active {
-    background-color: white;
-    color: black;
+    //background-color: white;
+    color: var(--primary-text-color);
     border-bottom: 2px solid gray;
 
 }
 
+.meetme-card {
+    display: block;
+    width: 100%;
+    background-color: white;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+
+}
 .user-pic {
     width: 50px;
     height: 50px;
@@ -156,7 +184,7 @@ nav ul li a.is-active {
 
 .user-profile ul li {
     list-style: none;
-    padding:10px 0;
+    padding: 10px 0;
     margin: 0;
 }
 
@@ -169,6 +197,9 @@ nav ul li a.is-active {
 .layout .main {
     min-height: calc(100vh - 90px);
     padding: 15px 20px;
+    width: 1024px;
+    min-height: 100vh;
+    margin: 0px auto;
 
 }
 
@@ -203,49 +234,133 @@ nav ul li a.is-active {
 //     padding: 5px 6px;
 //     cursor: pointer;
 // }
-  /* Default Styles for Input Elements */
-  input {
+
+ /* Button Styles */
+ button {
+    background: transparent;
+    border: 2px solid grey;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.1);
+    color: #3b4151;
+    font-family: sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 5px 23px;
+    transition: all .3s;
+    cursor: pointer;
+}
+button:hover {
+    box-shadow: 0 0 5px rgba(0,0,0,.3);
+}
+/* Default Button */
+// button.default {
+//     background-color: #e0e0e0;
+//     color: #333;
+//     border: 1px solid #ccc;
+// }
+
+// button.default:hover {
+//     background-color: #ccc;
+// }
+
+/* Primary Button */
+button.primary {
+    background-color: transparent;
+    border-color: #49cc90;
+    color: #49cc90;
+    //display: inline;
+    //line-height: 1;
+}
+
+// button.primary:hover {
+//     background-color: #0056b3;
+//     border: 1px solid #0056b3;
+// }
+
+/* Secondary Button */
+button.secondary {
+    background-color: #6c757d;
+    color: #fff;
+    border: 1px solid #6c757d;
+}
+
+button.secondary:hover {
+    background-color: #545b62;
+    border: 1px solid #545b62;
+}
+
+/* Special Button with High Contrast */
+.special {
+    background-color: #d9534f;
+    color: #fff;
+    border: 1px solid #d9534f;
+}
+
+.special:hover {
+    background-color: #c9302c;
+    border: 1px solid #c9302c;
+}
+
+hr {
+    height: 1px;
+    border: 1px solid whitesmoke;
+    margin: 10px 0;
+}
+
+/* Default Styles for Input Elements */
+input {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 14px;
     color: #333;
-  }
-  
-  /* Style for Focused Input Elements */
-  input:focus {
-    border-color: #007bff; /* Change border color when focused */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a shadow when focused */
-  }
-  
-  /* Style for Disabled Input Elements */
-  input:disabled {
-    background-color: #f2f2f2; /* Change background color when disabled */
-    color: #999; /* Change text color when disabled */
-    cursor: not-allowed; /* Change cursor style when disabled */
-  }
-  
-  /* Style for Placeholder Text */
-  input::placeholder {
-    color: #999; /* Change the color of placeholder text */
-  }
-  
-  /* Style for Valid Input (using HTML5 validation) */
-  input:valid {
-    border-color: #28a745; /* Change border color for valid input */
-  }
-  
-  /* Style for Invalid Input (using HTML5 validation) */
-  input:invalid {
-    border-color: #dc3545; /* Change border color for invalid input */
-  }
-  
-  /* Style for Hovered Input Elements */
-  input:hover {
-    background-color: #f9f9f9; /* Change background color when hovered */
-  }
-  
-input.is-invalid , textarea.is-invalid, select.is-invalid {
+}
+
+/* Style for Focused Input Elements */
+input:focus {
+    border-color: #007bff;
+    /* Change border color when focused */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    /* Add a shadow when focused */
+}
+
+/* Style for Disabled Input Elements */
+input:disabled {
+    background-color: #f2f2f2;
+    /* Change background color when disabled */
+    color: #999;
+    /* Change text color when disabled */
+    cursor: not-allowed;
+    /* Change cursor style when disabled */
+}
+
+/* Style for Placeholder Text */
+input::placeholder {
+    color: #999;
+    /* Change the color of placeholder text */
+}
+
+/* Style for Valid Input (using HTML5 validation) */
+input:valid {
+    border-color: #28a745;
+    /* Change border color for valid input */
+}
+
+/* Style for Invalid Input (using HTML5 validation) */
+input:invalid {
+    border-color: #dc3545;
+    /* Change border color for invalid input */
+}
+
+/* Style for Hovered Input Elements */
+input:hover {
+    background-color: #f9f9f9;
+    /* Change background color when hovered */
+}
+
+input.is-invalid,
+textarea.is-invalid,
+select.is-invalid {
     border-color: #dc3545 !important;
 }
 
@@ -285,13 +400,28 @@ input.is-invalid , textarea.is-invalid, select.is-invalid {
 .page .header h2 {
     font-weight: bold;
     font-size: larger;
-   // padding-bottom: 10px;
-   // padding-left: 10px;
+    // padding-bottom: 10px;
+    // padding-left: 10px;
     //border-bottom: 1px solid lightgray;
 }
 
 .page .body {
     padding: 10px;
+}
+
+.buttons-container-left {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px 0;
+    gap: 10px;
+}
+.buttons-container-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px 0;
+    gap: 10px;
 }
 .page .footer {
     padding: 30px 0;
@@ -304,11 +434,13 @@ input.is-invalid , textarea.is-invalid, select.is-invalid {
     display: flex;
     justify-content: left;
 }
+
 .page .footer-center {
     padding: 30px 0;
     display: flex;
     justify-content: center;
 }
+
 // form .form-group {
 //     padding: 7px 2px;
 //     display: flex;
@@ -368,40 +500,40 @@ input.is-invalid , textarea.is-invalid, select.is-invalid {
 
 .form-group .form-control input,
 .form-group .form-control textarea,
-.form-group .form-control select  {
-   // border: 1px solid $secondary-color;
-   // -webkit-transition: 0.5s;
-   // transition: 0.5s;
-   // outline: none;
+.form-group .form-control select {
+    // border: 1px solid $secondary-color;
+    // -webkit-transition: 0.5s;
+    // transition: 0.5s;
+    // outline: none;
     width: 100%;
     padding: 7px 5px;
 }
 
 
 
-.btn {
-    outline: none;
-    min-width: 70px;
-    min-height: 27px;
-    cursor: pointer;
-    padding: 2px 3px;
-    margin: 2px 3px;
-    opacity: 0.9;
-}
+// .btn {
+//     outline: none;
+//     min-width: 70px;
+//     min-height: 27px;
+//     cursor: pointer;
+//     padding: 2px 3px;
+//     margin: 2px 3px;
+//     opacity: 0.9;
+// }
 
-.btn:hover {
-    opacity: 1;
-}
+// .btn:hover {
+//     opacity: 1;
+// }
 
-.btn-primary {
-    background-color: $accent-color;
-    border: 1px solid darkgray;
-}
+// .btn-primary {
+//     background-color: var (--accent-color);
+//     border: 1px solid darkgray;
+// }
 
-.btn-default {
-    background-color: $secondary-color;
-    border: 1px solid darkgray;
-}
+// .btn-default {
+//     background-color: var(--secondary-color);
+//     border: 1px solid darkgray;
+// }
 
 #modal-backdrop {
     width: 100%;
@@ -422,17 +554,6 @@ input.is-invalid , textarea.is-invalid, select.is-invalid {
     visibility: visible;
 }
 
-// Event colors
-:root {
-    --event-orange: orange;
-    --event-green: green;
-    --event-blue: blue;
-    --event-cyan: cyan;
-    --event-olive: olive;
-    --event-purple: purple;
-    --event-teal: teal;
-    --event-violet: violet;
-}
 
 .event-color-orange {
     background-color: var(--event-orange);
@@ -485,9 +606,10 @@ form.single-column .form-group label {
 form.single-column .form-group .form-control {
     width: 100%;
 }
+
 .toggle_buttons_container {
-    margin:  5px 0;
-    padding:5px;
+    margin: 5px 0;
+    padding: 5px;
     display: block;
     width: max-content;
     background-color: rgb(251, 247, 247);
@@ -507,8 +629,10 @@ form.single-column .form-group .form-control {
     box-shadow: 9999px 0 0 -5px;
     animation: dot-pulse 1.5s infinite linear;
     animation-delay: 0.25s;
-  }
-  .dot-pulse::before, .dot-pulse::after {
+}
+
+.dot-pulse::before,
+.dot-pulse::after {
     content: "";
     display: inline-block;
     position: absolute;
@@ -518,49 +642,83 @@ form.single-column .form-group .form-control {
     border-radius: 5px;
     background-color: #9880ff;
     color: #9880ff;
-  }
-  .dot-pulse::before {
+}
+
+.dot-pulse::before {
     box-shadow: 9984px 0 0 -5px;
     animation: dot-pulse-before 1.5s infinite linear;
     animation-delay: 0s;
-  }
-  .dot-pulse::after {
+}
+
+.dot-pulse::after {
     box-shadow: 10014px 0 0 -5px;
     animation: dot-pulse-after 1.5s infinite linear;
     animation-delay: 0.5s;
-  }
-  
-  @keyframes dot-pulse-before {
+}
+
+@keyframes dot-pulse-before {
     0% {
-      box-shadow: 9984px 0 0 -5px;
+        box-shadow: 9984px 0 0 -5px;
     }
+
     30% {
-      box-shadow: 9984px 0 0 2px;
+        box-shadow: 9984px 0 0 2px;
     }
-    60%, 100% {
-      box-shadow: 9984px 0 0 -5px;
+
+    60%,
+    100% {
+        box-shadow: 9984px 0 0 -5px;
     }
-  }
-  @keyframes dot-pulse {
+}
+
+@keyframes dot-pulse {
     0% {
-      box-shadow: 9999px 0 0 -5px;
+        box-shadow: 9999px 0 0 -5px;
     }
+
     30% {
-      box-shadow: 9999px 0 0 2px;
+        box-shadow: 9999px 0 0 2px;
     }
-    60%, 100% {
-      box-shadow: 9999px 0 0 -5px;
+
+    60%,
+    100% {
+        box-shadow: 9999px 0 0 -5px;
     }
-  }
-  @keyframes dot-pulse-after {
+}
+
+@keyframes dot-pulse-after {
     0% {
-      box-shadow: 10014px 0 0 -5px;
+        box-shadow: 10014px 0 0 -5px;
     }
+
     30% {
-      box-shadow: 10014px 0 0 2px;
+        box-shadow: 10014px 0 0 2px;
     }
-    60%, 100% {
-      box-shadow: 10014px 0 0 -5px;
+
+    60%,
+    100% {
+        box-shadow: 10014px 0 0 -5px;
     }
-  }
+}
+
 // end animation
+
+
+//anchor style
+a {
+    cursor: pointer;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 16px;
+   // margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid transparent;
+}
+
+a:hover {
+    color: var(--primary-color);
+}
+
+a.is-active {
+    border-color:var(--primary-color);
+}

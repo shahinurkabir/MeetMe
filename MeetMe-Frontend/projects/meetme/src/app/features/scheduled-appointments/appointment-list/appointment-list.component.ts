@@ -19,6 +19,11 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   @ViewChild('toggleButtonAppointmentStatusByFilterWindow') toggleButtonAppointmentStatusByFilterWindow: ElementRef | undefined
   @ViewChild('appointmentStatusByFilterWindow') appointmentStatusByFilterWindow: ElementRef | undefined
 
+
+  @ViewChild('toggleButtonInviteeEmailByFilterWindow') toggleButtonInviteeEmailByFilterWindow: ElementRef | undefined
+  @ViewChild('inviteeEmailByFilterWindow') inviteeEmailByFilterWindow: ElementRef | undefined
+
+
   @ViewChild("multiCalendar") multiCalendarComponent: MultiCalendarComponent | undefined;
 
   destroyed$: Subject<boolean> = new Subject<boolean>();
@@ -33,6 +38,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   currentPageNumber: number = 1;
   filterByEventTypeYN: boolean = false;
   filterByAppointmentStatusYN: boolean = false;
+  filterByInviteeEmailYN: boolean = false;
   filterByEventTypeText: string = 'All Event Types';
   filterByStatusText: string = 'Active Events';
   filterByInviteeEmailText: string = 'All Invitee Emails';
@@ -48,6 +54,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   selectedDateRanges: { [id: string]: IDay } = {};
   dateRange1: Date = new Date(new Date().toISOString().split('T')[0]);
   dateRange2: Date = new Date(new Date().toISOString().split('T')[0]);
+  isValidDateRange: boolean = false;
 
   constructor(
     private appointmentService: AppointmentService,
@@ -71,11 +78,17 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
       ) {
         this.filterByEventTypeYN = false;
       }
+
       if (
         e.target != this.toggleButtonAppointmentStatusByFilterWindow?.nativeElement &&
         !this.appointmentStatusByFilterWindow?.nativeElement.contains(e.target)
       ) {
         this.filterByAppointmentStatusYN = false;
+      }
+
+      if (e.target != this.toggleButtonInviteeEmailByFilterWindow?.nativeElement &&
+        !this.inviteeEmailByFilterWindow?.nativeElement?.contains(e.target)) {
+        this.filterByInviteeEmailYN = false;
       }
 
     });
@@ -90,7 +103,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   onToggleAppointmentDetails(item: IAppointmentDetailsDto): void {
     item.isExpanded = !item.isExpanded;
   }
-  
+
   onEventTypesLoaded(eventTypes: IEventType[]) {
     this.eventTypesList = eventTypes;
     this.configureEntityTypesFilterForm();
@@ -110,14 +123,15 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
     this.showDateSelectionWidget = !this.showDateSelectionWidget;
 
     if (!this.showDateSelectionWidget) return;
-    this.searchByDateOption = settings_appointment_search_by_date_option.daterange;
+
     //reset date range
     if (this.dateRange1.getMonth() + 1 > 12) {
       this.dateRange2 = new Date(this.dateRange1.getFullYear() + 1, 1, 1);
     } else {
       this.dateRange2 = new Date(this.dateRange1.getFullYear(), this.dateRange1.getMonth() + 1, 1);
     }
-    this.multiCalendarComponent?.initCalendar(this.dateRange1, this.dateRange2,this.selectedDateRanges);
+    let dates = { ...this.selectedDateRanges };
+    this.multiCalendarComponent?.initCalendar(this.dateRange1, this.dateRange2, dates);
 
   }
 
@@ -198,9 +212,20 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   }
 
   onToggleInviteeEmailFilterWindow() {
+    this.filterByInviteeEmailYN = !this.filterByInviteeEmailYN;
+
   }
 
-  onToggleSearchByDateFilterWindow() {
+  onApplyInviteeEmailFilter() {
+    this.filterByInviteeEmailYN = false;
+
+    this.updateFilterFieldsText();
+    this.filterAppointments();
+
+
+  }
+  onCancelInviteeEmailFilter() {
+    this.filterByInviteeEmailYN = false;
   }
 
   onClearFilter() {
@@ -220,17 +245,18 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   onCancelDateRangeFilter() {
     this.showDateSelectionWidget = false;
   }
-  onApplyDateRangeFilter() {
+  onApplyFilterByDateRange() {
     this.showDateSelectionWidget = false;
+    this.searchByDateOption = settings_appointment_search_by_date_option.daterange;
     this.currentPageNumber = 1;
     this.selectedDateRanges = this.multiCalendarComponent?.selectedDates || {};
     this.filterAppointments();
   }
 
-  onDateRangeChanged(selecteDates: { [id: string]: IDay }) {
-    this.selectedDateRanges = selecteDates;
+  onSelectedDatesChanged(selecteDates: { [id: string]: IDay }) {
+    this.isValidDateRange = Object.keys(selecteDates).length == 2;
   }
-  
+
   private updateFilterFieldsText() {
 
     if (this.selectedEventTypeIds.length == 0) {
@@ -253,7 +279,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
     });
 
   }
-  
+
   private loadData() {
     const appointSearchParameters: IAppointmentSearchParametersDto = {
       period: this.searchByDateOption,
@@ -302,7 +328,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
       statusList: this.fb.array(statusListGroup || [])
     });
   }
-  
+
   private configureEntityTypesFilterForm() {
     let entityTypesListGroup =
       this.eventTypesList.map((item) => {
@@ -317,7 +343,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
       entityTypesList: this.fb.array(entityTypesListGroup || [])
     });
   }
-  
+
   private resetData() {
     this.cancellationReason = '';
   }
@@ -356,10 +382,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   get entityTypeListControls() {
     return (this.entityTypesFilterForm.get('entityTypesList') as FormArray).controls;
   }
-  get isValidDateRange() {
-    const keys = Object.keys(this.selectedDateRanges);
-    return keys.length == 2;
-  }
+
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();

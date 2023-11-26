@@ -2,41 +2,50 @@
 <div class="data-filter-wrapper">
   <div class="data-searchby-wrapper">
     <div class="data-searchby-time-items">
-      <button (click)="onFilterDateOptionClick('upcoming')">Upcoming</button>
+      <!-- <button (click)="onFilterDateOptionClick('upcoming')">Upcoming</button>
       <button (click)="onFilterDateOptionClick('past')">Past</button>
-      <button #toggleButtonDateRangeSelectionWindow (click)="onFilterByDateRangeClick()">Date Range</button>
+      <button #toggleButtonDateRangeSelectionWindow (click)="onFilterByDateRangeClick()">Date Range</button> -->
+      <a [class.is-active]="this.searchByDateOption=='upcoming'"
+        (click)="onFilterDateOptionClick('upcoming')">Upcoming</a>
+      <a [class.is-active]="this.searchByDateOption=='past'" (click)="onFilterDateOptionClick('past')">Past</a>
+      <span >
+        <a [class.is-active]="this.searchByDateOption=='daterange'" #toggleButtonDateRangeSelectionWindow
+        (click)="onFilterByDateRangeClick()">Date Range</a>
+        <span [class.is-open-filter]="showDateSelectionWidget" class="arrow-icon">▼</span>
+      </span>
+      
     </div>
     <div class="data-toolbar-items">
       <button>Export</button>
-      <button (click)="onToggleFilterMenu()">Filter</button>
+      <button  (click)="onToggleFilterMenu()">Filter
+        <span [class.is-open-filter]="showFilterMenu" class="arrow-icon">▼</span>
+      </button>
     </div>
 
   </div>
-  <div #dateRangeSelectionWindow [style.display]="showDateSelectionWidget?'block':'none'"  class=" date-range-selection-wrapper">
+  <div #dateRangeSelectionWindow [style.display]="showDateSelectionWidget?'block':'none'"
+    class=" date-range-selection-wrapper">
     <div class="">
       <div class="date-range-calendar-wrapper">
-        <!-- <app-calendar #calender1 [selectedDates]="selectedDateOfCalendar1" [allowToggleDateSelection]="false"
-          (handlerDateClick)="handleCalendar1Click($event)">
-          </app-calendar>
-       
-       <app-calendar #calender2 [selectedDates]=" selectedDateOfCalendar2" [allowToggleDateSelection]="false"
-          (handlerDateClick)="handleCalendar2Click($event)">
-          </app-calendar> -->
-        <app-multi-calendar #multiCalendar [date1]="dateRange1" [date2]="dateRange2"
-          (SelectedDatesChanged)="onDateRangeChanged($event)"></app-multi-calendar>
+        <app-multi-calendar #multiCalendar (SelectedDatesChanged)="onSelectedDatesChanged($event)"></app-multi-calendar>
       </div>
       <div>
         <button (click)=" onCancelDateRangeFilter()">Cancel</button>
-        <button [disabled]="!isValidDateRange" (click)="onApplyDateRangeFilter()">Apply</button>
+        <button [disabled]="!isValidDateRange" (click)="onApplyFilterByDateRange()">Apply</button>
       </div>
     </div>
   </div>
   <div *ngIf="showFilterMenu" class="data-filterby-items">
-    <div class="data-filterby-item">
+
+    <div  class="data-filterby-item">
+
       <label class="field-label">Event Type</label>
-      <span #toggleButtonEventTypesFilterWindow class="overly-opener" (click)="onToggleEventTypesFilterWindow($event)">
-        {{filterByEventTypeText}}
-      </span>
+      <div   class="filter-column-container">
+        <a #toggleButtonEventTypesFilterWindow class="overly-opener" (click)="onToggleEventTypesFilterWindow($event)">
+          {{filterByEventTypeText}}
+        </a>
+        <span [class.is-open-filter]="filterByEventTypeYN" class="arrow-icon">▼</span>
+      </div>
       <div *ngIf="filterByEventTypeYN" class="overlay">
         <div #eventTypesFilterWindow class="overlay-content">
           <form [formGroup]="entityTypesFilterForm">
@@ -57,10 +66,13 @@
     </div>
     <div class="data-filterby-item">
       <label class="field-label">Status</label>
-      <span #toggleButtonAppointmentStatusByFilterWindow class="overly-opener"
-        (click)="onToggleAppointmentStatusFilterWindow($event)">
-        {{filterByStatusText}}
-      </span>
+      <div   class="filter-column-container">
+        <a #toggleButtonAppointmentStatusByFilterWindow class="overly-opener"
+          (click)="onToggleAppointmentStatusFilterWindow($event)">
+          {{filterByStatusText}}
+        </a>
+        <span [class.is-open-filter]="filterByAppointmentStatusYN" class="arrow-icon">▼</span>
+      </div>
       <div *ngIf="filterByAppointmentStatusYN" class="overlay">
         <div #appointmentStatusByFilterWindow class="overlay-content">
           <form [formGroup]="statusListFilterForm">
@@ -79,30 +91,39 @@
       </div>
     </div>
     <div class="data-filterby-item">
-      <span>Invitee Emails</span>
+      <label class="field-label">Invitee Emails</label>
+      <div class="filter-column-container">
+        <a #toggleButtonInviteeEmailByFilterWindow class="overly-opener"
+        (click)="onToggleInviteeEmailFilterWindow()"
+        >
+          All Invitee Emails
+        </a>
+        <span [class.is-open-filter]="filterByInviteeEmailYN"  class="arrow-icon">▼</span>
+      </div>
+      <div *ngIf="filterByInviteeEmailYN" class="overlay">
+        <div #inviteeEmailByFilterWindow class="overlay-content">
+          <!-- <form [formGroup]="statusListFilterForm">
+            <div *ngFor="let statusControl of statusListControls; let i = index" formArrayName="statusList">
+              <div [formGroupName]="i">
+                <input type="checkbox" formControlName="isSelected">
+                {{ statusControl.get('statusText')?.value }}
+              </div>
+            </div> -->
+            <div class="actions">
+              <button (click)="onCancelInviteeEmailFilter()">Cancel </button>
+              <button (click)="onApplyInviteeEmailFilter()">Apply</button>
+            </div>
+          <!-- </form> -->
+        </div>
+      </div>
     </div>
     <div class="data-filterby-item">
-      <button (click)="onClearFilter()">Clear Filters</button>
+      <label class="field-label">&nbsp;</label>
+      <a (click)="onClearFilter()">Clear Filters</a>
     </div>
   </div>
 </div>
-<div *ngIf="appointmentsPaginationResult" class="pagination-container">
-  <div class="page-links">
-    <button (click)="onPagerLinkClick(1)"
-      [disabled]="appointmentsPaginationResult.paginationInfo.isFirstPage">First</button>
-    <button (click)="onPagerLinkClick(appointmentsPaginationResult.paginationInfo.pageNumber-1)"
-      [disabled]="appointmentsPaginationResult.paginationInfo.isFirstPage">Previous</button>
-    <button *ngFor="let pageLink of appointmentsPaginationResult.paginationInfo.pagerLinks;let i = index;"
-      (click)="onPagerLinkClick(pageLink)">{{pageLink}}</button>
-    <button (click)="onPagerLinkClick(appointmentsPaginationResult.paginationInfo.pageNumber+1)"
-      [disabled]="appointmentsPaginationResult.paginationInfo.isLastPage">Next</button>
-    <button (click)="onPagerLinkClick(appointmentsPaginationResult.paginationInfo.totalPages)"
-      [disabled]="appointmentsPaginationResult.paginationInfo.isLastPage">Last</button>
-  </div>
-  <div class="page-info">
-    {{appointmentsPaginationResult.paginationInfo.currentPageDataRangeText}}
-  </div>
-</div>
+
 <ng-container *ngFor="let appointmentsByDate of appointmentsPaginationResult?.result; let i = index;">
   <div>
     <h2>{{appointmentsByDate.date}}</h2>
@@ -131,3 +152,23 @@
     </ul>
   </div>
 </ng-container>
+<hr>
+<div *ngIf="appointmentsPaginationResult" class="pagination-container">
+  <div class="page-links">
+
+    <button (click)="onPagerLinkClick(1)"
+      [disabled]="appointmentsPaginationResult.paginationInfo.isFirstPage">&lt;&lt;</button>
+    <button (click)="onPagerLinkClick(appointmentsPaginationResult.paginationInfo.pageNumber-1)"
+      [disabled]="appointmentsPaginationResult.paginationInfo.isFirstPage">&lt;</button>
+    <button *ngFor="let pageLink of appointmentsPaginationResult.paginationInfo.pagerLinks;let i = index;"
+      (click)="onPagerLinkClick(pageLink)">{{pageLink}}</button>
+    <button (click)="onPagerLinkClick(appointmentsPaginationResult.paginationInfo.pageNumber+1)"
+      [disabled]="appointmentsPaginationResult.paginationInfo.isLastPage">&gt;</button>
+    <button (click)="onPagerLinkClick(appointmentsPaginationResult.paginationInfo.totalPages)"
+      [disabled]="appointmentsPaginationResult.paginationInfo.isLastPage">&gt;&gt;</button>
+
+  </div>
+  <div class="page-info">
+    {{appointmentsPaginationResult.paginationInfo.currentPageDataRangeText}}
+  </div>
+</div>
