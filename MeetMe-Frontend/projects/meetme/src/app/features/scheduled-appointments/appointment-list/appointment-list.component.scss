@@ -9,7 +9,6 @@ ul {
 }
 
 li {
-  margin-bottom: 20px;
 }
 
 /* Styling for the appointment header */
@@ -30,14 +29,6 @@ li {
   font-size: 20px;
   transition: transform 0.3s;
 }
-
-//   .expanded {
-//     transform: rotate(45deg);
-//   }
-
-//   .collapsed {
-//     transform: rotate(0);
-//   }
 
 /* Styling for the appointment details */
 .appointment-details {
@@ -74,14 +65,142 @@ textarea {
   background-color: #5bc0de;
 }
 
+.data-table-header-into {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 30px 0 5px 0;
+
+}
+
+.appointment-list-container {
+}
+
+.appointment-date-name-title {
+  color: var(--primary-color);
+  font-weight: 700;
+  height: 46px;
+  border-top: 2px solid var(--secondary-color);
+  padding: 15px 0;
+}
+
+.appointment-data-container {
+  margin-bottom: 7px;
+
+}
+
+.appointment-data-container:hover {
+
+}
+
+.appointment-data-details-row {
+  display: none;
+  padding: 0 10px;
+}
+
+.appointment-data-header-row {
+  display: flex;
+  padding: 10px;
+  border-top: 2px solid var(--secondary-color);
+  cursor: pointer;
+}
+
+.appointment-data-header-row:hover {
+  background-color: var(--secondary-color);
+}
+
+.appointment-data-header-row .appointment-time {
+  width: 250px;
+
+}
+
+.appointment-data-header-row .appointment-time.cancelled {
+  text-decoration: line-through;
+}
+
+.appointment-data-header-row .appointment-summary {
+  width: 300px;
+  margin-right: 300px;
+}
+
+.appointment-data-header-row .appointment-summary.cancelled {
+  text-decoration: line-through;
+}
+
+.appointment-data-header-row .cancellation-summary {
+  padding: 10px 0;
+}
+
+.cancellation-summary .cancelled-by {
+  color: rgb(198, 114, 114);
+}
+
 /* Show the appointment details when expanded */
-.appointment-details.expanded {
+.appointment-data-details-row.expanded {
   display: block;
 }
 
+.appointment-details-row-container {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+  margin: 10px 0;
+
+}
+
+.appointment-details-column-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 250px;
+  padding: 10px 0;
+}
+
+.appointment-data-edit-actionbar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.appointment-details-column-data {}
+
+.appointmentDetails-body-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.appointmentDetails-body-item label {
+  font-weight: bold;
+  font-size: 500;
+}
+
+.appointmentDetails-body-item span {
+  font-weight: normal;
+  display: block;
+}
+
+.appointmentDetails-body-item .questionnaires {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+
+.appointmentDetails-body-item .questionnaires label {
+  font-weight: normal;
+}
+
+.appointmentDetails-body-item .questionnaires span {
+  font-weight: normal;
+  padding: 3px 15px 0;
+}
+
 .data-filter-wrapper {
-  // display: flex;
-  // flex-direction: column;
   position: relative;
 }
 
@@ -135,6 +254,7 @@ textarea {
   flex-direction: column;
   position: relative;
 }
+
 .data-filterby-item .field-label {
   margin: 7px 0;
   font-weight: bold;
@@ -145,12 +265,10 @@ textarea {
   align-items: center;
 }
 
-.filter-column-container a:hover{
+.filter-column-container a:hover {
   text-decoration: underline;
 }
-// .filter-column-container .arrow-icon {
-//   // color:var(--primary-color);
-// }
+
 .data-filterby-item .overlay-opener {}
 
 .is-open {
@@ -159,30 +277,29 @@ textarea {
 
 .pagination-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  margin: 20px 0;
 }
 
-.page-links {
+.pager-links {
   display: flex;
-  gap: 2px;
+  gap: 5px;
 }
-
+.pager-links button{
+  padding: 5px 10px;
+}
 // filter and ovlerlay
 .overlay {
-  //display: none;
   position: absolute;
   top: 60px;
   left: 0;
   width: 350px;
-  //height: 100%;
   background-color: lightgray;
-  /* Adjust the alpha value for the overlay color */
   justify-content: center;
   align-items: center;
 }
 
 .overlay-content {
-  //background: #fff; /* Overlay content background color */
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(143, 85, 85, 0.3);
@@ -193,12 +310,8 @@ textarea {
   margin-left: 6px;
   font-size: 12px;
   transition: transform 0.1s;
-  color:var(--primary-color);
+  color: var(--primary-color);
 
-}
-button {
-  display: inline-flex;
-  align-items: center;
 }
 
 .is-open-filter.arrow-icon {

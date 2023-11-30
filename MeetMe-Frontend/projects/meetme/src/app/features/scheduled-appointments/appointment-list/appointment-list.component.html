@@ -2,22 +2,19 @@
 <div class="data-filter-wrapper">
   <div class="data-searchby-wrapper">
     <div class="data-searchby-time-items">
-      <!-- <button (click)="onFilterDateOptionClick('upcoming')">Upcoming</button>
-      <button (click)="onFilterDateOptionClick('past')">Past</button>
-      <button #toggleButtonDateRangeSelectionWindow (click)="onFilterByDateRangeClick()">Date Range</button> -->
       <a [class.is-active]="this.searchByDateOption=='upcoming'"
         (click)="onFilterDateOptionClick('upcoming')">Upcoming</a>
       <a [class.is-active]="this.searchByDateOption=='past'" (click)="onFilterDateOptionClick('past')">Past</a>
-      <span >
+      <span>
         <a [class.is-active]="this.searchByDateOption=='daterange'" #toggleButtonDateRangeSelectionWindow
-        (click)="onFilterByDateRangeClick()">Date Range</a>
+          (click)="onFilterByDateRangeClick()">Date Range</a>
         <span [class.is-open-filter]="showDateSelectionWidget" class="arrow-icon">▼</span>
       </span>
-      
+
     </div>
     <div class="data-toolbar-items">
       <button>Export</button>
-      <button  (click)="onToggleFilterMenu()">Filter
+      <button (click)="onToggleFilterMenu()">Filter
         <span [class.is-open-filter]="showFilterMenu" class="arrow-icon">▼</span>
       </button>
     </div>
@@ -37,10 +34,10 @@
   </div>
   <div *ngIf="showFilterMenu" class="data-filterby-items">
 
-    <div  class="data-filterby-item">
+    <div class="data-filterby-item">
 
       <label class="field-label">Event Type</label>
-      <div   class="filter-column-container">
+      <div class="filter-column-container">
         <a #toggleButtonEventTypesFilterWindow class="overly-opener" (click)="onToggleEventTypesFilterWindow($event)">
           {{filterByEventTypeText}}
         </a>
@@ -66,7 +63,7 @@
     </div>
     <div class="data-filterby-item">
       <label class="field-label">Status</label>
-      <div   class="filter-column-container">
+      <div class="filter-column-container">
         <a #toggleButtonAppointmentStatusByFilterWindow class="overly-opener"
           (click)="onToggleAppointmentStatusFilterWindow($event)">
           {{filterByStatusText}}
@@ -93,12 +90,10 @@
     <div class="data-filterby-item">
       <label class="field-label">Invitee Emails</label>
       <div class="filter-column-container">
-        <a #toggleButtonInviteeEmailByFilterWindow class="overly-opener"
-        (click)="onToggleInviteeEmailFilterWindow()"
-        >
+        <a #toggleButtonInviteeEmailByFilterWindow class="overly-opener" (click)="onToggleInviteeEmailFilterWindow()">
           All Invitee Emails
         </a>
-        <span [class.is-open-filter]="filterByInviteeEmailYN"  class="arrow-icon">▼</span>
+        <span [class.is-open-filter]="filterByInviteeEmailYN" class="arrow-icon">▼</span>
       </div>
       <div *ngIf="filterByInviteeEmailYN" class="overlay">
         <div #inviteeEmailByFilterWindow class="overlay-content">
@@ -109,10 +104,10 @@
                 {{ statusControl.get('statusText')?.value }}
               </div>
             </div> -->
-            <div class="actions">
-              <button (click)="onCancelInviteeEmailFilter()">Cancel </button>
-              <button (click)="onApplyInviteeEmailFilter()">Apply</button>
-            </div>
+          <div class="actions">
+            <button (click)="onCancelInviteeEmailFilter()">Cancel </button>
+            <button (click)="onApplyInviteeEmailFilter()">Apply</button>
+          </div>
           <!-- </form> -->
         </div>
       </div>
@@ -123,38 +118,30 @@
     </div>
   </div>
 </div>
-
+<div class="data-table-header-into">
+  <h2>
+    {{selectedDateRangeText}}
+  </h2>
+  <div class="page-info">
+    {{appointmentsPaginationResult?.paginationInfo?.currentPageDataRangeText}}
+  </div>
+</div>
 <ng-container *ngFor="let appointmentsByDate of appointmentsPaginationResult?.result; let i = index;">
-  <div>
-    <h2>{{appointmentsByDate.date}}</h2>
+  <div class="appointment-list-container">
+    <div class="appointment-date-name-title">{{appointmentsByDate.date}}</div>
     <ul>
       <li *ngFor="let appointment of appointmentsByDate.appointments; let i = index;">
-        <div class="appointment-header" (click)="onToggleAppointmentDetails(appointment)">
-          <span class="date-time">{{appointment.appointmentDateTime}}</span>
-          <span class="event-type">{{appointment.eventTypeTitle}}</span>
-          <span class="invitee-name">{{appointment.inviteeName}}</span>
-          <span class="invitee-name">{{appointment.status}}</span>
-          <span class="toggle-icon"
-            [ngClass]="{'expanded': appointment.isExpanded, 'collapsed': !appointment.isExpanded}">+</span>
-        </div>
-        <div class="appointment-details"
-          [ngClass]="{'expanded': appointment.isExpanded,'collapsed': !appointment.isExpanded}">
-          <label>Cancellation Reason</label>
-          <textarea [(ngModel)]="appointment.cancellationReason" placeholder="Reason"></textarea>
-          <div class="actions">
-            <button *ngIf="appointment.status==='active'" class="cancel-button"
-              (click)="onCancelAppointment(appointment)">Cancel</button>
-            <button *ngIf="appointment.status==='active'" class="reschedule-button"
-              (click)="onRescheduleAppointment(appointment.id)">Reschedule</button>
-          </div>
-        </div>
+
+        <ng-container
+          *ngTemplateOutlet="appointmentEventDetailsTemplate; context: {appointmentEventDetails: appointment}"></ng-container>
       </li>
     </ul>
   </div>
 </ng-container>
+
 <hr>
 <div *ngIf="appointmentsPaginationResult" class="pagination-container">
-  <div class="page-links">
+  <div class="pager-links">
 
     <button (click)="onPagerLinkClick(1)"
       [disabled]="appointmentsPaginationResult.paginationInfo.isFirstPage">&lt;&lt;</button>
@@ -168,7 +155,94 @@
       [disabled]="appointmentsPaginationResult.paginationInfo.isLastPage">&gt;&gt;</button>
 
   </div>
-  <div class="page-info">
-    {{appointmentsPaginationResult.paginationInfo.currentPageDataRangeText}}
-  </div>
+
 </div>
+
+
+<ng-template #appointmentEventDetailsTemplate let-appointmentEventDetails="appointmentEventDetails">
+  <div class="appointment-data-container">
+    <div (click)="onToggleAppointmentDetails(appointmentEventDetails)" class="appointment-data-header-row">
+      <div [ngClass]="{'cancelled': appointmentEventDetails.status=='cancelled'}" class="appointment-time">
+        {{appointmentEventDetails.appointmentTimeSlot}}</div>
+      <div>
+        <div [ngClass]="{'cancelled': appointmentEventDetails.status=='cancelled'}" class="appointment-summary">
+          With <strong> {{appointmentEventDetails.inviteeName}}</strong>
+          <br>
+          Event Type <strong> {{appointmentEventDetails.eventTypeTitle}}</strong>
+        </div>
+        <div class="cancellation-summary" *ngIf="appointmentEventDetails.status=='cancelled'">
+          <span class="cancelled-by">Cancelled by {{appointmentEventDetails.inviteeName}}</span> :
+          {{!appointmentEventDetails.cancellationReason?'No reason provided':
+          appointmentEventDetails.cancellationReason}}
+        </div>
+      </div>
+      <span>Details</span>
+    </div>
+    <div class="appointment-data-details-row"
+      [ngClass]="{'expanded': appointmentEventDetails.isExpanded,'collapsed': !appointmentEventDetails.isExpanded}">
+      <div class="appointment-details-row-container">
+        <div class="appointment-details-column-actions">
+          <div *ngIf="appointmentEventDetails.status==='active'" class="appointment-data-edit-actionbar">
+            <button class="special" (click)="onToggleCancelAppointmentWindow(appointmentEventDetails)">Cancel
+              Appointment</button>
+            <button (click)="onRescheduleAppointment(appointmentEventDetails.id)">Reschedule</button>
+          </div>
+          <div>
+            <button (click)="onClickFilterByEvenTypeId(appointmentEventDetails.eventTypeId)">Filter by Event
+              Type</button>
+          </div>
+        </div>
+        <div class="appointment-details-column-data">
+          <div class="appointmentDetails-body-item">
+            <label>Invitee Email</label>
+            <span>{{appointmentEventDetails.inviteeEmail}}</span>
+          </div>
+          <div class="appointmentDetails-body-item">
+            <label>Location</label>
+            <span>{{appointmentEventDetails.eventTypeLocation}}</span>
+          </div>
+          <div class="appointmentDetails-body-item">
+            <label>Invitee Time Zone</label>
+            <span>{{appointmentEventDetails.inviteeTimeZone}}</span>
+          </div>
+          <div class="appointmentDetails-body-item">
+            <label>Questions</label>
+            <ul class="questionnaires">
+              <li *ngFor="let questionnaireItem of appointmentEventDetails.questionnaires;let i=index;">
+                <label><strong>{{i+1}}. </strong>{{questionnaireItem.questionName}}</label>
+                <span>{{questionnaireItem.answer}}</span>
+              </li>
+            </ul>
+          </div>
+          <div class="appointmentDetails-body-item">
+            <label>Notes</label>
+            <span>{{appointmentEventDetails.note}}</span>
+          </div>
+
+          <div class="appointmentDetails-body-item">
+            <label>Meeting Host</label>
+            <span>{{appointmentEventDetails.eventOwnerName}}</span>
+          </div>
+          <div class="appointmentDetails-body-item">
+            <label>Created at</label>
+            <span>{{appointmentEventDetails.dateCreatedFormattedText}}</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<app-my-modal [isVisible]="showCancelAppointmentWindowYN" modalTitle="Cancel Appointment" [modalWidth]="'500px'"
+  [modalHeight]="'300px'" (closeModal)="onToggleCancelAppointmentWindow(undefined)">
+  <ng-template #modalContent>
+
+    <label>Reason</label>
+    <textarea [(ngModel)]="selectedAppointmentItem!.cancellationReason" placeholder="Reason"></textarea>
+
+    <div class="modal-footer">
+      <button (click)="onToggleCancelAppointmentWindow(undefined)">Close</button>
+      <button class="primary" (click)="onCancelAppointment()">OK</button>
+    </div>
+  </ng-template>
+</app-my-modal>

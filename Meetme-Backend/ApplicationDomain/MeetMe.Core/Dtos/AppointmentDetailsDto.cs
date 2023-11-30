@@ -28,7 +28,7 @@ namespace MeetMe.Core.Dtos
         public string? GuestEmails { get; set; }
         public DateTime StartTimeUTC { get; set; }
         public DateTime EndTimeUTC { get; set; }
-        public string AppointmentDateTime { get; set; } = null!;
+        public string AppointmentTimeSlot { get; set; } = null!;
         public string AppointmentTime { get; set; } = null!;
         public string AppointmentDate { get; set; } = null!;
         public string? Note { get; set; }
@@ -38,11 +38,14 @@ namespace MeetMe.Core.Dtos
         public string? CancellationReason { get; set; }
 
         public List<AppointmentQuestionaireItemDto>? Questionnaires { get; set; }
+        public string DateCreatedFormattedText { get; private set; }=null!;
+        public string? DateCancelledformattedText { get; private set; }
+        public string? AppointmentDayDateTime { get; private set; }
 
         public static AppointmentDetailsDto New(Appointment appointment, EventType eventType, User user)
         {
 
-            var entity= new AppointmentDetailsDto
+            var entity = new AppointmentDetailsDto
             {
                 Id = appointment.Id,
                 EventTypeId = appointment.EventTypeId,
@@ -56,6 +59,8 @@ namespace MeetMe.Core.Dtos
                 Status = appointment.Status.ToString(),
                 DateCreated = appointment.DateCreated.ToUtcIfLocal(),
                 DateCancelled = appointment.DateCancelled?.ToUtcIfLocal(),
+                DateCreatedFormattedText = appointment.DateCreated.ToUtcIfLocal().ToTimeZoneFormattedText("dd MMMM yyyy",eventType.TimeZone),
+                DateCancelledformattedText = appointment.DateCancelled?.ToUtcIfLocal().ToTimeZoneFormattedText("dd MMMM yyyy", eventType.TimeZone),
                 CancellationReason = appointment.CancellationReason,
                 EventTypeTitle = eventType.Name,
                 EventTypeDescription = eventType.Description,
@@ -65,16 +70,41 @@ namespace MeetMe.Core.Dtos
                 EventTypeTimeZone = eventType.TimeZone,
                 EventOwnerId = appointment.OwnerId,
                 EventOwnerName = user.UserName,
-                AppointmentDateTime = appointment.InviteeTimeZone.ToAppointmentTimeRangeText(eventType.Duration, appointment.StartTimeUTC.ToUtcIfLocal()),
-                AppointmentDate = appointment.InviteeTimeZone.ToAppointmentDateText(eventType.Duration, appointment.StartTimeUTC.ToUtcIfLocal()),
-                AppointmentTime = appointment.InviteeTimeZone.ToAppointmentTimeText(eventType.Duration, appointment.StartTimeUTC.ToUtcIfLocal()),
+                AppointmentTimeSlot = ToAppointmentTimeRangeText(appointment.InviteeTimeZone, eventType.Duration, appointment.StartTimeUTC.ToUtcIfLocal()),
+                AppointmentDate = ToAppointmentDateText(appointment.InviteeTimeZone, eventType.Duration, appointment.StartTimeUTC.ToUtcIfLocal()),
+                AppointmentTime = ToAppointmentTimeText(appointment.InviteeTimeZone, appointment.StartTimeUTC.ToUtcIfLocal()),
+                AppointmentDayDateTime = appointment.DateCancelled?.ToUtcIfLocal().ToTimeZoneFormattedText("dddd, dd MMMM yyyy", eventType.TimeZone),
             };
 
-            if (appointment.QuestionnaireContent != null)
+            if (!string.IsNullOrWhiteSpace(appointment.QuestionnaireContent))
             {
                 entity.Questionnaires = JsonSerializer.Deserialize<List<AppointmentQuestionaireItemDto>>(appointment.QuestionnaireContent);
             }
             return entity;
+        }
+
+        static string ToAppointmentTimeRangeText(string timeZoneName, int meetingDuration, DateTime appointmentStartTime)
+        {
+            var dateTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(appointmentStartTime, TimeZoneInfo.Utc.Id, timeZoneName);
+            var startTime = dateTime.ToString("hh:mm tt");
+            var endTime = dateTime.AddMinutes(meetingDuration).ToString("hh:mm tt");
+            var appointmentTimeRange = $"{startTime} - {endTime}";//, {dateTime.ToString("dddd, dd MMMM yyyy")}";
+
+            return appointmentTimeRange;
+        }
+        static string ToAppointmentDateText(string timeZoneName, int meetingDuration, DateTime appointmentStartTime)
+        {
+            var dateTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(appointmentStartTime, TimeZoneInfo.Utc.Id, timeZoneName);
+            var appointmentTimeRange = dateTime.ToString("dddd, dd MMMM yyyy");
+
+            return appointmentTimeRange;
+        }
+        static string ToAppointmentTimeText(string timeZoneName, DateTime appointmentStartTime)
+        {
+            var dateTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(appointmentStartTime, TimeZoneInfo.Utc.Id, timeZoneName);
+            var startTime = dateTime.ToString("hh:mm tt");
+
+            return startTime;
         }
 
 

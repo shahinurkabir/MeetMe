@@ -19,7 +19,7 @@ export interface ICreateAppointmentCommand {
 
 export interface ICancelAppointmentCommand {
     id: string
-    cancellationReason:string|null
+    cancellationReason:string|undefined
 }
 
 export interface IAppointmentDetailsDto {
@@ -39,14 +39,17 @@ export interface IAppointmentDetailsDto {
     guestEmails: string | null;
     startTimeUTC: string;
     endTimeUTC: string;
-    appointmentDateTime: string;
+    appointmentTimeSlot: string;
     appointmentTime: string;
     appointmentDate: string;
+    appointmentDayDateTime: string;
     note: string | null;
     status: string;
     dateCreated: string;
     dateCancelled: string | null;
     cancellationReason: string | null;
+    dateCreatedFormattedText:string;
+    dateCancelledformattedText:string|null,
     questionnaires: IAppointmentQuestionaireItemDto[] | null;
     isExpanded: boolean;
 }

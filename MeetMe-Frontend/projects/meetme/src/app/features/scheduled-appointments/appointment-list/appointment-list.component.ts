@@ -55,6 +55,9 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   dateRange1: Date = new Date(new Date().toISOString().split('T')[0]);
   dateRange2: Date = new Date(new Date().toISOString().split('T')[0]);
   isValidDateRange: boolean = false;
+  showCancelAppointmentWindowYN: boolean = false;
+  selectedAppointmentItem: IAppointmentDetailsDto | undefined;
+  selectedDateRangeText: string='';
 
   constructor(
     private appointmentService: AppointmentService,
@@ -99,9 +102,20 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
     this.resetData();
     this.loadData();
   }
-
+  initDateRange() {
+    this.dateRange1 = new Date(new Date().toISOString().split('T')[0]);
+    this.dateRange2 = new Date(new Date().toISOString().split('T')[0]);
+    this.selectedDateRanges = {};
+    this.selectedDateRangeText = '';
+    this.isValidDateRange = false;
+  }
   onToggleAppointmentDetails(item: IAppointmentDetailsDto): void {
     item.isExpanded = !item.isExpanded;
+  }
+
+  onToggleCancelAppointmentWindow(item: IAppointmentDetailsDto | undefined): void {
+    this.showCancelAppointmentWindowYN = !this.showCancelAppointmentWindowYN;
+    this.selectedAppointmentItem = item;
   }
 
   onEventTypesLoaded(eventTypes: IEventType[]) {
@@ -115,6 +129,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
 
     this.searchByDateOption = filterDateOption;
     this.currentPageNumber = 1;
+    this.initDateRange();
     this.filterAppointments();
 
   }
@@ -134,24 +149,31 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
     this.multiCalendarComponent?.initCalendar(this.dateRange1, this.dateRange2, dates);
 
   }
-
-  onCancelAppointment(appointment: IAppointmentDetailsDto) {
+  onClickFilterByEvenTypeId(eventTypeId: string) {
+    this.selectedEventTypeIds = [];
+    this.currentPageNumber = 1;
+    this.showFilterMenu = true;
+    this.selectedEventTypeIds.push(eventTypeId);
+    this.updateFilterFieldsText();
+    this.filterAppointments();
+  }
+  onCancelAppointment() {
     let cancelAppointmentCommand: ICancelAppointmentCommand = {
-      id: appointment.id,
-      cancellationReason: appointment.cancellationReason
+      id: this.selectedAppointmentItem?.id!,
+      cancellationReason: this.selectedAppointmentItem?.cancellationReason!
     }
 
     this.appointmentService.cancelAppointment(cancelAppointmentCommand)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
+          this.showCancelAppointmentWindowYN = false;
           this.filterAppointments();
         },
         error: (error) => {
           console.log(error);
         },
         complete: () => {
-
         }
       })
   }
@@ -250,6 +272,8 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
     this.searchByDateOption = settings_appointment_search_by_date_option.daterange;
     this.currentPageNumber = 1;
     this.selectedDateRanges = this.multiCalendarComponent?.selectedDates || {};
+    let dateRangeKeys = Object.keys(this.selectedDateRanges);
+    this.selectedDateRangeText = `${this.selectedDateRanges[dateRangeKeys[0]].date} - ${this.selectedDateRanges[dateRangeKeys[1]].date}`;
     this.filterAppointments();
   }
 

@@ -327,7 +327,7 @@ namespace DataProvider.EntityFramework.Repositories
         {
             var entity = _dbContext.Set<Appointment>()
                   .Include(x => x.EventType)
-                  .ThenInclude(x => x.User)
+                  .Include(x => x.User)
                   .AsQueryable();
 
             entity = entity.Where(x => x.OwnerId == searchParametersDto.OwnerId);

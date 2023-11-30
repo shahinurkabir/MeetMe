@@ -20,6 +20,7 @@ import { AlertComponent } from './app-core/controls/alert/alert.component';
 import { FilterPipe } from './app-core/pipes/filter.pipe';
 import { scheduled_Appointment_Components } from './features/scheduled-appointments';
 import { MultiCalendarComponent } from './app-core/controls/multi-calendar/multi-calendar.component';
+import { MyModalComponent } from './app-core/controls/my-modal/my-modal.component';
 
 @NgModule({
     declarations: [
@@ -43,6 +44,7 @@ import { MultiCalendarComponent } from './app-core/controls/multi-calendar/multi
         AlertComponent,
         LoadingIndicatorDirective,
         MultiCalendarComponent,
+        MyModalComponent,
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },

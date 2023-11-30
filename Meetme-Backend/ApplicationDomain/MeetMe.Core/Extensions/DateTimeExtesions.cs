@@ -7,11 +7,19 @@ namespace MeetMe.Core.Extensions
 {
     public static class DateTimeExtesions
     {
-        public static DateTime ToTimeZoneTime(this DateTime time, string timeZomeId)
+        public static DateTime ToTimeZone(this DateTime dateTime, string timeZomeId)
         {
 
             TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZomeId);
-            return time.ToTimeZoneTime(timeZoneInfo);
+            return dateTime.ToTimeZoneTime(timeZoneInfo);
+        }
+        public static string ToTimeZoneFormattedText(this DateTime dateTime, string format, string timeZomeId)
+        {
+
+            TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZomeId);
+            var dateTimeConverted = dateTime.ToTimeZoneTime(timeZoneInfo);
+
+            return dateTimeConverted.ToString(format);
         }
 
         public static DateTime ToTimeZoneTime(this DateTime time, TimeZoneInfo timeZoneInfo)
@@ -40,31 +48,7 @@ namespace MeetMe.Core.Extensions
 
             return new DateTimeOffset(time, offset);
         }
-        public static string ToAppointmentTimeRangeText(this string timeZoneName, int meetingDuration, DateTime appointmentStartTime)
-        {
-            var dateTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(appointmentStartTime, TimeZoneInfo.Utc.Id, timeZoneName);
-            var startTime = dateTime.ToString("hh:mm tt");
-            var endTime = dateTime.AddMinutes(meetingDuration).ToString("hh:mm tt");
-            var appointmentTimeRange = $"{startTime} - {endTime}, {dateTime.ToString("dddd, dd MMMM yyyy")}";
 
-            return appointmentTimeRange;
-        }
-        public static string ToAppointmentDateText(this string timeZoneName, int meetingDuration, DateTime appointmentStartTime)
-        {
-            var dateTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(appointmentStartTime, TimeZoneInfo.Utc.Id, timeZoneName);
-            var startTime = dateTime.ToString("hh:mm tt");
-            var endTime = dateTime.AddMinutes(meetingDuration).ToString("hh:mm tt");
-            var appointmentTimeRange = dateTime.ToString("dddd, dd MMMM yyyy");
-
-            return appointmentTimeRange;
-        }
-        public static string ToAppointmentTimeText(this string timeZoneName, int meetingDuration, DateTime appointmentStartTime)
-        {
-            var dateTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(appointmentStartTime, TimeZoneInfo.Utc.Id, timeZoneName);
-            var startTime = dateTime.ToString("hh:mm tt");
-
-            return startTime;
-        }
         public static DateTime ToUtcIfLocal(this DateTime dateTime)
         {
             if (dateTime.Kind == DateTimeKind.Local)

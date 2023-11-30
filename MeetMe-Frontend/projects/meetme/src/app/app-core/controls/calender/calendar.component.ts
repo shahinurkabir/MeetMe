@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { settings_day_of_week, settings_month_of_year } from '../../utilities/constants-data';
-import { IDay } from '../../interfaces';
 
 @Component({
   selector: 'app-calendar',
@@ -8,13 +7,11 @@ import { IDay } from '../../interfaces';
   styleUrls: ['./calendar.component.scss']
 })
 export class CalendarComponent implements OnInit {
-
-  @Output() SelectedDatesChanged = new EventEmitter()
+  
+  @Output() handlerDateClick = new EventEmitter()
   @Output() handlerMonthChange = new EventEmitter();
-  @Output() handlerDateClick = new EventEmitter();
   @Input() selectedDates: { [id: string]: string | undefined } = {};
   @Input() allowMultipleSelection: boolean = true;
-  @Input() allowToggleDateSelection: boolean = true;
   @Input() minDate: Date | undefined = undefined;
   @Input() maxDate: Date | undefined = undefined;
   selectedMonth: number = 0
@@ -29,12 +26,12 @@ export class CalendarComponent implements OnInit {
     let localDate = new Date(new Date().toLocaleString("en-US", { timeZone: this.timeZoneMame }));
     this.resetYearMonthFromDate(localDate);
     this.updateCalendar();
-  }
+   }
 
   ngOnInit(): void {
     //this.resetCalendar();
   }
-  moveTo(selectedYear: number, selectedMonth: number, selectedDate: { [id: string]: string }) {
+  moveTo(selectedYear: number, selectedMonth: number, selectedDate: {[id: string]: string  }) {
     this.selectedYear = selectedYear;
     this.selectedMonth = selectedMonth;
     this.selectedDates = selectedDate;
@@ -91,9 +88,9 @@ export class CalendarComponent implements OnInit {
       let weekDay = calendarDay.getDay();
       let dayNo = i + 1
       let shortDateString = this.getShortDateString(dayNo);
-      let isPastDate = currentTimeByTimeZone > calendarDay.getTime();
-      let isCurrentDate = this.isCurrentMonth() && currentDate.getDate() == calendarDay.getDate();
-      let isSelected = this.selectedDates[shortDateString] != undefined;
+      let isPastDate =  currentTimeByTimeZone > calendarDay.getTime(); 
+      let isCurrentDate =this.isCurrentMonth() && currentDate.getDate() == calendarDay.getDate() ;
+      let isSelected= this.selectedDates[shortDateString] != undefined;
       this.days_in_month[weekNo][weekDay] = { dayNo: dayNo, date: shortDateString, isDisabled: isPastDate, isSelected: isSelected, isCurrentDate: isCurrentDate };
 
       if (weekDay == 6) {
@@ -119,33 +116,18 @@ export class CalendarComponent implements OnInit {
       this.selectedDates[weekDay.date] = weekDay.date;
     }
     else {
-      if (this.allowToggleDateSelection) {
+      weekDay.isSelected = !weekDay.isSelected;
 
-        weekDay.isSelected = !weekDay.isSelected;
-
-        if (this.selectedDates[weekDay.date])
-          delete this.selectedDates[weekDay.date];
-        else
-          this.selectedDates[weekDay.date] = weekDay.date;
-      }
-      else {
-        weekDay.isSelected = true;
+      if (this.selectedDates[weekDay.date])
+        delete this.selectedDates[weekDay.date];
+      else
         this.selectedDates[weekDay.date] = weekDay.date;
-      }
     }
 
 
-    this.SelectedDatesChanged.emit(this.selectedDates);
-    this.handlerDateClick.emit(weekDay);
+    this.handlerDateClick.emit(this.selectedDates);
   }
-  resetSelectedDates() {
-    this.selectedDates = {};
-    for (let week in this.days_in_month) {
-      let listDaysInWeek = this.days_in_month[week];
-      listDaysInWeek.forEach(day => day.isSelected = false);
-    }
-    //this.handlerDateClick.emit(this.selectedDates);
-  }
+
   isCurrentMonth(): boolean {
     let currentTimeByTimeZone = this.getCurrentDateByTimeZone();
     return this.selectedYear == currentTimeByTimeZone.getFullYear()
@@ -174,7 +156,7 @@ export class CalendarComponent implements OnInit {
 
       let date = this.getShortDateString(defaultDayNo);
       this.selectedDates[date] = date;
-      this.SelectedDatesChanged.emit(this.selectedDates);
+      this.handlerDateClick.emit(this.selectedDates);
     }
   }
   resetTimeZone(timezone: string) {
@@ -211,10 +193,10 @@ export class CalendarComponent implements OnInit {
   }
 
 }
-// interface IDay {
-//   dayNo: number,
-//   date: string,
-//   isDisabled: boolean,
-//   isSelected: boolean
-//   isCurrentDate: boolean,
-// }
+interface IDay {
+  dayNo: number,
+  date: string,
+  isDisabled: boolean,
+  isSelected: boolean
+  isCurrentDate: boolean,
+}

@@ -7,3 +7,4 @@ export * from '../controls/alert/alert.service';
 export * from '../controls/alert/alert.component';
 export * from '../controls/alert/alert'
 export * from '../controls/multi-calendar/multi-calendar.component';
+export * from '../controls/my-modal/my-modal.component';

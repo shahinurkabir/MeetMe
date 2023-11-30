@@ -57,12 +57,12 @@ namespace MeetMe.Application.Calendars.Quaries
             {
                 return paginationResult;
             }
-            result.GroupBy(x => x.AppointmentDate).ToList().ForEach(x =>
+            result.GroupBy(x => x.AppointmentDate).OrderByDescending(e=>e.Key).ToList().ForEach(x =>
             {
                 paginationResult.Result.Add(new AppointmentsByDate
                 {
                     Date = x.Key,
-                    Appointments = x.ToList()
+                    Appointments = x.OrderBy(e=>e.StartTimeUTC).ToList()
                 });
             });
 
