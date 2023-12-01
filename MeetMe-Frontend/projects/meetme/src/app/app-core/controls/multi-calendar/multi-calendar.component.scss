@@ -1,13 +1,31 @@
+.time-intervals{
+    display: flex;
+    gap: 10px;
+    
+}
 .calendars-container {
     display: flex;
     flex-direction: row;
     gap: 30px;
 }
 
-.isSelected {
-    background-color: blue;
-    color: white;
+.calendar-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+
 }
+
 .isDifferentMonth {
-    color:gray
+    opacity: 0.5;
+}
+
+.button {
+    width: 30px;
+    padding: 2px;
+    margin: 1px;
+    border: 1px solid var(--secondary-color);
+    border-radius: 4px;
 }

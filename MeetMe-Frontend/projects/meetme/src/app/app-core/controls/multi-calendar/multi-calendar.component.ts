@@ -57,7 +57,42 @@ export class MultiCalendarComponent implements OnInit {
     this.SelectedDatesChanged.emit(this.selectedDates);
   }
 
-
+  onIntervalClick(intervalName:string){
+    let currentDate = new Date();
+    let date1 = new Date();
+    let date2 = new Date();
+    switch (intervalName) {
+      case 'Today':
+        date1 = currentDate;
+        date2 = currentDate;
+        break;
+      case 'Tomorrow':
+        date1.setDate(currentDate.getDate() + 1);
+        date2.setDate(currentDate.getDate() + 1);
+        break;
+      case 'This Week':
+        date1.setDate(currentDate.getDate() - currentDate.getDay());
+        date2.setDate(currentDate.getDate() + (6 - currentDate.getDay()));
+        break;
+      case 'Next Week':
+        date1.setDate(currentDate.getDate() + (7 - currentDate.getDay()));
+        date2.setDate(currentDate.getDate() + (13 - currentDate.getDay()));
+        break;
+      case 'This Month':
+        date1.setDate(1);
+        date2.setDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate());
+        break;
+      case 'Next Month':
+        date1.setDate(1);
+        date1.setMonth(currentDate.getMonth() + 1);
+        date2.setDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 2, 0).getDate());
+        date2.setMonth(currentDate.getMonth() + 1);
+        break;
+      default:
+        break;
+    }
+    this.initCalendar(date1, date2, {});
+  }
   onClickPreviousMonth() {
     if (this.calendar1Month - 1 < 1) {
       this.calendar1Month = 12;
@@ -218,8 +253,10 @@ export class MultiCalendarComponent implements OnInit {
       week.forEach((weekDay) => {
         if (weekDay.isCurrentDate) {
           weekDay.isSelected = true;
-          let dateKey = this.getDateKey('calendar1', weekDay.date);
-          this.selectedDates[dateKey] = weekDay;
+          let dateKey1 = this.getDateKey('calendar1', weekDay.date);
+          let dateKey2 = this.getDateKey('calendar2', weekDay.date);
+          this.selectedDates[dateKey1] = weekDay;
+          this.selectedDates[dateKey2] = weekDay;
         }
       });
     });
@@ -227,8 +264,6 @@ export class MultiCalendarComponent implements OnInit {
       week.forEach((weekDay) => {
         if (weekDay.isCurrentDate) {
           weekDay.isSelected = true;
-          let dateKey = this.getDateKey('calendar2', weekDay.date);
-          this.selectedDates[dateKey] = weekDay;
         }
       });
     });

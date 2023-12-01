@@ -1,9 +1,16 @@
+<div class="time-intervals">
+    <a (click)="onIntervalClick('today')">Today</a>
+    <a (click)="onIntervalClick('tomorrow')">Tomorrow</a>
+    <a (click)="onIntervalClick('this-week')">This Week</a>
+    <a (click)="onIntervalClick('this-month')">This Month</a>
+    <a (click)="onIntervalClick('all-time')">All Time</a>
+</div>
+<hr>
 <div class="calendars-container">
     <div class="calendar-item-container">
         <div class="calendar-header">
-            <button (click)="onClickPreviousMonth()">&lt;</button>
-            <label>{{calendar1MonthName}}</label>
-
+            <button class="button primary" (click)="onClickPreviousMonth()">&lt;</button>
+            <h2>{{calendar1MonthName}}</h2>
         </div>
         <table>
             <thead>
@@ -14,8 +21,9 @@
             <tbody>
                 <tr *ngFor="let week of calendar1">
                     <td *ngFor="let day of week" (click)="selectDate('calendar1', day)">
-                        <span [class.isSelected]="day.isSelected" [class.isDifferentMonth]="day.isDifferentMonth"> {{ day.dayNo
-                        }}</span>
+                        <button class="button " [class.special]="day.isSelected"
+                            [class.isDifferentMonth]="day.isDifferentMonth"> {{ day.dayNo
+                            }}</button>
                     </td>
                 </tr>
             </tbody>
@@ -24,11 +32,10 @@
 
     <div class="calendar-item-container">
         <div class="calendar-header">
-            <label>{{calendar2MonthName}}</label>
-            <button (click)="onClickNextMonth()">&gt;</button>
+            <h2>{{calendar2MonthName}}</h2>
+            <button class="button primary" (click)="onClickNextMonth()">&gt;</button>
 
         </div>
-
         <table>
             <thead>
                 <tr>
@@ -38,8 +45,9 @@
             <tbody>
                 <tr *ngFor="let week of calendar2">
                     <td *ngFor="let day of week" (click)="selectDate('calendar2', day)">
-                        <span [class.isSelected]="day.isSelected" [class.isDifferentMonth]="day.isDifferentMonth"> {{ day.dayNo
-                            }}</span>
+                        <button class="button" [class.special]="day.isSelected"
+                            [class.isDifferentMonth]="day.isDifferentMonth"> {{ day.dayNo
+                            }}</button>
                     </td>
                 </tr>
             </tbody>

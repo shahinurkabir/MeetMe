@@ -21,16 +21,17 @@
 
   </div>
   <div #dateRangeSelectionWindow [style.display]="showDateSelectionWidget?'block':'none'"
-    class=" date-range-selection-wrapper">
-    <div class="">
-      <div class="date-range-calendar-wrapper">
-        <app-multi-calendar #multiCalendar (SelectedDatesChanged)="onSelectedDatesChanged($event)"></app-multi-calendar>
-      </div>
-      <div>
-        <button (click)=" onCancelDateRangeFilter()">Cancel</button>
-        <button [disabled]="!isValidDateRange" (click)="onApplyFilterByDateRange()">Apply</button>
-      </div>
+    class="date-range-selection-wrapper">
+    <!-- <div class=""> -->
+    <div class="date-range-calendar-wrapper ">
+      <app-multi-calendar #multiCalendar (SelectedDatesChanged)="onSelectedDatesChanged($event)"></app-multi-calendar>
     </div>
+    <hr>
+    <div class="action-buttons-container center">
+      <button (click)=" onCancelDateRangeFilter()">Cancel</button>
+      <button class="primary" [disabled]="!isValidDateRange" (click)="onApplyFilterByDateRange()">Apply</button>
+    </div>
+    <!-- </div> -->
   </div>
   <div *ngIf="showFilterMenu" class="data-filterby-items">
 
@@ -45,17 +46,21 @@
       </div>
       <div *ngIf="filterByEventTypeYN" class="overlay">
         <div #eventTypesFilterWindow class="overlay-content">
-          <form [formGroup]="entityTypesFilterForm">
+          <form [formGroup]="entityTypesFilterForm" class="filter-by-checkbox-list">
             <div *ngFor="let entityTypeControl of entityTypeListControls; let i = index;"
               formArrayName="entityTypesList">
               <div [formGroupName]="i">
-                <input type="checkbox" formControlName="isSelected">
-                {{ entityTypeControl.get('entityText')?.value }}
+                <label for="{{i}}">
+                  <input type="checkbox" id="{{i}}" name="{{i}}" class="filter-by-checkbox"
+                    formControlName="isSelected">
+                  {{ entityTypeControl.get('entityText')?.value }}
+                </label>
               </div>
             </div>
-            <div class="actions">
+            <hr>
+            <div class="action-buttons-container">
               <button (click)="onEventTypeCancelFilter()">Cancel </button>
-              <button (click)="onEventTypeApplyFilter()">Apply</button>
+              <button class="primary" (click)="onEventTypeApplyFilter()">Apply</button>
             </div>
           </form>
         </div>
@@ -72,16 +77,19 @@
       </div>
       <div *ngIf="filterByAppointmentStatusYN" class="overlay">
         <div #appointmentStatusByFilterWindow class="overlay-content">
-          <form [formGroup]="statusListFilterForm">
+          <form [formGroup]="statusListFilterForm" class="filter-by-checkbox-list">
             <div *ngFor="let statusControl of statusListControls; let i = index" formArrayName="statusList">
               <div [formGroupName]="i">
-                <input type="checkbox" formControlName="isSelected">
-                {{ statusControl.get('statusText')?.value }}
+                <label for="{{i}}">
+                  <input type="checkbox" id="{{i}}" name="{{i}}" formControlName="isSelected">
+                  {{ statusControl.get('statusText')?.value }}
+                </label>
               </div>
             </div>
-            <div class="actions">
+            <hr>
+            <div class="action-buttons-container">
               <button (click)="onCancelStatusFilter()">Cancel </button>
-              <button (click)="onApplyStatusFilter()">Apply</button>
+              <button class="primary" (click)="onApplyStatusFilter()">Apply</button>
             </div>
           </form>
         </div>
@@ -126,6 +134,9 @@
     {{appointmentsPaginationResult?.paginationInfo?.currentPageDataRangeText}}
   </div>
 </div>
+<div *ngIf="appointmentsPaginationResult?.result?.length==0" class="no-data-found">
+  <h1>No Data</h1>
+</div>
 <ng-container *ngFor="let appointmentsByDate of appointmentsPaginationResult?.result; let i = index;">
   <div class="appointment-list-container">
     <div class="appointment-date-name-title">{{appointmentsByDate.date}}</div>
@@ -148,6 +159,7 @@
     <button (click)="onPagerLinkClick(appointmentsPaginationResult.paginationInfo.pageNumber-1)"
       [disabled]="appointmentsPaginationResult.paginationInfo.isFirstPage">&lt;</button>
     <button *ngFor="let pageLink of appointmentsPaginationResult.paginationInfo.pagerLinks;let i = index;"
+      [class.special]="i==appointmentsPaginationResult.paginationInfo.pageNumber-1"
       (click)="onPagerLinkClick(pageLink)">{{pageLink}}</button>
     <button (click)="onPagerLinkClick(appointmentsPaginationResult.paginationInfo.pageNumber+1)"
       [disabled]="appointmentsPaginationResult.paginationInfo.isLastPage">&gt;</button>
@@ -162,9 +174,11 @@
 <ng-template #appointmentEventDetailsTemplate let-appointmentEventDetails="appointmentEventDetails">
   <div class="appointment-data-container">
     <div (click)="onToggleAppointmentDetails(appointmentEventDetails)" class="appointment-data-header-row">
+      <div class="event-type-circle-box event-color-{{appointmentEventDetails.eventTypeColor}}">1</div>
       <div [ngClass]="{'cancelled': appointmentEventDetails.status=='cancelled'}" class="appointment-time">
         {{appointmentEventDetails.appointmentTimeSlot}}</div>
-      <div>
+
+      <div class="appointment-summary-container">
         <div [ngClass]="{'cancelled': appointmentEventDetails.status=='cancelled'}" class="appointment-summary">
           With <strong> {{appointmentEventDetails.inviteeName}}</strong>
           <br>
@@ -176,7 +190,9 @@
           appointmentEventDetails.cancellationReason}}
         </div>
       </div>
-      <span>Details</span>
+      <span>Details
+        <span [class.is-open-filter]="appointmentEventDetails.isExpanded" class="arrow-icon">▼</span>
+      </span>
     </div>
     <div class="appointment-data-details-row"
       [ngClass]="{'expanded': appointmentEventDetails.isExpanded,'collapsed': !appointmentEventDetails.isExpanded}">
@@ -234,13 +250,19 @@
   </div>
 </ng-template>
 <app-my-modal [isVisible]="showCancelAppointmentWindowYN" modalTitle="Cancel Appointment" [modalWidth]="'500px'"
-  [modalHeight]="'300px'" (closeModal)="onToggleCancelAppointmentWindow(undefined)">
+  (closeModal)="onToggleCancelAppointmentWindow(undefined)">
   <ng-template #modalContent>
-
-    <label>Reason</label>
-    <textarea [(ngModel)]="selectedAppointmentItem!.cancellationReason" placeholder="Reason"></textarea>
-
-    <div class="modal-footer">
+    <form>
+      <div class="form-group">
+        <label for="cancellationReason">Cancellation Reason</label>
+        <div class="form-control">
+          <textarea rows="5" #description="ngModel" [(ngModel)]="selectedAppointmentItem!.cancellationReason"
+            id="cancellationReason" name="cancellationReason" autocomplete="off" required [minlength]="3"></textarea>
+        </div>
+      </div>
+    </form>
+    <hr>
+    <div class="action-buttons-container">
       <button (click)="onToggleCancelAppointmentWindow(undefined)">Close</button>
       <button class="primary" (click)="onCancelAppointment()">OK</button>
     </div>

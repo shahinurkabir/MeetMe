@@ -8,8 +8,7 @@ ul {
   padding: 0;
 }
 
-li {
-}
+li {}
 
 /* Styling for the appointment header */
 .appointment-header {
@@ -73,8 +72,7 @@ textarea {
 
 }
 
-.appointment-list-container {
-}
+.appointment-list-container {}
 
 .appointment-date-name-title {
   color: var(--primary-color);
@@ -84,14 +82,9 @@ textarea {
   padding: 15px 0;
 }
 
-.appointment-data-container {
-  margin-bottom: 7px;
+.appointment-data-container {}
 
-}
-
-.appointment-data-container:hover {
-
-}
+.appointment-data-container:hover {}
 
 .appointment-data-details-row {
   display: none;
@@ -100,9 +93,12 @@ textarea {
 
 .appointment-data-header-row {
   display: flex;
-  padding: 10px;
+  padding: 10px 0;
   border-top: 2px solid var(--secondary-color);
   cursor: pointer;
+  gap: 5px;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .appointment-data-header-row:hover {
@@ -110,7 +106,7 @@ textarea {
 }
 
 .appointment-data-header-row .appointment-time {
-  width: 250px;
+  width: 200px;
 
 }
 
@@ -118,10 +114,18 @@ textarea {
   text-decoration: line-through;
 }
 
-.appointment-data-header-row .appointment-summary {
-  width: 300px;
-  margin-right: 300px;
+.no-data-found {
+  display: flex;
+  justify-content: center;
+  color: lightgray;
 }
+
+.appointment-summary-container {
+  width: 600px;
+  margin-right: 50px;
+}
+
+.appointment-data-header-row .appointment-summary {}
 
 .appointment-data-header-row .appointment-summary.cancelled {
   text-decoration: line-through;
@@ -205,10 +209,12 @@ textarea {
 }
 
 .date-range-selection-wrapper {
+  border-radius: 4px;
   position: absolute;
   justify-content: space-between;
-  padding: 10px 10px;
-  background-color: lightgrey;
+  padding: 20px 20px;
+  background-color: white;
+  border: 2px solid var(--primary-color);
   z-index: 1;
 }
 
@@ -285,26 +291,46 @@ textarea {
   display: flex;
   gap: 5px;
 }
-.pager-links button{
+
+.pager-links button {
   padding: 5px 10px;
 }
+
 // filter and ovlerlay
+// .overlay {
+//   position: absolute;
+//   top: 60px;
+//   left: 0;
+//   width: 350px;
+//   background-color: lightgray;
+//   justify-content: center;
+//   align-items: center;
+// }
 .overlay {
-  position: absolute;
   top: 60px;
   left: 0;
   width: 350px;
-  background-color: lightgray;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
+  border-radius: 4px;
+  justify-content: space-between;
+  padding: 20px 20px;
+  background-color: white;
+  border: 2px solid var(--primary-color);
+  z-index: 1;
 }
 
 .overlay-content {
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(143, 85, 85, 0.3);
+  //padding: 20px 0;
+  // border-radius: 8px;
+  // box-shadow: 0 0 10px rgba(143, 85, 85, 0.3);
 }
-
+.filter-by-checkbox-list{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
 .arrow-icon {
   display: inline-flex;
   margin-left: 6px;

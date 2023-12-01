@@ -278,6 +278,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   }
 
   onSelectedDatesChanged(selecteDates: { [id: string]: IDay }) {
+    console.log(selecteDates);
     this.isValidDateRange = Object.keys(selecteDates).length == 2;
   }
 

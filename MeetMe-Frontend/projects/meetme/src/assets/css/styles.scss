@@ -26,7 +26,7 @@ body {
     // background-color: $neutral-color;
     // color: #191919;
     position: relative;
-
+    color:rgb(26,26,26);
 
 }
 
@@ -238,7 +238,7 @@ nav ul li a.is-active {
  /* Button Styles */
  button {
     background: transparent;
-    border: 2px solid grey;
+    border: 1px solid grey;
     border-radius: 4px;
     box-shadow: 0 1px 2px rgba(0,0,0,.1);
     color: #3b4151;
@@ -252,16 +252,10 @@ nav ul li a.is-active {
 button:hover {
     box-shadow: 0 0 5px rgba(0,0,0,.3);
 }
-/* Default Button */
-// button.default {
-//     background-color: #e0e0e0;
-//     color: #333;
-//     border: 1px solid #ccc;
-// }
-
-// button.default:hover {
-//     background-color: #ccc;
-// }
+button:disabled {
+    opacity: .2;
+    cursor: not-allowed;
+}
 
 /* Primary Button */
 button.primary {
@@ -271,11 +265,6 @@ button.primary {
     //display: inline;
     //line-height: 1;
 }
-
-// button.primary:hover {
-//     background-color: #0056b3;
-//     border: 1px solid #0056b3;
-// }
 
 /* Secondary Button */
 button.secondary {
@@ -303,10 +292,30 @@ button.secondary:hover {
 
 hr {
     height: 1px;
-    border: 1px solid whitesmoke;
+    border: 1px solid var(--secondary-color);
     margin: 10px 0;
 }
-
+.action-buttons-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+.action-buttons-container.center{
+    justify-content: center;
+}
+.action-buttons-container.left{
+    justify-content:flex-start;
+}
+.event-type-circle-box{
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    color: transparent;
+    font-size: 22px;
+    border-radius: 50%;
+}
 /* Default Styles for Input Elements */
 input {
     padding: 10px;
@@ -315,7 +324,9 @@ input {
     font-size: 14px;
     color: #333;
 }
-
+label {
+    cursor: pointer ;
+}
 /* Style for Focused Input Elements */
 input:focus {
     border-color: #007bff;
