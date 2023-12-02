@@ -87,7 +87,7 @@ namespace MeetMe.API.Controllers
             if (string.IsNullOrWhiteSpace(scheduleEventSearchParameters.Period) ||
                scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.Upcoming)
             {
-                scheduleEventSearchParameters.StartDate = currentTimeUtc;
+                scheduleEventSearchParameters.StartDate = currentTimeUtc.AddMinutes(1);
                 scheduleEventSearchParameters.EndDate = DateTime.MaxValue;
             }
             else if (scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.Past)
@@ -99,21 +99,29 @@ namespace MeetMe.API.Controllers
             {
                 scheduleEventSearchParameters.StartDate = scheduleEventSearchParameters.StartDate?.ToUniversalTime();
                 scheduleEventSearchParameters.EndDate = scheduleEventSearchParameters.EndDate?.ToUniversalTime();
+
+                // both date are same then add one day to end date
+                if (scheduleEventSearchParameters.StartDate.HasValue && scheduleEventSearchParameters.EndDate.HasValue &&
+                                       scheduleEventSearchParameters.StartDate.Value.Date == scheduleEventSearchParameters.EndDate.Value.Date)
+                {
+                    scheduleEventSearchParameters.EndDate = scheduleEventSearchParameters.EndDate.Value.AddDays(1);
+                }
+                
             }
             else if (scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.Today)
             {
-                scheduleEventSearchParameters.StartDate = currentTimeUtc.Date;
-                scheduleEventSearchParameters.EndDate = currentTimeUtc.Date.AddDays(1);
+                scheduleEventSearchParameters.StartDate = currentTimeUtc;
+                scheduleEventSearchParameters.EndDate = currentTimeUtc.AddDays(1);
             }
             else if (scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.Tomorrow)
             {
-                scheduleEventSearchParameters.StartDate = currentTimeUtc.Date.AddDays(1);
-                scheduleEventSearchParameters.EndDate = currentTimeUtc.Date.AddDays(2);
+                scheduleEventSearchParameters.StartDate = currentTimeUtc.AddDays(1);
+                scheduleEventSearchParameters.EndDate = currentTimeUtc.AddDays(2);
             }
             else if (scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.ThisWeek)
             {
-                scheduleEventSearchParameters.StartDate = currentTimeUtc.Date.AddDays(-(int)currentTimeUtc.DayOfWeek);
-                scheduleEventSearchParameters.EndDate = currentTimeUtc.Date.AddDays(-(int)currentTimeUtc.DayOfWeek + 7);
+                scheduleEventSearchParameters.StartDate = currentTimeUtc.AddDays(-(int)currentTimeUtc.DayOfWeek);
+                scheduleEventSearchParameters.EndDate = currentTimeUtc.AddDays(-(int)currentTimeUtc.DayOfWeek + 7);
             }
             else if (scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.ThisMonth)
             {
