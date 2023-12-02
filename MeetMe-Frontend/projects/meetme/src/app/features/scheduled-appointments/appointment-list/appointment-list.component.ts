@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { AppointmentService, CalendarComponent, CommonFunction, EventTypeService, IAppointmentDetailsDto, IAppointmentSearchParametersDto, IAppointmentsPaginationResult, ICancelAppointmentCommand, IDay, IEventType, MultiCalendarComponent, settings_appointment_search_by_date_option, settings_appointment_status } from '../../../app-core';
+import { AppointmentService,  CommonFunction, EventTypeService, IAppointmentDetailsDto, IAppointmentSearchParametersDto, IAppointmentsPaginationResult, ICancelAppointmentCommand, IDay, IEventType, MultiCalendarComponent, settings_appointment_search_by_date_option, settings_appointment_status } from '../../../app-core';
 import { Subject, forkJoin, takeUntil } from 'rxjs';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -54,10 +54,9 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   selectedDateRanges: { [id: string]: IDay } = {};
   dateRange1: Date = new Date(new Date().toISOString().split('T')[0]);
   dateRange2: Date = new Date(new Date().toISOString().split('T')[0]);
-  isValidDateRange: boolean = false;
   showCancelAppointmentWindowYN: boolean = false;
   selectedAppointmentItem: IAppointmentDetailsDto | undefined;
-  selectedDateRangeText: string='';
+  selectedDateRangeText: string = '';
 
   constructor(
     private appointmentService: AppointmentService,
@@ -103,11 +102,8 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
     this.loadData();
   }
   initDateRange() {
-    this.dateRange1 = new Date(new Date().toISOString().split('T')[0]);
-    this.dateRange2 = new Date(new Date().toISOString().split('T')[0]);
     this.selectedDateRanges = {};
     this.selectedDateRangeText = '';
-    this.isValidDateRange = false;
   }
   onToggleAppointmentDetails(item: IAppointmentDetailsDto): void {
     item.isExpanded = !item.isExpanded;
@@ -138,16 +134,8 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
     this.showDateSelectionWidget = !this.showDateSelectionWidget;
 
     if (!this.showDateSelectionWidget) return;
-
-    //reset date range
-    if (this.dateRange1.getMonth() + 1 > 12) {
-      this.dateRange2 = new Date(this.dateRange1.getFullYear() + 1, 1, 1);
-    } else {
-      this.dateRange2 = new Date(this.dateRange1.getFullYear(), this.dateRange1.getMonth() + 1, 1);
-    }
-    let dates = { ...this.selectedDateRanges };
-    this.multiCalendarComponent?.initCalendar(this.dateRange1, this.dateRange2, dates);
-
+    this.multiCalendarComponent?.resetDates();
+    
   }
   onClickFilterByEvenTypeId(eventTypeId: string) {
     this.selectedEventTypeIds = [];
@@ -267,21 +255,30 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   onCancelDateRangeFilter() {
     this.showDateSelectionWidget = false;
   }
-  onApplyFilterByDateRange() {
+
+  onSelectedDatesChanged(selecteDates: { [id: string]: IDay }) {
     this.showDateSelectionWidget = false;
     this.searchByDateOption = settings_appointment_search_by_date_option.daterange;
     this.currentPageNumber = 1;
-    this.selectedDateRanges = this.multiCalendarComponent?.selectedDates || {};
+    this.selectedDateRanges = {...selecteDates};
     let dateRangeKeys = Object.keys(this.selectedDateRanges);
     this.selectedDateRangeText = `${this.selectedDateRanges[dateRangeKeys[0]].date} - ${this.selectedDateRanges[dateRangeKeys[1]].date}`;
     this.filterAppointments();
   }
-
-  onSelectedDatesChanged(selecteDates: { [id: string]: IDay }) {
-    console.log(selecteDates);
-    this.isValidDateRange = Object.keys(selecteDates).length == 2;
+  onDatePeriodChanged(period: string) {
+    this.showDateSelectionWidget = false;
+    this.searchByDateOption = period;
+    this.selectedDateRangeText = CommonFunction.capitalizeFirstLetter(period.replace('_', ' '));
+    if (period == 'alltime') {
+      this.initDateRange();
+      this.searchByDateOption = settings_appointment_search_by_date_option.upcoming;
+    }
+    this.currentPageNumber = 1;
+    this.filterAppointments();
   }
-
+  onCancelDateSelection() {
+    this.showDateSelectionWidget = false;
+  }
   private updateFilterFieldsText() {
 
     if (this.selectedEventTypeIds.length == 0) {
@@ -381,7 +378,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
       eventTypeIds: this.selectedEventTypeIds,
       pageNumber: this.currentPageNumber
     }
-    if (this.isValidDateRange) {
+    if (Object.keys(this.selectedDateRanges).length == 2) {
       parameters.startDate = this.selectedDateRanges[Object.keys(this.selectedDateRanges)[0]].date;
       parameters.endDate = this.selectedDateRanges[Object.keys(this.selectedDateRanges)[1]].date;
     }

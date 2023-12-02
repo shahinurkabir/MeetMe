@@ -1,9 +1,9 @@
 <div class="time-intervals">
-    <a (click)="onIntervalClick('today')">Today</a>
-    <a (click)="onIntervalClick('tomorrow')">Tomorrow</a>
-    <a (click)="onIntervalClick('this-week')">This Week</a>
-    <a (click)="onIntervalClick('this-month')">This Month</a>
-    <a (click)="onIntervalClick('all-time')">All Time</a>
+    <a [class.is-active]="selectedPeriod=='today'" (click)="onIntervalClick('today')">Today</a>
+    <a [class.is-active]="selectedPeriod=='tomorrow'"(click)="onIntervalClick('tomorrow')">Tomorrow</a>
+    <a [class.is-active]="selectedPeriod=='this_week'" (click)="onIntervalClick('this_week')">This Week</a>
+    <a [class.is-active]="selectedPeriod=='this_month'" (click)="onIntervalClick('this_month')">This Month</a>
+    <a  (click)="onIntervalClick('alltime')">All Time</a>
 </div>
 <hr>
 <div class="calendars-container">
@@ -20,7 +20,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let week of calendar1">
-                    <td *ngFor="let day of week" (click)="selectDate('calendar1', day)">
+                    <td *ngFor="let day of week" (click)="onSelectedDay('calendar1', day)">
                         <button class="button " [class.special]="day.isSelected"
                             [class.isDifferentMonth]="day.isDifferentMonth"> {{ day.dayNo
                             }}</button>
@@ -44,7 +44,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let week of calendar2">
-                    <td *ngFor="let day of week" (click)="selectDate('calendar2', day)">
+                    <td *ngFor="let day of week" (click)="onSelectedDay('calendar2', day)">
                         <button class="button" [class.special]="day.isSelected"
                             [class.isDifferentMonth]="day.isDifferentMonth"> {{ day.dayNo
                             }}</button>
@@ -53,4 +53,9 @@
             </tbody>
         </table>
     </div>
+</div>
+<hr>
+<div class="action-buttons-container center">
+    <button (click)=" onCancelDateRangeFilter()">Cancel</button>
+    <button class="primary" [disabled]="!isValidDateRange" (click)="onApplyFilterByDateRange()">Apply</button>
 </div>

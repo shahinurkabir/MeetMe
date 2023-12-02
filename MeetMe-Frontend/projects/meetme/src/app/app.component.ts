@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Alert, AuthService, ModalService } from './app-core';
+import { Alert, AuthService, ModalService, } from './app-core';
 import { Subject, takeUntil } from 'rxjs';
 import { AlertService } from './app-core/controls/alert/alert.service';
 
@@ -18,7 +18,7 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     public modalService: ModalService,
-    private alertService: AlertService
+    private alertService: AlertService,
   ) {
     this.alertService.alert$
       .pipe(takeUntil(this.destroyed$))
@@ -47,6 +47,8 @@ export class AppComponent implements OnInit, OnDestroy {
   onLogout() {
     this.authService.logout();
   }
+
+
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();

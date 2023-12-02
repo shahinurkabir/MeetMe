@@ -22,16 +22,15 @@
   </div>
   <div #dateRangeSelectionWindow [style.display]="showDateSelectionWidget?'block':'none'"
     class="date-range-selection-wrapper">
-    <!-- <div class=""> -->
     <div class="date-range-calendar-wrapper ">
-      <app-multi-calendar #multiCalendar (SelectedDatesChanged)="onSelectedDatesChanged($event)"></app-multi-calendar>
+      <app-multi-calendar #multiCalendar 
+      (DateSelectionChanged)="onSelectedDatesChanged($event)"
+      (DatePeriodChanged)="onDatePeriodChanged($event)"
+      (CancelDateSelection)="onCancelDateSelection()"
+      >
+      </app-multi-calendar>
     </div>
-    <hr>
-    <div class="action-buttons-container center">
-      <button (click)=" onCancelDateRangeFilter()">Cancel</button>
-      <button class="primary" [disabled]="!isValidDateRange" (click)="onApplyFilterByDateRange()">Apply</button>
-    </div>
-    <!-- </div> -->
+    
   </div>
   <div *ngIf="showFilterMenu" class="data-filterby-items">
 

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IDay } from '../../interfaces';
-import { settings_month_of_year } from '../../utilities';
+import { settings_appointment_search_by_date_option, settings_month_of_year } from '../../utilities';
 
 @Component({
   selector: 'app-multi-calendar',
@@ -8,19 +8,23 @@ import { settings_month_of_year } from '../../utilities';
   styleUrls: ['./multi-calendar.component.scss']
 })
 export class MultiCalendarComponent implements OnInit {
-  @Output() SelectedDatesChanged = new EventEmitter()
-
+  @Output() DatePeriodChanged = new EventEmitter()
+  @Output() DateSelectionChanged = new EventEmitter()
+  @Output() CancelDateSelection = new EventEmitter()
+  selectedPeriod: string = '';
   selectedDates: { [id: string]: IDay } = {};
+
   calendar1MonthName: string = "";
   calendar2MonthName: string = "";
 
   calendar1: IDay[][] = [];
-  calendar1Month: number = new Date().getMonth() + 1;
-  calendar1Year: number = new Date().getFullYear();
-
   calendar2: IDay[][] = [];
-  calendar2Month: number = new Date().getMonth() + 1;
-  calendar2Year: number = new Date().getFullYear();
+
+  calendar1Month: number = 0;
+  calendar1Year: number = 0;
+
+  calendar2Month: number = 0;
+  calendar2Year: number = 0;
 
 
   days: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -43,55 +47,94 @@ export class MultiCalendarComponent implements OnInit {
   constructor() {
   }
   ngOnInit(): void {
+    this.resetDates();
   }
+  resetDates() {
 
-  initCalendar(date1: Date, date2: Date, selecteDates: { [id: string]: IDay }) {
-    this.calendar1Month = date1.getMonth() + 1;
-    this.calendar1Year = date1.getFullYear();
+    let calendar1date = new Date();
+    this.calendar1Month = calendar1date.getMonth() + 1;
+    this.calendar1Year = calendar1date.getFullYear();
 
-    this.calendar2Month = date2.getMonth() + 1;
-    this.calendar2Year = date2.getFullYear();
-    this.selectedDates = selecteDates;
+    let calendar2date = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1);
+    this.calendar2Month = calendar2date.getMonth() + 1;
+    this.calendar2Year = calendar2date.getFullYear();
+
+    let dates = this.generateDates(this.selectedPeriod);
 
     this.updateCalendar();
-    this.SelectedDatesChanged.emit(this.selectedDates);
+
+    this.resetSelectedDates();
+
+    let date1 = dates[0];
+    let date2 = dates[1];
+    let dateShort1 = this.getDateString(date1.getFullYear(), date1.getMonth() + 1, date1.getDate());
+    let dateShort2 = this.getDateString(date2.getFullYear(), date2.getMonth() + 1, date2.getDate());
+
+    this.selectedDates[this.getDateKey('calendar1', dateShort1)] = { dayNo: date1.getDate(), date: dateShort1, isDifferentMonth: false, isDisabled: false, isSelected: true, isCurrentDate: this.isCurrentDate(dateShort1) };
+    this.selectedDates[this.getDateKey('calendar2', dateShort2)] = { dayNo: date1.getDate(), date: dateShort2, isDifferentMonth: false, isDisabled: false, isSelected: true, isCurrentDate: this.isCurrentDate(dateShort2) };
+
+    this.updateSelectedDates();
+    this.updateSelecteDateCalendar();
   }
 
-  onIntervalClick(intervalName:string){
+  private generateDates(intervalName: string): Date[] {
     let currentDate = new Date();
     let date1 = new Date();
     let date2 = new Date();
     switch (intervalName) {
-      case 'Today':
+      case settings_appointment_search_by_date_option.daterange:
+        let keys = Object.keys(this.selectedDates);
+        date1 = new Date(this.selectedDates[keys[0]].date);
+        date2 = new Date(this.selectedDates[keys[1]].date);;
+        break;
+      case 'today':
         date1 = currentDate;
         date2 = currentDate;
         break;
-      case 'Tomorrow':
+      case 'tomorrow':
         date1.setDate(currentDate.getDate() + 1);
         date2.setDate(currentDate.getDate() + 1);
         break;
-      case 'This Week':
+      case 'this_week':
         date1.setDate(currentDate.getDate() - currentDate.getDay());
         date2.setDate(currentDate.getDate() + (6 - currentDate.getDay()));
         break;
-      case 'Next Week':
-        date1.setDate(currentDate.getDate() + (7 - currentDate.getDay()));
-        date2.setDate(currentDate.getDate() + (13 - currentDate.getDay()));
-        break;
-      case 'This Month':
+
+      case 'this_month':
         date1.setDate(1);
         date2.setDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate());
         break;
-      case 'Next Month':
-        date1.setDate(1);
-        date1.setMonth(currentDate.getMonth() + 1);
-        date2.setDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 2, 0).getDate());
-        date2.setMonth(currentDate.getMonth() + 1);
+      case 'alltime':
         break;
       default:
         break;
     }
-    this.initCalendar(date1, date2, {});
+    return [date1, date2];
+  }
+  onIntervalClick(intervalName: string) {
+    this.selectedPeriod = intervalName;
+
+    if (this.selectedPeriod == 'alltime') {
+      this.DatePeriodChanged.emit(this.selectedPeriod);
+      return;
+    }
+
+    let dates = this.generateDates(intervalName);
+
+    let date1 = dates[0];
+    let date2 = dates[1];
+
+    let dateShort1 = this.getDateString(date1.getFullYear(), date1.getMonth() + 1, date1.getDate());
+    let dateShort2 = this.getDateString(date2.getFullYear(), date2.getMonth() + 1, date2.getDate());
+
+    this.selectedDates[this.getDateKey('calendar1', dateShort1)] = { dayNo: date1.getDate(), date: dateShort1, isDifferentMonth: false, isDisabled: false, isSelected: true, isCurrentDate: this.isCurrentDate(dateShort1) };
+    this.selectedDates[this.getDateKey('calendar2', dateShort2)] = { dayNo: date1.getDate(), date: dateShort2, isDifferentMonth: false, isDisabled: false, isSelected: true, isCurrentDate: this.isCurrentDate(dateShort2) };
+
+    this.updateSelectedDates();
+    this.updateSelecteDateCalendar();
+
+    this.DatePeriodChanged.emit(this.selectedPeriod);
+
   }
   onClickPreviousMonth() {
     if (this.calendar1Month - 1 < 1) {
@@ -107,6 +150,7 @@ export class MultiCalendarComponent implements OnInit {
       this.calendar2Month--;
     }
     this.updateCalendar();
+    this.updateSelecteDateCalendar();
 
   }
 
@@ -124,15 +168,25 @@ export class MultiCalendarComponent implements OnInit {
       this.calendar2Month++;
     }
     this.updateCalendar();
+    this.updateSelecteDateCalendar();
   }
+  onCancelDateRangeFilter() {
+    this.CancelDateSelection.emit();
+  }
+  onApplyFilterByDateRange() {
+    this.selectedPeriod = settings_appointment_search_by_date_option.daterange;
+    this.DateSelectionChanged.emit(this.selectedDates);
+  }
+  get isValidDateRange() {
+    return Object.keys(this.selectedDates).length == 2;
+  }
+  onSelectedDay(calendar: string, day: IDay) {
 
-  selectDate(calendar: string, day: IDay) {
-    
     const key = this.getDateKey(calendar, day.date);
     this.selectedDates[key] = day;
-    
+
     const keys = Object.keys(this.selectedDates);
-    
+
     if (keys.length > 2) {
       this.selectedDates[keys[0]].isSelected = false;
       this.selectedDates[keys[1]].isSelected = false;
@@ -149,11 +203,10 @@ export class MultiCalendarComponent implements OnInit {
 
     }
     this.updateSelecteDateCalendar();
-    this.SelectedDatesChanged.emit(this.selectedDates);
-
   }
+
   private getDateKey(calendar: string, date: string) {
-    return `${calendar}-${date}`;
+    return `${calendar}:${date}`;
   }
 
   private updateCalendar() {
@@ -161,10 +214,6 @@ export class MultiCalendarComponent implements OnInit {
     this.calendar2MonthName = `${this.months[this.calendar2Month - 1]} ${this.calendar2Year}`;
     this.updateCalendar1();
     this.updateCalendar2();
-    if (Object.keys(this.selectedDates).length == 0) {
-      this.setCalendarDateAsDefault();
-    }
-    this.updateSelecteDateCalendar();
   }
   private updateCalendar1() {
     this.calendar1 = this.generateCalendar(this.calendar1Year, this.calendar1Month);
@@ -248,25 +297,42 @@ export class MultiCalendarComponent implements OnInit {
     let selectedDate = new Date(date);
     return currentDate.getFullYear() == selectedDate.getFullYear() && currentDate.getMonth() == selectedDate.getMonth() && currentDate.getDate() == selectedDate.getDate();
   }
-  private setCalendarDateAsDefault() {
+  private updateSelectedDates() {
+
+    let keys = Object.keys(this.selectedDates);
+    keys.forEach((key) => {
+      let calendar = key.split(':')[0];
+      let date = key.split(':')[1];
+
+      this.calendar1.forEach((week) => {
+        week.forEach((weekDay) => {
+          if (weekDay.date == date) {
+            weekDay.isSelected = true;
+            this.selectedDates[key] = weekDay;
+          }
+        });
+      });
+      this.calendar2.forEach((week) => {
+        week.forEach((weekDay) => {
+          if (weekDay.date == date) {
+            weekDay.isSelected = true;
+            this.selectedDates[key] = weekDay;
+          }
+        });
+      });
+    });
+  }
+  private resetSelectedDates() {
+    this.selectedDates = {};
     this.calendar1.forEach((week) => {
       week.forEach((weekDay) => {
-        if (weekDay.isCurrentDate) {
-          weekDay.isSelected = true;
-          let dateKey1 = this.getDateKey('calendar1', weekDay.date);
-          let dateKey2 = this.getDateKey('calendar2', weekDay.date);
-          this.selectedDates[dateKey1] = weekDay;
-          this.selectedDates[dateKey2] = weekDay;
-        }
+        weekDay.isSelected = false;
       });
     });
     this.calendar2.forEach((week) => {
       week.forEach((weekDay) => {
-        if (weekDay.isCurrentDate) {
-          weekDay.isSelected = true;
-        }
+        weekDay.isSelected = false;
       });
     });
-
   }
 }
