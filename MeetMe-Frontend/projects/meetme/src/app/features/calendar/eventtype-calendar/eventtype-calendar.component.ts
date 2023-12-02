@@ -212,7 +212,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       const isArrayResponse = Array.isArray(value);
       if (isArrayResponse && value.length == 0) continue;
 
-      const response = isArrayResponse ? (value as string[]).join(",") : (value as string).toString();
+      const response = isArrayResponse ? (value as string[]).join(" , ") : (value as string).toString();
       const questionName = this.eventTypeQuestions.find(e => e.id == key)?.name!;
       questionoareResponseItemDtos.push({ questionId: key,questionName:questionName, answer: response, isMultipleChoice: isArrayResponse });
     

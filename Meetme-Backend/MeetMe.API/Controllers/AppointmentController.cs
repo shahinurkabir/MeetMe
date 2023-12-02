@@ -100,6 +100,26 @@ namespace MeetMe.API.Controllers
                 scheduleEventSearchParameters.StartDate = scheduleEventSearchParameters.StartDate?.ToUniversalTime();
                 scheduleEventSearchParameters.EndDate = scheduleEventSearchParameters.EndDate?.ToUniversalTime();
             }
+            else if (scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.Today)
+            {
+                scheduleEventSearchParameters.StartDate = currentTimeUtc.Date;
+                scheduleEventSearchParameters.EndDate = currentTimeUtc.Date.AddDays(1);
+            }
+            else if (scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.Tomorrow)
+            {
+                scheduleEventSearchParameters.StartDate = currentTimeUtc.Date.AddDays(1);
+                scheduleEventSearchParameters.EndDate = currentTimeUtc.Date.AddDays(2);
+            }
+            else if (scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.ThisWeek)
+            {
+                scheduleEventSearchParameters.StartDate = currentTimeUtc.Date.AddDays(-(int)currentTimeUtc.DayOfWeek);
+                scheduleEventSearchParameters.EndDate = currentTimeUtc.Date.AddDays(-(int)currentTimeUtc.DayOfWeek + 7);
+            }
+            else if (scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.ThisMonth)
+            {
+                scheduleEventSearchParameters.StartDate = new DateTime(currentTimeUtc.Year, currentTimeUtc.Month, 1);
+                scheduleEventSearchParameters.EndDate = new DateTime(currentTimeUtc.Year, currentTimeUtc.Month, 1).AddMonths(1);
+            }
             var command = new AppointmentListQuery
             {
                 SearchParameters = scheduleEventSearchParameters,
