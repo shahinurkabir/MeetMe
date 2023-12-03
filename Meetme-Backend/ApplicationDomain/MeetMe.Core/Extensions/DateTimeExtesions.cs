@@ -9,11 +9,11 @@ namespace MeetMe.Core.Extensions
     public static class DateTimeExtesions
     {
 
-        public static (DateTime,DateTime) GetPastTimeByTimeZone(string timeZoneName)
+        public static (DateTime, DateTime) GetPastTimeByTimeZone(string timeZoneName)
         {
             TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZoneName);
             DateTime currentDate = TimeZoneInfo.ConvertTime(DateTime.Now, timeZoneInfo);
-            DateTime pastDate = currentDate.AddDays(-1);
+            DateTime pastDate = currentDate.AddMinutes(-1);
             DateTime startDateTime = DateTime.MinValue;
             DateTime endDateTime = new DateTime(pastDate.Year, pastDate.Month, pastDate.Day, 23, 59, 59);
 
@@ -23,7 +23,7 @@ namespace MeetMe.Core.Extensions
         {
             TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZoneName);
             DateTime currentDate = TimeZoneInfo.ConvertTime(DateTime.Now, timeZoneInfo);
-            DateTime upcomingDate = currentDate.AddDays(1);
+            DateTime upcomingDate = currentDate.AddMinutes(1);
             DateTime startDateTime = new DateTime(upcomingDate.Year, upcomingDate.Month, upcomingDate.Day, 0, 0, 0);
             DateTime endDateTime = DateTime.MaxValue;
 
@@ -67,18 +67,18 @@ namespace MeetMe.Core.Extensions
             return (startDateTime.ToUniversalTime(), endDateTime.ToUniversalTime());
         }
 
-        public static (DateTime,DateTime) GetDateRangeByTimeZone(string timeZoneName,DateTime startDate,DateTime endDate)
+        public static (DateTime, DateTime) GetDateRangeByTimeZone(string timeZoneName, DateTime startDate, DateTime endDate)
         {
             TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZoneName);
             DateTime startDateTime = TimeZoneInfo.ConvertTime(startDate, timeZoneInfo);
             DateTime endDateTime = TimeZoneInfo.ConvertTime(endDate, timeZoneInfo);
-            
-            if (startDateTime==endDateTime)
+
+            if (startDateTime == endDateTime)
             {
                 endDateTime = endDateTime.AddDays(1);
             }
 
-            return (startDateTime.ToUniversalTime(),endDateTime.ToUniversalTime());
+            return (startDateTime.ToUniversalTime(), endDateTime.ToUniversalTime());
         }
         public static string ToTimeZoneFormattedText(this DateTime dateTime, string format, string timeZomeId)
         {

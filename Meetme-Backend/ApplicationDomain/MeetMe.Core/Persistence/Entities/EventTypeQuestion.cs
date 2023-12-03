@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace MeetMe.Core.Persistence.Entities
 {
@@ -14,6 +15,7 @@ namespace MeetMe.Core.Persistence.Entities
         public bool RequiredYN { get; set; }
         public short DisplayOrder { get; set; }
         public bool SystemDefinedYN { get; set; }
+        [JsonIgnore]
         public EventType? EventType { get; set; } 
     }
 }

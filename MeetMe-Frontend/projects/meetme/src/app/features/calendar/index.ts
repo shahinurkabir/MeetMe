@@ -6,7 +6,7 @@ import { AppointmentCancelComponent } from "./appointment-cancel/appointment-can
 
 export const calendar_Routes: Routes = [
     { path: ":user", component: UserCalendarListComponent },
-    { path: ":user/:slug", component: EventTypeCalendarComponent },
+    { path: ":user/:event-slug", component: EventTypeCalendarComponent },
     { path: "booking/:user/:slug/:id/view", component: AppointmentDetailComponent },
     { path: "booking/:user/:slug/:id/cancellation", component: AppointmentCancelComponent },
     { path: "booking/:user/:slug/:id/reschedule", component: EventTypeCalendarComponent },

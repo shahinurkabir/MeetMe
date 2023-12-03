@@ -38,6 +38,7 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
     bufferTimeAfter: 0,
     bufferTimeBefore: 0,
     timeZone: "",
+    questions: []
   };
   forwardDurationInDays: number = 30;
 

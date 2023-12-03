@@ -86,8 +86,8 @@ export class EventTypeService extends DataService {
     return this.doPut(url, null);
   }
 
-  getEventAvailabilityCalendar(eventTypeId: string, timezone: string, from: string, to: string): Observable<Array<IEventTimeAvailability>> {
-    let url: string = `${this.eventTypeURI}/${eventTypeId}/calendar-availability?timezone=${timezone}&from=${from}&to=${to}`
+  getEventAvailabilityCalendar(event_slug: string, timezone: string, from: string, to: string): Observable<Array<IEventTimeAvailability>> {
+    let url: string = `${this.eventTypeURI}/calendar-availability?eventslug=${event_slug}&timezone=${timezone}&from=${from}&to=${to}`
     return this.doGet(url)
 }
 }

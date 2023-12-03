@@ -26,6 +26,7 @@ export class EventInfoNewComponent implements OnInit, OnDestroy {
     bufferTimeAfter: 0,
     bufferTimeBefore: 0,
     timeZone: "",
+    questions: []
   };
   constructor(private location: Location) { }
 

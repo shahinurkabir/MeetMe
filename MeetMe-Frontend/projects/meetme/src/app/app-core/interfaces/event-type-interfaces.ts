@@ -17,7 +17,8 @@ export interface IEventType {
     duration: number,
     bufferTimeBefore: number,
     bufferTimeAfter: number,
-    timeZone: string
+    timeZone: string,
+    questions: IEventTypeQuestion[],
     
 }
 

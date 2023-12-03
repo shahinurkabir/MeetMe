@@ -145,10 +145,10 @@ namespace MeetMe.API.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("{id}/calendar-availability")]
-        public async Task<List<TimeSlotRangeDto>> AvailabilityByEventType(Guid id, string timezone, string from, string to)
+        [Route("calendar-availability")]
+        public async Task<List<TimeSlotRangeDto>> AvailabilityByEventType(string eventslug, string timezone, string from, string to)
         {
-            var command = new TimeSlotRangeQuery { EventTypeId = id, TimeZone = timezone, FromDate = from, ToDate = to };
+            var command = new TimeSlotRangeQuery { EventTypeSlug = eventslug, TimeZone = timezone, FromDate = from, ToDate = to };
 
             var result = await mediator.Send(command);
             return result;

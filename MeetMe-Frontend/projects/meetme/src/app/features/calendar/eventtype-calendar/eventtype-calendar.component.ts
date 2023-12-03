@@ -20,7 +20,8 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   selectedYear: number = 0;
   selectedMonth: number = 0;
   is24HourFormat: boolean = false;
-  eventTypeId: string = "";
+  //eventTypeId: string = "";
+  event_slug: string = "";
   selectedTimeZoneName: string = "";
   selectedDate: string | null = null;
   selectedYearMonth: string | null = null;
@@ -32,7 +33,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   submitted: boolean = false;
   isSubmitting: boolean = false;
   isAppointmentCreated: boolean = false;
-  eventTypeAvailability: IEventAvailabilityDetailItemDto[] = [];
+  //eventTypeAvailability: IEventAvailabilityDetailItemDto[] = [];
   eventTypeQuestions: IEventTypeQuestion[] = [];
   selectedCheckBoxes: any = {};
   formAppoinmentEntry: FormGroup;
@@ -60,10 +61,11 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.eventTypeId = this.route.snapshot.queryParamMap.get("id") ?? "";
+    //this.eventTypeId = this.route.snapshot.queryParamMap.get("id") ?? "";
     this.selectedDate = this.route.snapshot.queryParamMap.get('date') ?? "";
     this.selectedYearMonth = this.route.snapshot.queryParamMap.get("month");
     this.eventTypeOwner = this.route.snapshot.paramMap.get("user") ?? "";
+    this.event_slug = this.route.snapshot.paramMap.get("event-slug") ?? "";
 
     this.initializeRouteParameters();
     this.loadEventDetails();
@@ -142,7 +144,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     const questionnaireResponseContent = this.getQuestionnaireResponseContent(questionnaireFormGroupRowValues);
 
     let command: ICreateAppointmentCommand = {
-      eventTypeId: this.eventTypeId,
+      eventTypeId: this.eventTypeInfo?.id!,
       inviteeName: this.formAppoinmentEntry.get('inviteeName')?.value,
       inviteeEmail: this.formAppoinmentEntry.get('inviteeEmail')?.value,
       inviteeTimeZone: this.selectedTimeZoneName!,
@@ -230,7 +232,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   }
 
   private initializeRouteParameters(): void {
-    this.eventTypeId = this.route.snapshot.queryParamMap.get("id") || "";
+   // this.eventTypeId = this.route.snapshot.queryParamMap.get("id") || "";
     this.selectedDate = this.route.snapshot.queryParamMap.get('date') || "";
     this.selectedYearMonth = this.route.snapshot.queryParamMap.get("month") || "";
     this.eventTypeOwner = this.route.snapshot.paramMap.get("user") || "";
@@ -287,18 +289,18 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
   private loadEventDetails() {
     forkJoin([
-      this.eventTypeService.getById(this.eventTypeId),
-      this.eventTypeService.getEventAvailability(this.eventTypeId),
-      this.eventTypeService.getEventQuetions(this.eventTypeId),
+      this.eventTypeService.getBySlugName(this.event_slug),
+      //this.eventTypeService.getEventAvailability(this.eventTypeId),
+      //this.eventTypeService.getEventQuetions(this.eventTypeId),
       this.accountService.getProfileByUserName(this.eventTypeOwner)
     ])
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (response) => {
           this.eventTypeInfo = response[0];
-          this.eventTypeAvailability = response[1];
-          this.eventTypeQuestions = response[2];
-          this.eventTypeOwnerInfo = response[3];
+          //this.eventTypeAvailability = response[1];
+          this.eventTypeQuestions = response[0].questions;
+          this.eventTypeOwnerInfo = response[1];
         },
         error: (error) => { console.log(error) },
         complete: () => {
@@ -344,24 +346,12 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     }
 
     this.fetchCalendarAvailability(fromDate, toDate);
-
-    // this.eventTypeService.getCalendarAvailability(this.eventTypeId, this.selectedTimeZoneName, fromDate, toDate)
-    //   .pipe(takeUntil(this.destroyed$))
-    //   .subscribe({
-    //     next: (response) => {
-    //       this.availableTimeSlots = response;
-    //       this.updateTimeLocalTime();
-    //       this.disableNotAvailableDays(fromDate, toDate, response);
-    //       this.showAvailableTimeSlotsInDay();
-    //     },
-    //     error: (error) => { console.log(error) },
-    //     complete: () => { }
-    //   });
+    
   }
 
   private fetchCalendarAvailability(fromDate: string, toDate: string): void {
     this.eventTypeService
-      .getEventAvailabilityCalendar(this.eventTypeId, this.selectedTimeZoneName, fromDate, toDate)
+      .getEventAvailabilityCalendar(this.event_slug, this.selectedTimeZoneName, fromDate, toDate)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (response) => {
@@ -396,7 +386,12 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   }
 
   private showAvailableTimeSlotsInDay() {
+
     if (!this.selectedDate) return;
+
+    const earlierDate = new Date(this.selectedDate);
+    if (earlierDate.getMonth() != this.selectedMonth || earlierDate.getFullYear() != this.selectedYear) return;
+   
     this.selectedDayAvailabilities = this.availableTimeSlots.find(e => e.date == this.selectedDate);
   }
 

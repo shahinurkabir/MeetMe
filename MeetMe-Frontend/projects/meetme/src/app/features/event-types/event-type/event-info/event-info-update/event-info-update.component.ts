@@ -27,6 +27,7 @@ export class EventInfoUpdateComponent implements OnInit, OnDestroy {
     bufferTimeAfter: 0,
     bufferTimeBefore: 0,
     timeZone: "",
+    questions: []
   };
   constructor(
     private eventTypeService: EventTypeService,

@@ -3,6 +3,7 @@ using MediatR;
 using MeetMe.Application.EventTypes.Dtos;
 using MeetMe.Core.Constants;
 using MeetMe.Core.Dtos;
+using MeetMe.Core.Exceptions;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
 using System;
@@ -15,7 +16,7 @@ namespace MeetMe.Application.EventTypes.Queries
 {
     public class TimeSlotRangeQuery : IRequest<List<TimeSlotRangeDto>>
     {
-        public Guid EventTypeId { get; set; }
+        public string EventTypeSlug { get; set; }=null!;
         public string TimeZone { get; set; } = null!;
         public string FromDate { get; set; } = null!;
         public string ToDate { get; set; } = null!;
@@ -34,9 +35,11 @@ namespace MeetMe.Application.EventTypes.Queries
         {
             var (dateFromUTC, dateToUTC) = ConvertToUniversalTime(request.FromDate, request.ToDate, request.TimeZone);
 
-            var eventTypeEntity = await persistenceProvider.GetEventTypeById(request.EventTypeId);
+            var eventTypeEntity = await persistenceProvider.GetEventTypeBySlug(request.EventTypeSlug);
             
-            var listOfAppointmentsBooked = await persistenceProvider.GetAppointmentListByEventType(request.EventTypeId, dateFromUTC, dateToUTC);
+            if (eventTypeEntity == null) throw new MeetMeException("Event type not found");
+
+            var listOfAppointmentsBooked = await persistenceProvider.GetAppointmentListByEventType(eventTypeEntity.Id, dateFromUTC, dateToUTC);
             
             var bufferTimeInMinute = eventTypeEntity!.BufferTimeAfter;
             var meetingDuration = eventTypeEntity.Duration;

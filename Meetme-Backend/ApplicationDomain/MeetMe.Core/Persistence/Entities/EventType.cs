@@ -36,7 +36,7 @@ namespace MeetMe.Core.Persistence.Entities
         public DateTime? UpdatedAt { get; set; }
         public Guid? UpdatedBy { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public List<EventTypeQuestion> Questions { get; set; } = null!;
 
         [JsonIgnore]
