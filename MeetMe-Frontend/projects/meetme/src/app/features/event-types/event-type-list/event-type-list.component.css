@@ -1,7 +1,10 @@
+
 .event-list-header {
     display: flex;
     justify-content: space-between;
-    margin: 20px;
+    align-items: center;
+    /* margin: 20px; */
+    /* background-color: var(--secondary-color); */
 
 }
 
@@ -11,12 +14,12 @@
     justify-content: flex-start;
     align-items: flex-start;
 }
-
+/* 
 .event-list-header .user-info h3 {
     font-size: 20px;
     font-weight: bold;
-}
-
+} */
+/* 
 .event-list-header .user-info a {
     color: rgb(52, 52, 226);
     text-decoration: none;
@@ -28,13 +31,13 @@
 
 .event-list-header .user-info a:visited {
     color: rgb(52, 52, 226);
-}
-
+} */
+/* 
 hr {
     height: 1px;
     border: 1px solid whitesmoke;
     margin: 15px;
-}
+} */
 
 .event-list-container {
     display: flex;

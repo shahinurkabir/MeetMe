@@ -124,6 +124,9 @@ nav ul li a.is-active {
     margin: 10px 0;
 
 }
+.meetme-card.secondary {
+    background-color: var(--secondary-color);
+}
 .user-pic {
     width: 50px;
     height: 50px;
@@ -249,6 +252,7 @@ nav ul li a.is-active {
     padding: 5px 23px;
     transition: all .3s;
     cursor: pointer;
+    height: 28px;
 }
 button:hover {
     box-shadow: 0 0 5px rgba(0,0,0,.3);

@@ -20,8 +20,8 @@ namespace MeetMe.Core.Dtos
         /// D:Date Range
         /// </summary>
         public string? Period { get; set; } 
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         /// <summary>
         /// A:All

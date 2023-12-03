@@ -47,7 +47,7 @@ namespace MeetMe.Core.Constants
             public const string Upcoming = "upcoming";
             public const string DateRange = "daterange";
             public const string Today = "today";
-            public const string Tomorrow = "tomorrrow";
+            public const string Tomorrow = "tomorrow";
             public const string ThisWeek = "this_week";
             public const string ThisMonth = "this_month";
         }

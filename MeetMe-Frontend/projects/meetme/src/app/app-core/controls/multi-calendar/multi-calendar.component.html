@@ -9,7 +9,7 @@
 <div class="calendars-container">
     <div class="calendar-item-container">
         <div class="calendar-header">
-            <button class="button primary" (click)="onClickPreviousMonth()">&lt;</button>
+            <button class="month-navigation-button" (click)="onClickPreviousMonth()">&lt;</button>
             <h2>{{calendar1MonthName}}</h2>
         </div>
         <table>
@@ -21,7 +21,7 @@
             <tbody>
                 <tr *ngFor="let week of calendar1">
                     <td *ngFor="let day of week" (click)="onSelectedDay('calendar1', day)">
-                        <button class="button " [class.special]="day.isSelected"
+                        <button class="calendar-day-button " [class.special]="day.isSelected"
                             [class.isDifferentMonth]="day.isDifferentMonth"> {{ day.dayNo
                             }}</button>
                     </td>
@@ -33,7 +33,7 @@
     <div class="calendar-item-container">
         <div class="calendar-header">
             <h2>{{calendar2MonthName}}</h2>
-            <button class="button primary" (click)="onClickNextMonth()">&gt;</button>
+            <button class="month-navigation-button" (click)="onClickNextMonth()">&gt;</button>
 
         </div>
         <table>
@@ -45,7 +45,7 @@
             <tbody>
                 <tr *ngFor="let week of calendar2">
                     <td *ngFor="let day of week" (click)="onSelectedDay('calendar2', day)">
-                        <button class="button" [class.special]="day.isSelected"
+                        <button class="calendar-day-button" [class.special]="day.isSelected"
                             [class.isDifferentMonth]="day.isDifferentMonth"> {{ day.dayNo
                             }}</button>
                     </td>

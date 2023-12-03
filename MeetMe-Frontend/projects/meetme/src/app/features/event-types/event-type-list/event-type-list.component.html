@@ -1,45 +1,47 @@
-<h3>All Events</h3>
-<div class="event-list-header">
-    <div class="user-info">
-        <h3>{{user_name}}</h3>
-        <a target="_blank" [routerLink]="['/calendar',baseUri]">
-            {{host}}/{{baseUri}}
-        </a>
-    </div>
-    <button class="btn btn-primary" (click)="onAddNew()"> Add Events</button>
-
-</div>
-<hr>
-<div class="event-list-container">
-    <div class="event-list-item" *ngFor="let item of listEventTypes" [ngStyle]="getDynamicStyle(item)">
-        <div class="header">
-            <h3>{{item.name}}</h3>
-            <button class="button" (click)="onEdit(item.id)">Edit</button>
-        </div>
-        <div class="time-location">
-            <span>Duration {{item.duration}} minutes </span>
-        </div>
-        <hr>
-        <article>{{item.description}}
-
-        </article>
-        <div class="footer">
-            <button class="button" (click)="onToggleActive(item)">
-                {{item.activeYN? 'OFF' : 'ON'}}
-            </button>
-            <button class="button" (click)="onClone(item)">
-                Clone
-            </button>
-            <button class="button" (click)="onClickDelete(item)">
-                Delete
-            </button>
-            <a target="_blank" [routerLink]="['/calendar',baseUri,item.slug]" [queryParams]="{id:item.id}">
-                Preview
+<h1>All Events</h1>
+<div class="meetme-card secondary">
+    <div class="event-list-header">
+        <div class="user-info">
+            <h3>{{user_name}}</h3>
+            <a target="_blank" [routerLink]="['/calendar',baseUri]">
+                {{host}}/{{baseUri}}
             </a>
         </div>
+        <button class="primary" (click)="onAddNew()"> Add Events</button>
+
     </div>
 </div>
+<div class="meetme-card">
+    <div class="event-list-container">
+        <div class="event-list-item" *ngFor="let item of listEventTypes" [ngStyle]="getDynamicStyle(item)">
+            <div class="header">
+                <h3>{{item.name}}</h3>
+                <button class="button" (click)="onEdit(item.id)">Edit</button>
+            </div>
+            <div class="time-location">
+                <span>Duration {{item.duration}} minutes </span>
+            </div>
+            <hr>
+            <article>{{item.description}}
 
+            </article>
+            <div class="footer">
+                <button class="button" (click)="onToggleActive(item)">
+                    {{item.activeYN? 'OFF' : 'ON'}}
+                </button>
+                <button class="button" (click)="onClone(item)">
+                    Clone
+                </button>
+                <button class="button" (click)="onClickDelete(item)">
+                    Delete
+                </button>
+                <a target="_blank" [routerLink]="['/calendar',baseUri,item.slug]" [queryParams]="{id:item.id}">
+                    Preview
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 <mm-modal id="delete-eventtype-modal" title="Delete Event Type-" (confirmEvent)="onDelete($event)"
     (cancelEvent)="onCloseModal()">
     <h2>Are you sure want to delete?</h2>

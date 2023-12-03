@@ -24,10 +24,18 @@
 .is-periodSelected {
    
 }
-.button {
+button.month-navigation-button {
     width: 30px;
     padding: 2px;
     margin: 1px;
+    //border: 1px solid var(--secondary-color);
+    border-radius: 4px;
+    background-color: var(--primary-color);
+}
+button.calendar-day-button {
+    width: 30px;
+    padding: 2px;
+   // margin: 1px;
     border: 1px solid var(--secondary-color);
     border-radius: 4px;
 }

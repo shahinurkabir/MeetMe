@@ -4,6 +4,7 @@ using MeetMe.Application.Calendars.Commands;
 using MeetMe.Application.Calendars.Quaries;
 using MeetMe.Core.Constants;
 using MeetMe.Core.Dtos;
+using MeetMe.Core.Extensions;
 using MeetMe.Core.Interface;
 using MeetMe.Core.Persistence.Entities;
 using MeetMe.Core.Persistence.Interface;
@@ -77,56 +78,53 @@ namespace MeetMe.API.Controllers
         [Route("schedule-event")]
         public async Task<AppointmentsPaginationResult> ScheduleEvents([FromQuery] AppointmentSearchParametersDto scheduleEventSearchParameters)
         {
-            var loginUserId = loginUserInfo.Id;
             scheduleEventSearchParameters.OwnerId = loginUserInfo.Id;
             scheduleEventSearchParameters.TimeZone = loginUserInfo.TimeZone;
 
-            var currentTimeUtc = DateTime.UtcNow;
-
-          
             if (string.IsNullOrWhiteSpace(scheduleEventSearchParameters.Period) ||
                scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.Upcoming)
             {
-                scheduleEventSearchParameters.StartDate = currentTimeUtc.AddMinutes(1);
-                scheduleEventSearchParameters.EndDate = DateTime.MaxValue;
+                var (startDay, endDay) = DateTimeExtesions.GetUpcomingTimeByTimeZone(loginUserInfo.TimeZone);
+                scheduleEventSearchParameters.StartDate = startDay;
+                scheduleEventSearchParameters.EndDate = endDay;
             }
             else if (scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.Past)
             {
-                scheduleEventSearchParameters.StartDate = DateTime.MinValue;
-                scheduleEventSearchParameters.EndDate = currentTimeUtc;
+                var (startDay, endDay) = DateTimeExtesions.GetPastTimeByTimeZone(loginUserInfo.TimeZone);
+                scheduleEventSearchParameters.StartDate = startDay;
+                scheduleEventSearchParameters.EndDate = endDay;
             }
             else if (scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.DateRange)
             {
-                scheduleEventSearchParameters.StartDate = scheduleEventSearchParameters.StartDate?.ToUniversalTime();
-                scheduleEventSearchParameters.EndDate = scheduleEventSearchParameters.EndDate?.ToUniversalTime();
+                var (startDay, endDay) = DateTimeExtesions.GetDateRangeByTimeZone(loginUserInfo.TimeZone, scheduleEventSearchParameters.StartDate, scheduleEventSearchParameters.EndDate);
+                scheduleEventSearchParameters.StartDate = startDay;
+                scheduleEventSearchParameters.EndDate = endDay;
 
-                // both date are same then add one day to end date
-                if (scheduleEventSearchParameters.StartDate.HasValue && scheduleEventSearchParameters.EndDate.HasValue &&
-                                       scheduleEventSearchParameters.StartDate.Value.Date == scheduleEventSearchParameters.EndDate.Value.Date)
-                {
-                    scheduleEventSearchParameters.EndDate = scheduleEventSearchParameters.EndDate.Value.AddDays(1);
-                }
-                
             }
             else if (scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.Today)
             {
-                scheduleEventSearchParameters.StartDate = currentTimeUtc;
-                scheduleEventSearchParameters.EndDate = currentTimeUtc.AddDays(1);
+                var (startDay, endDay) = DateTimeExtesions.GetTodayTimeByTimeZone(loginUserInfo.TimeZone);
+                scheduleEventSearchParameters.StartDate = startDay;
+                scheduleEventSearchParameters.EndDate = endDay;
             }
             else if (scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.Tomorrow)
             {
-                scheduleEventSearchParameters.StartDate = currentTimeUtc.AddDays(1);
-                scheduleEventSearchParameters.EndDate = currentTimeUtc.AddDays(2);
+                var (startDay, endDay) = DateTimeExtesions.GetTomorrowTimeByTimeZone(loginUserInfo.TimeZone);
+                scheduleEventSearchParameters.StartDate = startDay;
+                scheduleEventSearchParameters.EndDate = endDay;
             }
             else if (scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.ThisWeek)
             {
-                scheduleEventSearchParameters.StartDate = currentTimeUtc.AddDays(-(int)currentTimeUtc.DayOfWeek);
-                scheduleEventSearchParameters.EndDate = currentTimeUtc.AddDays(-(int)currentTimeUtc.DayOfWeek + 7);
+                var (startDay, endDay) = DateTimeExtesions.GetThisWeekTimeByTimeZone(loginUserInfo.TimeZone);
+
+                scheduleEventSearchParameters.StartDate = startDay;
+                scheduleEventSearchParameters.EndDate = endDay;
             }
             else if (scheduleEventSearchParameters.Period == Events.AppointmentSearchByDate.ThisMonth)
             {
-                scheduleEventSearchParameters.StartDate = new DateTime(currentTimeUtc.Year, currentTimeUtc.Month, 1);
-                scheduleEventSearchParameters.EndDate = new DateTime(currentTimeUtc.Year, currentTimeUtc.Month, 1).AddMonths(1);
+                var (startDay, endDay) = DateTimeExtesions.GetThisMonthTimeByTimeZone(loginUserInfo.TimeZone);
+                scheduleEventSearchParameters.StartDate = startDay;
+                scheduleEventSearchParameters.EndDate = endDay;
             }
             var command = new AppointmentListQuery
             {
