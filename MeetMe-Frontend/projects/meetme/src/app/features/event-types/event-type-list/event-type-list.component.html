@@ -35,7 +35,7 @@
                 <button class="button" (click)="onClickDelete(item)">
                     Delete
                 </button>
-                <a target="_blank" [routerLink]="['/calendar',baseUri,item.slug]" [queryParams]="{id:item.id}">
+                <a target="_blank" [routerLink]="['/calendar',baseUri,item.slug]">
                     Preview
                 </a>
             </div>

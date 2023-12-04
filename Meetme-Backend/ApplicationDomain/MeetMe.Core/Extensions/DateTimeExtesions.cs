@@ -15,7 +15,7 @@ namespace MeetMe.Core.Extensions
             DateTime currentDate = TimeZoneInfo.ConvertTime(DateTime.Now, timeZoneInfo);
             DateTime pastDate = currentDate.AddMinutes(-1);
             DateTime startDateTime = DateTime.MinValue;
-            DateTime endDateTime = new DateTime(pastDate.Year, pastDate.Month, pastDate.Day, 23, 59, 59);
+            DateTime endDateTime = pastDate;
 
             return (startDateTime.ToUniversalTime(), endDateTime.ToUniversalTime());
         }
@@ -23,8 +23,7 @@ namespace MeetMe.Core.Extensions
         {
             TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZoneName);
             DateTime currentDate = TimeZoneInfo.ConvertTime(DateTime.Now, timeZoneInfo);
-            DateTime upcomingDate = currentDate.AddMinutes(1);
-            DateTime startDateTime = new DateTime(upcomingDate.Year, upcomingDate.Month, upcomingDate.Day, 0, 0, 0);
+            DateTime startDateTime = currentDate.AddMinutes(1);
             DateTime endDateTime = DateTime.MaxValue;
 
             return (startDateTime.ToUniversalTime(), endDateTime.ToUniversalTime());

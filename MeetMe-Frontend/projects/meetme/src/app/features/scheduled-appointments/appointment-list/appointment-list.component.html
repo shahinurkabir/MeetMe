@@ -25,7 +25,7 @@
     <h2>Date Selection</h2>
     <hr>
     <div class="date-range-calendar-wrapper ">
-      
+
       <app-multi-calendar #multiCalendar (DateSelectionChanged)="onSelectedDatesChanged($event)"
         (DatePeriodChanged)="onDatePeriodChanged($event)" (CancelDateSelection)="onCancelDateSelection()">
       </app-multi-calendar>
@@ -45,7 +45,7 @@
       </div>
       <div *ngIf="filterByEventTypeYN" class="overlay">
         <div #eventTypesFilterWindow class="overlay-content">
-          <h2>Event Types</h2>
+          <h4>Event Types</h4>
           <hr>
           <form [formGroup]="entityTypesFilterForm" class="filter-by-checkbox-list">
             <div *ngFor="let entityTypeControl of entityTypeListControls; let i = index;"
@@ -78,7 +78,7 @@
       </div>
       <div *ngIf="filterByAppointmentStatusYN" class="overlay">
         <div #appointmentStatusByFilterWindow class="overlay-content">
-          <h2>Appointment Status</h2>
+          <h4>Appointment Status</h4>
           <hr>
           <form [formGroup]="statusListFilterForm" class="filter-by-checkbox-list">
             <div *ngFor="let statusControl of statusListControls; let i = index" formArrayName="statusList">
@@ -108,7 +108,7 @@
       </div>
       <div *ngIf="filterByInviteeEmailYN" class="overlay">
         <div #inviteeEmailByFilterWindow class="overlay-content">
-          <h2>Invitee Emails</h2>
+          <h4>Invitee Emails</h4>
           <!-- <form [formGroup]="statusListFilterForm">
             <div *ngFor="let statusControl of statusListControls; let i = index" formArrayName="statusList">
               <div [formGroupName]="i">
@@ -116,7 +116,7 @@
                 {{ statusControl.get('statusText')?.value }}
               </div>
             </div> -->
-            <hr>
+          <hr>
           <div class="actions">
             <button (click)="onCancelInviteeEmailFilter()">Cancel </button>
             <button (click)="onApplyInviteeEmailFilter()">Apply</button>
@@ -146,7 +146,10 @@
   </div>
   <ng-container *ngFor="let appointmentsByDate of appointmentsPaginationResult?.result; let i = index;">
     <div class="appointment-list-container">
-      <div class="appointment-date-name-title">{{appointmentsByDate.date}}</div>
+      <!-- <div class="appointment-date-name-title">{{appointmentsByDate.date}}</div> -->
+      <div class="appointment-date-name-title">
+        <h3>{{appointmentsByDate.date}}</h3>
+      </div>
       <ul>
         <li *ngFor="let appointment of appointmentsByDate.appointments; let i = index;">
 
@@ -181,7 +184,7 @@
 <ng-template #appointmentEventDetailsTemplate let-appointmentEventDetails="appointmentEventDetails">
   <div class="appointment-data-container">
     <div (click)="onToggleAppointmentDetails(appointmentEventDetails)" class="appointment-data-header-row">
-      <div class="event-type-circle-box event-color-{{appointmentEventDetails.eventTypeColor}}">1</div>
+      <div class="event-type-circle-box event-color-{{appointmentEventDetails.eventTypeColor}}"></div>
       <div [ngClass]="{'cancelled': appointmentEventDetails.status=='cancelled'}" class="appointment-time">
         {{appointmentEventDetails.appointmentTimeSlot}}</div>
 

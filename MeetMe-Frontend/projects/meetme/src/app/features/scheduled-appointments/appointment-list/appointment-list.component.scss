@@ -1,4 +1,3 @@
-
 /* Styling for the appointment header */
 .appointment-header {
   cursor: pointer;
@@ -64,11 +63,11 @@ textarea {
 .appointment-list-container {}
 
 .appointment-date-name-title {
+  padding: 10px 0 3px 0;
+}
+
+.appointment-date-name-title h3 {
   color: var(--primary-color);
-  font-weight: 700;
-  height: 46px;
-  border-top: 2px solid var(--secondary-color);
-  padding: 15px 0;
 }
 
 .appointment-data-container {}
@@ -295,15 +294,16 @@ textarea {
   z-index: 1;
 }
 
-.overlay-content {
-}
-.filter-by-checkbox-list{
+.overlay-content {}
+
+.filter-by-checkbox-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 10px;
   cursor: pointer;
 }
+
 .arrow-icon {
   display: inline-flex;
   margin-left: 6px;
