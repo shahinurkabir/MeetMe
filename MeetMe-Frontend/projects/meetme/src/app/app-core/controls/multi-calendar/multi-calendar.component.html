@@ -5,12 +5,11 @@
     <a [class.is-active]="selectedPeriod=='this_month'" (click)="onIntervalClick('this_month')">This Month</a>
     <a  (click)="onIntervalClick('alltime')">All Time</a>
 </div>
-<hr>
 <div class="calendars-container">
     <div class="calendar-item-container">
         <div class="calendar-header">
             <button class="month-navigation-button" (click)="onClickPreviousMonth()">&lt;</button>
-            <h2>{{calendar1MonthName}}</h2>
+            <h3>{{calendar1MonthName}}</h3>
         </div>
         <table>
             <thead>
@@ -32,7 +31,7 @@
 
     <div class="calendar-item-container">
         <div class="calendar-header">
-            <h2>{{calendar2MonthName}}</h2>
+            <h3>{{calendar2MonthName}}</h3>
             <button class="month-navigation-button" (click)="onClickNextMonth()">&gt;</button>
 
         </div>

@@ -1,3 +1,12 @@
+.meetme-card{
+  width: 70%;
+  transition: height 0.8s ease;
+  display: flex ;
+  margin: auto;
+}
+.meetme-card.full-width{
+    width: 100%;
+}
 .calendar-appointment-booking {
   display: flex;
   width: 100%;

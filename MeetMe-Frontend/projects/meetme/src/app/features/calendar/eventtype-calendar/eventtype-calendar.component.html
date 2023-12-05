@@ -1,182 +1,187 @@
-<div class="calendar-appointment-booking">
-  <!-- Event Info Section -->
-  <section class="event-info-section">
-    <h1>{{ eventTypeInfo?.name }}</h1>
-    <h2>{{ eventTypeOwnerInfo?.userName }}</h2>
-    <strong>&#8986;{{ eventTypeInfo?.duration }} minutes</strong>
-    <strong *ngIf="selectedTimeSlot">{{ selectedDateTime }}</strong>
-    <strong *ngIf="selectedTimeSlot">{{ selectedTimeZoneName }}</strong>
-  </section>
+<div [class.full-width]="selectedDate" class="meetme-card" >
+  <div class="calendar-appointment-booking">
+    <!-- Event Info Section -->
+    <section class="event-info-section">
+      <h1>{{ eventTypeInfo?.name }}</h1>
+      <h2>{{ eventTypeOwnerInfo?.userName }}</h2>
+      <strong>&#8986;{{ eventTypeInfo?.duration }} minutes</strong>
+      <strong *ngIf="selectedTimeSlot">{{ selectedDateTime }}</strong>
+      <strong *ngIf="selectedTimeSlot">{{ selectedTimeZoneName }}</strong>
+    </section>
 
-  <!-- Booking Wrapper -->
-  <section class="booking-wrapper">
-    <!-- Display when selectedTimeSlot is not available -->
-    <div [ngStyle]="{'display': !selectedTimeSlot ? 'block' : 'none', 'width': '100%'}">
-      <!-- Calendar and Time Slots Section -->
-      <div class="calendar-timeslots-wrapper">
-        <section class="calendar-section">
-          <app-calendar (handlerDateClick)="onCalendarDayClicked($event)" (handlerMonthChange)="onMonthChange($event)"
-            [allowMultipleSelection]="false"></app-calendar>
-          <app-timezone-control #timezoneControl [selectedTimeZone]="selectedTimeZone"
-            [showHourFormatChangeOption]="true" (dataLoaded)="onLoadedTimezoneData($event)"
-            (selectionChanged)="onChangedTimezone($event)"
-            (hourFormatChanged)="onChangedHourFormat($event)"></app-timezone-control>
-        </section>
-        <section class="timeslots-section">
-          <h2>{{ selectedDate }}</h2>
-          <div class="timeslots-wrapper">
-            <div class="time-slots">
-              <!-- First half of the day time slots -->
-              <button class="answerBtnsOff" (click)="onSelectedTimeSlot(slot)"
-                *ngFor="let slot of selectedDayAvailabilities?.slots! | filter:'isDaySecondHalf':false">
-                {{ slot.startTime }}
-              </button>
+    <!-- Booking Wrapper -->
+    <section class="booking-wrapper">
+      <!-- Display when selectedTimeSlot is not available -->
+      <div [ngStyle]="{'display': !selectedTimeSlot ? 'block' : 'none', 'width': '100%'}">
+        <!-- Calendar and Time Slots Section -->
+        <div class="calendar-timeslots-wrapper">
+          <section class="calendar-section">
+            <app-calendar (handlerDateClick)="onCalendarDayClicked($event)" (handlerMonthChange)="onMonthChange($event)"
+              [allowMultipleSelection]="false"></app-calendar>
+            <app-timezone-control #timezoneControl [selectedTimeZone]="selectedTimeZone"
+              [showHourFormatChangeOption]="true" (dataLoaded)="onLoadedTimezoneData($event)"
+              (selectionChanged)="onChangedTimezone($event)"
+              (hourFormatChanged)="onChangedHourFormat($event)"></app-timezone-control>
+          </section>
+          <section class="timeslots-section">
+            <h2>{{ selectedDate }}</h2>
+            <div class="timeslots-wrapper">
+              <div class="time-slots">
+                <!-- First half of the day time slots -->
+                <button class="answerBtnsOff" (click)="onSelectedTimeSlot(slot)"
+                  *ngFor="let slot of selectedDayAvailabilities?.slots! | filter:'isDaySecondHalf':false">
+                  {{ slot.startTime }}
+                </button>
+              </div>
+              <div class="time-slots">
+                <!-- Second half of the day time slots -->
+                <button class="answerBtnsOff" (click)="onSelectedTimeSlot(slot)"
+                  *ngFor="let slot of selectedDayAvailabilities?.slots! | filter:'isDaySecondHalf':true">
+                  {{ slot.startTime }}
+                </button>
+              </div>
             </div>
-            <div class="time-slots">
-              <!-- Second half of the day time slots -->
-              <button class="answerBtnsOff" (click)="onSelectedTimeSlot(slot)"
-                *ngFor="let slot of selectedDayAvailabilities?.slots! | filter:'isDaySecondHalf':true">
-                {{ slot.startTime }}
-              </button>
-            </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
-    </div>
 
-    <!-- Display when selectedTimeSlot is available -->
-    <!-- <div [ngStyle]="{'display': selectedTimeSlot ? 'block' : 'none'}" class="page  page-width-85p"> -->
-    <div *ngIf="selectedTimeSlot" class="page  page-width-85p">
-      <form [formGroup]="formAppoinmentEntry" class=" ">
-        <!-- Form Fields with Labels and Validation Messages -->
-        <div class="form-group">
-          <label for="inviteeName">Name *</label>
-          <div class="form-control">
-            <input type="text" autocomplete="off" spellcheck="false" id="inviteeName" formControlName="inviteeName"
-              minlength="3">
-            <div *ngIf="submitted && f['inviteeName'].errors" class="invalid-feedback">
-              <div *ngIf="f['inviteeName'].errors['required']">Name is required</div>
-              <div *ngIf="f['inviteeName'].errors['minlength']">Name should be at least 3 characters long</div>
+      <!-- Display when selectedTimeSlot is available -->
+      <!-- <div [ngStyle]="{'display': selectedTimeSlot ? 'block' : 'none'}" class="page  page-width-85p"> -->
+      <div *ngIf="selectedTimeSlot" class="page  page-width-85p">
+        <form [formGroup]="formAppoinmentEntry" class=" ">
+          <!-- Form Fields with Labels and Validation Messages -->
+          <div class="form-group">
+            <label for="inviteeName">Name *</label>
+            <div class="form-control">
+              <input type="text" autocomplete="off" spellcheck="false" id="inviteeName" formControlName="inviteeName"
+                minlength="3">
+              <div *ngIf="submitted && f['inviteeName'].errors" class="invalid-feedback">
+                <div *ngIf="f['inviteeName'].errors['required']">Name is required</div>
+                <div *ngIf="f['inviteeName'].errors['minlength']">Name should be at least 3 characters long</div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="userName">Email *</label>
-          <div class="form-control">
-            <input type="text" autocomplete="off" spellcheck="false" id="inviteeEmail" formControlName="inviteeEmail"
-              minlength="3">
-            <div *ngIf="submitted && f['inviteeEmail'].errors" class="invalid-feedback">
-              <div *ngIf="f['inviteeEmail'].errors['required']">Email is required</div>
+          <div class="form-group">
+            <label for="userName">Email *</label>
+            <div class="form-control">
+              <input type="text" autocomplete="off" spellcheck="false" id="inviteeEmail" formControlName="inviteeEmail"
+                minlength="3">
+              <div *ngIf="submitted && f['inviteeEmail'].errors" class="invalid-feedback">
+                <div *ngIf="f['inviteeEmail'].errors['required']">Email is required</div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="note">Notes </label>
-          <div class="form-control">
-            <textarea [ngClass]="{ 'is-invalid': submitted && f['note'].errors }" rows="5" id="note"
-              formControlName="note" id="note" name="note"></textarea>
+          <div class="form-group">
+            <label for="note">Notes </label>
+            <div class="form-control">
+              <textarea [ngClass]="{ 'is-invalid': submitted && f['note'].errors }" rows="5" id="note"
+                formControlName="note" id="note" name="note"></textarea>
+            </div>
           </div>
-        </div>
-        <h3>Questions</h3>
-        <div formGroupName="questionResponses">
-          <ng-container *ngFor="let questionItem of eventTypeQuestions;let i=index;">
-            <ng-container [ngSwitch]="true">
-              <ng-container *ngSwitchCase="questionItem?.questionType==null"></ng-container>
+          <h3>Questions</h3>
+          <div formGroupName="questionResponses">
+            <ng-container *ngFor="let questionItem of eventTypeQuestions;let i=index;">
+              <ng-container [ngSwitch]="true">
+                <ng-container *ngSwitchCase="questionItem?.questionType==null"></ng-container>
 
-              <ng-container *ngSwitchCase="questionItem?.questionType==='Text'">
-                <div class="form-group">
-                  <label for="{{questionItem.id}}">{{questionItem?.name}} <span *ngIf="questionItem.requiredYN">*</span>
-                  </label>
-                  <div class="form-control">
-                    <input id="{{questionItem.id}}" type="text" autocomplete="off" spellcheck="false"
-                      (input)="onAnswerSelectionChnaged($event)" formControlName="{{questionItem.id}}">
-                    <div *ngIf="submitted && dynamicFields[questionItem.id!].errors" class="invalid-feedback">
-                      <div *ngIf="dynamicFields[questionItem.id!].errors!['required']">This is required field.</div>
+                <ng-container *ngSwitchCase="questionItem?.questionType==='Text'">
+                  <div class="form-group">
+                    <label for="{{questionItem.id}}">{{questionItem?.name}} <span
+                        *ngIf="questionItem.requiredYN">*</span>
+                    </label>
+                    <div class="form-control">
+                      <input id="{{questionItem.id}}" type="text" autocomplete="off" spellcheck="false"
+                        (input)="onAnswerSelectionChnaged($event)" formControlName="{{questionItem.id}}">
+                      <div *ngIf="submitted && dynamicFields[questionItem.id!].errors" class="invalid-feedback">
+                        <div *ngIf="dynamicFields[questionItem.id!].errors!['required']">This is required field.</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </ng-container>
-              <ng-container *ngSwitchCase="questionItem?.questionType==='MultilineText'">
-                <div class="form-group">
-                  <label for="{{questionItem.id}}">{{questionItem?.name}} <span *ngIf="questionItem.requiredYN">*</span>
-                  </label>
-                  <div class="form-control">
-                      <textarea id="{{questionItem.id}}" [ngClass]="{ 'is-invalid': submitted && dynamicFields[questionItem.id!] }" rows="5" 
-                      formControlName="{{questionItem.id}}" ></textarea>
+                </ng-container>
+                <ng-container *ngSwitchCase="questionItem?.questionType==='MultilineText'">
+                  <div class="form-group">
+                    <label for="{{questionItem.id}}">{{questionItem?.name}} <span
+                        *ngIf="questionItem.requiredYN">*</span>
+                    </label>
+                    <div class="form-control">
+                      <textarea id="{{questionItem.id}}"
+                        [ngClass]="{ 'is-invalid': submitted && dynamicFields[questionItem.id!] }" rows="5"
+                        formControlName="{{questionItem.id}}"></textarea>
+                    </div>
                   </div>
-                </div>
-              </ng-container>
+                </ng-container>
 
-              <ng-container *ngSwitchCase="questionItem?.questionType==='ComboBox'">
-                <div class="form-group">
-                  <label for="{{questionItem.id}}">{{questionItem?.name}} <span
-                      *ngIf="questionItem.requiredYN">*</span></label>
-                  <div class="form-control">
-                    <select id="{{questionItem.id}}" formControlName="{{questionItem.id}}"
-                      (change)="onAnswerSelectionChnaged($event)">
-                      <option value="">Select</option>
-                      <option [value]="optionItem" *ngFor="let optionItem of questionItem.options.split(',')">
-                        {{optionItem}}</option>
-                    </select>
-                    <div *ngIf="submitted && dynamicFields[questionItem.id!].errors" class="invalid-feedback">
-                      <div *ngIf="dynamicFields[questionItem.id!].errors!['required']">This is required field</div>
+                <ng-container *ngSwitchCase="questionItem?.questionType==='ComboBox'">
+                  <div class="form-group">
+                    <label for="{{questionItem.id}}">{{questionItem?.name}} <span
+                        *ngIf="questionItem.requiredYN">*</span></label>
+                    <div class="form-control">
+                      <select id="{{questionItem.id}}" formControlName="{{questionItem.id}}"
+                        (change)="onAnswerSelectionChnaged($event)">
+                        <option value="">Select</option>
+                        <option [value]="optionItem" *ngFor="let optionItem of questionItem.options.split(',')">
+                          {{optionItem}}</option>
+                      </select>
+                      <div *ngIf="submitted && dynamicFields[questionItem.id!].errors" class="invalid-feedback">
+                        <div *ngIf="dynamicFields[questionItem.id!].errors!['required']">This is required field</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </ng-container>
-              <ng-container *ngSwitchCase="questionItem?.questionType==='CheckBoxes'">
-                <div class="form-group">
-                  <label for="{{questionItem.id}}">{{questionItem?.name}} <span
-                      *ngIf="questionItem.requiredYN">*</span></label>
-                  <div class="form-control">
-                    <div *ngFor="let optionItem of questionItem.options.split(',')">
-                      {{optionItem}}
-                      <input id="{{questionItem.id}}" (change)="onAnswerSelectionChnaged($event,true)" type="checkbox"
-                        [value]="optionItem">
-                    </div>
-                    <div *ngIf="submitted && dynamicFields[questionItem.id!].errors" class="invalid-feedback">
-                      <div *ngIf="dynamicFields[questionItem.id!].errors!['required']">This is required field</div>
+                </ng-container>
+                <ng-container *ngSwitchCase="questionItem?.questionType==='CheckBoxes'">
+                  <div class="form-group">
+                    <label for="{{questionItem.id}}">{{questionItem?.name}} <span
+                        *ngIf="questionItem.requiredYN">*</span></label>
+                    <div class="form-control">
+                      <div *ngFor="let optionItem of questionItem.options.split(',')">
+                        {{optionItem}}
+                        <input id="{{questionItem.id}}" (change)="onAnswerSelectionChnaged($event,true)" type="checkbox"
+                          [value]="optionItem">
+                      </div>
+                      <div *ngIf="submitted && dynamicFields[questionItem.id!].errors" class="invalid-feedback">
+                        <div *ngIf="dynamicFields[questionItem.id!].errors!['required']">This is required field</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </ng-container>
-              <ng-container *ngSwitchCase="questionItem?.questionType==='RadioButtons'">
-                <div class="form-group">
-                  <label for="{{questionItem.id}}">{{questionItem?.name}} <span
-                      *ngIf="questionItem.requiredYN">*</span></label>
-                  <div class="form-control">
-                    <div *ngFor="let optionItem of questionItem.options.split(',')">
-                      {{optionItem}}
-                      <input type="radio" (change)="onAnswerSelectionChnaged($event)" [value]="optionItem"
-                        id="{{questionItem.id}}">
-                    </div>
-                    <div>
-                      <input type="radio" [value]="questionItem.id" [name]="questionItem.name">
-                      Other<input type="text" id="huey" name="drone" value="huey">
-                    </div>
+                </ng-container>
+                <ng-container *ngSwitchCase="questionItem?.questionType==='RadioButtons'">
+                  <div class="form-group">
+                    <label for="{{questionItem.id}}">{{questionItem?.name}} <span
+                        *ngIf="questionItem.requiredYN">*</span></label>
+                    <div class="form-control">
+                      <div *ngFor="let optionItem of questionItem.options.split(',')">
+                        {{optionItem}}
+                        <input type="radio" (change)="onAnswerSelectionChnaged($event)" [value]="optionItem"
+                          id="{{questionItem.id}}">
+                      </div>
+                      <div>
+                        <input type="radio" [value]="questionItem.id" [name]="questionItem.name">
+                        Other<input type="text" id="huey" name="drone" value="huey">
+                      </div>
 
-                    <div *ngIf="submitted && dynamicFields[questionItem.id!].errors" class="invalid-feedback">
-                      <div *ngIf="dynamicFields[questionItem.id!].errors!['required']">This is required field</div>
+                      <div *ngIf="submitted && dynamicFields[questionItem.id!].errors" class="invalid-feedback">
+                        <div *ngIf="dynamicFields[questionItem.id!].errors!['required']">This is required field</div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </ng-container>
               </ng-container>
             </ng-container>
-          </ng-container>
-        </div>
+          </div>
 
 
-        <!-- Form Submission Buttons -->
-        <div class="footer">
-          <button (click)="onCancelAppointmentEntry($event)" class="btn btn-default">
-            Back
-          </button>
-          <button loading-indicator [loading]="isSubmitting" [disabled]="isSubmitting"
-            (click)="onSubmitAppointmentForm()" class="btn btn-primary">
-            Booking an Appointment
-          </button>
-        </div>
-      </form>
-    </div>
-  </section>
+          <!-- Form Submission Buttons -->
+          <div class="footer">
+            <button (click)="onCancelAppointmentEntry($event)" class="btn btn-default">
+              Back
+            </button>
+            <button loading-indicator [loading]="isSubmitting" [disabled]="isSubmitting"
+              (click)="onSubmitAppointmentForm()" class="btn btn-primary">
+              Booking an Appointment
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
 </div>

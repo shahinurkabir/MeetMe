@@ -23,7 +23,6 @@
   <div #dateRangeSelectionWindow [style.display]="showDateSelectionWidget?'block':'none'"
     class="date-range-selection-wrapper">
     <h2>Date Selection</h2>
-    <hr>
     <div class="date-range-calendar-wrapper ">
 
       <app-multi-calendar #multiCalendar (DateSelectionChanged)="onSelectedDatesChanged($event)"
