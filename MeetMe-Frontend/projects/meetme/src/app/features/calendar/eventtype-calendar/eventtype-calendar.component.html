@@ -1,41 +1,55 @@
-<div [class.full-width]="selectedDate" class="meetme-card" >
-  <div class="calendar-appointment-booking">
+<div [class.full-width]="selectedDate" class="meetme-card">
+  <div class="appointment-page-container">
     <!-- Event Info Section -->
-    <section class="event-info-section">
-      <h1>{{ eventTypeInfo?.name }}</h1>
-      <h2>{{ eventTypeOwnerInfo?.userName }}</h2>
-      <strong>&#8986;{{ eventTypeInfo?.duration }} minutes</strong>
-      <strong *ngIf="selectedTimeSlot">{{ selectedDateTime }}</strong>
-      <strong *ngIf="selectedTimeSlot">{{ selectedTimeZoneName }}</strong>
+    <section class="appointment-event-info-container">
+      <button class="primary" style="margin:20px 100px 20px 0;" (click)="onCancelAppointmentEntry($event)" *ngIf="selectedTimeSlot">Back
+      </button>
+      <h2>{{ eventTypeInfo?.name }}</h2>
+      <h3>{{ eventTypeOwnerInfo?.userName }}</h3>
+      <h4>&#8986;{{ eventTypeInfo?.duration }} minutes</h4>
+      <h4 *ngIf="selectedTimeSlot">{{ selectedDateTime }}</h4>
+      <h4 *ngIf="selectedTimeSlot">{{ selectedTimeZoneName }}</h4>
     </section>
 
     <!-- Booking Wrapper -->
-    <section class="booking-wrapper">
+    <section class="appointment-calendar-booking-wrapper">
       <!-- Display when selectedTimeSlot is not available -->
+      <!-- <div  *ngIf="!selectedTimeSlot"> -->
       <div [ngStyle]="{'display': !selectedTimeSlot ? 'block' : 'none', 'width': '100%'}">
+
         <!-- Calendar and Time Slots Section -->
+        
         <div class="calendar-timeslots-wrapper">
           <section class="calendar-section">
-            <app-calendar (handlerDateClick)="onCalendarDayClicked($event)" (handlerMonthChange)="onMonthChange($event)"
+            <div  style="width:100%; display:flex;justify-content:center;">
+              <h4>Select date and time</h4>
+            </div>
+            <app-calendar style="margin-top: 35px;" (handlerDateClick)="onCalendarDayClicked($event)" (handlerMonthChange)="onMonthChange($event)"
               [allowMultipleSelection]="false"></app-calendar>
             <app-timezone-control #timezoneControl [selectedTimeZone]="selectedTimeZone"
               [showHourFormatChangeOption]="true" (dataLoaded)="onLoadedTimezoneData($event)"
               (selectionChanged)="onChangedTimezone($event)"
               (hourFormatChanged)="onChangedHourFormat($event)"></app-timezone-control>
           </section>
-          <section class="timeslots-section">
-            <h2>{{ selectedDate }}</h2>
+          <section *ngIf="selectedDate" class="timeslots-section">
+            <div style="display: flex;justify-content: center;">
+              <h4>{{ selectedDate }}</h4>
+            </div>
             <div class="timeslots-wrapper">
               <div class="time-slots">
+                <div style="display: flex;justify-content: center; color:var(--primary-color)">AM</div>
+                <hr>
                 <!-- First half of the day time slots -->
-                <button class="answerBtnsOff" (click)="onSelectedTimeSlot(slot)"
+                <button class="timeslot-button" (click)="onSelectedTimeSlot(slot)"
                   *ngFor="let slot of selectedDayAvailabilities?.slots! | filter:'isDaySecondHalf':false">
                   {{ slot.startTime }}
                 </button>
               </div>
               <div class="time-slots">
+                <div style="display: flex;justify-content: center; color:var(--primary-color)">PM</div>
+                <hr>
                 <!-- Second half of the day time slots -->
-                <button class="answerBtnsOff" (click)="onSelectedTimeSlot(slot)"
+                <button class="timeslot-button" (click)="onSelectedTimeSlot(slot)"
                   *ngFor="let slot of selectedDayAvailabilities?.slots! | filter:'isDaySecondHalf':true">
                   {{ slot.startTime }}
                 </button>
@@ -47,7 +61,9 @@
 
       <!-- Display when selectedTimeSlot is available -->
       <!-- <div [ngStyle]="{'display': selectedTimeSlot ? 'block' : 'none'}" class="page  page-width-85p"> -->
-      <div *ngIf="selectedTimeSlot" class="page  page-width-85p">
+      <div *ngIf="selectedTimeSlot" class="page  page-width-75p">
+        <h2>Invitee details</h2>
+        <hr>
         <form [formGroup]="formAppoinmentEntry" class=" ">
           <!-- Form Fields with Labels and Validation Messages -->
           <div class="form-group">

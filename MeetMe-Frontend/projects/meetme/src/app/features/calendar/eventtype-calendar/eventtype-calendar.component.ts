@@ -72,7 +72,9 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.updateCalendar();
 
   }
+  onClickBack() {
 
+  }
   onCalendarDayClicked(e: any) {
 
     if (Object.keys(e).length == 0) return;
@@ -216,8 +218,8 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
       const response = isArrayResponse ? (value as string[]).join(" , ") : (value as string).toString();
       const questionName = this.eventTypeQuestions.find(e => e.id == key)?.name!;
-      questionoareResponseItemDtos.push({ questionId: key,questionName:questionName, answer: response, isMultipleChoice: isArrayResponse });
-    
+      questionoareResponseItemDtos.push({ questionId: key, questionName: questionName, answer: response, isMultipleChoice: isArrayResponse });
+
     }
 
     if (questionoareResponseItemDtos.length > 0) {
@@ -232,7 +234,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   }
 
   private initializeRouteParameters(): void {
-   // this.eventTypeId = this.route.snapshot.queryParamMap.get("id") || "";
+    // this.eventTypeId = this.route.snapshot.queryParamMap.get("id") || "";
     this.selectedDate = this.route.snapshot.queryParamMap.get('date') || "";
     this.selectedYearMonth = this.route.snapshot.queryParamMap.get("month") || "";
     this.eventTypeOwner = this.route.snapshot.paramMap.get("user") || "";
@@ -346,7 +348,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     }
 
     this.fetchCalendarAvailability(fromDate, toDate);
-    
+
   }
 
   private fetchCalendarAvailability(fromDate: string, toDate: string): void {
@@ -391,7 +393,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
     const earlierDate = new Date(this.selectedDate);
     if (earlierDate.getMonth() != this.selectedMonth || earlierDate.getFullYear() != this.selectedYear) return;
-   
+
     this.selectedDayAvailabilities = this.availableTimeSlots.find(e => e.date == this.selectedDate);
   }
 
