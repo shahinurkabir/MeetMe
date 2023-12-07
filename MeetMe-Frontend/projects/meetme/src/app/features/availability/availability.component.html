@@ -21,7 +21,7 @@
             <li *ngIf="!selectedAvailability?.isDefault" (click)="onDefault(selectedAvailability?.id!)">
                 <i class="fa fa-star"></i><span>Default</span>
             </li>
-            <li (click)="onClickDelete()"><i class="fa fa-trash"></i><span>Delete</span></li>
+            <li (click)="onShowDeleteModal()"><i class="fa fa-trash"></i><span>Delete</span></li>
         </ul>
     </div>×
 
@@ -59,3 +59,16 @@
     (confirmEvent)="onDelete($event)" (cancelEvent)="onCloseModal()">
     <h2>Are you sure want to delete?</h2>
 </mm-modal>
+
+
+<app-my-modal [isVisible]="showDeleteModalYN" modalTitle="Delete Availability" [modalWidth]="'500px'"
+  (closeModal)="onCloseModal()">
+  <ng-template #modalContent>
+    <h2>Are you sure want to delete?</h2>
+    <hr>
+    <div class="action-buttons-container">
+      <button (click)="onCloseModal()">Close</button>
+      <button class="special" (click)="onDelete($event)">Delete</button>
+    </div>
+  </ng-template>
+</app-my-modal>

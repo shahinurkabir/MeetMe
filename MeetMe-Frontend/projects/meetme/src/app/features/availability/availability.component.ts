@@ -23,6 +23,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   showActionMenubarYN: boolean = false;
   isLoading: boolean=false;
   isSaving: boolean=false;
+  showDeleteModalYN: boolean=false;
   constructor(
     private availabilityService: AvailabilityService,
     private modalService: ModalService,
@@ -82,7 +83,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   }
 
   onCloseModal() {
-    this.modalService.close();
+    this.showDeleteModalYN = false;
   }
 
   onClone(id: string) {
@@ -128,9 +129,10 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
       });
   }
 
-  onClickDelete() {
-    this.modalService.open('delete-availability-modal')
+  onShowDeleteModal() {
+    this.showDeleteModalYN =true;
   }
+
   onDelete(e: any) {
     let command: IDeleteAvailabilityCommand = {
       id: this.selectedAvailability?.id!
@@ -144,7 +146,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
           this.listAvailabilityComponent?.loadData(undefined);
         },
         error: (error) => { console.log(error) },
-        complete: () => { this.modalService.close() }
+        complete: () => { this.showDeleteModalYN = false; }
       })
   }
 

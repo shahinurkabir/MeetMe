@@ -263,7 +263,7 @@
   <ng-template #modalContent>
     <form>
       <div class="form-group">
-        <label for="cancellationReason">Cancellation Reason</label>
+        <label for="cancellationReason">Reason</label>
         <div class="form-control">
           <textarea rows="5" #description="ngModel" [(ngModel)]="selectedAppointmentItem!.cancellationReason"
             id="cancellationReason" name="cancellationReason" autocomplete="off" required [minlength]="3"></textarea>
