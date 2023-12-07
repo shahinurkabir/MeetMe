@@ -384,13 +384,19 @@ input::placeholder {
 }
 
 /* Style for Valid Input (using HTML5 validation) */
-input:valid {
-    border-color: #28a745;
-    /* Change border color for valid input */
-}
+// input:valid {
+//     border-color: #28a745;
+//     /* Change border color for valid input */
+// }
 
 /* Style for Invalid Input (using HTML5 validation) */
-input:invalid {
+// input.ng-invalid ,
+// textarea.ng-invalid,
+// select.ng-invalid,
+input.is-invalid,
+textarea.is-invalid,
+select.is-invalid
+{
     border-color: #dc3545;
     /* Change border color for invalid input */
 }
@@ -407,7 +413,7 @@ select.is-invalid {
     border-color: #dc3545 !important;
 }
 
-.invalid-feedback {
+.invalid-feedback >Div {
     color: #dc3545 !important;
 }
 

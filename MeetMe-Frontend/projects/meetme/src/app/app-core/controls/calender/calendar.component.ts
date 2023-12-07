@@ -67,9 +67,9 @@ export class CalendarComponent implements OnInit {
     this.selectedYearMonth = settings_month_of_year[this.selectedMonth] + " " + this.selectedYear;
     this.days_in_month = {};
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i <6 ; i++) {
       let weekDays: IDay[] = [];
-      for (let j = 0; j < 6; j++) {
+      for (let j = 0; j < 7; j++) {
         weekDays.push({ dayNo: 0, isSelected: false, date: "", isDisabled: false, isCurrentDate: false })
       }
       this.days_in_month[i] = weekDays;

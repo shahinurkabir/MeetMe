@@ -1,4 +1,4 @@
-.meetme-card{
+.meetme-card {
   width: fit-content;
   transition: height 0.8s ease;
   display: flex;
@@ -6,9 +6,11 @@
   justify-content: center;
   padding: 30px 40px;
 }
-.meetme-card.full-width{
-    width: 100%;
+
+.meetme-card.full-width {
+  width: 100%;
 }
+
 .appointment-page-container {
   display: flex;
   width: 100%;
@@ -23,18 +25,21 @@
   //padding: 10px;
   width: 300px;
 }
-.appointment-calendar-booking-wrapper{
+
+.appointment-calendar-booking-wrapper {
   display: flex;
   flex-direction: row;
   flex: 1;
 }
+
 .calendar-timeslots-wrapper {
-  display: flex ;
+  display: flex;
   flex: 1;
   flex-direction: row;
   align-items: flex-start;
   //gap:30px
 }
+
 .calendar-section {
   display: flex;
   flex-direction: column;
@@ -59,34 +64,51 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  //margin-left: 20px;
-  //margin-right: 20px;
   padding: 0px 0 0 30px;
 }
+
 .timeslots-section .timeslots-wrapper {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
   width: 100%;
-  //border-left: 1px solid lightgray;
-  padding: 10px 5px;
-  height: 465px;
+  padding: 5px;
+  height: 400px;
   overflow-y: auto;
 }
+
 .timeslots-section .time-slots {
   display: flex;
   flex-direction: column;
   width: 48%;
 }
 
- button.timeslot-button {
+button.timeslot-button {
   margin-top: 5px;
   margin-bottom: 5px;
   border-radius: 40px;
   color: var(--primary-color);
 }
-button.timeslot-button:hover{
+
+button.timeslot-button:hover {
   background-color: var(--primary-color);
   color: white;
+}
+
+.form-control-checkbox-container {
+  display: flex;
+  flex-direction: column;
+  //margin: 5px 2px;
+}
+.form-control-checkbox-container-item {
+  display: flex;
+  flex-direction: row;
+  margin: 3px 0 0 5px;
+  gap: 3px;
+  align-items: center;
+}
+.form-control-checkbox-container label  {
+ font-weight: normal;
+ margin-right: 10px;
 }

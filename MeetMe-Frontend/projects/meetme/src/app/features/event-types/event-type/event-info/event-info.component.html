@@ -2,7 +2,11 @@
     <div class="form-group">
         <label for="name">Name *</label>
         <div class="form-control">
-            <input type="text" #name="ngModel"  [(ngModel)]="model.name" id="name" name="name" autocomplete="off" required minlength="3">
+            <input type="text" #name="ngModel"  
+            [(ngModel)]="model.name" id="name" name="name" 
+            autocomplete="off" required minlength="3"
+            [ngClass]="{ 'is-invalid': submitted && name.errors }" 
+            >
             <div *ngIf="submitted && name.errors" class="invalid-feedback">
                 <div *ngIf="name.errors['required']">Name is required</div>
                 <div *ngIf="name.errors['minlength']">Description at-least 3 charecters</div>
