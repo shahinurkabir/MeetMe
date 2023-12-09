@@ -17,7 +17,6 @@
     <!-- Booking Wrapper -->
     <section class="appointment-calendar-booking-wrapper">
       <!-- Display when selectedTimeSlot is not available -->
-      <!-- <div  *ngIf="!selectedTimeSlot"> -->
       <div [ngStyle]="{'display': !selectedTimeSlot ? 'block' : 'none', 'width': '100%'}">
 
         <!-- Calendar and Time Slots Section -->
@@ -29,7 +28,7 @@
             </div>
             <app-calendar style="margin-top: 35px;" (handlerDateClick)="onCalendarDayClicked($event)"
               (handlerMonthChange)="onMonthChange($event)" [allowMultipleSelection]="false"></app-calendar>
-            <app-timezone-control #timezoneControl [selectedTimeZone]="selectedTimeZone"
+            <app-timezone-control style="width: 100%;" #timezoneControl [selectedTimeZone]="selectedTimeZone"
               [showHourFormatChangeOption]="true" (dataLoaded)="onLoadedTimezoneData($event)"
               (selectionChanged)="onChangedTimezone($event)"
               (hourFormatChanged)="onChangedHourFormat($event)"></app-timezone-control>
@@ -39,16 +38,14 @@
               <h3>{{ selectedDate }}</h3>
             </div>
             <div
-              style="display: flex;flex-direction: row; justify-content: space-evenly;    width: 100%;            gap: 10px;        ">
+              style="margin-top:3px; display: flex;flex-direction: row; justify-content: space-evenly;    width: 100%;            gap: 10px;        ">
               <div
                 style="display: flex;flex-direction: column;justify-content: center;color: var(--primary-color);flex: 1;align-content: stretch;">
-                <span style="display: flex; margin: auto; color: var(--primary-color);">AM </span>
-                <hr>
+                <span style="display: flex; margin: auto; color: var(--accent-color); text-decoration: underline;font-weight: bold;">AM </span>
               </div>
               <div
                 style="display: flex;flex-direction: column;justify-content: center;color: var(--primary-color);flex: 1;align-content: stretch;">
-                <span style=" display: flex; margin: auto; color: var(--primary-color);">PM </span>
-                <hr>
+                <span style=" display: flex; margin: auto; color: var(--accent-color); text-decoration:underline;font-weight: bold;">PM </span>
               </div>
             </div>
             <div class="timeslots-wrapper">
@@ -108,7 +105,7 @@
                 formControlName="note" id="note" name="note"></textarea>
             </div>
           </div>
-          <h3>Questions :</h3>
+          <h3 *ngIf="eventTypeQuestions.length>0">Questions :</h3>
           <div formGroupName="questionResponses">
             <ng-container *ngFor="let questionItem of eventTypeQuestions;let i=index;">
               <ng-container [ngSwitch]="true">

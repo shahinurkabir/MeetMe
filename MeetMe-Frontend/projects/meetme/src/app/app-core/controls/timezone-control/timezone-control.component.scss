@@ -1,206 +1,142 @@
-// /* Container */
-// .wrapper {
-//   font-family: Arial, sans-serif;
-//   display: inline-block;
-//   position: relative;
-//   width: 300px; /* Adjust the width as needed */
-//   background-color: #fff;
-//   border: 1px solid #ccc;
-//   border-radius: 5px;
-// }
+.wrapper {
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  margin: 5px 0;
+}
 
-// /* Toggle Button */
-// .select-btn {
-//   display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-//   padding: 10px;
-//   cursor: pointer;
-// }
+.select-btn,
+li {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  cursor: pointer;
+}
 
-// .select-btn span {
-//   flex-grow: 1;
-// }
+.select-btn {
+  height: 30px;
+  padding: 0 10px;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #333;
+}
 
-// .select-btn i {
-//   font-size: 16px;
-// }
+.select-btn i {
+  font-size: 18px;
+  transition: transform 0.3s linear;
+  color: var(--primary-color);
+}
 
-// /* 24h Checkbox */
-// .select-btn input[type="checkbox"] {
-//   margin-left: 10px;
-//   cursor: pointer;
-// }
+.wrapper.active .select-btn i {
+  transform: rotate(-180deg);
+}
 
-// /* Content Section */
-// .content {
-//   display: none;
-//   background-color: #fff;
-//   border-top: 1px solid #ccc;
-//   border-radius: 0 0 5px 5px;
-//   overflow: hidden;
-// }
+.content {
+ 
+  position: absolute;
+  width: inherit;
+  z-index: 2;
+  display: none;
+  padding: 3px 11px;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  bottom: 15%;
+  top: 15%;
+  border: 1px solid lightgray;
+}
 
-// /* Search Bar */
-// .search {
-//   display: flex;
-//   align-items: center;
-//   padding: 10px;
-// }
+.wrapper.active .content {
+  display: block;
+}
 
-// .search i {
-//   font-size: 16px;
-//   margin-right: 5px;
-// }
+.content .topbar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 
-// .search input[type="text"] {
-//   flex-grow: 1;
-//   border: none;
-//   outline: none;
-//   padding: 5px;
-//   font-size: 14px;
-// }
+}
+.content .search {
+  position: relative;
+}
 
-// /* Options List */
-// .options {
-//   list-style-type: none;
-//   padding: 0;
-//   margin: 0;
-// }
+.search i {
+  top: 50%;
+  left: 15px;
+  color: #999;
+  font-size: 20px;
+  pointer-events: none;
+  transform: translateY(-50%);
+  position: absolute;
+}
 
-// .options li {
-//   padding: 10px;
-//   cursor: pointer;
-//   transition: background-color 0.3s ease;
-// }
+.search input {
+  height: 30px;
+  width: 100%;
+  outline: none;
+  font-size: 17px;
+  border-radius: 5px;
+  padding: 0 20px 0 43px;
+  border: 1px solid #B3B3B3;
+}
 
-// .options li.selected {
-//   background-color: #007bff;
-//   color: #fff;
-// }
+.search input:focus {
+  padding-left: 42px;
+  border: 2px solid var(--primary-color);
+}
 
-// /* Timezone and Current Time */
-// .timezone-currenttime-wrapper {
-//   display: flex;
-//   flex-direction: column;
-// }
+.search input::placeholder {
+  color: #bfbfbf;
+}
 
-// .timezone {
-//   font-weight: bold;
-//   font-size: 14px;
-// }
+.content .options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 300px;
+  margin-top: 10px;
+  overflow-y: auto;
+  padding-right: 7px;
+  height: calc(100% - 97px);
+}
 
-// .current-time {
-//   color: #777;
-//   font-size: 12px;
-// }
+.options::-webkit-scrollbar {
+  width: 7px;
+}
 
-// Custom Select Box
-::selection{
-    color: #fff;
-    background: #4285f4;
-  }
-  .wrapper{
-    //width: max-content;
-    border: 1px solid lightgray;
-    min-width: 120px;
-   // margin: 85px auto 0;
-  }
-  .select-btn, li{
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    cursor: pointer;
-  }
-  .select-btn{
-    height: 30px;
-    padding: 0 20px;
-    font-size: 22px;
-    background: #fff;
-    // border-radius: 7px;
-    justify-content: space-between;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  }
-  .select-btn i{
-    font-size: 18px;
-    transition: transform 0.3s linear;
-  }
-  .wrapper.active .select-btn i{
-    transform: rotate(-180deg);
-  }
-  .content{
-    position: absolute;
-    width: inherit;
-    z-index: 2;
-    display: none;
-    padding: 20px;
-    margin-top: 5px;
-    background: #fff;
-    border-radius: 7px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  }
-  .wrapper.active .content{
-    display: block;
-  }
-  .content .search{
-    position: relative;
-  }
-  .search i{
-    top: 50%;
-    left: 15px;
-    color: #999;
-    font-size: 20px;
-    pointer-events: none;
-    transform: translateY(-50%);
-    position: absolute;
-  }
-  .search input{
-    height: 30px;
-    width: 100%;
-    outline: none;
-    font-size: 17px;
-    border-radius: 5px;
-    padding: 0 20px 0 43px;
-    border: 1px solid #B3B3B3;
-  }
-  .search input:focus{
-    padding-left: 42px;
-    border: 2px solid #4285f4;
-  }
-  .search input::placeholder{
-    color: #bfbfbf;
-  }
-  .content .options{
-    margin-top: 10px;
-    max-height: 250px;
-    overflow-y: auto;
-    padding-right: 7px;
-  }
-  .options::-webkit-scrollbar{
-    width: 7px;
-  }
-  .options::-webkit-scrollbar-track{
-    background: #f1f1f1;
-    border-radius: 25px;
-  }
-  .options::-webkit-scrollbar-thumb{
-    background: #ccc;
-    border-radius: 25px;
-  }
-  .options::-webkit-scrollbar-thumb:hover{
-    background: #b3b3b3;
-  }
-  .options li{
-    height: 30px;
-    padding: 0 13px;
-    font-size: 21px;
-  }
-  .options li:hover, li.selected{
-    border-radius: 5px;
-    background: #f2f2f2;
-  }
-  .timezone-currenttime-wrapper{
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
+.options::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 25px;
+}
+
+.options::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 25px;
+}
+
+.options::-webkit-scrollbar-thumb:hover {
+  background: #b3b3b3;
+}
+
+.options li {
+  height: 30px;
+  padding: 0 5px 1px 5px;
+  font-size: 21px;
+}
+
+.options li:hover,
+li.selected {
+  border-radius: 5px;
+  background-color: var(--primary-color);
+}
+.timezone-currenttime-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  
+}
+.options li:hover .timezone-currenttime-wrapper>div,
+li.selected .timezone-currenttime-wrapper>div {
+  color:white;
+  font-weight: bold;
+}

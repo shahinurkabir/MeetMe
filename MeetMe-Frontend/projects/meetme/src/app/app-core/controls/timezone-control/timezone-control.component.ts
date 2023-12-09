@@ -31,7 +31,10 @@ export class TimezoneControlComponent implements OnInit,OnDestroy {
     this.loadTimeZoneList();
     this.interval = interval(1000).subscribe(val => this.updateTimeZoneLocalTime());
   }
-
+  onClickOutside() {
+    this.timezoneContainer?.nativeElement.classList.remove('active');
+  }
+ 
   loadTimeZoneList() {
   
     this.timeZoneList=ListOfTimeZone;

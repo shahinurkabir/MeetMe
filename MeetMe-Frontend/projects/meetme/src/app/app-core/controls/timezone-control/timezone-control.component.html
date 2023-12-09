@@ -1,54 +1,18 @@
-<!-- <div class="wrapper" #timezoneContainer>
-    <div class="select-btn" (click)="onToggleTimeZoneBox()">
-      <span *ngIf="!selectedTimeZone">Select Country</span>
-      <span *ngIf="selectedTimeZone !== null">{{ selectedTimeZone?.name }}</span>
-      <i class="fa fa-angle-down"></i>
-      <span *ngIf="showHourFormatChangeOption">
-        <input type="checkbox" #timezoneCheckbox [checked]="is24HourFormat" (change)="onChangeHourFormat($event)" />
-        24h
-      </span>
-    </div>
-    <div class="content">
-      <div class="search">
-        <i class="fa fa-search"></i>
-        <input
-          spellcheck="false"
-          autocomplete="off"
-          type="text"
-          [(ngModel)]="timeZoneNameFilterText"
-          placeholder="Search"
-          #searchTimeZone
-          name="filterTimeZone"
-          (input)="onFilterTimeZoneChanged($event)"
-        />
-      </div>
-      <ul class="options">
-        <li
-          [ngClass]="{ 'selected': selectedTimeZone && timeZoneItem.name === selectedTimeZone.name }"
-          *ngFor="let timeZoneItem of filterTimeZoneList"
-          (click)="onSelectTimeZone(timeZoneItem)"
-        >
-          <div class="timezone-currenttime-wrapper">
-            <div class="timezone">{{ timeZoneItem.name }}</div>
-            <div class="current-time">{{ timeZoneItem.currentTime }}</div>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div> -->
   
 
- <div class="wrapper" #timezoneContainer>
+ <div class="wrapper" #timezoneContainer (clickOutside)="onClickOutside()">
     <div class="select-btn" (click)="onToggleTimeZoneBox()">
         <span *ngIf="!selectedTimeZone">Select Country</span>
         <span *ngIf="selectedTimeZone!==null">{{selectedTimeZone?.name}} </span>
         <i class="fa fa-angle-down"></i>
-        <span *ngIf="showHourFormatChangeOption">
-            <input type="checkbox" #timezoneCheckbox [checked]="is24HourFormat" (change)="onChangeHourFormat($event)">
-            24h
-        </span>
+        
     </div>
     <div class="content">
+      <div class="topbar">
+        <h4>{{selectedTimeZone?.name}}</h4>
+        <h4 >{{selectedTimeZone?.currentTime}}</h4>
+        <span  class="close-button" (click)="onToggleTimeZoneBox()">×</span>
+      </div>
         <div class="search">
             <i class="fa fa-search"></i>
             <input spellcheck="false" autocomplete="off"  type="text" [(ngModel)]="timeZoneNameFilterText" placeholder="Search"
@@ -63,5 +27,6 @@
                 </div>
             </li>
         </ul>
+        
     </div>
 </div>
