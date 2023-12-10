@@ -1,43 +1,18 @@
-
-.event-list-header {
+.section-header {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    /* margin: 20px; */
-    /* background-color: var(--secondary-color); */
-
+    margin: 10px;
 }
 
-.event-list-header .user-info {
+.user-info {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-}
-/* 
-.event-list-header .user-info h3 {
-    font-size: 20px;
-    font-weight: bold;
-} */
-/* 
-.event-list-header .user-info a {
-    color: rgb(52, 52, 226);
-    text-decoration: none;
-}
 
-.event-list-header .user-info a:hover {
-    text-decoration: none;
 }
-
-.event-list-header .user-info a:visited {
-    color: rgb(52, 52, 226);
-} */
-/* 
-hr {
-    height: 1px;
-    border: 1px solid whitesmoke;
-    margin: 15px;
-} */
 
 .event-list-container {
     display: flex;
@@ -47,31 +22,74 @@ hr {
     flex-wrap: wrap;
 }
 
-.event-list-container div.event-list-item {
+.event-list-container .event-list-item {
     position: relative;
-    width: 300px;
+    /* width: 300px; */
     flex: 0 0 300px;
     height: 250px;
-    display: block;
+    /* display: block; */
     padding: 10px 12px;
     margin: 15px 10px;
-    /* box-shadow: inset 0 -3em 3em rgba(0, 0, 0, 0.1), 0 0 0 2px rgb(255, 255, 255),
-    0.3em 0.3em 1em rgba(0, 0, 0, 0.3); */
-    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    box-shadow: 0 3px 10px lightgray;
 
 }
 
-.button {
-    font: bold 11px Arial;
-    text-decoration: none;
-    background-color: #EEEEEE;
-    color: #333333;
-    padding: 2px 6px 2px 6px;
-    border-top: 1px solid #CCCCCC;
-    border-right: 1px solid #333333;
-    border-bottom: 1px solid #333333;
-    border-left: 1px solid #CCCCCC;
+.event-list-item.status-inactive {
+    opacity: 0.5;
+}
+
+.event-list-item .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.toolbar .btn-overlay-opener {
+    position: relative;
+    width: 33px;
+    height: 19px;
+    padding: 2px;
+    padding-top: 0;
+    border-radius: 4px;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    margin-top: 3px;
+    background-color: lightgray;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 10px;
+    background: #fff;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-menu li {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    list-style: none;
     cursor: pointer;
+    color: white;
+    padding: 5px 10px 5px 5px;
+    margin: 3px 0 0 0;
+}
+
+.dropdown-menu li:hover {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.dropdown-menu li i {
+    padding-right: 5px;
 }
 
 .event-list-item .header {
@@ -81,37 +99,68 @@ hr {
     text-align: center;
 }
 
-.event-list-item .header button {
+.event-list-item .header .button {
     /* padding: 0 5px;
     cursor: pointer;
     color: white; */
+    width: 40px;
+    /* height: 30px; */
+    border: 1px solid lightgray;
+    /* padding-top: 5px; */
+}
+
+.event-list-item .header .button:hover {
+    background-color: var(--primary-color);
+    color: white;
 }
 
 .event-list-item .time-location {
-    color: gray;
-    font-size: 13px;
-}
-
-.event-list-item hr {
-    margin: 5px 0;
-    color: lightgray
+    /* color: var(--primary-color);
+    font-size: 13px; */
 }
 
 .event-list-item article {
-    margin: 7px 5px;
+    /* margin: 7px 5px;
     overflow: hidden;
     overflow-wrap: break-word;
     text-align: justify;
-    height: 125px;
+    height: 125px; */
+    height: 100px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+
+.event-list-item article a {
+    font-size: 18px;
 }
 
 .event-list-item .footer {
     position: absolute;
     width: 100%;
-    bottom: 10px;
+    bottom: 15px;
     left: 0;
     padding: 0 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.copy-link i , .copy-link span {
+    color: inherit;
+}
+.copy-link .copied-icon{
+    display: none;
+}
+.copy-link.copy-link-done .copied-icon{
+    display: block;
+}
+.copy-link.copy-link-done .copy-icon{
+    display: none;
+}
+.event-list-header .user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
 }

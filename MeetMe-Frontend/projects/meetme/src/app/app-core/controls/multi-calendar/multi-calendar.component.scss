@@ -38,3 +38,6 @@ button.calendar-day-button {
     border: 1px solid var(--secondary-color);
     border-radius: 4px;
 }
+button.is-selected{
+    background-color: var(--primary-color);
+}

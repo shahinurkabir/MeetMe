@@ -1,0 +1,50 @@
+/* toggle-switch.component.css */
+
+.toggle-switch {
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+    align-items: center ;
+    font-size: 16px;
+    gap: 5px;  /* Adjust the font size for the label */
+  }
+  
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    width: 32px;
+    height: 10px;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 12.5px;
+      /* Adjust the border-radius to make it rounder */
+  }
+  
+  .slider:before {
+    content: "";
+    position: absolute;
+    height: 16.5px;
+    width: 12.5px;
+    left: 0.5px;
+    top: -3.5px;
+    background-color: white;
+    border: 1px solid lightgray;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(20px);  /* Adjust the translation to make it bigger */
+  }
+  

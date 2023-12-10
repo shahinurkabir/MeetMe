@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IEventType, EventTypeService, AuthService, ModalService, AlertService } from '../../../app-core';
+import { IEventType, EventTypeService, AuthService,  AlertService, ClipboardService } from '../../../app-core';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -16,13 +16,13 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
   user_name: string = "";
   host: string = window.location.host;
   constructor(
+    private el: ElementRef,
     private eventTypeService: EventTypeService,
     private router: Router,
-    private modalService: ModalService,
     private authService: AuthService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private clipboardService: ClipboardService
   ) {
-    this.modalService.reset();
     this.baseUri = this.authService.baseUri;
     this.user_name = this.authService.userName;
   }
@@ -31,7 +31,33 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadEventTypes();
   }
+  onDropdownClick(event: Event) {
+    event.stopPropagation();
+  }
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    const clickedInside = this.el.nativeElement.contains(event.target);
 
+    if (!clickedInside) {
+      this.showHideDropdownMenus('');
+    }
+    else {
+      const element = event.target as HTMLElement;
+      const id = element.id;
+      this.showHideDropdownMenus(id);
+    }
+  }
+
+  showHideDropdownMenus(id?: string) {
+    const elements = this.el.nativeElement.querySelectorAll('.dropdown-menu') as NodeListOf<HTMLElement>;
+    elements.forEach(element => {
+      if (element.id == id) {
+        element.classList.toggle('show');
+      }
+      else
+        element.classList.remove('show');
+    })
+  }
   loadEventTypes() {
     this.eventTypeService.getList()
       .pipe(takeUntil(this.destroyed$))
@@ -57,14 +83,21 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
   onAddNew() {
     this.router.navigate(['event-types', 'new']);
   }
-
-  onToggleActive(eventType: IEventType) {
+  onClickCopyLink(copyLinkEl: HTMLElement, eventSlug: string) {
+    let url = `${this.host}/calendar/${this.baseUri}/${eventSlug}`
+    this.clipboardService.copyToClipboard(url);
+    copyLinkEl.classList.add('copy-link-done');
+    setTimeout(() => {
+      copyLinkEl.classList.remove('copy-link-done');
+    }, 1000);
+  }
+  onToggleStatus(eventType: IEventType, newStatus: boolean) {
     this.eventTypeService.toggleStatus(eventType.id)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
           eventType.activeYN = !eventType.activeYN;
-          this.alertService.success(`Event Type ${eventType.activeYN?"Activated":"Deactivated"} successfully`);
+          this.alertService.success(`Event Type ${eventType.activeYN ? "Activated" : "Deactivated"} successfully`);
         },
         error: (error) => { console.log(error) },
         complete: () => { }
@@ -83,26 +116,28 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
         complete: () => { }
       })
   }
-  onDelete(eventType: IEventType) {
+  onDelete() {
     this.eventTypeService.delete(this.itemToDelete?.id!)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
+          this.itemToDelete = undefined;
           this.alertService.success("Event Type deleted successfully");
           this.loadEventTypes();
         },
         error: (error) => { console.log(error) },
-        complete: () => { this.modalService.close() }
+        complete: () => { }
       })
   }
-  onClickDelete(itemToDelete: IEventType) {
+
+  onDeleteConfirm(itemToDelete: IEventType) {
     this.itemToDelete = itemToDelete;
-    this.modalService.open('delete-eventtype-modal')
   }
 
-  onCloseModal() {
-    this.modalService.close();
+  onCancelDelete() {
+    this.itemToDelete = undefined;
   }
+
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();

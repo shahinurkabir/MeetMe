@@ -20,7 +20,7 @@
             <tbody>
                 <tr *ngFor="let week of calendar1">
                     <td *ngFor="let day of week" (click)="onSelectedDay('calendar1', day)">
-                        <button class="calendar-day-button " [class.special]="day.isSelected"
+                        <button class="calendar-day-button " [class.is-selected]="day.isSelected"
                             [class.isDifferentMonth]="day.isDifferentMonth"> {{ day.dayNo
                             }}</button>
                     </td>
@@ -44,7 +44,7 @@
             <tbody>
                 <tr *ngFor="let week of calendar2">
                     <td *ngFor="let day of week" (click)="onSelectedDay('calendar2', day)">
-                        <button class="calendar-day-button" [class.special]="day.isSelected"
+                        <button class="calendar-day-button" [class.is-selected]="day.isSelected"
                             [class.isDifferentMonth]="day.isDifferentMonth"> {{ day.dayNo
                             }}</button>
                     </td>

@@ -21,6 +21,7 @@ import { FilterPipe } from './app-core/pipes/filter.pipe';
 import { scheduled_Appointment_Components } from './features/scheduled-appointments';
 import { MultiCalendarComponent } from './app-core/controls/multi-calendar/multi-calendar.component';
 import { MyModalComponent } from './app-core/controls/my-modal/my-modal.component';
+import { ToggleSwitchComponent } from './app-core/controls/toggle-switch/toggle-switch.component';
 
 @NgModule({
     declarations: [
@@ -45,6 +46,7 @@ import { MyModalComponent } from './app-core/controls/my-modal/my-modal.componen
         LoadingIndicatorDirective,
         MultiCalendarComponent,
         MyModalComponent,
+        ToggleSwitchComponent,
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },

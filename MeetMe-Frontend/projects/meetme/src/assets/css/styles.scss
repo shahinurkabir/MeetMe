@@ -787,13 +787,12 @@ a {
     color: var(--primary-color);
     text-decoration: none;
     font-size: 16px;
-    // margin-bottom: 10px;
-    // padding-bottom: 5px;
-    // border-bottom: 2px solid transparent;
+    padding-bottom: 5px;
 }
 
 a:hover {
     color: var(--primary-color);
+    text-decoration: underline;
 }
 
 a.is-active {

@@ -20,9 +20,6 @@
 .appointment-event-info-container {
   display: flex;
   flex-direction: column;
-  //margin-right: 10px;
-  //border-right: 1px solid lightgray;
-  //padding: 10px;
   width: 300px;
 }
 
@@ -37,7 +34,6 @@
   flex: 1;
   flex-direction: row;
   align-items: flex-start;
-  //gap:30px
 }
 
 .calendar-section {
@@ -88,7 +84,6 @@ button.timeslot-button {
   margin-top: 5px;
   margin-bottom: 5px;
   border-radius: 40px;
- // color: var(--primary-color);
 }
 
 button.timeslot-button:hover {
@@ -99,7 +94,6 @@ button.timeslot-button:hover {
 .form-control-checkbox-container {
   display: flex;
   flex-direction: column;
-  //margin: 5px 2px;
 }
 .form-control-checkbox-container-item {
   display: flex;
