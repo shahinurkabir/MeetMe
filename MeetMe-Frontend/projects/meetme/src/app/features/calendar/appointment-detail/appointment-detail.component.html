@@ -1,4 +1,4 @@
-<div class="booking-success-message">
+<!-- <div class="meetme-card booking-success-message">
     <h1>Your appointment has been successfully scheduled</h1>
     <p>you will get a invitaiton message shortly to your email adrress</p>
     <div class="success-message">
@@ -7,5 +7,28 @@
         <p>{{appointmentDetails?.appointmentDayDateTime}} </p>
         <p>{{appointmentDetails?.inviteeTimeZone}}</p>
 
+    </div>
+</div>
+ -->
+
+<div class="page-container">
+    <h1>Appointment Scheduled successfully</h1>
+    <hr>
+    <p>You will receive an appointment invitation shortly to your email address.</p>
+    <div class="appointment-details">
+       
+        <h2>{{appointmentDetails?.eventTypeTitle}}</h2>
+        <div class="detail-item">
+            <i class="far fa-user detail-icon"></i>
+            <div class="detail-text">{{appointmentDetails?.eventOwnerName}}</div>
+        </div>
+        <div class="detail-item">
+            <i class="fas fa-calendar-alt detail-icon"></i>
+            <div class="detail-text">{{appointmentDetails?.appointmentTimeSlot}} {{appointmentDetails?.appointmentDate}}</div>
+        </div>
+        <div class="detail-item">
+            <i class="fas fa-globe detail-icon"></i>
+            <div class="detail-text">{{appointmentDetails?.inviteeTimeZone}}</div>
+        </div>
     </div>
 </div>

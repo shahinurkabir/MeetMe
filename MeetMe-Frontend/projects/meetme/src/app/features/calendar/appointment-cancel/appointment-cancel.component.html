@@ -1,4 +1,26 @@
-<div class="booking-success-message">
+
+<div class="page-container">
+    <h1>Appointment cancelled</h1>
+    <hr>
+    <p>
+        Your appointment with {{appointmentDetails?.eventOwnerName}} has been cancelled.
+    </p>
+    <div class="appointment-details">
+       
+        <h2>{{appointmentDetails?.eventTypeTitle}}</h2>
+        
+        <div class="detail-item ">
+            <i class="fas fa-calendar-alt detail-icon"></i>
+            <div class="detail-text data-cancel">{{appointmentDetails?.appointmentTimeSlot}} {{appointmentDetails?.appointmentDate}}</div>
+        </div>
+        <div class="detail-item">
+            <i class="fas fa-globe detail-icon"></i>
+            <div class="detail-text data-cancel">{{appointmentDetails?.inviteeTimeZone}}</div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="booking-success-message">
     <h1>Cancellation Confirmed</h1>
     <p>Your meeting with Shainur Kabir has been cancelled.</p>
     <div class="success-message">
@@ -8,4 +30,4 @@
         <p class="text-decoration-cancel">Asia/Dhaka</p>
 
     </div>
-</div>
+</div> -->

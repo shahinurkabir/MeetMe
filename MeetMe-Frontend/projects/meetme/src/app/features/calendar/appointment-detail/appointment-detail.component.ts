@@ -27,31 +27,31 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.evnetTypeSlugName = this.route.snapshot.paramMap.get("slug") ?? "";
-    this.eventTypeOwner = this.route.snapshot.paramMap.get("user") ?? "";
+    //this.evnetTypeSlugName = this.route.snapshot.paramMap.get("slug") ?? "";
+    //this.eventTypeOwner = this.route.snapshot.paramMap.get("user") ?? "";
     this.appointmentId = this.route.snapshot.paramMap.get("id") ?? "";
 
     this.loadAppointmentDetails()
   }
 
-  loadAllData() {
-    forkJoin([
-      this.calendarService.getAppointmentById(this.appointmentId),
-      this.accountService.getProfileByUserName(this.eventTypeOwner),
-      this.eventTypeService.getBySlugName(this.evnetTypeSlugName)
-    ])
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: (response) => {
-          this.appointmentDetails = response[0];
-          this.eventTypeOwnerInfo = response[1];
-          this.eventTypeInfo = response[2];
-        },
-        error: (error) => { console.log(error) },
-        complete: () => { }
-      });
+  // loadAllData() {
+  //   forkJoin([
+  //     this.calendarService.getAppointmentById(this.appointmentId),
+  //     this.accountService.getProfileByUserName(this.eventTypeOwner),
+  //     this.eventTypeService.getBySlugName(this.evnetTypeSlugName)
+  //   ])
+  //     .pipe(takeUntil(this.destroyed$))
+  //     .subscribe({
+  //       next: (response) => {
+  //         this.appointmentDetails = response[0];
+  //         this.eventTypeOwnerInfo = response[1];
+  //         this.eventTypeInfo = response[2];
+  //       },
+  //       error: (error) => { console.log(error) },
+  //       complete: () => { }
+  //     });
 
-  }
+  // }
 
   loadAppointmentDetails() { 
     this.calendarService.getAppointmentById(this.appointmentId)

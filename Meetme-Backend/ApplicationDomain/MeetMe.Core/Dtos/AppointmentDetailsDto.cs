@@ -73,7 +73,7 @@ namespace MeetMe.Core.Dtos
                 AppointmentTimeSlot = ToAppointmentTimeRangeText(appointment.InviteeTimeZone, eventType.Duration, appointment.StartTimeUTC.ToUtcIfLocal()),
                 AppointmentDate = ToAppointmentDateText(appointment.InviteeTimeZone, eventType.Duration, appointment.StartTimeUTC.ToUtcIfLocal()),
                 AppointmentTime = ToAppointmentTimeText(appointment.InviteeTimeZone, appointment.StartTimeUTC.ToUtcIfLocal()),
-                AppointmentDayDateTime = appointment.DateCancelled?.ToUtcIfLocal().ToTimeZoneFormattedText("dddd, dd MMMM yyyy", eventType.TimeZone),
+                AppointmentDayDateTime = appointment.DateCancelled?.ToUtcIfLocal().ToTimeZoneFormattedText("dddd, MMMM dd, yyyy", eventType.TimeZone),
             };
 
             if (!string.IsNullOrWhiteSpace(appointment.QuestionnaireContent))
@@ -95,7 +95,7 @@ namespace MeetMe.Core.Dtos
         static string ToAppointmentDateText(string timeZoneName, int meetingDuration, DateTime appointmentStartTime)
         {
             var dateTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(appointmentStartTime, TimeZoneInfo.Utc.Id, timeZoneName);
-            var appointmentTimeRange = dateTime.ToString("dddd, dd MMMM yyyy");
+            var appointmentTimeRange = dateTime.ToString("dddd, MMMM dd,  yyyy");
 
             return appointmentTimeRange;
         }
