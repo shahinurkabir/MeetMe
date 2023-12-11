@@ -20,7 +20,6 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   selectedYear: number = 0;
   selectedMonth: number = 0;
   is24HourFormat: boolean = false;
-  //eventTypeId: string = "";
   event_slug: string = "";
   selectedTimeZoneName: string = "";
   selectedDate: string | null = null;
@@ -33,11 +32,9 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   submitted: boolean = false;
   isSubmitting: boolean = false;
   isAppointmentCreated: boolean = false;
-  //eventTypeAvailability: IEventAvailabilityDetailItemDto[] = [];
   eventTypeQuestions: IEventTypeQuestion[] = [];
   selectedCheckBoxes: any = {};
   formAppoinmentEntry: FormGroup;
-
   constructor(
     private eventTypeService: EventTypeService,
     private calendarService: AppointmentService,
@@ -61,7 +58,6 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    //this.eventTypeId = this.route.snapshot.queryParamMap.get("id") ?? "";
     this.selectedDate = this.route.snapshot.queryParamMap.get('date') ?? "";
     this.selectedYearMonth = this.route.snapshot.queryParamMap.get("month");
     this.eventTypeOwner = this.route.snapshot.paramMap.get("user") ?? "";
@@ -140,10 +136,25 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     if (this.formAppoinmentEntry.invalid) {
       return;
     }
+    const listRadioButtonsHasRequriedError= this.eventTypeQuestions.filter(e=>e.questionType=="RadioButtons" && e.requiredYN && e.otherOptionYN && !e.otherOptionValue);
+
+    //validate radio buttons with other option
+    if(listRadioButtonsHasRequriedError.length>0){
+      return ;
+    }
 
     const questionnaireFormGroup = this.formAppoinmentEntry.get('questionResponses') as FormGroup;
     const questionnaireFormGroupRowValues = questionnaireFormGroup.getRawValue();
+
+    // to fill other option value in question response
+    this.eventTypeQuestions.forEach((question) => {
+      if (question.otherOptionYN && question.otherOptionValue) {
+        questionnaireFormGroupRowValues[question.id!] =`${questionnaireFormGroupRowValues[question.id!]} - ${question.otherOptionValue}`;
+      }
+    });
     const questionnaireResponseContent = this.getQuestionnaireResponseContent(questionnaireFormGroupRowValues);
+    
+    
 
     let command: ICreateAppointmentCommand = {
       eventTypeId: this.eventTypeInfo?.id!,
@@ -178,7 +189,9 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
   onAnswerSelectionChnaged(e: any, isMultipleChoice: boolean = false) {
     let element = e.target as HTMLInputElement
-    let questionId = element.id.toString();
+    const elementId = element.id.toString();
+    const value = element.value;
+    let questionId = elementId.indexOf(value) > -1 ? elementId.replace(value, "") : elementId;
     let selectedValue = element.value.toString();
 
     const questionResponseFormGroup = this.formAppoinmentEntry.get('questionResponses') as FormGroup;
@@ -188,6 +201,12 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     else {
       questionResponseFormGroup.get(questionId)?.setValue(selectedValue);
     }
+  }
+
+  onOtherOptionSelected(e: any, questionItem: IEventTypeQuestion) {
+    let element = e.target as HTMLInputElement
+    const value = element.value;
+    questionItem.otherOptionValue = value;
   }
 
 
@@ -234,7 +253,6 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   }
 
   private initializeRouteParameters(): void {
-    // this.eventTypeId = this.route.snapshot.queryParamMap.get("id") || "";
     this.selectedDate = this.route.snapshot.queryParamMap.get('date') || "";
     this.selectedYearMonth = this.route.snapshot.queryParamMap.get("month") || "";
     this.eventTypeOwner = this.route.snapshot.paramMap.get("user") || "";
@@ -292,15 +310,12 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   private loadEventDetails() {
     forkJoin([
       this.eventTypeService.getBySlugName(this.event_slug),
-      //this.eventTypeService.getEventAvailability(this.eventTypeId),
-      //this.eventTypeService.getEventQuetions(this.eventTypeId),
       this.accountService.getProfileByUserName(this.eventTypeOwner)
     ])
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (response) => {
           this.eventTypeInfo = response[0];
-          //this.eventTypeAvailability = response[1];
           this.eventTypeQuestions = response[0].questions;
           this.eventTypeOwnerInfo = response[1];
         },

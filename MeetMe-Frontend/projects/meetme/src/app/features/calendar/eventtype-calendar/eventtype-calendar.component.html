@@ -41,11 +41,15 @@
               style="margin-top:3px; display: flex;flex-direction: row; justify-content: space-evenly;    width: 100%;            gap: 10px;        ">
               <div
                 style="display: flex;flex-direction: column;justify-content: center;color: var(--primary-color);flex: 1;align-content: stretch;">
-                <span style="display: flex; margin: auto; color: var(--primary-color); text-decoration: underline;font-weight: bold;">AM </span>
+                <span
+                  style="display: flex; margin: auto; color: var(--primary-color); text-decoration: underline;font-weight: bold;">AM
+                </span>
               </div>
               <div
                 style="display: flex;flex-direction: column;justify-content: center;color: var(--primary-color);flex: 1;align-content: stretch;">
-                <span style=" display: flex; margin: auto; color: var(--primary-color); text-decoration:underline;font-weight: bold;">PM </span>
+                <span
+                  style=" display: flex; margin: auto; color: var(--primary-color); text-decoration:underline;font-weight: bold;">PM
+                </span>
               </div>
             </div>
             <div class="timeslots-wrapper">
@@ -165,9 +169,9 @@
                       <div class="form-control-checkbox-container-item"
                         *ngFor="let optionItem of questionItem.options.split(',')">
 
-                        <input id="{{questionItem.id}}-{{optionItem}}" (change)="onAnswerSelectionChnaged($event,true)"
+                        <input id="{{questionItem.id}}{{optionItem}}" (change)="onAnswerSelectionChnaged($event,true)"
                           type="checkbox" [value]="optionItem">
-                        <label for="{{questionItem.id}}-{{optionItem}}">
+                        <label for="{{questionItem.id}}{{optionItem}}">
                           {{optionItem}}
                         </label>
                       </div>
@@ -184,19 +188,24 @@
                     <div class="form-control-checkbox-container">
                       <div class="form-control-checkbox-container-item"
                         *ngFor="let optionItem of questionItem.options.split(',')">
-                        <input type="radio" (change)="onAnswerSelectionChnaged($event)" [value]="optionItem"
-                          id="{{questionItem.id}}-{{optionItem}}">
-                        <label for="{{questionItem.id}}-{{optionItem}}">
+                        <input type="radio" name="{{questionItem.id}}" (change)="onAnswerSelectionChnaged($event)"
+                          [value]="optionItem" id="{{questionItem.id}}{{optionItem}}">
+                        <label for="{{questionItem.id}}{{optionItem}}">
                           {{optionItem}}
                         </label>
 
                       </div>
-                      <div class="form-control-checkbox-container-item">
-                        <input type="radio" [value]="questionItem.id" [name]="questionItem.name">
-                        <label for="{{questionItem.id}}-other">
+                      <div *ngIf="questionItem.otherOptionYN" class="form-control-checkbox-container-item">
+                        <input #otherInput type="radio" id="{{questionItem.id}}Other" name="{{questionItem.id}}"
+                          (change)="onAnswerSelectionChnaged($event)" value="Other">
+                        <label for="{{questionItem.id}}Other">
                           Other
+
                         </label>
-                        <input style="height: 30px;" type="text" id="{{questionItem.id}}-other">
+                        <input *ngIf="otherInput.checked" style="height: 30px;" type="text"
+                          [required]="questionItem.requiredYN" (input)="onOtherOptionSelected($event,questionItem)"
+                          [ngClass]="{ 'is-invalid': submitted && otherInput.checked 
+                          && questionItem.requiredYN && !questionItem.otherOptionValue}  ">
                       </div>
 
                       <div *ngIf="submitted && dynamicFields[questionItem.id!].errors" class="invalid-feedback">
@@ -209,13 +218,8 @@
             </ng-container>
           </div>
 
-
-          <!-- Form Submission Buttons -->
           <hr>
           <div class="action-buttons-container center">
-            <!-- <button (click)="onCancelAppointmentEntry($event)" class="btn btn-default">
-              Back
-            </button> -->
             <button loading-indicator [loading]="isSubmitting" [disabled]="isSubmitting"
               (click)="onSubmitAppointmentForm()" class="primary">
               Booking an Appointment
