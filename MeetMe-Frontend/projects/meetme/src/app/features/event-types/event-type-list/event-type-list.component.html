@@ -13,47 +13,61 @@
 </div>
 <div class="meetme-card">
     <div class="event-list-container">
-        <div [class.status-inactive]="!item.activeYN" class="event-list-item" *ngFor="let item of listEventTypes"
-            [ngStyle]="getDynamicStyle(item)">
-            <div class="toolbar">
-                <input type="checkbox" name="select" id="select">
-                <button #menuOpener id="{{item.id}}" class="btn-overlay-opener ">...
-                    <ul (click)="onDropdownClick($event)" #dropdownMenu id="{{item.id}}" class="dropdown-menu">
-                        <li (click)="onEdit(item.id)"><i class="fa fa-pen"></i><span>
-                                Edit</span>
-                        </li>
-                        <li (click)="onClone(item)"><i class="fa fa-clone"></i><span>Clone</span></li>
+        <!-- <div class="event-list-item-container">
+            <div></div> -->
+            <div [ngClass]="{'is-inactive':!item.activeYN,'is-selected':item.isSelected}" class="event-list-item"
+                *ngFor="let item of listEventTypes" >
+                <div class="event-item-color-indicator" 
+                [ngStyle]="getColorIndicatorStyle(item)"
+                ></div>
+                <div class="toolbar">
+                    <input type="checkbox" name="select" id="select" (change)="onEventTypeSelectionChnaged(item)">
+                    <button #menuOpener id="{{item.id}}" class="btn-overlay-opener ">...
+                        <ul (click)="onDropdownClick($event)" #dropdownMenu id="{{item.id}}" class="dropdown-menu">
+                            <li (click)="onEdit(item.id)"><i class="fa fa-pen"></i><span>
+                                    Edit</span>
+                            </li>
+                            <li (click)="onClone(item)"><i class="fa fa-clone"></i><span>Clone</span></li>
 
-                        <li (click)="onDeleteConfirm(item)"><i class="fa fa-trash"></i><span>Delete</span></li>
-                        <hr>
-                        <li>
+                            <li (click)="onDeleteConfirm(item)"><i class="fa fa-trash"></i><span>Delete</span></li>
+                            <hr>
+                            <li>
 
-                            <app-toggle-switch [ngModel]="item.activeYN?true:false"
-                                (valueChanged)="onToggleStatus(item, $event)" label="Active"></app-toggle-switch>
-                        </li>
-                    </ul>
-                </button>
+                                <app-toggle-switch [ngModel]="item.activeYN?true:false"
+                                    (valueChanged)="onToggleStatus(item, $event)" label="Active"></app-toggle-switch>
+                            </li>
+                        </ul>
+                    </button>
 
-            </div>
-            <hr>
-            <div class="header">
-                <h3>{{item.name}}</h3>
+                </div>
+                <hr>
+                <div class="header">
+                    <h3>{{item.name}}</h3>
 
-            </div>
-            <div class="time-location">
-                Duration : {{item.duration}} minutes
-            </div>
-            <div class="footer">
-                <a target="_blank" [routerLink]="['/calendar',baseUri,item.slug]">
-                    Preview booking page
-                </a>
-                <a #copyLinkEl (click)="onClickCopyLink(copyLinkEl,item.slug)" class="copy-link  ">
-                    <span class="copied-icon"><i class="far fa-check"></i> Copied</span>
-                    <span class="copy-icon"><i class=" far fa-copy"></i> Copy link</span>
-                </a>
-            </div>
-        </div>
+                </div>
+                <div class="time-location">
+                    Duration : {{item.duration}} minutes
+                </div>
+                <div class="footer">
+                    <a target="_blank" [routerLink]="['/calendar',baseUri,item.slug]">
+                        Preview booking page
+                    </a>
+                    <a #copyLinkEl (click)="onClickCopyLink(copyLinkEl,item.slug)" class="copy-link  ">
+                        <span class="copied-icon"><i class="far fa-check"></i> Copied</span>
+                        <span class="copy-icon"><i class=" far fa-copy"></i> Copy link</span>
+                    </a>
+                </div>
+            <!-- </div>
+        </div> -->
     </div>
+</div>
+
+<div *ngIf="selectedEventTypesCount>0" class="selected-evnettype-dialog">
+    <button class="close" (click)="onClearSelection()"><i class="fa fa-times"></i></button>
+    {{selectedEventTypesCount}} selected
+    <button class="primary" (click)="onDeleteSelected()">Delete</button>
+    <button class="primary" (click)="onToggleStatusSelected()">Off/On</button>
+
 </div>
 <!-- <mm-modal id="delete-eventtype-modal" title="Delete Event Type-" (confirmEvent)="onDelete($event)"
     (cancelEvent)="onCloseModal()">

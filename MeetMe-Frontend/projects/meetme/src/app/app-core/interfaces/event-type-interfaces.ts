@@ -19,7 +19,7 @@ export interface IEventType {
     bufferTimeAfter: number,
     timeZone: string,
     questions: IEventTypeQuestion[],
-    
+    isSelected?: boolean,
 }
 
 export interface IEventTypeQuestionList {

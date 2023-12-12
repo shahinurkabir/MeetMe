@@ -15,6 +15,7 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
   baseUri: string = "";
   user_name: string = "";
   host: string = window.location.host;
+  selectedEventTypesCount: number=0;
   constructor(
     private el: ElementRef,
     private eventTypeService: EventTypeService,
@@ -76,6 +77,11 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
       'border-left': `5px solid ${item.eventColor}`
     }
   }
+  getColorIndicatorStyle(item: any): object {
+    return {
+      'background-color': `${item.eventColor}`
+    }
+  }
   onEdit(id: string) {
     let url = '/' + id;
     this.router.navigate(['event-types', id]);
@@ -129,13 +135,51 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
         complete: () => { }
       })
   }
-
+  onEventTypeSelectionChnaged(eventType: IEventType) {
+    eventType.isSelected = !eventType.isSelected;
+    this.selectedEventTypesCount= this.listEventTypes.filter(x=>x.isSelected).length;
+  }
   onDeleteConfirm(itemToDelete: IEventType) {
     this.itemToDelete = itemToDelete;
   }
 
   onCancelDelete() {
     this.itemToDelete = undefined;
+  }
+  onToggleStatusSelected() {
+    let selectedEventTypes = this.listEventTypes.filter(x=>x.isSelected);
+    if(selectedEventTypes.length==0) return;
+    let ids = selectedEventTypes.map(x=>x.id);
+    this.eventTypeService.toggleStatusMultiple(ids)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: response => {
+          this.alertService.success("Event Types status changed successfully");
+          this.loadEventTypes();
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { }
+      })
+
+  }
+  onDeleteSelected() {
+    let selectedEventTypes = this.listEventTypes.filter(x=>x.isSelected);
+    if(selectedEventTypes.length==0) return;
+    let ids = selectedEventTypes.map(x=>x.id);
+    this.eventTypeService.deleteMultiple(ids)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: response => {
+          this.alertService.success("Event Types deleted successfully");
+          this.loadEventTypes();
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { }
+      })
+  }
+  onClearSelection() {
+    this.listEventTypes.forEach(x=>x.isSelected=false);
+    this.selectedEventTypesCount=0;
   }
 
   ngOnDestroy(): void {

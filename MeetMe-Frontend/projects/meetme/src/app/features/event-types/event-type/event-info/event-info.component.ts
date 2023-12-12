@@ -29,7 +29,7 @@ export class EventInfoComponent implements OnInit, OnDestroy {
     bufferTimeAfter: 0,
     bufferTimeBefore: 0,
     timeZone: "",
-    questions: []
+    questions: [],
   };
   @Output() dataSavedEvent = new EventEmitter();
   @Output() cancelEvent = new EventEmitter();

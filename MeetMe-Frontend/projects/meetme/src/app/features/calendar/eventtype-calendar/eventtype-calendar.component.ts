@@ -316,7 +316,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.eventTypeInfo = response[0];
-          this.eventTypeQuestions = response[0].questions;
+          this.eventTypeQuestions = response[0].questions.sort((a, b) => a.displayOrder - b.displayOrder);
           this.eventTypeOwnerInfo = response[1];
         },
         error: (error) => { console.log(error) },

@@ -11,6 +11,7 @@ import { environment } from 'projects/meetme/src/environments/environment';
   providedIn: 'root'
 })
 export class EventTypeService extends DataService {
+
   eventTypeURI = `${environment.apiBaseURI}/eventtype`;
   eventTypeAvailabilityURI = `${environment.apiBaseURI}/EventTypeAvailability`;
   eventTypeQuestionURI = `${environment.apiBaseURI}/eventtypeQuestion`;
@@ -23,8 +24,8 @@ export class EventTypeService extends DataService {
     let url = `${this.eventTypeURI}/me`
     return this.http.get<Array<IEventType>>(url);
   }
-  
-  getListByUserSlug(base_uri:string): Observable<IUserProfileDetailResponse> {
+
+  getListByUserSlug(base_uri: string): Observable<IUserProfileDetailResponse> {
     let url = `${this.eventTypeURI}/user/${base_uri}`
     return this.http.get<IUserProfileDetailResponse>(url);
   }
@@ -32,7 +33,7 @@ export class EventTypeService extends DataService {
     let url = `${this.eventTypeURI}/detailById/${id}`
     return this.http.get<IEventType>(url);
   }
-  
+
   getBySlugName(slug: string): Observable<IEventType> {
     let url = `${this.eventTypeURI}/detailBySlug/${slug}`
     return this.http.get<IEventType>(url);
@@ -89,5 +90,11 @@ export class EventTypeService extends DataService {
   getEventAvailabilityCalendar(event_slug: string, timezone: string, from: string, to: string): Observable<Array<IEventTimeAvailability>> {
     let url: string = `${this.eventTypeURI}/calendar-availability?eventslug=${event_slug}&timezone=${timezone}&from=${from}&to=${to}`
     return this.doGet(url)
-}
+  }
+  toggleStatusMultiple(ids: string[]):Observable<boolean> {
+    throw new Error('Method not implemented.');
+  }
+  deleteMultiple(ids: string[]):Observable<boolean> {
+    throw new Error('Method not implemented.');
+  }
 }
