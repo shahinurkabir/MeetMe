@@ -91,10 +91,5 @@ export class EventTypeService extends DataService {
     let url: string = `${this.eventTypeURI}/calendar-availability?eventslug=${event_slug}&timezone=${timezone}&from=${from}&to=${to}`
     return this.doGet(url)
   }
-  toggleStatusMultiple(ids: string[]):Observable<boolean> {
-    throw new Error('Method not implemented.');
-  }
-  deleteMultiple(ids: string[]):Observable<boolean> {
-    throw new Error('Method not implemented.');
-  }
+ 
 }

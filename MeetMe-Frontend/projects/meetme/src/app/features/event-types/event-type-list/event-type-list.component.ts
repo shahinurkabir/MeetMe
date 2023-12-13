@@ -1,7 +1,7 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IEventType, EventTypeService, AuthService,  AlertService, ClipboardService } from '../../../app-core';
-import { Subject, takeUntil } from 'rxjs';
+import { IEventType, EventTypeService, AuthService, AlertService, ClipboardService } from '../../../app-core';
+import { Subject, forkJoin, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-eventtype',
@@ -15,7 +15,7 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
   baseUri: string = "";
   user_name: string = "";
   host: string = window.location.host;
-  selectedEventTypesCount: number=0;
+  selectedEventTypesCount: number = 0;
   constructor(
     private el: ElementRef,
     private eventTypeService: EventTypeService,
@@ -135,9 +135,8 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
         complete: () => { }
       })
   }
-  onEventTypeSelectionChnaged(eventType: IEventType) {
-    eventType.isSelected = !eventType.isSelected;
-    this.selectedEventTypesCount= this.listEventTypes.filter(x=>x.isSelected).length;
+  onEventTypeSelectionChnaged(e: any) {
+    this.selectedEventTypesCount = this.listEventTypes.filter(x => x.isSelected).length;
   }
   onDeleteConfirm(itemToDelete: IEventType) {
     this.itemToDelete = itemToDelete;
@@ -147,39 +146,43 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
     this.itemToDelete = undefined;
   }
   onToggleStatusSelected() {
-    let selectedEventTypes = this.listEventTypes.filter(x=>x.isSelected);
-    if(selectedEventTypes.length==0) return;
-    let ids = selectedEventTypes.map(x=>x.id);
-    this.eventTypeService.toggleStatusMultiple(ids)
+    let selectedEventTypes = this.listEventTypes.filter(x => x.isSelected);
+    if (selectedEventTypes.length == 0) return;
+    let ids = selectedEventTypes.map(x => x.id);
+
+    forkJoin(ids.map(id => this.eventTypeService.toggleStatus(id)))
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
-          this.alertService.success("Event Types status changed successfully");
+          this.alertService.success("Event Types Toggling status changed successfully");
           this.loadEventTypes();
+          this.onClearSelection();
         },
         error: (error) => { console.log(error) },
         complete: () => { }
-      })
+      });
+
 
   }
   onDeleteSelected() {
-    let selectedEventTypes = this.listEventTypes.filter(x=>x.isSelected);
-    if(selectedEventTypes.length==0) return;
-    let ids = selectedEventTypes.map(x=>x.id);
-    this.eventTypeService.deleteMultiple(ids)
+    let selectedEventTypes = this.listEventTypes.filter(x => x.isSelected);
+    if (selectedEventTypes.length == 0) return;
+    let ids = selectedEventTypes.map(x => x.id);
+    forkJoin(ids.map(id => this.eventTypeService.delete(id)))
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
           this.alertService.success("Event Types deleted successfully");
           this.loadEventTypes();
+          this.onClearSelection();
         },
         error: (error) => { console.log(error) },
         complete: () => { }
-      })
+      });
   }
   onClearSelection() {
-    this.listEventTypes.forEach(x=>x.isSelected=false);
-    this.selectedEventTypesCount=0;
+    this.listEventTypes.forEach(x => x.isSelected = false);
+    this.selectedEventTypesCount = 0;
   }
 
   ngOnDestroy(): void {

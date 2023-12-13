@@ -13,66 +13,59 @@
 </div>
 <div class="meetme-card">
     <div class="event-list-container">
-        <!-- <div class="event-list-item-container">
-            <div></div> -->
-            <div [ngClass]="{'is-inactive':!item.activeYN,'is-selected':item.isSelected}" class="event-list-item"
-                *ngFor="let item of listEventTypes" >
-                <div class="event-item-color-indicator" 
-                [ngStyle]="getColorIndicatorStyle(item)"
-                ></div>
-                <div class="toolbar">
-                    <input type="checkbox" name="select" id="select" (change)="onEventTypeSelectionChnaged(item)">
-                    <button #menuOpener id="{{item.id}}" class="btn-overlay-opener ">...
-                        <ul (click)="onDropdownClick($event)" #dropdownMenu id="{{item.id}}" class="dropdown-menu">
-                            <li (click)="onEdit(item.id)"><i class="fa fa-pen"></i><span>
-                                    Edit</span>
-                            </li>
-                            <li (click)="onClone(item)"><i class="fa fa-clone"></i><span>Clone</span></li>
 
-                            <li (click)="onDeleteConfirm(item)"><i class="fa fa-trash"></i><span>Delete</span></li>
-                            <hr>
-                            <li>
+        <div [ngClass]="{'is-inactive':!item.activeYN,'is-selected':item.isSelected}" class="event-list-item"
+            *ngFor="let item of listEventTypes">
+            <div class="event-item-color-indicator" [ngStyle]="getColorIndicatorStyle(item)"></div>
+            <div class="toolbar">
+                <input type="checkbox" name="select" id="select"
+                [(ngModel)]="item.isSelected" 
+                  (change)="onEventTypeSelectionChnaged($event)">
+                <button #menuOpener id="{{item.id}}" class="btn-overlay-opener ">...
+                    <ul (click)="onDropdownClick($event)" #dropdownMenu id="{{item.id}}" class="dropdown-menu">
+                        <li (click)="onEdit(item.id)"><i class="fa fa-pen"></i><span>
+                                Edit</span>
+                        </li>
+                        <li (click)="onClone(item)"><i class="fa fa-clone"></i><span>Clone</span></li>
 
-                                <app-toggle-switch [ngModel]="item.activeYN?true:false"
-                                    (valueChanged)="onToggleStatus(item, $event)" label="Active"></app-toggle-switch>
-                            </li>
-                        </ul>
-                    </button>
+                        <li (click)="onDeleteConfirm(item)"><i class="fa fa-trash"></i><span>Delete</span></li>
+                        <hr>
+                        <li>
 
-                </div>
-                <hr>
-                <div class="header">
-                    <h3>{{item.name}}</h3>
+                            <app-toggle-switch [ngModel]="item.activeYN?true:false"
+                                (valueChanged)="onToggleStatus(item, $event)" label="Active"></app-toggle-switch>
+                        </li>
+                    </ul>
+                </button>
 
-                </div>
-                <div class="time-location">
-                    Duration : {{item.duration}} minutes
-                </div>
-                <div class="footer">
-                    <a target="_blank" [routerLink]="['/calendar',baseUri,item.slug]">
-                        Preview booking page
-                    </a>
-                    <a #copyLinkEl (click)="onClickCopyLink(copyLinkEl,item.slug)" class="copy-link  ">
-                        <span class="copied-icon"><i class="far fa-check"></i> Copied</span>
-                        <span class="copy-icon"><i class=" far fa-copy"></i> Copy link</span>
-                    </a>
-                </div>
-            <!-- </div>
-        </div> -->
+            </div>
+            <hr>
+            <div class="header">
+                <h3>{{item.name}}</h3>
+
+            </div>
+            <div class="time-location">
+                Duration : {{item.duration}} minutes
+            </div>
+            <div class="footer">
+                <a target="_blank" [routerLink]="['/calendar',baseUri,item.slug]">
+                    Preview booking page
+                </a>
+                <a #copyLinkEl (click)="onClickCopyLink(copyLinkEl,item.slug)" class="copy-link  ">
+                    <span class="copied-icon"><i class="far fa-check"></i> Copied</span>
+                    <span class="copy-icon"><i class=" far fa-copy"></i> Copy link</span>
+                </a>
+            </div>
+        </div>
     </div>
 </div>
-
 <div *ngIf="selectedEventTypesCount>0" class="selected-evnettype-dialog">
-    <button class="close" (click)="onClearSelection()"><i class="fa fa-times"></i></button>
-    {{selectedEventTypesCount}} selected
-    <button class="primary" (click)="onDeleteSelected()">Delete</button>
-    <button class="primary" (click)="onToggleStatusSelected()">Off/On</button>
-
+    <button (click)="onClearSelection()"><i class="far fa-times"></i></button>
+    <h3 style="padding-right: 50px;">{{selectedEventTypesCount}} selected</h3>
+    <button  (click)="onDeleteSelected()"><i style="color:var(--accent-color)" class="far fa-trash"></i>Delete</button>
+    <button  (click)="onToggleStatusSelected()"><i class="far fa-toggle-off"></i>Off/On</button>
+    
 </div>
-<!-- <mm-modal id="delete-eventtype-modal" title="Delete Event Type-" (confirmEvent)="onDelete($event)"
-    (cancelEvent)="onCloseModal()">
-    <h2>Are you sure want to delete?</h2>
-</mm-modal> -->
 
 <app-my-modal [isVisible]="itemToDelete!=undefined" modalTitle="Delete Event Type" (closeModal)="onCancelDelete()">
     <ng-template #modalContent>
