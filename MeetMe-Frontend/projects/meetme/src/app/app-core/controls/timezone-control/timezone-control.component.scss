@@ -4,23 +4,25 @@
   margin: 5px 0;
 }
 
-.select-btn,
-li {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  cursor: pointer;
-}
+// .select-btn
+//  {
+//   display: flex;
+//   gap: 20px;
+//   align-items: center;
+//   cursor: pointer;
+// }
 
-.select-btn {
+.wrapper .select-btn {
+  display: flex;
   height: 30px;
   padding: 0 10px;
   justify-content: space-between;
+  align-items: center;
   font-size: 14px;
   color: #333;
 }
 
-.select-btn i {
+.wrapper .select-btn i {
   font-size: 18px;
   transition: transform 0.3s linear;
   color: var(--primary-color);
@@ -40,6 +42,7 @@ li {
   background: #fff;
   border-radius: 5px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  height: 400px;
   bottom: 15%;
   top: 15%;
   border: 1px solid lightgray;

@@ -50,7 +50,7 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
   }
 
   showHideDropdownMenus(id?: string) {
-    const elements = this.el.nativeElement.querySelectorAll('.dropdown-menu') as NodeListOf<HTMLElement>;
+    const elements = this.el.nativeElement.querySelectorAll('.btn-overlay-opener') as NodeListOf<HTMLElement>;
     elements.forEach(element => {
       if (element.id == id) {
         element.classList.toggle('show');
@@ -102,6 +102,7 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
+          this.showHideDropdownMenus();
           eventType.activeYN = !eventType.activeYN;
           this.alertService.success(`Event Type ${eventType.activeYN ? "Activated" : "Deactivated"} successfully`);
         },
@@ -114,6 +115,7 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
+          this.showHideDropdownMenus();
           this.alertService.success("Event Type cloned successfully");
           let url = 'event-types/' + response;
           this.router.navigate([url]);
@@ -127,6 +129,7 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
+          this.showHideDropdownMenus();
           this.itemToDelete = undefined;
           this.alertService.success("Event Type deleted successfully");
           this.loadEventTypes();
@@ -154,6 +157,7 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
+          this.showHideDropdownMenus();
           this.alertService.success("Event Types Toggling status changed successfully");
           this.loadEventTypes();
           this.onClearSelection();
@@ -173,6 +177,7 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: response => {
           this.alertService.success("Event Types deleted successfully");
+          this.showHideDropdownMenus();
           this.loadEventTypes();
           this.onClearSelection();
         },

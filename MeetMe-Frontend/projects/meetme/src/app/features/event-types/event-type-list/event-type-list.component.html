@@ -21,8 +21,8 @@
                 <input type="checkbox" name="select" id="select"
                 [(ngModel)]="item.isSelected" 
                   (change)="onEventTypeSelectionChnaged($event)">
-                <button #menuOpener id="{{item.id}}" class="btn-overlay-opener ">...
-                    <ul (click)="onDropdownClick($event)" #dropdownMenu id="{{item.id}}" class="dropdown-menu">
+                <button #menuOpener id="{{item.id}}" class="">...
+                    <ul (click)="onDropdownClick($event)" #dropdownMenu id="{{item.id}}" class="btn-overlay-opener  dropdown-menu">
                         <li (click)="onEdit(item.id)"><i class="fa fa-pen"></i><span>
                                 Edit</span>
                         </li>

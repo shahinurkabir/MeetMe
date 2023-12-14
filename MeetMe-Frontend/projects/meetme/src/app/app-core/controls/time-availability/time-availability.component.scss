@@ -6,7 +6,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    //padding: 0 0 15px 0;
+}
+
+.section_overview .section-timezone {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .section_overview .toggle_view_container {
@@ -19,9 +24,7 @@
     text-align: center;
     background-color: white;
     padding: 10px 0;
-
 }
-
 
 .toggle_button {
     border: 1px solid lightgray;
@@ -33,42 +36,45 @@
 .weekly_availability {
     display: flex;
     width: 100%;
-    border-top: 1px solid lightgray;
-    border-bottom: 1px solid lightgray;
 }
 
 .weekly_availability .weekly_days {
     width: 65%;
-    padding: 15px;
+    padding: 0 15px;
 }
 
 .weekly_availability .weekly_days .weekly_day {
     display: flex;
     align-items: flex-start;
-    //border-top: 1px solid rgb(244, 225, 225);
-    padding: 10px 0;
+    padding-bottom: 7px;
 }
 
 .weekly_availability .weekly_days .weekly_day .weekday_name {
-    width: 120px;
-}
-
-.weekly_availability .weekly_days .weekly_day .weekday_name :checked {
-    top: 2px;
-    position: relative;
+    width: 150px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
 }
 
 .intervals {
     width: 100%;
     position: relative;
-    min-height: 30px;
+    min-height: 42px;
 }
 
 .intervals .interval_item {
-    width: 80%;
-    padding-bottom: 10px;
+    width: 100%;
+    padding-bottom: 5px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
-
+.intervals .interval_item.not_available {
+    opacity: 0.5;
+    font-weight: 700;
+    margin-top: 10px;
+}
 .intervals .interval_item input[type=text] {
     width: 35%;
     border-radius: 5px;
@@ -79,21 +85,6 @@
     border-radius: 5px;
 }
 
-.intervals .add_more_item {
-    margin-left: 15px;
-    border-radius: 5px;
-    top: 0;
-    right: 15px;
-    position: absolute
-}
-
-.intervals .add_more_item i {
-    font-size: 18px;
-}
-
-.intervals .add_more_item i:hover {
-    opacity: .7;
-}
 
 .override_date_intervals {
     width: 370px;
@@ -183,15 +174,22 @@
 
 .monthly_view_container .header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    // padding: 15px 0px;
-    font-size: 15px;
-
+    gap: 20px;
+    padding-bottom: 7px;
 }
 
-.monthly_view_container .header .calendar_nav button {
-    padding: 2px 10px;
+.monthly_view_container .header .calendar_nav {
+    display: flex;
+    gap: 5px;
+}
+.monthly_view_container .header .calendar_nav .month_nav_button {
+    width: 30px;
+    padding: 2px;
+    margin: 1px;
+    border-radius: 4px;
+    background-color: var(--primary-color);
 }
 
 .monthly_view_container .header .calendar_nav i {
@@ -211,17 +209,17 @@
 }
 
 .daysInMonth .dayInMonth-item {
-    border-bottom: 1px solid white;
-    border-right: 1px solid white;
-    background-color: white;
+    border-bottom: 1px solid var(--gray-color);
+    border-right: 1px solid var(--gray-color);
     padding: 7px 5px;
     position: relative;
     height: 120px;
     display: flex;
     flex-direction: column;
-    // margin: 1px;
 }
-
+ button.border_transparent {
+    border: 1px solid transparent;
+}
 .daysInMonth .dayInMonth-item.override_interval {
     border-top: 2px solid blue;
 }
@@ -231,11 +229,12 @@
     justify-content: space-between;
     width: 100%;
     padding: 5px 3px 10px 5px;
+    pointer-events: none;
 }
 
 .daysInMonth .dayInMonth-item:hover:not([disabled]) {
-    background-color: rgb(218, 218, 239);
-    border: 2px solid blue;
+    border: 2px solid var(--primary-color);
+    background-color: var(--secondary-color);
 }
 
 .daysInMonth .dayInMonth-item:hover:disabled {
@@ -250,34 +249,9 @@
     display: none;
     position: absolute;
     width: 200px;
-    left: 30px;
-    bottom: -30px;
+     left: 0;
+    top:50px;
     z-index: 1;
-}
-
-.action_buttons .dropdown_menu {
-    list-style-type: none;
-    display: flex;
-    flex-flow: column;
-    background-color: whitesmoke;
-    border: 1px solid lightgray;
-    flex-wrap: nowrap;
-    align-items: flex-start;
-
-}
-
-
-.dropdown_menu li {
-    padding: 10px;
-    cursor: pointer;
-}
-
-.dropdown_menu li:hover {
-    opacity: .7;
-}
-
-.dropdown_menu li i {
-    padding-right: 10px;
 }
 
 .daysInMonth .dayInMonth-item .action_buttons.is_open {
@@ -289,108 +263,3 @@ button {
 }
 
 
-
-// Custom Select Box
-::selection{
-    color: #fff;
-    background: #4285f4;
-  }
-  .wrapper{
-    width: max-content;
-    border: 1px solid lightgray;
-    min-width: 120px;
-   // margin: 85px auto 0;
-  }
-  .select-btn, li{
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    cursor: pointer;
-  }
-  .select-btn{
-    height: 30px;
-    padding: 0 20px;
-    font-size: 22px;
-    background: #fff;
-    // border-radius: 7px;
-    justify-content: space-between;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  }
-  .select-btn i{
-    font-size: 18px;
-    transition: transform 0.3s linear;
-  }
-  .wrapper.active .select-btn i{
-    transform: rotate(-180deg);
-  }
-  .content{
-    position: absolute;
-    width: inherit;
-    z-index: 2;
-    display: none;
-    padding: 20px;
-    margin-top: 5px;
-    background: #fff;
-    border-radius: 7px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  }
-  .wrapper.active .content{
-    display: block;
-  }
-  .content .search{
-    position: relative;
-  }
-  .search i{
-    top: 50%;
-    left: 15px;
-    color: #999;
-    font-size: 20px;
-    pointer-events: none;
-    transform: translateY(-50%);
-    position: absolute;
-  }
-  .search input{
-    height: 30px;
-    width: 100%;
-    outline: none;
-    font-size: 17px;
-    border-radius: 5px;
-    padding: 0 20px 0 43px;
-    border: 1px solid #B3B3B3;
-  }
-  .search input:focus{
-    padding-left: 42px;
-    border: 2px solid #4285f4;
-  }
-  .search input::placeholder{
-    color: #bfbfbf;
-  }
-  .content .options{
-    margin-top: 10px;
-    max-height: 250px;
-    overflow-y: auto;
-    padding-right: 7px;
-  }
-  .options::-webkit-scrollbar{
-    width: 7px;
-  }
-  .options::-webkit-scrollbar-track{
-    background: #f1f1f1;
-    border-radius: 25px;
-  }
-  .options::-webkit-scrollbar-thumb{
-    background: #ccc;
-    border-radius: 25px;
-  }
-  .options::-webkit-scrollbar-thumb:hover{
-    background: #b3b3b3;
-  }
-  .options li{
-    height: 30px;
-    padding: 0 13px;
-    font-size: 21px;
-  }
-  .options li:hover, li.selected{
-    border-radius: 5px;
-    background: #f2f2f2;
-  }

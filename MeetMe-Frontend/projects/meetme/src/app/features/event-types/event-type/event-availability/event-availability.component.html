@@ -119,12 +119,12 @@
                     </select>
                 </div>
             </div>
-            <div class="toggle_buttons_container">
-                <button [ngClass]="!isCustomAvailability?'toggle_button':''"
-                    (click)="onClickExistingHours($event)">Existing
-                    Working Hours</button>
-                <button [ngClass]="isCustomAvailability?'toggle_button':''" (click)="onClickCustomHour($event)">Custom
-                    Working hour</button>
+            <div class="multi_option_button_container">
+                <a [class.selected]="!isCustomAvailability"
+                    (click)="onClickExistingHours($event)">Desfult schedule
+                    </a>
+                <a [class.selected]="isCustomAvailability" (click)="onClickCustomHour($event)">Custom
+                    schedule</a>
             </div>
 
             <div [style.display]="!isCustomAvailability?'block':'none'">

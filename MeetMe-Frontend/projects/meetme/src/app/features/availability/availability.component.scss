@@ -1,6 +1,4 @@
 .divider {
-    // width: 104%;
-    // left: -20px;
     position: relative;
     padding: 0 0 10px 0;
     border-bottom: 2px solid lightgray;
@@ -12,7 +10,6 @@
     justify-content: space-between;
     align-items: center;
     position: relative;
-   // margin: 10px 0;
 }
 
 .overview .action_menu_openner {
@@ -24,27 +21,6 @@
 }
 
 .action_menu {
-    list-style-type: none;
-    display: flex;
-    flex-flow: column;
-    position: absolute;
-    top: 41px;
-    right: 0;
-    background-color: white;
-    border: 1px solid lightgray;
-    padding: 7px 20px;
+    
 
-}
-
-.action_menu li {
-    padding: 10px;
-    cursor: pointer;
-}
-
-.action_menu li:hover {
-    opacity: .7;
-}
-
-.action_menu li i {
-    padding-right: 10px;
 }

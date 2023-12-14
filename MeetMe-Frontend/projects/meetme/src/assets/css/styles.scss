@@ -1,4 +1,5 @@
 @import "_variables";
+@import 'menu.scss';
 
 // Event colors
 :root {
@@ -322,13 +323,13 @@ button.secondary:hover {
 }
 
 /* Special Button with High Contrast */
-.special {
+button.special {
     background-color: #d9534f;
     color: #fff;
     border: 1px solid #d9534f;
 }
 
-.special:hover {
+button.special:hover {
     background-color: #c9302c;
     border: 1px solid #c9302c;
 }
@@ -490,7 +491,9 @@ select.is-invalid {
     padding: 10px 0;
     gap: 10px;
 }
-
+input,textarea,select{
+    padding: 7px 5px;
+}
 .page .footer {
     padding: 30px 0;
     display: flex;
@@ -685,16 +688,32 @@ form.single-column .form-group .form-control {
     width: 100%;
 }
 
-.toggle_buttons_container {
-    margin: 5px 0;
+// .toggle_buttons_container {
+//     margin: 5px 0;
+//     padding: 5px;
+//     display: block;
+//     width: max-content;
+//     background-color: rgb(251, 247, 247);
+//     border: 1px solid lightgray;
+// }
+
+
+.multi_option_button_container {
     padding: 5px;
-    display: block;
-    width: max-content;
-    background-color: rgb(251, 247, 247);
-    border: 1px solid lightgray;
+    display: inline-flex;
+    gap: 10px;
+    border: 1px solid var(--primary-color);
 }
 
+.multi_option_button_container a {
+    padding: 4px 10px;
+    background-color: var(--secondary-color);
+}
 
+.multi_option_button_container .selected {
+    background-color: var(--primary-color);
+    color: white;
+}
 // animation
 .dot-pulse {
     position: relative;
@@ -802,4 +821,19 @@ a.is-active {
 button>
 i.fa, i.fas, i.far {
     padding:0 5px 0 0;
+}
+
+
+span.btn,.special{
+    border: 1px solid transparent;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+span.btn:hover{
+    color: white;
+    background-color: var(--gray-color);
+}
+span.special:hover{
+    color: white;
+    background-color: var(--gray-color);
 }

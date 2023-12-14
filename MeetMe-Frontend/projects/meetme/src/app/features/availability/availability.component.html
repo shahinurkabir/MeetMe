@@ -1,4 +1,4 @@
-<div class="meetme-card" style="background-color: var(--secondary-color);">
+<div class="meetme-card">
     <app-availability-list #listAvailabilityComponent (itemSelected)="onSelected($event)"></app-availability-list>
 </div>
 <div class="meetme-card">
@@ -12,8 +12,8 @@
         </div>
         <span class="action_menu_openner">
             <i #toggle_availability_action_menu (click)="onOpenActionMenu()" class="fa-solid fa-gear"></i>
-        </span>
-        <ul #availability_action_menu *ngIf="showActionMenubarYN" class="action_menu">
+        
+        <ul #availability_action_menu *ngIf="showActionMenubarYN" class="action_menu dropdown-menu">
             <li (click)="onClickEditName(selectedAvailability?.id!)"><i class="fa fa-pen"></i><span>Edit
                     Name</span>
             </li>
@@ -23,17 +23,16 @@
             </li>
             <li (click)="onShowDeleteModal()"><i class="fa fa-trash"></i><span>Delete</span></li>
         </ul>
-    </div>×
-
+    </span>
+    </div>
+    <hr>
     <app-time-availability #availabilityComponent></app-time-availability>
     <div class="buttons-container-right">
 
-        <button loading-indicator [loading]="isLoading" [disabled]="isLoading" (click)="onSubmit($event)"
-            class="">
+        <button loading-indicator [loading]="isLoading" [disabled]="isLoading" (click)="onSubmit($event)" class="">
             Cancel Changes
         </button>
-        <button loading-indicator [loading]="isSaving" [disabled]="isSaving" (click)="onSubmit($event)"
-            class="primary">
+        <button loading-indicator [loading]="isSaving" [disabled]="isSaving" (click)="onSubmit($event)" class="primary">
             Save Changes
         </button>
     </div>
@@ -62,13 +61,13 @@
 
 
 <app-my-modal [isVisible]="showDeleteModalYN" modalTitle="Delete Availability" [modalWidth]="'500px'"
-  (closeModal)="onCloseModal()">
-  <ng-template #modalContent>
-    <h2>Are you sure want to delete?</h2>
-    <hr>
-    <div class="action-buttons-container">
-      <button (click)="onCloseModal()">Close</button>
-      <button class="special" (click)="onDelete($event)">Delete</button>
-    </div>
-  </ng-template>
+    (closeModal)="onCloseModal()">
+    <ng-template #modalContent>
+        <h2>Are you sure want to delete?</h2>
+        <hr>
+        <div class="action-buttons-container">
+            <button (click)="onCloseModal()">Close</button>
+            <button class="special" (click)="onDelete($event)">Delete</button>
+        </div>
+    </ng-template>
 </app-my-modal>

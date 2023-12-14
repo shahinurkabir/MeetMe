@@ -58,24 +58,21 @@
 }
 
 .toolbar .btn-overlay-opener {
-    position: relative;
-    width: 33px;
-    height: 19px;
-    padding: 2px;
+    display: none;
     padding-top: 0;
-    border-radius: 4px;
 }
-
+.toolbar .btn-overlay-opener.show {
+    display: block;
+}
+/* 
 .dropdown-menu {
     display: none;
     position: absolute;
     right: 0;
     margin-top: 3px;
-    background-color: lightgray;
     border: 1px solid lightgray;
     border-radius: 5px;
-    padding: 10px;
-    background: #fff;
+    background: var(--secondary-color);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
@@ -91,18 +88,18 @@
     list-style: none;
     cursor: pointer;
     color: white;
-    padding: 5px 10px 5px 5px;
+    padding: 5px 15px;
     margin: 3px 0 0 0;
 }
 
 .dropdown-menu li:hover {
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     color: white;
 }
 
 .dropdown-menu li i {
     padding-right: 5px;
-}
+} */
 
 .event-list-item .header {
     display: flex;
