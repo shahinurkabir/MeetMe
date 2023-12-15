@@ -56,15 +56,15 @@
         </label>
         <ng-container
           *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay: dailyTimeAvailabilities}"></ng-container>
-        <span (click)="onAddTimeInterval(dailyTimeAvailabilities)" class="btn"><i class="fa fa-plus"></i></span>
+        <!-- <span (click)="onAddTimeInterval(dailyTimeAvailabilities)" class="btn"><i class="fa fa-plus"></i></span> -->
         <span (click)="onAddTimeInterval(dailyTimeAvailabilities)" class="btn"><i class="fa fa-clone"></i></span>
       </div>
     </div>
 
     <div class="overrides_dates">
-      <h2 class="sub_title">Add date overrides</h2>
-      <button style="width:100%; display: block;" class="special"
-        (click)="onOpenCalendarModal('modal-override-dates')">Add a date override</button>
+      <h3 class="padding-bottom-10">Customize Date-Specefic hours</h3>
+      <div class="padding-bottom-20">If specefic dates are differ from reqular time schedules</div>
+      <button class="rounded margin-bottom-10" (click)="onOpenCalendarModal('modal-override-dates')">+ Add date to override</button>
       <div class="timeinterval_overrides" (click)="onEditAvailabilityForOverrideDate(index)"
         *ngFor="let dailyTimeAvailabilities of availabilityOverrides;let index=index">
         <div>{{dailyTimeAvailabilities.day}}</div>
@@ -73,7 +73,7 @@
             <span>{{timeSlot.startTime}} - {{timeSlot.endTime}}</span>
           </div>
         </div>
-        <span (click)="onRemoveOverrideData(index)"><i class="fa fa-trash"></i></span>
+        <span class="btn" (click)="onRemoveOverrideData(index)"><i class="fa fa-trash"></i></span>
       </div>
     </div>
   </div>
@@ -94,7 +94,7 @@
         <span class="weekday_name">{{day}}</span>
       </div>
 
-      <button  [disabled]="dayItem.isPastDate" (click)="!dayItem.isPastDate ? onClickDayInMonthView($event) : ''"
+      <button [disabled]="dayItem.isPastDate" (click)="!dayItem.isPastDate ? onClickDayInMonthView($event) : ''"
         (mouseleave)="onRemoveActionButtonFromCalendarDay($event)" class="dayInMonth-item border_transparent"
         *ngFor="let dayItem of availabilityInMonth; let index=index"
         [ngClass]="dayItem.isOverride ? 'override_interval' : ''">
@@ -137,6 +137,23 @@
   </div>
 </form>
 
+
+<app-my-modal [isVisible]="showCalendarModal && viewMode!=='readonly'" modalTitle="Date override intervals"
+  (closeModal)="onCloseCalendarModal()">
+  <ng-template #modalContent>
+    <app-calendar (handlerDateClick)="onHandledCalendarClicked($event)"
+      [selectedDates]="selectedDatesFromCalender"></app-calendar>
+    <div class="override_date_intervals" *ngIf="selecteDateOverride">
+      <ng-template
+        *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay: selecteDateOverride}"></ng-template>
+    </div>
+    <div class="action-buttons-container padding-top-10">
+      <button (click)="onCloseCalendarModal()">Close</button>
+      <button class="primary" (click)="onApplyCalendarDateChanges()">OK</button>
+    </div>
+  </ng-template>
+</app-my-modal>
+
 <mm-modal *ngIf="viewMode!=='readonly'" id="modal-override-dates" title="Date override intervals"
   (cancelEvent)="onCloseCalendarModal()" (confirmEvent)="onApplyCalendarDateChanges()">
   <app-calendar (handlerDateClick)="onHandledCalendarClicked($event)"
@@ -158,7 +175,11 @@
 <ng-template #timeInvervalsInDayTemplate let-timeInvervalsInDay="timeInvervalsInDay">
   <div class="intervals">
     <div *ngIf="!timeInvervalsInDay.isAvailable ">
-      <div class="interval_item not_available">Not available</div>
+      <div class="interval_item not_available">Not available
+        <span  (click)="onAddTimeInterval(timeInvervalsInDay)" class="btn add_more_time_slot"><i
+          class="fa fa-plus"></i></span>
+      </div>
+      
     </div>
 
     <div *ngIf="timeInvervalsInDay.isAvailable">
@@ -175,14 +196,14 @@
 
         <span class="btn special" (click)="onRemoveTimeInterval(i, timeInvervalsInDay)"><i
             class="fa fa-trash"></i></span>
-
+        <span *ngIf="i==0" (click)="onAddTimeInterval(timeInvervalsInDay)" class="btn add_more_time_slot"><i
+            class="fa fa-plus"></i></span>
         <div *ngIf="timeInterval.errorMessage" class="invalid-feedback">
           {{timeInterval.errorMessage}}
         </div>
       </div>
     </div>
 
-    <!-- <span (click)="onAddTimeInterval(timeInvervalsInDay)" class="btn add_more_item"><i class="fa fa-plus"></i></span> -->
   </div>
 </ng-template>
 <ng-template #timeInvervalsInDayTemplateReadOnly let-timeInvervalsInDay="timeInvervalsInDay">

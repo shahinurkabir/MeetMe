@@ -67,9 +67,11 @@
     width: 100%;
     padding-bottom: 5px;
     display: flex;
-    gap: 8px;
+    gap: 5px;
+    justify-content: flex-start;
     align-items: center;
 }
+
 .intervals .interval_item.not_available {
     opacity: 0.5;
     font-weight: 700;
@@ -87,7 +89,8 @@
 
 
 .override_date_intervals {
-    width: 370px;
+    // width: 370px;
+    padding: 7px 0;
 }
 
 .interval_list_grid .interval_list_grid_item {
@@ -119,8 +122,8 @@
     padding: 20px 20px;
     border-top: 1px solid lightgray;
     position: relative;
-    width: 109%;
-    left: -15px;
+    // width: 109%;
+    // left: -15px;
     cursor: pointer;
 }
 
@@ -262,4 +265,8 @@ button {
     cursor: pointer;
 }
 
-
+.btn.add_more_time_slot{
+    position: absolute;
+    right: 0;
+    top: 0;
+}

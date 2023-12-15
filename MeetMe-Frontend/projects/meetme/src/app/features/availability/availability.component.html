@@ -10,7 +10,7 @@
                 <i style="color:orange;" class="fa-sharp fa-solid fa-star"></i> default schedule</span>
 
         </div>
-        <span class="action_menu_openner">
+        <span class="btn action_menu_openner">
             <i #toggle_availability_action_menu (click)="onOpenActionMenu()" class="fa-solid fa-gear"></i>
         
         <ul #availability_action_menu *ngIf="showActionMenubarYN" class="action_menu dropdown-menu">
@@ -37,7 +37,48 @@
         </button>
     </div>
 </div>
-<mm-modal id="edit-name-modal" title="Edit Schedule Name" (confirmEvent)="onEditName($event)"
+
+
+
+<app-my-modal [isVisible]="showEditModalYN" modalTitle="Edit Schedule Name" [modalWidth]="'500px'"
+  (closeModal)="onCloseModal()">
+  <ng-template #modalContent>
+    <form class="single-column" #frmEdit="ngForm" >
+        <div class="form-group">
+            <label for="name">Schedule Name</label>
+            <div class="form-control">
+                <input #name="ngModel" id="name" name="name" autocomplete="off"
+                    [ngClass]="frmEdit.submitted && name.invalid?'is-invalid':''" type="text" [(ngModel)]="editName"
+                    required minlength="3">
+                <div *ngIf="frmEdit.submitted && name.errors" class="invalid-feedback">
+                    <div *ngIf="name.errors['required']">Name is required</div>
+                    <div *ngIf="name.invalid">Name at-least three charecters</div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="action-buttons-container">
+            <button (click)="onCloseModal()">Close</button>
+            <button class="primary" (click)="onEditNameFormSubmit(frmEdit)">OK</button>
+        </div>
+    </form>
+  </ng-template>
+</app-my-modal>
+
+
+<app-my-modal [isVisible]="showDeleteModalYN" modalTitle="Delete Availability" [modalWidth]="'500px'"
+(closeModal)="onCloseModal()">
+<ng-template #modalContent>
+    <h2>Are you sure want to delete?</h2>
+    <hr>
+    <div class="action-buttons-container">
+        <button (click)="onCloseModal()">Close</button>
+        <button class="special" (click)="onDelete($event)">Delete</button>
+    </div>
+</ng-template>
+</app-my-modal>
+
+<!-- <mm-modal id="edit-name-modal" title="Edit Schedule Name" (confirmEvent)="onEditName($event)"
     (cancelEvent)="onCloseModal()">
     <form #frmEdit="ngForm" (ngSubmit)="onEditNameFormSubmit(frmEdit)">
         <div class="form-group">
@@ -53,21 +94,9 @@
             </div>
         </div>
     </form>
-</mm-modal>
-<mm-modal id="delete-availability-modal" title="Delete Schedule- {{selectedAvailability?.name}}"
+</mm-modal> -->
+
+<!-- <mm-modal id="delete-availability-modal" title="Delete Schedule- {{selectedAvailability?.name}}"
     (confirmEvent)="onDelete($event)" (cancelEvent)="onCloseModal()">
     <h2>Are you sure want to delete?</h2>
-</mm-modal>
-
-
-<app-my-modal [isVisible]="showDeleteModalYN" modalTitle="Delete Availability" [modalWidth]="'500px'"
-    (closeModal)="onCloseModal()">
-    <ng-template #modalContent>
-        <h2>Are you sure want to delete?</h2>
-        <hr>
-        <div class="action-buttons-container">
-            <button (click)="onCloseModal()">Close</button>
-            <button class="special" (click)="onDelete($event)">Delete</button>
-        </div>
-    </ng-template>
-</app-my-modal>
+</mm-modal> -->

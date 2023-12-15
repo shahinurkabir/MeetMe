@@ -24,9 +24,9 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   isLoading: boolean=false;
   isSaving: boolean=false;
   showDeleteModalYN: boolean=false;
+  showEditModalYN: boolean=false;
   constructor(
     private availabilityService: AvailabilityService,
-    private modalService: ModalService,
     private renderer: Renderer2,
     private alertService: AlertService
   ) {
@@ -56,12 +56,12 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   onClickEditName(id: string) {
     this.resetForm(this.editNameForm);
     this.editName = this.selectedAvailability?.name!
-    this.modalService.open('edit-name-modal');
+    this.showEditModalYN = true;  
   }
 
-  onEditName(e: any) {
-    this.editNameForm?.onSubmit(e)
-  }
+  // onEditName(e: any) {
+  //   this.editNameForm?.onSubmit(e)
+  // }
 
   onEditNameFormSubmit(frm: NgForm) {
     if (frm.invalid) return;
@@ -78,12 +78,13 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
           this.listAvailabilityComponent?.loadData(this.selectedAvailability?.id)
         },
         error: (error) => { console.log(error) },
-        complete: () => { this.modalService.close() }
+        complete: () => { this.onCloseModal(); }
       });
   }
 
   onCloseModal() {
     this.showDeleteModalYN = false;
+    this.showEditModalYN = false;
   }
 
   onClone(id: string) {
@@ -146,7 +147,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
           this.listAvailabilityComponent?.loadData(undefined);
         },
         error: (error) => { console.log(error) },
-        complete: () => { this.showDeleteModalYN = false; }
+        complete: () => { this.onCloseModal(); }
       })
   }
 

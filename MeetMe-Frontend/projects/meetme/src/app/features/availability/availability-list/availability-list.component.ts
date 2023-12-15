@@ -17,10 +17,10 @@ export class AvailabilityListComponent implements OnInit, OnDestroy {
   selectedItem_Id: string | undefined;
   @ViewChild(NgForm) frmAddAvailability: NgForm | undefined;
   timeZoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
+  showAddNewModal: boolean = false;
   constructor(
     private availabilityService: AvailabilityService,
-    private modalService: ModalService
+    //private modalService: ModalService
   ) {
     this.loadData(undefined);
   }
@@ -30,7 +30,8 @@ export class AvailabilityListComponent implements OnInit, OnDestroy {
   }
   onShowAddNewModal() {
     this.resetForm(this.frmAddAvailability);
-    this.modalService.open('new-availability-modal')
+    this.showAddNewModal = true;
+    //this.modalService.open('new-availability-modal')
 
   }
 
@@ -65,9 +66,9 @@ export class AvailabilityListComponent implements OnInit, OnDestroy {
     this.onSelectItem(itemToDisplay);
   }
 
-  onConfirmToAdd(e: any) {
-    this.frmAddAvailability?.onSubmit(e);
-  }
+  // onConfirmToAdd(e: any) {
+  //   this.frmAddAvailability?.onSubmit(e);
+  // }
 
   onSubmit(frm: NgForm) {
 
@@ -87,13 +88,14 @@ export class AvailabilityListComponent implements OnInit, OnDestroy {
       error: (error) => { console.log(error) },
       complete: () => {
         this.newAvailabilityName = "";
-        this.modalService.close()
+        this.showAddNewModal = false;
       }
     });
 
   }
   onCancelAdd() {
-    this.modalService.close();
+    //this.modalService.close();
+    this.showAddNewModal = false;
   }
   private resetForm(frm: NgForm | undefined) {
     frm?.form.markAsPristine();

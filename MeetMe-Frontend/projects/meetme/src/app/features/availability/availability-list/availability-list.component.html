@@ -10,10 +10,10 @@
             <i *ngIf="item?.isDefault" class="fa fa-sharp fa-solid fa-star"></i>
         </a>
     </div>
-    <button (click)="onShowAddNewModal()" class="add_schedule text-ellipsis">+ New Availability</button>
+    <button (click)="onShowAddNewModal()" class="primary rounded add_schedule text-ellipsis">+ New Availability</button>
 </div>
 
-
+<!-- 
 <mm-modal id="new-availability-modal" title="New Availability" (cancelEvent)="onCancelAdd()"
     (confirmEvent)="onConfirmToAdd($event)">
     <form class="single-column" #frmAddAvailability="ngForm" (ngSubmit)="onSubmit(frmAddAvailability)">
@@ -30,4 +30,30 @@
             </div>
         </div>
     </form>
-</mm-modal>
+</mm-modal> -->
+
+
+<app-my-modal [isVisible]="showAddNewModal" modalTitle="New Availability" [modalWidth]="'500px'"
+  (closeModal)="onCancelAdd()">
+  <ng-template #modalContent>
+    <form class="single-column" #frmAddAvailability="ngForm" >
+        <div class="form-group">
+            <label for="name">Schedule Name</label>
+            <div class="form-control">
+                <input #name="ngModel" id="name" name="name" autocomplete="off"
+                    [ngClass]="frmAddAvailability.submitted && name.invalid?'is-invalid':''" type="text"
+                    [(ngModel)]="newAvailabilityName" minlength="3" required>
+                <div *ngIf="frmAddAvailability.submitted && name.errors" class="invalid-feedback">
+                    <div *ngIf="name.errors['required']">Name is required</div>
+                    <div *ngIf="name.invalid">Name at-least three charecters</div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="action-buttons-container">
+            <button (click)="onCancelAdd()">Close</button>
+            <button class="primary" (click)="onSubmit(frmAddAvailability)">OK</button>
+        </div>
+    </form>
+  </ng-template>
+</app-my-modal>

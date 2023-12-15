@@ -40,6 +40,8 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   @ViewChild(CalendarComponent) calendarComponent!: CalendarComponent;
   @ViewChild('countryContainer') countryContainer: ElementRef | undefined;
   @Input() viewMode: string = "list";
+  showCalendarModal: boolean = false;
+  showWeekDayConfigureModal: boolean = false;
   constructor(
     private modalService: ModalService
   ) {
@@ -263,14 +265,15 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   onOpenCalendarModal(modalName: string, defaultDate?: Date) {
 
     this.calendarComponent.resetCalendar(defaultDate);
-
-    this.modalService.open(modalName)
+    this.showCalendarModal = true;
+    //this.modalService.open(modalName)
 
   }
   onCloseCalendarModal() {
     this.selecteDateOverride = undefined;
     this.selectedDatesFromCalender = {};
-    this.modalService.close()
+    this.showCalendarModal = false;
+    //this.modalService.close()
   }
 
   onApplyCalendarDateChanges() {
@@ -455,7 +458,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   onClickDayInMonthView(event: any) {
     let element = event.target.querySelector(".action_buttons");
-    if (!element) { 
+    if (!element) {
       element = event.target.parentElement.parentElement.querySelector(".action_buttons")
     }
     if (element)
