@@ -73,7 +73,7 @@
             <span>{{timeSlot.startTime}} - {{timeSlot.endTime}}</span>
           </div>
         </div>
-        <span class="btn" (click)="onRemoveOverrideData(index)"><i class="fa fa-trash"></i></span>
+        <span class="btn big_icon" (click)="onRemoveOverrideData(index)"><i class="fas fa-times close-icon"></i></span>
       </div>
     </div>
   </div>
@@ -215,7 +215,7 @@
           (focusout)="onLostFocus($event, i, true, timeInvervalsInDay)">
 
         <span class="btn special" (click)="onRemoveTimeInterval(i, timeInvervalsInDay)"><i
-            class="fa fa-trash"></i></span>
+            class="fas fa-times close-icon"></i></span>
         <span *ngIf="i==0" (click)="onAddTimeInterval(timeInvervalsInDay)" class="btn add_more_time_slot"><i
             class="fa fa-plus"></i></span>
         <div *ngIf="timeInterval.errorMessage" class="invalid-feedback">
