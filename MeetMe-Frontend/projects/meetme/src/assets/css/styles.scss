@@ -21,9 +21,14 @@
     font-family: 'poppins', 'sans-serif';
     box-sizing: border-box;
     font-size: 14px;
-    color: #374151;
+    color:var(--text-color);
 }
 
+body {
+    position: relative;
+    background-color: var(--background-color);
+
+}
 h1 {
     font-size: 2em;
     line-height: 1.2;
@@ -44,21 +49,7 @@ h4 {
     line-height: 1.5;
 }
 
-body {
-    // background-color: $neutral-color;
-    // color: #191919;
-    position: relative;
-    color: rgb(26, 26, 26);
-    background-color: #F6F6F6;
 
-}
-
-// h1,
-// h2,
-// h3,
-// h4 {
-//     margin: 5px 0;
-// }
 h1, h2, h3 {
     font-weight: 700; /* Use the bold variant for headings */
   }
@@ -103,40 +94,16 @@ body.is-modal-open {
 .margin-top-20 {
     margin-top: 20px;
 }
-// a {
-//     color: var(--accent-color);
-//     text-decoration: none;
-// }
-
-// a:hover {
-//     text-decoration: underline;
-// }
-
-// a:visited {
-//     color: var(--accent-color);
-// }
-
-// .layout_container {
-//     display: block;
-//     position: relative;
-//     background-color: aliceblue;
-// }
 
 .layout {
     display: block;
-    //width: 1024px;
     min-height: 100vh;
-    //margin: 0px auto;
-    //padding: 1px 0px;
-    // background-color: $primary-color;
 }
 
 nav {
     display: flex;
     width: 100%;
-    //padding: 3px 5px;
     background-color: var(--primary-color);
-    // border-bottom: 1px solid lightgray;
     justify-content: space-between;
     align-items: center;
     position: relative;
@@ -166,21 +133,17 @@ nav ul li {
 
 nav ul.menu li a {
     text-transform: uppercase;
-    //text-decoration: none;
     color: var(--primary-text-color);
     padding: 20px 20px;
 }
 
 nav ul li a {
-    //text-decoration: none;
-    // color: #fff;
     color: var(--primary-text-color);
     padding: 20px 20px;
 
 }
 
 nav ul li a.is-active {
-    //background-color: white;
     color: var(--primary-text-color);
     border-bottom: 2px solid gray;
 
@@ -296,23 +259,6 @@ nav ul li a.is-active {
     background-color: brown;
 }
 
-// input {
-//     border: 1px solid $secondary-color;
-//     -webkit-transition: 0.5s;
-//     transition: 0.5s;
-//     outline: none;
-//     padding: 5px 6px;
-// }
-
-// button {
-//     border: 1px solid $secondary-color;
-//     -webkit-transition: 0.5s;
-//     transition: 0.5s;
-//     outline: none;
-//     padding: 5px 6px;
-//     cursor: pointer;
-// }
-
 hr {
     height: 1px;
     border: 1px solid var(--secondary-color);
@@ -375,33 +321,18 @@ input:disabled {
     /* Change cursor style when disabled */
 }
 
-/* Style for Placeholder Text */
 input::placeholder {
     color: #999;
-    /* Change the color of placeholder text */
 }
 
-/* Style for Valid Input (using HTML5 validation) */
-// input:valid {
-//     border-color: #28a745;
-//     /* Change border color for valid input */
-// }
-
-/* Style for Invalid Input (using HTML5 validation) */
-// input.ng-invalid ,
-// textarea.ng-invalid,
-// select.ng-invalid,
 input.is-invalid,
 textarea.is-invalid,
 select.is-invalid {
     border-color: #dc3545;
-    /* Change border color for invalid input */
 }
 
-/* Style for Hovered Input Elements */
 input:hover {
     background-color: #f9f9f9;
-    /* Change background color when hovered */
 }
 
 input.is-invalid,
@@ -446,9 +377,6 @@ select.is-invalid {
 .page .header h2 {
     font-weight: bold;
     font-size: larger;
-    // padding-bottom: 10px;
-    // padding-left: 10px;
-    //border-bottom: 1px solid lightgray;
 }
 
 .page .body {
@@ -491,42 +419,6 @@ input,textarea,select{
     justify-content: center;
 }
 
-// form .form-group {
-//     padding: 7px 2px;
-//     display: flex;
-//     align-items: center;
-//     width: 100%;
-// }
-
-// form .form-group label {
-//     width: 25%;
-//     display: inline-block;
-// }
-
-// form .form-group .form-control {
-//     width: 100%;
-// }
-
-// form .form-group .form-control input,
-// form .form-group .form-control textarea {
-//     border: 1px solid lightgray;
-//     -webkit-transition: 0.5s;
-//     transition: 0.5s;
-//     outline: none;
-//     width: 100%;
-//     padding: 7px 5px;
-// }
-
-// form .form-group input:focus {
-//     border: 1px solid black;
-// }
-
-// form .form-group textarea {
-//     resize: none;
-//     height: 100px;
-
-// }
-
 .form-group {
     padding: 7px 2px;
     display: flex;
@@ -551,10 +443,6 @@ input,textarea,select{
 .form-group .form-control input,
 .form-group .form-control textarea,
 .form-group .form-control select {
-    // border: 1px solid $secondary-color;
-    // -webkit-transition: 0.5s;
-    // transition: 0.5s;
-    // outline: none;
     width: 100%;
     padding: 7px 5px;
 }
@@ -570,30 +458,6 @@ input,textarea,select{
 .close-button:hover {
     color: var(--accent-color)
 }
-
-// .btn {
-//     outline: none;
-//     min-width: 70px;
-//     min-height: 27px;
-//     cursor: pointer;
-//     padding: 2px 3px;
-//     margin: 2px 3px;
-//     opacity: 0.9;
-// }
-
-// .btn:hover {
-//     opacity: 1;
-// }
-
-// .btn-primary {
-//     background-color: var (--accent-color);
-//     border: 1px solid darkgray;
-// }
-
-// .btn-default {
-//     background-color: var(--secondary-color);
-//     border: 1px solid darkgray;
-// }
 
 #modal-backdrop {
     width: 100%;
@@ -667,32 +531,7 @@ form.single-column .form-group .form-control {
     width: 100%;
 }
 
-// .toggle_buttons_container {
-//     margin: 5px 0;
-//     padding: 5px;
-//     display: block;
-//     width: max-content;
-//     background-color: rgb(251, 247, 247);
-//     border: 1px solid lightgray;
-// }
 
-
-.multi_option_button_container {
-    padding: 5px;
-    display: inline-flex;
-    gap: 10px;
-    border: 1px solid var(--primary-color);
-}
-
-.multi_option_button_container a {
-    padding: 4px 10px;
-    background-color: var(--secondary-color);
-}
-
-.multi_option_button_container .selected {
-    background-color: var(--primary-color);
-    color: white;
-}
 // animation
 .dot-pulse {
     position: relative;

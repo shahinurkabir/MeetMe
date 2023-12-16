@@ -260,12 +260,12 @@
 </ng-template>
 <app-my-modal [isVisible]="showCancelAppointmentWindowYN" modalTitle="Cancel Appointment" [modalWidth]="'500px'"
   (closeModal)="onToggleCancelAppointmentWindow(undefined)">
-  <ng-template #modalContent>
-    <form>
+  <ng-template #modalContent >
+    <form *ngIf="selectedAppointmentItem">
       <div class="form-group">
         <label for="cancellationReason">Reason</label>
         <div class="form-control">
-          <textarea rows="5" #description="ngModel" [(ngModel)]="selectedAppointmentItem!.cancellationReason"
+          <textarea rows="5"  [(ngModel)]="selectedAppointmentItem!.cancellationReason"
             id="cancellationReason" name="cancellationReason" autocomplete="off" required [minlength]="3"></textarea>
         </div>
       </div>

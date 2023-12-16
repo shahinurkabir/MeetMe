@@ -43,7 +43,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   showCalendarModal: boolean = false;
   showWeekDayConfigureModal: boolean = false;
   constructor(
-    private modalService: ModalService
+    //private modalService: ModalService
   ) {
   }
 
@@ -309,8 +309,14 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     this.availabilityOverrides.splice(index, 1);
   }
 
-  onEditAvailabilityForOverrideDate(index: number) {
-    this.selecteDateOverride = this.availabilityOverrides[index];
+  onEditAvailabilityForOverrideDate(timeIntervalInDay: ITimeIntervalInDay) {
+
+    let cloneIntervals = timeIntervalInDay.intervals.slice();
+
+    this.selecteDateOverride = {
+      day: timeIntervalInDay.day, isAvailable: true, intervals: cloneIntervals
+    };
+
     let selectedDate = new Date(this.selecteDateOverride.day);
     this.onOpenCalendarModal('modal-override-dates', selectedDate);
   }
@@ -333,8 +339,8 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     };
 
     this.selectedDayInWeek = calendarDay.weekDay;
-
-    this.modalService.open('modal-override-day')
+    this.showWeekDayConfigureModal = true;
+    // this.modalService.open('modal-override-day')
   }
 
   onHandledCalendarClicked(selectedDates: { [id: string]: string }) {
@@ -352,9 +358,9 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     this.selecteDateOverride = { day: '', isAvailable: true, intervals: [] }
     this.selecteDateOverride.intervals.push(timeSlot);
 
-    let selectedDate = "";
+    //let selectedDate = "";
     for (var date in selectedDates) {
-      selectedDate = date;
+      //selectedDate = date;
       let item = this.availabilityOverrides.find(e => e.day == date)
       if (item) {
         this.selecteDateOverride.intervals = item.intervals
@@ -538,16 +544,18 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   }
 
   onCloseWeekdayConfigureModal() {
-    this.modalService.close();
+    this.showWeekDayConfigureModal = false;
+    //this.modalService.close();
   }
 
   onApplyWeekDayChanges() {
+
+    this.showWeekDayConfigureModal = false;
     let date = new Date(this.selecteDateOverride?.day!);
     let weekDayName = settings_day_of_week[date.getDay()];
     let weekDayInvevals = this.availabilityInWeek.find(e => e.day == weekDayName);
     let intervals = this.selecteDateOverride?.intervals.slice()!
     weekDayInvevals!.intervals = intervals;
-    this.modalService.close();
     this.prepareMonthlyViewData();
   }
   onToggleCountryDropdownBox() {

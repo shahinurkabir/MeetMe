@@ -56,7 +56,6 @@
         </label>
         <ng-container
           *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay: dailyTimeAvailabilities}"></ng-container>
-        <!-- <span (click)="onAddTimeInterval(dailyTimeAvailabilities)" class="btn"><i class="fa fa-plus"></i></span> -->
         <span (click)="onAddTimeInterval(dailyTimeAvailabilities)" class="btn"><i class="fa fa-clone"></i></span>
       </div>
     </div>
@@ -64,8 +63,9 @@
     <div class="overrides_dates">
       <h3 class="padding-bottom-10">Customize Date-Specefic hours</h3>
       <div class="padding-bottom-20">If specefic dates are differ from reqular time schedules</div>
-      <button class="primary rounded margin-bottom-10" (click)="onOpenCalendarModal('modal-override-dates')">+ Add date to override</button>
-      <div class="timeinterval_overrides" (click)="onEditAvailabilityForOverrideDate(index)"
+      <button class="primary rounded margin-bottom-10" (click)="onOpenCalendarModal('modal-override-dates')">+ Add date
+        to override</button>
+      <div class="timeinterval_overrides" (click)="onEditAvailabilityForOverrideDate(dailyTimeAvailabilities)"
         *ngFor="let dailyTimeAvailabilities of availabilityOverrides;let index=index">
         <div>{{dailyTimeAvailabilities.day}}</div>
         <div class="timeslots">
@@ -152,8 +152,28 @@
       <button class="primary" (click)="onApplyCalendarDateChanges()">OK</button>
     </div>
   </ng-template>
-</app-my-modal> 
+</app-my-modal>
 
+
+<app-my-modal [isVisible]="showWeekDayConfigureModal && viewMode!=='readonly'"
+  modalTitle="{{selectedDayInWeek}} availability" (closeModal)="onCloseWeekdayConfigureModal()">
+  <ng-template #modalContent>
+    <!-- <mm-modal *ngIf="viewMode!=='readonly'" id="modal-override-day" title="{{selectedDayInWeek}} availability"
+  (cancelEvent)="onCloseWeekdayConfigureModal()" (confirmEvent)="onApplyWeekDayChanges()"> -->
+    <div class="override_date_intervals" *ngIf="selecteDateOverride">
+      <ng-template
+        *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay: selecteDateOverride}"></ng-template>
+    </div>
+    <!-- </mm-modal>  -->
+
+    <div class="action-buttons-container center margin-top-10">
+      <button (click)="onCloseWeekdayConfigureModal()">Close</button>
+      <button class="primary" (click)="onApplyWeekDayChanges()">OK</button>
+    </div>
+  </ng-template>
+</app-my-modal>
+
+<!-- 
 <mm-modal *ngIf="viewMode!=='readonly'" id="modal-override-dates" title="Date override intervals"
   (cancelEvent)="onCloseCalendarModal()" (confirmEvent)="onApplyCalendarDateChanges()">
   <app-calendar (handlerDateClick)="onHandledCalendarClicked($event)"
@@ -162,24 +182,24 @@
     <ng-template
       *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay: selecteDateOverride}"></ng-template>
   </div>
-</mm-modal>
-
+</mm-modal> -->
+<!-- 
 <mm-modal *ngIf="viewMode!=='readonly'" id="modal-override-day" title="{{selectedDayInWeek}} availability"
   (cancelEvent)="onCloseWeekdayConfigureModal()" (confirmEvent)="onApplyWeekDayChanges()">
   <div class="override_date_intervals" *ngIf="selecteDateOverride">
     <ng-template
       *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay: selecteDateOverride}"></ng-template>
   </div>
-</mm-modal>
+</mm-modal> -->
 
 <ng-template #timeInvervalsInDayTemplate let-timeInvervalsInDay="timeInvervalsInDay">
   <div class="intervals">
     <div *ngIf="!timeInvervalsInDay.isAvailable ">
       <div class="interval_item not_available">Not available
-        <span  (click)="onAddTimeInterval(timeInvervalsInDay)" class="btn add_more_time_slot"><i
-          class="fa fa-plus"></i></span>
+        <span (click)="onAddTimeInterval(timeInvervalsInDay)" class="btn add_more_time_slot"><i
+            class="fa fa-plus"></i></span>
       </div>
-      
+
     </div>
 
     <div *ngIf="timeInvervalsInDay.isAvailable">

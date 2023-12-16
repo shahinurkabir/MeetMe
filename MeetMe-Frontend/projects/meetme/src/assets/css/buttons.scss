@@ -72,3 +72,22 @@ span.special:hover{
     color: white;
     background-color: var(--gray-color);
 }
+
+
+.multi_option_button_container {
+    padding: 5px;
+    display: inline-flex;
+    gap: 10px;
+    border: 1px solid var(--primary-color);
+}
+
+.multi_option_button_container a {
+    padding: 4px 10px;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+.multi_option_button_container .selected {
+    background-color: var(--primary-color);
+    color: white;
+}
