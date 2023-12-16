@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { settings_day_of_week, settings_month_of_year } from '../../utilities/constants-data';
+import { IDay } from '../../interfaces';
+import { DateFunction } from '../../utilities';
 
 @Component({
   selector: 'app-calendar',
@@ -87,7 +89,7 @@ export class CalendarComponent implements OnInit {
       if (calendarDay.getDate() < i) break;
       let weekDay = calendarDay.getDay();
       let dayNo = i + 1
-      let shortDateString = this.getShortDateString(dayNo);
+      let shortDateString = DateFunction.getFormattedDate(this.selectedYear,this.selectedMonth, dayNo);
       let isPastDate =  currentTimeByTimeZone > calendarDay.getTime(); 
       let isCurrentDate =this.isCurrentMonth() && currentDate.getDate() == calendarDay.getDate() ;
       let isSelected= this.selectedDates[shortDateString] != undefined;
@@ -154,7 +156,7 @@ export class CalendarComponent implements OnInit {
         listDaysInWeek.forEach(day => day.isSelected = (day.dayNo == defaultDayNo!));
       }
 
-      let date = this.getShortDateString(defaultDayNo);
+      let date = DateFunction.getFormattedDate(this.selectedYear,this.selectedMonth,defaultDayNo!);
       this.selectedDates[date] = date;
       this.handlerDateClick.emit(this.selectedDates);
     }
@@ -182,21 +184,21 @@ export class CalendarComponent implements OnInit {
   private getCurrentDateByTimeZone(): Date {
     return new Date(new Date().toLocaleString("en-US", { timeZone: this.timeZoneMame }));
   }
-  private getShortDateString(dayNo: number): string {
+  // private getShortDateString(dayNo: number): string {
 
-    let shortMonth = settings_month_of_year[this.selectedMonth].substring(0, 3);
-    let dayNoString = "0" + dayNo.toString();
-    dayNoString = dayNoString.substring(dayNoString.length - 2, dayNoString.length);
-    let date = `${this.selectedYear}-${shortMonth}-${dayNoString}`;
+  //   let shortMonth = settings_month_of_year[this.selectedMonth].substring(0, 3);
+  //   let dayNoString = "0" + dayNo.toString();
+  //   dayNoString = dayNoString.substring(dayNoString.length - 2, dayNoString.length);
+  //   let date = `${this.selectedYear}-${shortMonth}-${dayNoString}`;
 
-    return date;
-  }
+  //   return date;
+  // }
 
 }
-interface IDay {
-  dayNo: number,
-  date: string,
-  isDisabled: boolean,
-  isSelected: boolean
-  isCurrentDate: boolean,
-}
+// interface IDay {
+//   dayNo: number,
+//   date: string,
+//   isDisabled: boolean,
+//   isSelected: boolean
+//   isCurrentDate: boolean,
+// }

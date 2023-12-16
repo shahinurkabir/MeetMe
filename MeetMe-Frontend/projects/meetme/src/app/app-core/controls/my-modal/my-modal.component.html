@@ -1,12 +1,18 @@
-<!-- <div *ngIf="isVisible" class="modal-overlay">
-    <div [style.width]="modalWidth" [style.height]="modalHeight" class="modal">
-      <h1>{{modalTitle}}</h1>
-      <div class="modal-content" *ngIf="modalContent">
-        <ng-container *ngTemplateOutlet="modalContent"></ng-container>
-      </div>
-    </div>
-  </div> -->
 
+
+<div [style.display]="isVisible?'block':'none'"  class="modal">
+  <div [style.width]="modalWidth" [style.height]="modalHeight" class="modal-content">
+      <span (click)="close()" class="close">&times;</span>
+      <h2>{{modalTitle}}</h2>
+      <hr>
+      <div class="modal-content-body" *ngIf="modalContent">
+          <ng-container *ngTemplateOutlet="modalContent"></ng-container>
+      </div>
+  </div>
+</div>
+
+
+<!-- 
 <div *ngIf="isVisible" class="modal">
     <div [style.width]="modalWidth" [style.height]="modalHeight" class="modal-content">
         <span (click)="close()" class="close">&times;</span>
@@ -16,12 +22,4 @@
             <ng-container *ngTemplateOutlet="modalContent"></ng-container>
         </div>
     </div>
-</div>
-
-<!-- <div *ngIf="isVisible" class="modal-overlay">
-    <div [style.width]="modalWidth" [style.height]="modalHeight" class="modal">
-      <h1>My Modal</h1>
-      <p>This is a simple modal dialog created with Angular and TypeScript.</p>
-      <button (click)="close()">Close</button>
-    </div>
-  </div> -->
+</div> -->

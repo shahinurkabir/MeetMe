@@ -39,7 +39,7 @@
 }
 
 .weekly_availability .weekly_days {
-    width: 65%;
+    width: 60%;
     padding: 0 15px;
 }
 
@@ -102,7 +102,7 @@
 }
 
 .weekly_availability .overrides_dates {
-    width: 35%;
+    width: 40%;
     padding: 15px;
     border-left: 1px solid lightgray;
 }
@@ -119,11 +119,9 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 20px 20px;
-    border-top: 1px solid lightgray;
+    padding: 10px 0px;
+    border-top: 1px solid var(--gray-color);
     position: relative;
-    // width: 109%;
-    // left: -15px;
     cursor: pointer;
 }
 

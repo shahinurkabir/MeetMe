@@ -263,7 +263,12 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   }
 
   onOpenCalendarModal(modalName: string, defaultDate?: Date) {
-
+    // let year= defaultDate?.getFullYear()!;
+    // let month= defaultDate?.getMonth()!;
+    // let formattedDate= DateFunction.getFormattedDate(year,month,defaultDate?.getDate()!);
+    // let selectedDates:{[id:string]:string}={};
+    // selectedDates[formattedDate]=formattedDate;
+    // this.calendarComponent.moveTo(year,month,selectedDates);
     this.calendarComponent.resetCalendar(defaultDate);
     this.showCalendarModal = true;
     //this.modalService.open(modalName)

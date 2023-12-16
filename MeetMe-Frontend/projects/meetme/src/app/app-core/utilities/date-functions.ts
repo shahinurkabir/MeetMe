@@ -1,16 +1,17 @@
+import { settings_month_of_year } from "./constants-data";
 
 export class DateFunction {
-    static isDayPast(date: Date) :boolean{
+    static isDayPast(date: Date): boolean {
         let currentDateTime = new Date();
         let currentDate = new Date(currentDateTime.getFullYear(), currentDateTime.getMonth(), currentDateTime.getDate())
         return currentDate.getTime() > date.getTime();
     }
-    static isDayCurrent(date: Date):boolean {
+    static isDayCurrent(date: Date): boolean {
         let currentDateTime = new Date();
         let currentDate = new Date(currentDateTime.getFullYear(), currentDateTime.getMonth(), currentDateTime.getDate())
         return currentDate.getTime() == date.getTime();
     }
-    static isMonthCurrent(date: Date):boolean {
+    static isMonthCurrent(date: Date): boolean {
         let currentDateTime = new Date();
         return currentDateTime.getFullYear() == date.getFullYear()
             && currentDateTime.getMonth() == date.getMonth();
@@ -23,7 +24,7 @@ export class DateFunction {
         if (!is24HourFormat)
             return new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric', timeZone: timeZone }).format(date);
         else
-            return  new Intl.DateTimeFormat('en-US', { hour12: false, hour: 'numeric', minute: 'numeric', timeZone: timeZone }).format(date);
+            return new Intl.DateTimeFormat('en-US', { hour12: false, hour: 'numeric', minute: 'numeric', timeZone: timeZone }).format(date);
     }
 
     static getDaysInMonth(year: number, month: number): number {
@@ -48,6 +49,15 @@ export class DateFunction {
         }
 
         return daysInRange;
+    }
+    static getFormattedDate(year: number, month: number, dayNo: number): string {
+
+        let shortMonth = settings_month_of_year[month].substring(0, 3);
+        let dayNoString = "0" + dayNo.toString();
+        dayNoString = dayNoString.substring(dayNoString.length - 2, dayNoString.length);
+        let date = `${year}-${shortMonth}-${dayNoString}`;
+
+        return date;
     }
 }
 
