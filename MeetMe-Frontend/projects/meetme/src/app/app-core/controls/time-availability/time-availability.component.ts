@@ -1,9 +1,8 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { settings_day_of_week, settings_endtime_minutes, settings_starttime_minutes, settings_meeting_day_type_date, settings_meeting_day_type_weekday, settings_month_of_year, settings_time_Slots_List } from '../../utilities/constants-data';
 import { TimeZoneData } from '../../interfaces/event-type-interfaces';
 import { ListItem } from '../../interfaces/list-item';
 import { CalendarComponent } from '../calender/calendar.component';
-import { ModalService } from '../modal/modalService';
 import { ListOfTimeZone } from '../../utilities/timezone-data';
 import { IAvailability, IAvailabilityDetails } from '../../interfaces/availability-interfaces';
 import { ITimeIntervalInDay, ITimeInterval, ITimeIntervalsInMonth } from '../../interfaces/ITimeIntervalInDay';
@@ -36,14 +35,16 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   isCurrentMonth: boolean = false;
   selectedTimeZone: any | undefined;
   timeZoneNameFilterText: string = "";
+  showCalendarModal: boolean = false;
+  showWeekDayConfigureModal: boolean = false;
+
 
   @ViewChild(CalendarComponent) calendarComponent!: CalendarComponent;
   @ViewChild('countryContainer') countryContainer: ElementRef | undefined;
   @Input() viewMode: string = "list";
-  showCalendarModal: boolean = false;
-  showWeekDayConfigureModal: boolean = false;
+  @Output() TimeAvailabilityChanged = new EventEmitter()
+
   constructor(
-    //private modalService: ModalService
   ) {
   }
 
@@ -91,7 +92,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
       let intervalItem = this.getTimeIntervalItem(item.from, item.to);
       let dailyTimeAvailabilities = this.availabilityOverrides.find(e => e.day == item.value);
       if (!dailyTimeAvailabilities) {
-        dailyTimeAvailabilities = { day: item.value!, isAvailable: true, intervals: [] };
+        dailyTimeAvailabilities = { day: item.value!, isAvailable: true, intervals: [], isValidData: true };
         this.availabilityOverrides.push(dailyTimeAvailabilities);
       }
       dailyTimeAvailabilities?.intervals.push(intervalItem);
@@ -179,7 +180,8 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
     timeInteralsInDay.isAvailable = true;
 
-    this.validateOverlapIntervals(timeInteralsInDay);
+    this.validateTimeIntervalsOfDay(timeInteralsInDay);
+
   }
 
   onRemoveTimeInterval(index: number, dailyTimeAvailabilities: ITimeIntervalInDay) {
@@ -189,16 +191,19 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     if (dailyTimeAvailabilities.intervals.length == 0)
       dailyTimeAvailabilities.isAvailable = false;
 
-    this.validateOverlapIntervals(dailyTimeAvailabilities);
-
+    this.validateTimeIntervalsOfDay(dailyTimeAvailabilities);
   }
 
   onLostFocus(e: Event, index: number, isEndTime: boolean, dailyTimeAvailabilities: ITimeIntervalInDay) {
+
+    dailyTimeAvailabilities.isValidData = true;
+
     let htmlElement = e.target as HTMLInputElement;
     let timeValue = htmlElement.value;
     let intervalItem = dailyTimeAvailabilities.intervals[index];
     if (timeValue === undefined || timeValue.trim() === '') {
       intervalItem.errorMessage = "Invalid time";
+      dailyTimeAvailabilities.isValidData = false;
       return;
     }
 
@@ -242,43 +247,40 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
 
     if (isEndTime) {
+      if (totalMinutes == intervalItem.endTimeInMinute) return;
       intervalItem.endTimeInMinute = totalMinutes
       intervalItem.endTime = time;
     }
     else {
+      if (totalMinutes == intervalItem.startTimeInMinute) return;
       intervalItem.startTimeInMinute = totalMinutes
       intervalItem.startTime = time;
     }
 
     if (intervalItem.endTimeInMinute < intervalItem.startTimeInMinute) {
       intervalItem.errorMessage = "End time should be after than start time."
-      htmlElement.focus();
+      dailyTimeAvailabilities.isValidData = false;
+      return;
+      //htmlElement.focus();
     }
     else {
       intervalItem.errorMessage = "";
     }
 
-    this.validateOverlapIntervals(dailyTimeAvailabilities)
-
+    if (dailyTimeAvailabilities.isValidData)
+      this.validateTimeIntervalsOfDay(dailyTimeAvailabilities)
   }
 
   onOpenCalendarModal(modalName: string, defaultDate?: Date) {
-    // let year= defaultDate?.getFullYear()!;
-    // let month= defaultDate?.getMonth()!;
-    // let formattedDate= DateFunction.getFormattedDate(year,month,defaultDate?.getDate()!);
-    // let selectedDates:{[id:string]:string}={};
-    // selectedDates[formattedDate]=formattedDate;
-    // this.calendarComponent.moveTo(year,month,selectedDates);
+
     this.calendarComponent.resetCalendar(defaultDate);
     this.showCalendarModal = true;
-    //this.modalService.open(modalName)
 
   }
   onCloseCalendarModal() {
     this.selecteDateOverride = undefined;
     this.selectedDatesFromCalender = {};
     this.showCalendarModal = false;
-    //this.modalService.close()
   }
 
   onApplyCalendarDateChanges() {
@@ -290,7 +292,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
       if (index > -1) this.availabilityOverrides.splice(index, 1);
 
       if (this.selecteDateOverride?.intervals.length! > 0) {
-        let timeIntervalInDay: ITimeIntervalInDay = { day: date, isAvailable: true, intervals: [] };
+        let timeIntervalInDay: ITimeIntervalInDay = { day: date, isAvailable: true, intervals: [], isValidData: true };
 
         this.selecteDateOverride?.intervals.forEach(interval => {
           timeIntervalInDay.intervals.push(interval);
@@ -303,18 +305,37 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
     this.onCloseCalendarModal();
     this.prepareMonthlyViewData();
+    this.validateTimeIntervalsOfAllDays();
   }
 
+  onCloseWeekdayConfigureModal() {
+    this.showWeekDayConfigureModal = false;
+  }
+
+  onApplyWeekDayChanges() {
+
+    this.showWeekDayConfigureModal = false;
+    let date = new Date(this.selecteDateOverride?.day!);
+    let weekDayName = settings_day_of_week[date.getDay()];
+    let weekDayInvevals = this.availabilityInWeek.find(e => e.day == weekDayName);
+    let intervals = this.selecteDateOverride?.intervals.slice()!
+    weekDayInvevals!.intervals = intervals;
+    this.prepareMonthlyViewData();
+    this.validateTimeIntervalsOfAllDays();
+  }
   onRemoveOverrideData(index: number) {
     this.availabilityOverrides.splice(index, 1);
+    this.validateTimeIntervalsOfAllDays();
   }
 
   onEditAvailabilityForOverrideDate(timeIntervalInDay: ITimeIntervalInDay) {
 
-    let cloneIntervals = timeIntervalInDay.intervals.slice();
+    const jsonString = JSON.stringify(timeIntervalInDay);
+
+    let cloneCopy = JSON.parse(jsonString) as ITimeIntervalInDay;
 
     this.selecteDateOverride = {
-      day: timeIntervalInDay.day, isAvailable: true, intervals: cloneIntervals
+      day: timeIntervalInDay.day, isAvailable: true, intervals: cloneCopy.intervals, isValidData: true
     };
 
     let selectedDate = new Date(this.selecteDateOverride.day);
@@ -326,7 +347,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     let cloneIntervals = calendarDay.intervals.slice();
 
     this.selecteDateOverride = {
-      day: calendarDay.dateString, isAvailable: true, intervals: cloneIntervals
+      day: calendarDay.dateString, isAvailable: true, intervals: cloneIntervals, isValidData: true
     };
     let selectedDate = new Date(this.selecteDateOverride.day);
     this.onOpenCalendarModal('modal-override-dates', selectedDate);
@@ -335,12 +356,11 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   onEditAvailabilityForWeekDay(calendarDay: ITimeIntervalsInMonth) {
 
     this.selecteDateOverride = {
-      day: calendarDay.dateString, isAvailable: true, intervals: calendarDay.intervals.slice()
+      day: calendarDay.dateString, isAvailable: true, intervals: calendarDay.intervals.slice(), isValidData: true
     };
 
     this.selectedDayInWeek = calendarDay.weekDay;
     this.showWeekDayConfigureModal = true;
-    // this.modalService.open('modal-override-day')
   }
 
   onHandledCalendarClicked(selectedDates: { [id: string]: string }) {
@@ -355,12 +375,10 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     if (this.selecteDateOverride) return;
 
     let timeSlot = this.getTimeIntervalItem(settings_starttime_minutes, settings_endtime_minutes)
-    this.selecteDateOverride = { day: '', isAvailable: true, intervals: [] }
+    this.selecteDateOverride = { day: '', isAvailable: true, intervals: [], isValidData: true }
     this.selecteDateOverride.intervals.push(timeSlot);
 
-    //let selectedDate = "";
     for (var date in selectedDates) {
-      //selectedDate = date;
       let item = this.availabilityOverrides.find(e => e.day == date)
       if (item) {
         this.selecteDateOverride.intervals = item.intervals
@@ -376,6 +394,8 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
       if (dailyTimeAvailabilities.intervals.length == 0)
         dailyTimeAvailabilities.intervals.push(this.getTimeIntervalItem(settings_starttime_minutes, settings_endtime_minutes));
     }
+
+    this.validateTimeIntervalsOfDay(dailyTimeAvailabilities);
   }
 
   getAvailability(): IAvailability | undefined {
@@ -409,64 +429,6 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     return this.availability;
   }
 
-  private getTimeIntervalItem(fromTimeInMinute: number, endTimeInMinute: number): ITimeInterval {
-    let item: ITimeInterval = {
-      startTimeInMinute: fromTimeInMinute,
-      startTime: this.convertTime(fromTimeInMinute),
-      endTime: this.convertTime(endTimeInMinute),
-      endTimeInMinute: endTimeInMinute
-    }
-    return item;
-  }
-
-  private validateOverlapIntervals(timeIntervalsInDay: ITimeIntervalInDay) {
-
-    // clean error message
-    timeIntervalsInDay.intervals.forEach(e => e.errorMessage = "");
-
-    let intervals = timeIntervalsInDay.intervals;
-    for (let i = 0; i < intervals.length; i++) {
-      let item = intervals[i];
-
-      for (let j = i + 1; j < intervals.length; j++) {
-        let item2 = intervals[j];
-        if (
-          (item.startTimeInMinute >= item2.startTimeInMinute && item.startTimeInMinute <= item2.endTimeInMinute) ||
-          (item.endTimeInMinute >= item2.startTimeInMinute && item.endTimeInMinute <= item2.endTimeInMinute)
-        ) {
-          item.errorMessage = "Times overlaping with other intervals";
-          item2.errorMessage = "Times overlaping with other intervals";
-          break;
-        }
-      }
-    }
-  }
-
-  private convertTime(minutes: number): string {
-    let hours = parseInt((minutes / 60).toFixed(0));
-    let minutesRemaining = minutes - (hours * 60);
-    let ampmFormat = hours > 12 ? "pm" : "am";
-    hours = hours == 0 ? 12 : hours;
-    let hoursFormatted = hours > 12 ? hours - 12 : hours;
-    let minutesFormatted = minutesRemaining < 10 ? "0" + minutesRemaining : minutesRemaining;
-    let time = hoursFormatted + ":" + minutesFormatted + ampmFormat;
-
-    return time;
-  }
-
-
-  private resetWeeklyTimeIntervals() {
-    this.availabilityOverrides = [];
-    this.availabilityInWeek = [];
-    settings_day_of_week.forEach(weekDay => {
-      let dailyTimeAvailabilities: ITimeIntervalInDay = {
-        day: weekDay, isAvailable: false, intervals: []
-      }
-      this.availabilityInWeek.push(dailyTimeAvailabilities);
-    })
-  }
-
-
   onClickDayInMonthView(event: any) {
     let element = event.target.querySelector(".action_buttons");
     if (!element) {
@@ -480,6 +442,7 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     let element = event.target.querySelector(".action_buttons");
     element.classList.remove("is_open");
   }
+
   onToggleView(viewMode: string) {
     this.viewMode = viewMode;
     this.prepareMonthlyViewData();
@@ -543,21 +506,6 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onCloseWeekdayConfigureModal() {
-    this.showWeekDayConfigureModal = false;
-    //this.modalService.close();
-  }
-
-  onApplyWeekDayChanges() {
-
-    this.showWeekDayConfigureModal = false;
-    let date = new Date(this.selecteDateOverride?.day!);
-    let weekDayName = settings_day_of_week[date.getDay()];
-    let weekDayInvevals = this.availabilityInWeek.find(e => e.day == weekDayName);
-    let intervals = this.selecteDateOverride?.intervals.slice()!
-    weekDayInvevals!.intervals = intervals;
-    this.prepareMonthlyViewData();
-  }
   onToggleCountryDropdownBox() {
     this.countryContainer?.nativeElement.classList.toggle('active');
   }
@@ -577,5 +525,95 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
     this.onToggleCountryDropdownBox();
   }
 
+  private getTimeIntervalItem(fromTimeInMinute: number, endTimeInMinute: number): ITimeInterval {
+    let item: ITimeInterval = {
+      startTimeInMinute: fromTimeInMinute,
+      startTime: this.convertTime(fromTimeInMinute),
+      endTime: this.convertTime(endTimeInMinute),
+      endTimeInMinute: endTimeInMinute
+    }
+    return item;
+  }
+
+
+  private convertTime(minutes: number): string {
+    let hours = parseInt((minutes / 60).toFixed(0));
+    let minutesRemaining = minutes - (hours * 60);
+    let ampmFormat = hours > 12 ? "pm" : "am";
+    hours = hours == 0 ? 12 : hours;
+    let hoursFormatted = hours > 12 ? hours - 12 : hours;
+    let minutesFormatted = minutesRemaining < 10 ? "0" + minutesRemaining : minutesRemaining;
+    let time = hoursFormatted + ":" + minutesFormatted + ampmFormat;
+
+    return time;
+  }
+
+  private resetWeeklyTimeIntervals() {
+    this.availabilityOverrides = [];
+    this.availabilityInWeek = [];
+    settings_day_of_week.forEach(weekDay => {
+      let dailyTimeAvailabilities: ITimeIntervalInDay = {
+        day: weekDay, isAvailable: false, intervals: [], isValidData: true
+      }
+      this.availabilityInWeek.push(dailyTimeAvailabilities);
+    })
+  }
+
+  private validateTimeIntervalsOfDay(timeIntervalsInDay: ITimeIntervalInDay) {
+
+    //timeIntervalsInDay.intervals.forEach(e => e.errorMessage = "");
+
+    let intervals = timeIntervalsInDay.intervals;
+
+    //if (intervals.length == 0) return;
+
+    timeIntervalsInDay.isValidData = true;
+
+    // if (intervals.length == 1) {
+    //   let item = intervals[0];
+    //   if (item.startTimeInMinute >= item.endTimeInMinute) {
+    //     item.errorMessage = "End time should be after than start time."
+    //   }
+    //   return;
+    // }
+
+    for (let i = 0; i < intervals.length; i++) {
+      let item = intervals[i];
+      if (item.startTimeInMinute >= item.endTimeInMinute) {
+        item.errorMessage = "End time should be after than start time."
+        timeIntervalsInDay.isValidData = false;
+        break
+      }
+      for (let j = i + 1; j < intervals.length; j++) {
+        let item2 = intervals[j];
+        if (
+          (item.startTimeInMinute >= item2.startTimeInMinute && item.startTimeInMinute <= item2.endTimeInMinute) ||
+          (item.endTimeInMinute >= item2.startTimeInMinute && item.endTimeInMinute <= item2.endTimeInMinute)
+        ) {
+          item.errorMessage = "Times overlaping with other intervals";
+          item2.errorMessage = "Times overlaping with other intervals";
+          timeIntervalsInDay.isValidData = false;
+          break;
+        }
+      }
+    }
+
+    this.validateTimeIntervalsOfAllDays();
+  }
+
+  private validateTimeIntervalsOfAllDays() {
+    const invalidWeekDaysIntervals = this.availabilityInWeek.filter(e => e.isAvailable && e.intervals.length > 0 && !e.isValidData);
+    const invalidOverrideDaysIntervals = this.availabilityOverrides.filter(e => e.intervals.length > 0 && !e.isValidData);
+    const isValid = invalidWeekDaysIntervals.length == 0 && invalidOverrideDaysIntervals.length == 0;
+
+    const isValidToNotifyChange = !this.showCalendarModal && !this.showWeekDayConfigureModal
+
+    if (isValid && isValidToNotifyChange) {
+      this.TimeAvailabilityChanged.emit(true);
+    }
+    else {
+      this.TimeAvailabilityChanged.emit(false);
+    }
+  }
 }
 

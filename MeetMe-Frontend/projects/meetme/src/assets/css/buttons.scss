@@ -73,18 +73,27 @@ span.special:hover{
     background-color: var(--gray-color);
 }
 
+span.btn.big_icon .fa,
+span.btn.big_icon .fas {
+    font-size: 20px;
+    padding: 0 5px 0 5px;
+
+}
 
 .multi_option_button_container {
-    padding: 5px;
+    padding: 5px 7px;
     display: inline-flex;
-    gap: 10px;
-    border: 1px solid var(--primary-color);
+    gap: 5px;
+    // border-radius: 5px;
+    //border-bottom: 1px solid var(--primary-color);
+    // background-color:var(--secondary-color);
 }
 
 .multi_option_button_container a {
     padding: 4px 10px;
-    background-color: var(--secondary-color);
+    // background-color: var(--secondary-color);
     color: var(--text-color);
+    border: 1px solid var(--primary-color);
 }
 
 .multi_option_button_container .selected {

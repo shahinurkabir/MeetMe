@@ -94,7 +94,39 @@ body.is-modal-open {
 .margin-top-20 {
     margin-top: 20px;
 }
-
+.margin_0 {
+    margin: 0;
+}
+.margin_1{
+    margin: 1px;
+}
+.margin_2{
+    margin: 2px;
+}
+.margin_3{
+    margin: 3px;
+}
+.margin_4{
+    margin: 4px;
+}
+.margin_5{
+    margin: 5px;
+}
+.margin_6{
+    margin: 6px;
+}
+.margin_7{
+    margin: 7px;
+}
+.margin_8{
+    margin: 8px;
+}
+.margin_9{
+    margin: 9px;
+}
+.margin_10{
+    margin: 10px;
+}
 .layout {
     display: block;
     min-height: 100vh;
@@ -341,7 +373,7 @@ select.is-invalid {
     border-color: #dc3545 !important;
 }
 
-.invalid-feedback>Div {
+.invalid-feedback,.invalid-feedback>Div {
     color: #dc3545 !important;
 }
 

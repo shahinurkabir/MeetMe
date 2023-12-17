@@ -40,7 +40,7 @@
 
 .weekly_availability .weekly_days {
     width: 60%;
-    padding: 0 15px;
+    padding: 15px 25px 0 0;
 }
 
 .weekly_availability .weekly_days .weekly_day {
@@ -66,7 +66,7 @@
 .intervals .interval_item {
     width: 100%;
     padding-bottom: 5px;
-    display: flex;
+    // display: flex;
     gap: 5px;
     justify-content: flex-start;
     align-items: center;
@@ -90,8 +90,9 @@
 
 
 .override_date_intervals {
-    // width: 370px;
-    padding: 7px 0;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: var(--secondary-color);
 }
 
 .interval_list_grid .interval_list_grid_item {
@@ -104,8 +105,8 @@
 
 .weekly_availability .overrides_dates {
     width: 40%;
-    padding: 15px;
-    border-left: 1px solid lightgray;
+    padding: 15px 0 0 25px;
+    border-left: 2px solid var(--secondary-color);
 }
 
 .weekly_availability .overrides_dates .btn_open_calendar {
@@ -127,11 +128,11 @@
 }
 
 .weekly_availability .overrides_dates .timeinterval_overrides:hover {
-    background-color: azure;
+    background-color: var(--secondary-color);
 }
 
 .weekly_availability .overrides_dates .timeinterval_overrides:last-child {
-    border-bottom: 1px solid lightgray;
+    border-bottom: 1px solid var(--gray-color);
 }
 
 .weekly_availability .overrides_dates .timeinterval_overrides .timeslots {
@@ -230,9 +231,11 @@ button.border_transparent {
 }
 
 .daysInMonth .dayInMonth-item.override_interval {
-    border-top: 2px solid blue;
+    border-top: 2px solid var(--primary-color);
 }
-
+.daysInMonth .dayInMonth-item.override_interval i {
+    color:  var(--primary-color);
+}
 .daysInMonth .dayInMonth-item .heading {
     display: flex;
     justify-content: space-between;
@@ -277,8 +280,3 @@ button {
     top: 0;
 }
 
-span.btn.big_icon .fas {
-    font-size: 20px;
-    padding: 0 5px 0 5px;
-
-}

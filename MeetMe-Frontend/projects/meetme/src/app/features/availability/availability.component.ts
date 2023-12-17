@@ -107,8 +107,8 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
       })
   }
 
-  onSubmit(event: any) {
-    event.preventDefault();
+  onSubmit(event?: any) {
+    event?.preventDefault();
     let availability = this.timeAvailabilityComponent?.getAvailability();
 
     let command: IEditAvailabilityCommand = {
@@ -164,7 +164,11 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
       error: (error) => { console.log(error) }
     })
   }
-
+  onTimeAvailabilityChanged(isValidChanged: boolean) {
+    if (isValidChanged) {
+      this.onSubmit();
+    }
+  }
 
   private resetForm(frm: NgForm | undefined) {
     frm?.form.markAsPristine();

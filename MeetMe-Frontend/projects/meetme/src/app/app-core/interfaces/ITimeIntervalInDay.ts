@@ -1,7 +1,8 @@
 export interface ITimeIntervalInDay {
     day: string,
     isAvailable:boolean,
-    intervals: ITimeInterval[]
+    intervals: ITimeInterval[],
+    isValidData:true|false,
   }
   export interface ITimeInterval {
     startTime: string,
