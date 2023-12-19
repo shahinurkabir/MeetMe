@@ -97,7 +97,7 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
       copyLinkEl.classList.remove('copy-link-done');
     }, 1000);
   }
-  onToggleStatus(eventType: IEventType, newStatus: boolean) {
+  onToggleStatus(eventType: IEventType) {
     this.eventTypeService.toggleStatus(eventType.id)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({

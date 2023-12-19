@@ -230,6 +230,9 @@ button.border_transparent {
     border: 1px solid transparent;
 }
 
+button.dayInMonth-item {
+    font-weight: normal;
+}
 .daysInMonth .dayInMonth-item.override_interval {
     border-top: 2px solid var(--primary-color);
 }
@@ -257,14 +260,23 @@ button.border_transparent {
     border-top: 1px solid greenyellow;
 }
 
+.daysInMonth .dayInMonth-item .weekly_intervals.has_more {
+    pointer-events: none;
+    display: flex   ;
+    justify-content: center;
+    width: 100%;	
+    padding-top: 5px;
+}
+
 .daysInMonth .dayInMonth-item .action_buttons {
     display: none;
     position: absolute;
     width: 200px;
-    left: 0;
-    top: 50px;
+    left: 5px;
+    top: 0;
     z-index: 1;
 }
+
 
 .daysInMonth .dayInMonth-item .action_buttons.is_open {
     display: block;

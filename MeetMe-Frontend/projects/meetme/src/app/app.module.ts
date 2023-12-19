@@ -9,44 +9,18 @@ import { RouterModule } from '@angular/router';
 import { LoginComponent } from './features/users/login/login.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
-import { eventType_Components } from './features/event-types';
-import { TimeAvailabilityComponent, CalendarComponent, ModalComponent, MyOffClickDirective, TimezoneControlComponent, HttpRequestInterceptor, LoadingIndicatorDirective } from './app-core';
-import { CallbackPipe } from './app-core/pipes/callback-pipe';
-import { accountSettings_Components } from './features/acccount-settings';
-import { availability_Components } from './features/availability';
-import { calendar_Components } from './features/calendar';
+import { HttpRequestInterceptor } from './app-core';
 import { CalendarLayoutComponent } from './layouts/calendar-layout/calendar-layout.component';
-import { AlertComponent } from './app-core/controls/alert/alert.component';
-import { FilterPipe } from './app-core/pipes/filter.pipe';
-import { scheduled_Appointment_Components } from './features/scheduled-appointments';
-import { MultiCalendarComponent } from './app-core/controls/multi-calendar/multi-calendar.component';
-import { MyModalComponent } from './app-core/controls/my-modal/my-modal.component';
-import { ToggleSwitchComponent } from './app-core/controls/toggle-switch/toggle-switch.component';
+import { AppCoreModule } from './app-core/app-core.module';
 
 @NgModule({
     declarations: [
         AppComponent,
         LoginComponent,
-        TimeAvailabilityComponent,
-        CalendarComponent,
-        ModalComponent,
-        MyOffClickDirective,
-        CallbackPipe,
-        FilterPipe,
-        TimezoneControlComponent,
         AuthLayoutComponent,
         AdminLayoutComponent,
         CalendarLayoutComponent,
-        accountSettings_Components,
-        availability_Components,
-        eventType_Components,
-        calendar_Components,
-        scheduled_Appointment_Components,
-        AlertComponent,
-        LoadingIndicatorDirective,
-        MultiCalendarComponent,
-        MyModalComponent,
-        ToggleSwitchComponent,
+        
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },
@@ -60,6 +34,7 @@ import { ToggleSwitchComponent } from './app-core/controls/toggle-switch/toggle-
         RouterModule,
         AppRoutingModule,
         HttpClientModule,
+        AppCoreModule
     ]
 })
 export class AppModule { }
