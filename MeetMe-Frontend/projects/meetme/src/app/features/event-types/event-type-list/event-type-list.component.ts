@@ -1,7 +1,8 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { IEventType, EventTypeService, AuthService, AlertService, ClipboardService } from '../../../app-core';
 import { Subject, forkJoin, takeUntil } from 'rxjs';
+import { EventInfoComponent } from '../event-type/event-info/event-info.component';
 
 @Component({
   selector: 'app-eventtype',
@@ -9,6 +10,8 @@ import { Subject, forkJoin, takeUntil } from 'rxjs';
   styleUrls: ['./event-type-list.component.css']
 })
 export class EventTypeListComponent implements OnInit, OnDestroy {
+
+  
   destroyed$: Subject<boolean> = new Subject<boolean>();
   listEventTypes: IEventType[] = [];
   itemToDelete: IEventType | undefined;
@@ -16,6 +19,8 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
   user_name: string = "";
   host: string = window.location.host;
   selectedEventTypesCount: number = 0;
+  showAddNewEventTypeModal: boolean = false;
+
   constructor(
     private el: ElementRef,
     private eventTypeService: EventTypeService,
@@ -188,6 +193,16 @@ export class EventTypeListComponent implements OnInit, OnDestroy {
   onClearSelection() {
     this.listEventTypes.forEach(x => x.isSelected = false);
     this.selectedEventTypesCount = 0;
+  }
+  onShowAddNewEventTypeModal() {
+    this.showAddNewEventTypeModal = true;
+  }
+  onHandleDataSavedEvent(event: any) {
+    this.showAddNewEventTypeModal = false;
+    this.loadEventTypes();
+  }
+  onHandleCancelAddNewEventType() {
+    this.showAddNewEventTypeModal = false;
   }
 
   ngOnDestroy(): void {

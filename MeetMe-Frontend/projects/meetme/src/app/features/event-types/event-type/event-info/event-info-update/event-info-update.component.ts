@@ -1,8 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { IEventType, EventTypeService } from 'projects/meetme/src/app/app-core';
+import { IEventType, EventTypeService, settings_meeting_forward_Duration_inDays, setting_meetting_forward_Duration_kind, CommonFunction } from 'projects/meetme/src/app/app-core';
 import { Subject, takeUntil } from 'rxjs';
+import { EventInfoComponent } from '../event-info.component';
 
 @Component({
   selector: 'app-event-info-update',
@@ -11,62 +12,33 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class EventInfoUpdateComponent implements OnInit, OnDestroy {
   destroyed$: Subject<boolean> = new Subject<boolean>();
-  model: IEventType = {
-    id: "",
-    name: "",
-    description: "",
-    duration: 0,
-    eventColor: "",
-    ownerId: '',
-    activeYN: true,
-    location: '',
-    slug: '',
-    availabilityId: '',
-    forwardDuration: 0,
-    dateForwardKind: 'moving',
-    bufferTimeAfter: 0,
-    bufferTimeBefore: 0,
-    timeZone: "",
-    questions: []
-  };
+  @ViewChild('eventInfoComponent', { static: true }) eventInfoComponent!: EventInfoComponent;
+
+  eventTypeId: string = "";
+
   constructor(
-    private eventTypeService: EventTypeService,
     private route: ActivatedRoute,
-    private location: Location
   ) {
 
     this.route.parent?.params
       .pipe(takeUntil(this.destroyed$))
       .subscribe((params) => {
-        let eventTypeId = params["id"];
-        this.loadEventTypeDetail(eventTypeId);
-
+        this.eventTypeId = params["id"];
+        
       });
-
+      
+    }
+    
+    ngOnInit(): void {
+    //this.eventInfoComponent.loadEventTypeDetail(this.eventTypeId);
   }
 
-  ngOnInit(): void {
-  }
-
-  loadEventTypeDetail(id: string) {
-    this.eventTypeService.getById(id)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: response => {
-          this.model = response;
-        },
-        error: (error) => { console.log(error) },
-        complete: () => { }
-      })
-
-  }
   onSaved(response: any) {
     console.log(`Data saved ${response}`);
-    this.location.back();
   }
   onCancelled() {
-    this.location.back();
   }
+
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();

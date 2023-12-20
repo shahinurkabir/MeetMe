@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EventTypeService } from '../../../app-core';
+import { DataExchangeService } from '../services/data-exchange-services';
 
 @Component({
   selector: 'app-eventtype',
@@ -8,10 +9,11 @@ import { EventTypeService } from '../../../app-core';
   styleUrls: ['./eventtype.component.css']
 })
 export class EventTypeComponent implements OnInit {
-
+ @Input()eventTypeName: string= '';
   constructor(
     private eventTypeService: EventTypeService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dataExchangeService: DataExchangeService
   ) {
 
     // this.route.params.subscribe((params) => {
@@ -22,6 +24,9 @@ export class EventTypeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.dataExchangeService.getEventTypeTitle().subscribe(title => {
+      this.eventTypeName = title;
+    });
   }
 
   // loadEventTypeDetail(id: string) {

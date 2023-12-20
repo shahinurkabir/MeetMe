@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsul
 import { ActivatedRoute } from '@angular/router';
 import { IEventType, EventTypeService, ICreateEventTypeCommand, IUpdateEventCommand, AlertService, CommonFunction } from 'projects/meetme/src/app/app-core';
 import { Subject, takeUntil } from 'rxjs';
+import { DataExchangeService } from '../../services/data-exchange-services';
 
 @Component({
   selector: 'app-event-info-form',
@@ -13,7 +14,9 @@ import { Subject, takeUntil } from 'rxjs';
 export class EventInfoComponent implements OnInit, OnDestroy {
   destroyed$: Subject<boolean> = new Subject<boolean>();
   submitted = false;
-  @Input() model: IEventType = {
+  @Input() eventTypeId: string | undefined;
+
+  model: IEventType = {
     id: "",
     name: "",
     description: "",
@@ -39,20 +42,14 @@ export class EventInfoComponent implements OnInit, OnDestroy {
     private eventTypeService: EventTypeService,
     private route: ActivatedRoute,
     private location: Location,
-    private alertServie: AlertService
+    private alertServie: AlertService,
+    private dataExchangeService: DataExchangeService
   ) {
 
   }
-
-  onSelectedColor(event: any, color: string) {
-
-    if (event)
-      event.preventDefault()
-
-    this.model.eventColor = color;
-  }
-
   ngOnInit(): void {
+    if (this.eventTypeId !== undefined)
+      this.loadEventTypeDetail(this.eventTypeId);
   }
 
   onSubmit(form: any) {
@@ -65,7 +62,31 @@ export class EventInfoComponent implements OnInit, OnDestroy {
       this.handleAddNew(form);
   }
 
-  private handleAddNew(form:any) {
+  onSelectedColor(event: any, color: string) {
+
+    if (event)
+      event.preventDefault()
+
+    this.model.eventColor = color;
+  }
+
+
+  loadEventTypeDetail(eventTypeId: string) {
+    this.eventTypeService.getById(eventTypeId)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: response => {
+          this.model = response;
+          this.dataExchangeService.setEventTypeTitle(response.name);
+        },
+        error: (error) => { console.log(error) },
+        complete: () => { }
+      })
+
+  }
+
+
+  private handleAddNew(form: any) {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     let command: ICreateEventTypeCommand = {
       name: this.model.name,
@@ -104,7 +125,7 @@ export class EventInfoComponent implements OnInit, OnDestroy {
           this.alertServie.success("Event type has been updated.");
           this.saveComplete(response)
         },
-        error: (error) => { CommonFunction.getErrorListAndShowIncorrectControls(form, error.error.errors)},
+        error: (error) => { CommonFunction.getErrorListAndShowIncorrectControls(form, error.error.errors) },
         complete: () => { }
       });
   }

@@ -4,12 +4,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { eventType_Components, eventType_Routes } from '.';
 import { AppCoreModule } from '../../app-core/app-core.module';
+import { DataExchangeService } from './services/data-exchange-services';
 
 @NgModule({
     declarations: [
         eventType_Components
     ],
-    providers: [
+    providers: [DataExchangeService
     ],
     bootstrap: [],
     imports: [

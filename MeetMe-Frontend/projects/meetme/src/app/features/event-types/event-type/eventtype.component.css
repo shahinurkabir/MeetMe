@@ -1,0 +1,25 @@
+.event-type-container {
+    display: flex;
+    flex-direction: row;
+    
+}
+.event-type-container .event-type-menu {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    background-color: var(--secondary-color);
+    margin: -9px;
+    padding: 10px 20px 20px 10px;
+    margin-right: 10px;
+}
+.event-type-container .event-type-menu a{
+    padding-left: 7px;
+    border-left: 2px solid transparent;
+}
+.event-type-container .event-type-menu a.is-active{
+    border-left: 2px solid var(--primary-color);
+}
+
+.event-type-container .content {
+    width: 100%;
+}

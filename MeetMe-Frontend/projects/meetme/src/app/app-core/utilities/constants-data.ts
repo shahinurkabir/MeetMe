@@ -42,6 +42,10 @@ export const settings_meeting_day_type_weekday = 'weekday';
 export const settings_meeting_day_type_date = 'date';
 export const settings_meeting_duration = 30;
 export const settings_meeting_forward_Duration_inDays = 60 * 24 * 60;
+export const setting_meetting_forward_Duration_kind={
+    moving:'moving',
+    daterange:'fixed'
+};
 export const settings_meeting_buffertime = 15;
 export const settings_starttime_minutes = 60 * 9 // 9:00am 
 export const settings_endtime_minutes = 60 * 17;// 5:00pm 

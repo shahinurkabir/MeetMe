@@ -1,8 +1,12 @@
-<div class="page page-width-85p page">
+<!-- <div class="page page-width-85p page">
     <div class="header">
         <h2>Update Event!</h2>
     </div>
     <div class="body">
         <app-event-info-form [model]="model" (dataSavedEvent)="onSaved($event)" (cancelEvent)="onCancelled()"></app-event-info-form>
     </div>
-</div>
+</div> -->
+
+<app-event-info-form #eventInfoComponent [eventTypeId]="eventTypeId" (cancelEvent)="onCancelled()" (dataSavedEvent)="onSaved($event)" 
+ >
+>

@@ -1,6 +1,18 @@
-<a routerLink="info" [routerLinkActive]="['is-active']">Info</a> |
-<a routerLink="availability" [routerLinkActive]="['is-active']">Time Availability</a> |
-<a routerLink="question" [routerLinkActive]="['is-active']">Questions</a>
 
-<br/>
-<router-outlet></router-outlet>
+<div class="meetme-card">
+    <div class="event-type-container">
+
+        <div class="event-type-menu">
+            <button class="primary rounded" >Back to the List</button>
+            <hr>
+            <a routerLink="info" [routerLinkActive]="['is-active']">Info</a>
+            <a routerLink="availability" [routerLinkActive]="['is-active']">Time Availability</a>
+            <a routerLink="question" [routerLinkActive]="['is-active']">Questions</a>
+        </div>
+        <div class="content">
+            <h2 >{{eventTypeName}}</h2>
+            <hr>
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

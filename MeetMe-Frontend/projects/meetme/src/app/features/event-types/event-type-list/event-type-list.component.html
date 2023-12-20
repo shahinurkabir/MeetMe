@@ -1,5 +1,4 @@
-<h1>All Events</h1>
-<div class="meetme-card secondary">
+<div>
     <div class="section-header">
         <div class="user-info">
             <h3>{{user_name}}</h3>
@@ -7,10 +6,11 @@
                 {{host}}/{{baseUri}}
             </a>
         </div>
-        <button class="primary" (click)="onAddNew()"> Add Events</button>
+        <button class="primary rounded" (click)="onShowAddNewEventTypeModal()">+ New Event Type</button>
 
     </div>
 </div>
+<h1>All Events</h1>
 <div class="meetme-card">
     <div class="event-list-container">
 
@@ -18,11 +18,11 @@
             *ngFor="let item of listEventTypes">
             <div class="event-item-color-indicator" [ngStyle]="getColorIndicatorStyle(item)"></div>
             <div class="toolbar">
-                <input type="checkbox" name="select" id="select"
-                [(ngModel)]="item.isSelected" 
-                  (change)="onEventTypeSelectionChnaged($event)">
+                <input type="checkbox" name="select" id="select" [(ngModel)]="item.isSelected"
+                    (change)="onEventTypeSelectionChnaged($event)">
                 <button #menuOpener id="{{item.id}}" class="">...
-                    <ul (click)="onDropdownClick($event)" #dropdownMenu id="{{item.id}}" class="btn-overlay-opener  dropdown-menu">
+                    <ul (click)="onDropdownClick($event)" #dropdownMenu id="{{item.id}}"
+                        class="btn-overlay-opener  dropdown-menu">
                         <li (click)="onEdit(item.id)"><i class="fa fa-pen"></i><span>
                                 Edit</span>
                         </li>
@@ -62,9 +62,9 @@
 <div *ngIf="selectedEventTypesCount>0" class="selected-evnettype-dialog">
     <button (click)="onClearSelection()"><i class="far fa-times"></i></button>
     <h3 style="padding-right: 50px;">{{selectedEventTypesCount}} selected</h3>
-    <button  (click)="onDeleteSelected()"><i style="color:var(--accent-color)" class="far fa-trash"></i>Delete</button>
-    <button  (click)="onToggleStatusSelected()"><i class="far fa-toggle-off"></i>Off/On</button>
-    
+    <button (click)="onDeleteSelected()"><i style="color:var(--accent-color)" class="far fa-trash"></i>Delete</button>
+    <button (click)="onToggleStatusSelected()"><i class="far fa-toggle-off"></i>Off/On</button>
+
 </div>
 
 <app-my-modal [isVisible]="itemToDelete!=undefined" modalTitle="Delete Event Type" (closeModal)="onCancelDelete()">
@@ -75,5 +75,14 @@
             <button (click)="onCancelDelete()">Close</button>
             <button class="special" (click)="onDelete()">Delete</button>
         </div>
+    </ng-template>
+</app-my-modal>
+
+<app-my-modal [isVisible]="showAddNewEventTypeModal" modalWidth="600px" modalTitle="Add New Event Type"
+    (closeModal)="onHandleCancelAddNewEventType()">
+    <ng-template #modalContent>
+        <app-event-info-form #eventInfoComponent (cancelEvent)="onHandleCancelAddNewEventType()"
+            (dataSavedEvent)="onHandleDataSavedEvent($event)">
+        </app-event-info-form>
     </ng-template>
 </app-my-modal>
