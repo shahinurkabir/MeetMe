@@ -78,7 +78,7 @@
     </ng-template>
 </app-my-modal>
 
-<app-my-modal [isVisible]="showAddNewEventTypeModal" modalWidth="600px" modalTitle="Add New Event Type"
+<app-my-modal [isVisible]="showAddNewEventTypeModal" modalWidth="500px" modalTitle="Add New Event Type"
     (closeModal)="onHandleCancelAddNewEventType()">
     <ng-template #modalContent>
         <app-event-info-form #eventInfoComponent (cancelEvent)="onHandleCancelAddNewEventType()"

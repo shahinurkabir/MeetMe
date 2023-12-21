@@ -3,7 +3,7 @@
     <div class="event-type-container">
 
         <div class="event-type-menu">
-            <button class="primary rounded" >Back to the List</button>
+            <button class="primary rounded"(click)="onBackToEventTypeList()" >Back to the List</button>
             <hr>
             <a routerLink="info" [routerLinkActive]="['is-active']">Info</a>
             <a routerLink="availability" [routerLinkActive]="['is-active']">Time Availability</a>

@@ -23,10 +23,10 @@
   </div>
   <hr class="margin_0">
   <div *ngIf="viewMode=='readonly'" class="weekly_availability">
-    <div class="weekly_days">
+    <div class="weekly_days readonly ">
       <h2>Weekly hours</h2>
       <div class="weekly_day" *ngFor="let dailyTimeAvailabilities of availabilityInWeek">
-        <span class="weekday_name">{{dailyTimeAvailabilities.day}}</span>
+        <span class="weekday_name readonly">{{dailyTimeAvailabilities.day}}</span>
         <ng-container
           *ngTemplateOutlet="timeInvervalsInDayTemplateReadOnly; context: {timeInvervalsInDay: dailyTimeAvailabilities}"></ng-container>
       </div>
@@ -207,12 +207,12 @@
   </div>
 </ng-template>
 <ng-template #timeInvervalsInDayTemplateReadOnly let-timeInvervalsInDay="timeInvervalsInDay">
-  <div class="intervals">
+  <div class="intervals readonly">
     <div *ngIf="!timeInvervalsInDay.isAvailable ">
-      <div class="interval_item not_available">Not available</div>
+      <div class="interval_item not_available readonly">Not available</div>
     </div>
     <div *ngIf="timeInvervalsInDay.isAvailable">
-      <div class="interval_item" *ngFor="let timeInterval of timeInvervalsInDay.intervals; let i=index">
+      <div class="interval_item readonly" *ngFor="let timeInterval of timeInvervalsInDay.intervals; let i=index">
         <span>{{timeInterval.startTime}} - {{timeInterval.endTime}}</span>
 
       </div>

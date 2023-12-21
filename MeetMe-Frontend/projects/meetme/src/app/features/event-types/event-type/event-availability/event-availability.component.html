@@ -1,7 +1,7 @@
 <form (ngSubmit)="onSubmit(formAvailability)" #formAvailability="ngForm">
     <div class="page">
         <div class="header">
-            <h2>Set your working hours</h2>
+            <h2>Set your availability</h2>
         </div>
         <div class="body">
             <datalist id="time_slots">
@@ -103,14 +103,20 @@
                 <option value="12:00pm"></option>
             </datalist>
             <div class="form-group">
-                <label for="name">Data Range - in future days *</label>
+                <label for="name">In future days - User can book an appointment in advance *</label>
                 <div class="form-control">
-                    <input type="text" id="forwardDuration" required [(ngModel)]="forwardDurationInDays"
-                        name="forwardDuration">
+                    <input type="text" id="forwardDuration" required #forwardDuration="ngModel" [(ngModel)]="forwardDurationInDays"
+                        name="forwardDuration"
+                        [ngClass]="{ 'is-invalid': submitted && forwardDuration.errors }"
+                        >
+                        <div *ngIf="submitted && forwardDuration.errors" class="invalid-feedback">
+                            <div *ngIf="forwardDuration.errors['required']">This is required</div>
+                        </div>
                 </div>
             </div>
+        
 
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="meetingDuration">Duration:</label>
                 <div class="form-control">
                     <select id="meetingDuration" name="meetingDuration" [(ngModel)]="model.duration">
@@ -118,11 +124,10 @@
                             {{meetingDuration.text}}</option>
                     </select>
                 </div>
-            </div>
+            </div> -->
             <div class="multi_option_button_container">
-                <a [class.selected]="!isCustomAvailability"
-                    (click)="onClickExistingHours($event)">Default schedule
-                    </a>
+                <a [class.selected]="!isCustomAvailability" (click)="onClickExistingHours($event)">Existing schedules
+                </a>
                 <a [class.selected]="isCustomAvailability" (click)="onClickCustomHour($event)">Custom
                     schedule</a>
             </div>
@@ -154,7 +159,7 @@
                 class="btn btn-primary">
                 Save Changes
             </button>
-            
+
         </div>
     </div>
 </form>

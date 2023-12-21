@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { TimeZoneData, IUpdateEventAvailabilityCommand, ListItem, IAvailability, IEventAvailabilityDetailItemDto, IEventType, TimeAvailabilityComponent, EventTypeService, AvailabilityService,  settings_day_of_week, IAvailabilityDetails, settings_meeting_day_type_weekday, settings_starttime_minutes, settings_endtime_minutes, AlertService, CommonFunction } from 'projects/meetme/src/app/app-core';
+import { TimeZoneData, IUpdateEventAvailabilityCommand, ListItem, IAvailability, IEventAvailabilityDetailItemDto, IEventType, TimeAvailabilityComponent, EventTypeService, AvailabilityService, settings_day_of_week, IAvailabilityDetails, settings_meeting_day_type_weekday, settings_starttime_minutes, settings_endtime_minutes, AlertService, CommonFunction, setting_meetting_forward_Duration_kind } from 'projects/meetme/src/app/app-core';
 import { Observable, Subject, forkJoin, takeUntil } from 'rxjs';
 
 @Component({
@@ -14,7 +14,7 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
   timeZoneList: TimeZoneData[] = [];
   eventTypeId: string = "";
   eventTypeAvailability: IUpdateEventAvailabilityCommand | undefined;
-  meetingDurations: ListItem[] = [];
+  // meetingDurations: ListItem[] = [];
   selectedDatesFromCalender: { [id: string]: string } = {};
   isCustomAvailability: boolean = false;
   listOfAvailability: IAvailability[] = [];
@@ -22,6 +22,7 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
   eventAvailabilityDetails: IEventAvailabilityDetailItemDto[] = [];
   customAvailability: IAvailability | undefined;
   isLoading: boolean = false;
+  submitted = false;
   model: IEventType = {
     id: "",
     name: "",
@@ -52,7 +53,7 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
     private alertService: AlertService
   ) {
 
-    this.initMeetingDurationAndTypes();
+    //this.initMeetingDurationAndTypes();
     this.subscribeRouteParams();
 
   };
@@ -110,16 +111,16 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
 
     this.customAvailability = this.convertEventScheduleToAvailabilitySchedule(this.model.timeZone, this.eventAvailabilityDetails);
 
-    if (this.model.forwardDuration != null) {
-      this.forwardDurationInDays =CommonFunction.convertToDays(this.model.forwardDuration);
-    }
+    this.forwardDurationInDays = CommonFunction.convertToDays(this.model.forwardDuration);
+
+    this.isCustomAvailability = true;
+    this.selectedAvailability = this.listOfAvailability
+      .find(e => e.isDefault == true);
+
     if (this.model.availabilityId != null) {
       this.isCustomAvailability = false;
       this.selectedAvailability = this.listOfAvailability
         .find(e => e.id == this.model.availabilityId);
-    }
-    else {
-      this.isCustomAvailability = true;
     }
 
     this.showTimeAvailabilityControl();
@@ -162,8 +163,10 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
     return availability;
   }
 
-  onSubmit(e:any) {
+  onSubmit(e: any) {
+    this.submitted = true;
     e.preventDefault();
+
     if (this.formAvailability!.invalid) return;
 
     let availability: IAvailability | undefined;
@@ -185,8 +188,7 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
 
     let eventTypeAvailability: IUpdateEventAvailabilityCommand = {
       id: this.eventTypeId,
-      duration: this.model.duration,
-      dateForwardKind: "moving",
+      dateForwardKind: setting_meetting_forward_Duration_kind.moving,
       forwardDuration: this.forwardDurationInDays * 24 * 60,
       bufferTimeBefore: this.model.bufferTimeBefore,
       bufferTimeAfter: this.model.bufferTimeAfter,
@@ -195,17 +197,17 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
         ? undefined : this.selectedAvailability?.id,
       availabilityDetails: availabilityDetails!
     };
-    
+
     this.isLoading = true;
     this.eventTypeService.updateAvailability(eventTypeAvailability)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: response => {
           this.alertService.success("Availability updated successfully");
-          
+
         },
-        error: (error) => { CommonFunction.getErrorListAndShowIncorrectControls(this.formAvailability!,error.error.errors) },
-        complete: () => {this.isLoading=false; }
+        error: (error) => { CommonFunction.getErrorListAndShowIncorrectControls(this.formAvailability!, error.error.errors) },
+        complete: () => { this.isLoading = false; }
       });
 
   }
@@ -213,6 +215,7 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
 
   onClickExistingHours(e: any) {
     this.isCustomAvailability = false;
+    this.showTimeAvailabilityControl();
     e.preventDefault();
   }
   onClickCustomHour(e: any) {
@@ -225,13 +228,13 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
     this.showTimeAvailabilityControl();
   }
 
-  private initMeetingDurationAndTypes() {
-    this.meetingDurations.push({ text: "15 min", value: "15" });
-    this.meetingDurations.push({ text: "30 min", value: "30" });
-    this.meetingDurations.push({ text: "45 min", value: "45" });
-    this.meetingDurations.push({ text: "60 min", value: "60" });
+  // private initMeetingDurationAndTypes() {
+  //   this.meetingDurations.push({ text: "15 min", value: "15" });
+  //   this.meetingDurations.push({ text: "30 min", value: "30" });
+  //   this.meetingDurations.push({ text: "45 min", value: "45" });
+  //   this.meetingDurations.push({ text: "60 min", value: "60" });
 
-  }
+  // }
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();

@@ -3,7 +3,7 @@ import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { IEventType, EventTypeService, settings_meeting_forward_Duration_inDays, setting_meetting_forward_Duration_kind, CommonFunction } from 'projects/meetme/src/app/app-core';
 import { Subject, takeUntil } from 'rxjs';
-import { EventInfoComponent } from '../event-info.component';
+import { EventInfoModalComponent } from '../event-info-modal.component/event-info-modal.component';
 
 @Component({
   selector: 'app-event-info-update',
@@ -12,7 +12,7 @@ import { EventInfoComponent } from '../event-info.component';
 })
 export class EventInfoUpdateComponent implements OnInit, OnDestroy {
   destroyed$: Subject<boolean> = new Subject<boolean>();
-  @ViewChild('eventInfoComponent', { static: true }) eventInfoComponent!: EventInfoComponent;
+  @ViewChild('eventInfoComponent', { static: true }) eventInfoComponent!: EventInfoModalComponent;
 
   eventTypeId: string = "";
 

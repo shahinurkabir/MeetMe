@@ -1,21 +1,21 @@
 import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IEventType, EventTypeService, ICreateEventTypeCommand, IUpdateEventCommand, AlertService, CommonFunction } from 'projects/meetme/src/app/app-core';
+import { IEventType, EventTypeService, ICreateEventTypeCommand, IUpdateEventCommand, AlertService, CommonFunction, ListItem } from 'projects/meetme/src/app/app-core';
 import { Subject, takeUntil } from 'rxjs';
 import { DataExchangeService } from '../../services/data-exchange-services';
 
 @Component({
   selector: 'app-event-info-form',
-  templateUrl: './event-info.component.html',
-  styleUrls: ['./event-info.component.scss'],
+  templateUrl: './event-info-modal.component.html',
+  styleUrls: ['./event-info-modal.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class EventInfoComponent implements OnInit, OnDestroy {
+export class EventInfoModalComponent implements OnInit, OnDestroy {
+  @Input() eventTypeId: string | undefined;
   destroyed$: Subject<boolean> = new Subject<boolean>();
   submitted = false;
-  @Input() eventTypeId: string | undefined;
-
+  meetingDurations: ListItem[] = [];
   model: IEventType = {
     id: "",
     name: "",
@@ -40,12 +40,10 @@ export class EventInfoComponent implements OnInit, OnDestroy {
   eventColors = ["orange", "green", "blue", "cyan", "olive", "purple", "teal", "violet"]
   constructor(
     private eventTypeService: EventTypeService,
-    private route: ActivatedRoute,
-    private location: Location,
     private alertServie: AlertService,
     private dataExchangeService: DataExchangeService
   ) {
-
+  this.initMeetingDurationAndTypes();
   }
   ngOnInit(): void {
     if (this.eventTypeId !== undefined)
@@ -90,6 +88,7 @@ export class EventInfoComponent implements OnInit, OnDestroy {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     let command: ICreateEventTypeCommand = {
       name: this.model.name,
+      duration: this.model.duration,
       description: this.model.description,
       slug: this.model.slug,
       eventColor: this.model.eventColor,
@@ -113,6 +112,7 @@ export class EventInfoComponent implements OnInit, OnDestroy {
     let command: IUpdateEventCommand = {
       id: this.model.id,
       name: this.model.name,
+      duration: this.model.duration,
       description: this.model.description,
       slug: this.model.slug,
       eventColor: this.model.eventColor,
@@ -129,13 +129,21 @@ export class EventInfoComponent implements OnInit, OnDestroy {
         complete: () => { }
       });
   }
-
-  private saveComplete(response: any) {
-    this.dataSavedEvent?.emit(response)
-  }
   onCancel() {
     this.cancelEvent?.emit()
   }
+  private saveComplete(response: any) {
+    this.dataSavedEvent?.emit(response)
+  }
+  
+  private initMeetingDurationAndTypes() {
+    this.meetingDurations.push({ text: "15 min", value: "15" });
+    this.meetingDurations.push({ text: "30 min", value: "30" });
+    this.meetingDurations.push({ text: "45 min", value: "45" });
+    this.meetingDurations.push({ text: "60 min", value: "60" });
+
+  }
+  
 
   ngOnDestroy(): void {
     this.destroyed$.next(true);

@@ -18,10 +18,11 @@ namespace MeetMe.Application.EventTypes.Commands
         public string Name { get; set; } = null!;
 
         public string? Description { get; set; }
-
+        public int Duration { get; set; }
         public string? Location { get; set; }
 
         public string Slug { get; set; } = null!;
+
 
         public string EventColor { get; set; } = null!;
     }
@@ -49,6 +50,7 @@ namespace MeetMe.Application.EventTypes.Commands
             entity.Slug = request.Slug;
             entity.Location = request.Location;
             entity.Description = request.Description;
+            entity.Duration = request.Duration;
 
             await persistenceProvider.UpdateEventType(entity);
 

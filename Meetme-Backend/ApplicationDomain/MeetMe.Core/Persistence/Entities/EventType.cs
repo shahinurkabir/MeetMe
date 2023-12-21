@@ -24,7 +24,7 @@ namespace MeetMe.Core.Persistence.Entities
         public bool IsDeleted { get; set; }
         public string TimeZone { get; set; }=null!;
         public string DateForwardKind { get; set; } = null!;
-        public int? ForwardDuration { get; set; }
+        public int ForwardDuration { get; set; }
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }
         public int Duration { get; set; }

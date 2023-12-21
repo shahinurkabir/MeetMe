@@ -3,6 +3,7 @@ import { IEventAvailabilityDetailItemDto, IEventTypeQuestion } from "./event-typ
 export interface ICreateEventTypeCommand {
     name: string;
     description?: string;
+    duration: number,
     location?: string;
     slug: string;
     eventColor: string;
@@ -16,7 +17,6 @@ export interface IUpdateEventAvailabilityCommand {
     forwardDuration?: number,
     dateFrom?: Date,
     dateTo?: Date,
-    duration: number,
     bufferTimeBefore: number,
     bufferTimeAfter: number,
     availabilityId?: string,
@@ -29,6 +29,7 @@ export interface IUpdateEventAvailabilityCommand {
 export interface IUpdateEventCommand {
     id: string,
     name: string,
+    duration: number,
     description?: string,
     location?: string,
     slug: string,

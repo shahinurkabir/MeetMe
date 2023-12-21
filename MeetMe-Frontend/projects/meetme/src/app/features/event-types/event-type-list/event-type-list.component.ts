@@ -2,7 +2,7 @@ import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } fro
 import { Router } from '@angular/router';
 import { IEventType, EventTypeService, AuthService, AlertService, ClipboardService } from '../../../app-core';
 import { Subject, forkJoin, takeUntil } from 'rxjs';
-import { EventInfoComponent } from '../event-type/event-info/event-info.component';
+import { EventInfoModalComponent } from '../event-type/event-info-modal.component/event-info-modal.component';
 
 @Component({
   selector: 'app-eventtype',

@@ -10,7 +10,7 @@ export interface IEventType {
     activeYN: boolean,
     ownerId: string
     availabilityId: string,
-    forwardDuration?: number,
+    forwardDuration: number,
     dateForwardKind: string,
     dateFrom?: Date,
     dateTo?: Date,

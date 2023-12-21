@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EventInfoComponent } from './event-info.component';
+import { EventTypeShellComponent } from './event-type-shell.component';
 
-describe('EventInfoComponent', () => {
-  let component: EventInfoComponent;
-  let fixture: ComponentFixture<EventInfoComponent>;
+describe('EventtypeComponent', () => {
+  let component: EventTypeShellComponent;
+  let fixture: ComponentFixture<EventTypeShellComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EventInfoComponent ]
+      declarations: [ EventTypeShellComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(EventInfoComponent);
+    fixture = TestBed.createComponent(EventTypeShellComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

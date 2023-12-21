@@ -49,7 +49,9 @@
     align-items: flex-start;
     padding-bottom: 7px;
 }
-
+// .weekly_availability .weekly_days .weekly_day.readonly{
+//     padding-bottom: 0;
+// }
 .weekly_availability .weekly_days .weekly_day .weekday_name {
     width: 150px;
     display: flex;
@@ -57,13 +59,17 @@
     gap: 5px;
     margin-top: 10px;
 }
-
+.weekly_availability .weekly_days .weekly_day .weekday_name.readonly{
+    margin-top: 0;
+}
 .intervals {
     width: 100%;
     position: relative;
     min-height: 42px;
 }
-
+.intervals.readonly {
+    min-height: 0;
+}
 .intervals .interval_item {
     width: 100%;
     padding-bottom: 5px;
@@ -72,13 +78,17 @@
     justify-content: flex-start;
     align-items: center;
 }
-
+.intervals .interval_item.readonly{
+    padding-bottom: 0;
+}
 .intervals .interval_item.not_available {
     opacity: 0.5;
     font-weight: 700;
     margin-top: 10px;
 }
-
+.intervals .interval_item.not_available.readonly{
+    margin-top: 0;
+}
 .intervals .interval_item input[type=text] {
     width: 35%;
     border-radius: 5px;

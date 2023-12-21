@@ -11,10 +11,9 @@ namespace MeetMe.Application.EventTypes.Commands
     {
         public Guid Id { get; set; }
         public string DateForwardKind { get; set; } = null!;
-        public int? ForwardDuration { get; set; }
+        public int ForwardDuration { get; set; }
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }
-        public int Duration { get; set; }
         public int BufferTimeBefore { get; set; } = 0;
         public int BufferTimeAfter { get; set; } = 0;
         public string TimeZone { get; set; } = null!;
@@ -53,7 +52,6 @@ namespace MeetMe.Application.EventTypes.Commands
         {
             entityTypeExisting.DateForwardKind = request.DateForwardKind;
             entityTypeExisting.ForwardDuration = request.ForwardDuration;
-            entityTypeExisting.Duration = request.Duration;
             entityTypeExisting.DateFrom = request.DateFrom;
             entityTypeExisting.DateTo = request.DateTo;
             entityTypeExisting.BufferTimeBefore = request.BufferTimeBefore;

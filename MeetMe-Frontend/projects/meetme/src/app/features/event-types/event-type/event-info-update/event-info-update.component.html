@@ -6,7 +6,5 @@
         <app-event-info-form [model]="model" (dataSavedEvent)="onSaved($event)" (cancelEvent)="onCancelled()"></app-event-info-form>
     </div>
 </div> -->
-
-<app-event-info-form #eventInfoComponent [eventTypeId]="eventTypeId" (cancelEvent)="onCancelled()" (dataSavedEvent)="onSaved($event)" 
- >
->
+    <app-event-info-form #eventInfoComponent [eventTypeId]="eventTypeId" (cancelEvent)="onCancelled()"
+        (dataSavedEvent)="onSaved($event)">
