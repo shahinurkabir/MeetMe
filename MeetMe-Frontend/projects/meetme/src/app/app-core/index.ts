@@ -7,3 +7,4 @@ export * from './interfaces'
 export * from './services';
 export * from './utilities'
 export * from './pipes';
+export * from './controls';

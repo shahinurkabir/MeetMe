@@ -1,9 +1,9 @@
 import { NgFor } from '@angular/common';
 import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { TimeAvailabilityComponent, IAvailability, AvailabilityService, IEditAvailabilityNameCommand, ICloneAvailabilityCommand, IEditAvailabilityCommand, IDeleteAvailabilityCommand, ISetDefaultAvailabilityCommand, ModalService, AlertService } from '../../app-core';
 import { AvailabilityListComponent } from './availability-list/availability-list.component';
 import { Subject, takeUntil } from 'rxjs';
+import { TimeAvailabilityComponent, IAvailability, AvailabilityService, AlertService, IEditAvailabilityNameCommand, ICloneAvailabilityCommand, IEditAvailabilityCommand, IDeleteAvailabilityCommand, ISetDefaultAvailabilityCommand } from '../../app-core';
 
 @Component({
   selector: 'app-availability',

@@ -1,10 +1,12 @@
-<div class="page">
+<div class="width-50p padding-left-20">
+    <h2>Profile Settings</h2>
+    <hr>
     <form (ngSubmit)="onSubmit(formEventInfo)" #formEventInfo="ngForm">
         <div class="form-group">
             <label for="userName">Name *</label>
             <div class="form-control">
                 <input type="text" autocomplete="off" spellcheck="false" #userName="ngModel" required
-                    [(ngModel)]="model.userName" name="userName" minlength="3">
+                    [(ngModel)]="model.userName" id="userName" name="userName" minlength="3">
                 <div *ngIf="submitted && userName.errors" class="invalid-feedback">
                     <div *ngIf="userName.errors['required']">Name is required</div>
                     <div *ngIf="userName.errors['minlength']">Name at-least 3 charecters</div>
@@ -17,16 +19,16 @@
             <label for="welcomeText">Welcome Text</label>
             <div class="form-control">
                 <textarea class="" #welcomeText="ngModel" maxlength="255" autocomplete="off" rows="3"
-                    [(ngModel)]="model.welcomeText" name="welcomeText"></textarea>
+                    [(ngModel)]="model.welcomeText" id="welcomeText" name="welcomeText"></textarea>
 
             </div>
         </div>
 
         <div class="form-group">
-            <label for="meetingDuration">Time Zone *</label>
+            <label for="timeZone">Time Zone *</label>
             <div class="form-control">
-                <app-timezone-control #timezoneControl [selectedTimeZone]="selectedTimeZone"
-                 (selectionChanged)="onTimeZoneChanged($event)"
+                <app-timezone-control id="timeZone" #timezoneControl [selectedTimeZone]="selectedTimeZone"
+                    (selectionChanged)="onTimeZoneChanged($event)"
                     [showHourFormatChangeOption]="false"></app-timezone-control>
                 <div *ngIf="submitted && !selectedTimeZone" class="invalid-feedback">
                     <div>Timezone is required</div>
@@ -34,10 +36,9 @@
             </div>
 
         </div>
-        <div class="footer">
-            <button loading-indicator [loading]="isLoading" [disabled]="isLoading" (click)="onSubmit(formEventInfo)"
-                class="btn btn-primary">
-                Save Changes
+        <div class="action-buttons-container right padding-top-10 padding-bottom-10">
+            <button class="primary width-100px" loading-indicator [loading]="isLoading" [disabled]="isLoading" (click)="onSubmit(formEventInfo)">
+                <i class="fa fa-save"></i> Save
             </button>
         </div>
     </form>

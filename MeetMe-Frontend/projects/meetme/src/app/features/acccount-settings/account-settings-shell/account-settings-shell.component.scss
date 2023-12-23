@@ -1,21 +1,51 @@
-.account-shell {
+.page-container {
     display: flex;
-    margin: 10px;
-}
-.account-shell .account-shell__sidebar {
-    width: 20%;
-    border-right: 1px solid #d4d2d2;
+    flex-direction: row;
     
 }
-
-.account-shell .account-shell__content {
-    width: 80%;
-    height: max-content;
-    padding-bottom: 20px;
-    margin-left: 20px;
-    flex: 1;
+.page-container .nave-menu {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    background-color: var(--secondary-color);
+    margin: -9px;
+    padding: 10px 20px 20px 10px;
+    margin-right: 10px;
+}
+ .nave-menu a{
+    padding-left: 7px;
+    border-left: 2px solid transparent;
+}
+ .nave-menu li{
+   padding: 4px 6px;
+}
+.nave-menu a.is-active{
+    border-left: 2px solid var(--primary-color);
 }
 
-.account-shell .account-shell__sidebar ul {
-   list-style: none;
+.page-container .content {
+    width: 100%;
 }
+
+
+// .account-shell {
+//     display: flex;
+//     margin: 10px;
+// }
+// .account-shell .account-shell__sidebar {
+//     width: 20%;
+//     border-right: 1px solid #d4d2d2;
+    
+// }
+
+// .account-shell .account-shell__content {
+//     width: 80%;
+//     height: max-content;
+//     padding-bottom: 20px;
+//     margin-left: 20px;
+//     flex: 1;
+// }
+
+// .account-shell .account-shell__sidebar ul {
+//    list-style: none;
+// }

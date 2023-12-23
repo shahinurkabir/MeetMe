@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Alert, AuthService, ModalService, } from './app-core';
+import { Alert, AlertService, AuthService } from './app-core';
 import { Subject, takeUntil } from 'rxjs';
-import { AlertService } from './app-core/controls/alert/alert.service';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +16,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    public modalService: ModalService,
     private alertService: AlertService,
   ) {
     this.alertService.alert$

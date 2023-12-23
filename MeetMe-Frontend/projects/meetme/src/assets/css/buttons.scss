@@ -31,8 +31,6 @@ button.primary {
     background-color: transparent;
     border-color: #49cc90;
     color: #49cc90;
-    //display: inline;
-    //line-height: 1;
 }
 
 /* Secondary Button */
@@ -73,8 +71,8 @@ span.special:hover{
     background-color: var(--gray-color);
 }
 
-span.btn.big_icon .fa,
-span.btn.big_icon .fas {
+span.btn.big_icon >.fa,
+span.btn.big_icon >.fas {
     font-size: 20px;
     padding: 0 5px 0 5px;
 
@@ -91,7 +89,6 @@ span.btn.big_icon .fas {
 
 .multi_option_button_container a {
     padding: 4px 10px;
-    // background-color: var(--secondary-color);
     color: var(--text-color);
     border: 1px solid var(--primary-color);
 }

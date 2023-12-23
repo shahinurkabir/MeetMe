@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { EventTypeService, AuthService, ModalService } from '../../app-core';
 import { Subject } from 'rxjs';
+import { AuthService } from '../../app-core';
 
 @Component({
   selector: 'app-admin-layout',
@@ -16,7 +16,6 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
    userName: string = "";
   constructor(
     private authService: AuthService,
-    public modalService: ModalService,
     private renderer: Renderer2
   ) {
     this.renderer.listen('window', 'click', (e: Event) => {

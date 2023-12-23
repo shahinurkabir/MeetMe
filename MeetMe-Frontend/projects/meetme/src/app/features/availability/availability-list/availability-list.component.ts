@@ -1,8 +1,8 @@
 import { NgFor } from '@angular/common';
 import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { IAvailability, AvailabilityService, ICreateAvailabilityCommand, ModalService } from '../../../app-core';
 import { Subject, takeUntil } from 'rxjs';
+import { AvailabilityService, IAvailability, ICreateAvailabilityCommand } from '../../../app-core';
 
 @Component({
   selector: 'app-availability-list',
@@ -66,10 +66,6 @@ export class AvailabilityListComponent implements OnInit, OnDestroy {
     this.onSelectItem(itemToDisplay);
   }
 
-  // onConfirmToAdd(e: any) {
-  //   this.frmAddAvailability?.onSubmit(e);
-  // }
-
   onSubmit(frm: NgForm) {
 
     if (frm.invalid) return;
@@ -94,7 +90,6 @@ export class AvailabilityListComponent implements OnInit, OnDestroy {
 
   }
   onCancelAdd() {
-    //this.modalService.close();
     this.showAddNewModal = false;
   }
   private resetForm(frm: NgForm | undefined) {

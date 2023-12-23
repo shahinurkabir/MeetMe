@@ -3,17 +3,15 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { AlertComponent, CalendarComponent, ModalComponent, MultiCalendarComponent, MyModalComponent, TimeAvailabilityComponent, TimezoneControlComponent, ToggleSwitchComponent } from './controls';
+import { AlertComponent, CalendarComponent,  MultiCalendarComponent, MyModalComponent, TimeAvailabilityComponent, TimezoneControlComponent, ToggleSwitchComponent } from './controls';
 import { MyOffClickDirective, LoadingIndicatorDirective } from './directives';
 import { CallbackPipe, FilterPipe } from './pipes';
-import { BrowserModule } from '@angular/platform-browser';
 
 
 @NgModule({
     declarations: [
         TimeAvailabilityComponent,
         CalendarComponent,
-        ModalComponent,
         MyModalComponent,
         MyOffClickDirective,
         CallbackPipe,
@@ -38,7 +36,6 @@ import { BrowserModule } from '@angular/platform-browser';
     exports: [
         TimeAvailabilityComponent,
         CalendarComponent,
-        ModalComponent,
         MyModalComponent,
         MyOffClickDirective,
         CallbackPipe,

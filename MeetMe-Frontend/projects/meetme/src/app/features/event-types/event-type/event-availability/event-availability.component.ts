@@ -113,14 +113,14 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
 
     this.forwardDurationInDays = CommonFunction.convertToDays(this.model.forwardDuration);
 
-    this.isCustomAvailability = true;
-    this.selectedAvailability = this.listOfAvailability
-      .find(e => e.isDefault == true);
+    
 
     if (this.model.availabilityId != null) {
       this.isCustomAvailability = false;
       this.selectedAvailability = this.listOfAvailability
         .find(e => e.id == this.model.availabilityId);
+    }else {
+      this.isCustomAvailability = true;
     }
 
     this.showTimeAvailabilityControl();
@@ -225,16 +225,10 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
   }
 
   onChangeAvailability() {
+    this.isCustomAvailability=this.selectedAvailability==undefined
     this.showTimeAvailabilityControl();
   }
 
-  // private initMeetingDurationAndTypes() {
-  //   this.meetingDurations.push({ text: "15 min", value: "15" });
-  //   this.meetingDurations.push({ text: "30 min", value: "30" });
-  //   this.meetingDurations.push({ text: "45 min", value: "45" });
-  //   this.meetingDurations.push({ text: "60 min", value: "60" });
-
-  // }
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();

@@ -6,6 +6,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 12px;
 }
 
 .section_overview .section-timezone {
@@ -132,12 +133,16 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 10px 0px;
+    padding: 5px 40px 10px 10px;
     border-top: 1px solid var(--gray-color);
     position: relative;
     cursor: pointer;
 }
-
+.weekly_availability .overrides_dates .timeinterval_overrides .remove_button{
+    position:absolute;
+    right:-5px;
+    top:-3px
+}
 .weekly_availability .overrides_dates .timeinterval_overrides:hover {
     background-color: var(--secondary-color);
 }

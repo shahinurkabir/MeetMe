@@ -1,4 +1,3 @@
-
 <form #formEventInfo="ngForm">
     <div class="form-group">
         <label for="name">Name *</label>
@@ -62,8 +61,10 @@
 
     </div>
     <hr>
-    <div class="action-buttons-container right padding-bottom-10">
-        <button *ngIf="!eventTypeId" (click)="onCancel()">Cancel</button>
-        <button class="primary" (click)="onSubmit(formEventInfo)">Save</button>
+    <div class="action-buttons-container center padding-bottom-10">
+        <button *ngIf="!eventTypeId" class="width-100px" (click)="onCancel()"><i class="fa fa-times"></i>Cancel</button>
+        <button class="primary width-100px" (click)="onSubmit(formEventInfo)">
+            <i class="fa fa-save"></i>
+            Save</button>
     </div>
 </form>

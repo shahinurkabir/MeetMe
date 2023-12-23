@@ -1,8 +1,7 @@
 import {  Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { AlertService, CommonFunction, EventTypeService, IEventTypeQuestion, IUpdateEventQuestionCommand, ModalService,  settings_question_option_joining_char } from 'projects/meetme/src/app/app-core';
-
+import { EventTypeService, AlertService, IEventTypeQuestion, settings_question_option_joining_char, IUpdateEventQuestionCommand, CommonFunction } from '../../../../app-core';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -11,20 +10,19 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrls: ['./event-question.component.css']
 })
 export class EventQuestionComponent implements OnInit {
+  @ViewChild(NgForm) fromQuestionDetails: NgForm | undefined;
+  componentDestroyed$: Subject<boolean> = new Subject()
   eventTypeId: string = "";
   listSystemDefinedQuestion: IModelQuestionItem[] = [];
   listGeneralQuestion: IModelQuestionItem[] = [];
-  questionType: string = "Text";
   selectedQuestion: IModelQuestionItem | undefined;
   selectedQuestionIndex: number = -1;
-  @ViewChild(NgForm) fromQuestionDetails: NgForm | undefined;
-  componentDestroyed$: Subject<boolean> = new Subject()
-  MODAL_ID_EVENT_QUESTION: string = "eventtype-question-modal";
+  showQuestionDetailModal:boolean=false;
+  submitted: boolean = false;
 
   constructor(
     private eventTypeService: EventTypeService,
     private route: ActivatedRoute,
-    private modalService: ModalService,
     private alertService: AlertService
   ) {
     this.route.parent?.params.subscribe(params => {
@@ -64,7 +62,9 @@ export class EventQuestionComponent implements OnInit {
       displayOrder: this.listGeneralQuestion.length,
       systemDefinedYN: false
     };
-    this.modalService.open(this.MODAL_ID_EVENT_QUESTION);
+    this.selectedQuestion.options.forEach(e => e.validationMessage="Option text is required");
+    this.submitted = false;
+    this.showQuestionDetailModal=true;
   }
   onRemoveQuestion(e:any) {
     e.preventDefault();
@@ -72,12 +72,12 @@ export class EventQuestionComponent implements OnInit {
     this.listGeneralQuestion.splice(this.selectedQuestionIndex, 1);
     this.selectedQuestion = undefined;
     this.selectedQuestionIndex = -1;
-    this.modalService.close();
+    this.showQuestionDetailModal=false;
 
   }
   onAddOption(e:any) {
     e.preventDefault();
-    this.selectedQuestion?.options.push({ text: '' });
+    this.selectedQuestion?.options.push({ text: '',validationMessage:"Option text is required" });
   }
   onRemoveOption(index: number) {
     this.selectedQuestion?.options.splice(index, 1);
@@ -127,18 +127,26 @@ export class EventQuestionComponent implements OnInit {
     itemToEdit.displayOrder = index;
     this.selectedQuestionIndex = index;
     this.selectedQuestion =CommonFunction.cloneObject(itemToEdit);
-    this.modalService.open(this.MODAL_ID_EVENT_QUESTION);
+    this.submitted = false;
+    this.showQuestionDetailModal=true;
   }
 
   onCancelEditing() {
     this.selectedQuestion = undefined;
     this.selectedQuestionIndex = -1;
-    this.modalService.close();
+    this.showQuestionDetailModal=false;
   }
 
   onConfirmEditQuestion(e: any) {
+    e.preventDefault();
+    this.submitted = true;
     if (!this.fromQuestionDetails || this.fromQuestionDetails.invalid) return;
 
+    if (this.selectedQuestion?.questionType !== "Text" && this.selectedQuestion?.questionType !== "MultilineText") {
+      if (this.selectedQuestion?.options.length == 0) {
+        return;
+      }
+    }
     if (this.selectedQuestion?.questionType !== "RadioButtons" && this.selectedQuestion?.questionType !== "CheckBoxes") {
       this.selectedQuestion!.otherOptionYN = false;
     }
@@ -147,7 +155,7 @@ export class EventQuestionComponent implements OnInit {
 
     this.selectedQuestion = undefined;
 
-    this.modalService.close();
+    this.showQuestionDetailModal=false;
 
   }
 

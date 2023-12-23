@@ -1,8 +1,9 @@
-<div class="page">
-
+<div class="width-50p padding-left-20">
+    <h2>User Name</h2>
+    <hr>
     <form (ngSubmit)="onSubmit(formBaseURI)" #formBaseURI="ngForm">
         <div class="form-group">
-            <label for="name">{{host}}/{{base_URI}}
+            <label for="baseURI">{{host}}/{{base_URI}}
             </label>
             <div class="form-control">
                 <input type="text" spellcheck="false" (input)="onLinkChanged($event)" (keydown)="onKeyDown($event)"
@@ -23,12 +24,10 @@
             </div>
 
         </div>
-
-
-        <div class="footer">
+        <div class="action-buttons-container right padding-top-10 padding-bottom-10">
             <button loading-indicator [loading]="isSaving" [disabled]="isSaving" (click)="onSubmit(formBaseURI)"
-                class="btn btn-primary">
-                Save Changes
+            class="primary width-100px" >
+            <i class="fa fa-save"></i> Save
             </button>
         </div>
     </form>

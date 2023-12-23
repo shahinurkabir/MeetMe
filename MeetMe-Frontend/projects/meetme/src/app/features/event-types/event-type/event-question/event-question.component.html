@@ -1,24 +1,8 @@
-<div class="page page-width-85p page">
-    <div class="header">
-        <h2>Event Questions</h2>
-    </div>
+<div >
+    <h3>Questions</h3>
     <div class="body">
         <div class="quetion-list-container">
-            <div class="list-item-container">
-                <div class="toolbar-pane">
-                </div>
-                <div class="content-pane">
-                    <div *ngFor="let item of listSystemDefinedQuestion ;let index=index">
-                        <div class="form-group">
-                            <label for="name" class="form-control">{{item.name}}
-                                <span *ngIf="item.requiredYN" style="color:red;">*</span>
-                            </label>
-                            <input class="form-cortrol" type="text" style="pointer-events: none;">
-                        </div>
-                    </div>
-                    <!-- <i class="fa fa-pen show-edit-pencil"></i> -->
-                </div>
-            </div>
+            
             <div class="list-item-container" *ngFor="let item of listGeneralQuestion;let index=index">
                 <div class="toolbar-pane" [draggable]="true" (dragstart)="onDragStartQuestion(index)"
                     (dragover)="onDragOverQuestion($event)" (drop)="onDropQuestion(index)">
@@ -36,7 +20,7 @@
                             <input type="text" style="pointer-events: none;">
                         </ng-container>
                         <ng-container *ngSwitchCase="item.questionType=='MultilineText'">
-                            <textarea  rows="2" style="pointer-events: none;">
+                            <textarea rows="2" style="pointer-events: none;">
                         </textarea>
                         </ng-container>
                         <ng-container *ngSwitchCase="item.questionType=='ComboBox'">
@@ -47,7 +31,8 @@
                             <div class="question-item-options">
 
                                 <span class="option-item" *ngFor="let option of item.options;let index=index;">
-                                    <input type="{{item.questionType=='RadioButtons'?'radio':'checkbox'}}" placeholder="Other" style="pointer-events: none;"> {{option.text}}
+                                    <input type="{{item.questionType=='RadioButtons'?'radio':'checkbox'}}"
+                                        placeholder="Other" style="pointer-events: none;"> {{option.text}}
                                 </span>
                                 <span class="option-item" *ngIf="item.otherOptionYN">
                                     <input type="text" placeholder="Other" style="pointer-events: none;">
@@ -61,35 +46,53 @@
             </div>
         </div>
 
-        <div>
-            <button type="button" (click)="onAddNewQuestion()">+Question</button>
+        <div class="margin-top-10 margin-bottom-10">
+            <button class="rounded" (click)="onAddNewQuestion()">+Add Question</button>
         </div>
     </div>
-    <div class="footer-left">
-        <button (click)="onCancelChanges()" class="btn btn-default">Cancel Changes</button>
-        <button (click)="onSave()" class="btn btn-primary">Save</button>
+
+    <hr>
+    <div class="action-buttons-container center padding-top-10 padding-bottom-10">
+        <button loading-indicator (click)="onCancelChanges()">
+            <i class="fa fa-undo"></i>
+            Cancel Changes
+        </button>
+        <button loading-indicator (click)="onSave()" class="primary">
+            <i class="fa fa-save"></i>
+            Save Changes
+        </button>
+
     </div>
 </div>
-<mm-modal id="{{MODAL_ID_EVENT_QUESTION}}" title="Question Details" (cancelEvent)="onCancelEditing()"
-    (confirmEvent)="onConfirmEditQuestion($event)">
 
-    <div class="page" style="width: 360px;">
-        <div *ngIf="selectedQuestion!=null" class="body modal">
+
+<app-my-modal [isVisible]="showQuestionDetailModal" modalTitle="Question details" (closeModal)="onCancelEditing()"
+    modalWidth="400px">
+    <ng-template #modalContent>
+        <div class="question-configuration-form" *ngIf="selectedQuestion!=null">
             <form #fromQuestionDetails="ngForm">
                 <div class="form-group">
-                    <label for="name">Name *</label>
+                    <div class="title-container">
+                        <span><label for="name">Name *</label></span>
+                        <span>
+                            <label for="required">
+                                <input type="checkbox" id="required" name="requred"
+                                    [(ngModel)]="selectedQuestion.requiredYN">
+                                Requred</label>
+                        </span>
+                    </div>
                     <div class="form-control">
                         <textarea [maxlength]="255" autocomplete="off" type="text" id="name" name="name" #name="ngModel"
-                            [(ngModel)]="selectedQuestion.name" class="form-control" required></textarea>
-                        <div *ngIf="name.touched && name.invalid" class="invalid-feedback">
-                            <div>Question name is required</div>
+                            [ngClass]="{ 'is-invalid': submitted && name.errors }" [(ngModel)]="selectedQuestion.name"
+                            class="form-control" required minlength="3"></textarea>
+
+                        <div *ngIf="submitted && name.errors" class="invalid-feedback">
+                            <div *ngIf="name.errors['required']">Question name is required</div>
+                            <div *ngIf="name.errors['minlength']">Description at-least 3 charecters</div>
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="required">
-                        <input type="checkbox" name="requred" [(ngModel)]="selectedQuestion.requiredYN"> Requred</label>
-                </div>
+
                 <div class="form-group">
                     <label for="questionType">Question Type</label>
                     <div class="form-control">
@@ -111,44 +114,52 @@
                                                 (selectedQuestion.questionType==='CheckBoxes')">
 
                         <div class="answer-set-list">
+                            <span *ngIf="selectedQuestion.options.length==0" style="color:var(--accent-color);font-weight: 700;">No option found.</span>
                             <div class="answer-set-list__answer-set-container" id="{{index}}" [draggable]="true"
                                 (dragstart)="onDragStart($event)" (dragover)="onDragOver($event)"
                                 (drop)="onDrop($event)"
                                 *ngFor="let option of selectedQuestion.options;let index=index;">
-                                <span> <i style="cursor: move;" class="fa fa-light fa-arrows-up-down"></i></span>
+                                <span class="column_index"> <i style="cursor: move;"
+                                        class="fa fa-light fa-arrows-up-down"></i></span>
                                 <div class="answer-set-list__answer-set-container__input-container">
                                     <div class="form-control">
                                         <input type=" text" id="option-{{index}}" name="option-{{index}}"
                                             #option{{index}}="ngModel" (change)="onChangedOptionText(option)"
-                                            (blur)="onChangedOptionText(option)" autocomplete="off"
+                                            (input)="onChangedOptionText(option)" autocomplete="off"
                                             placeholder="Answer {{index+1}}" [(ngModel)]="option.text" required>
-                                        <div *ngIf="option.validationMessage" class="invalid-feedback">
+                                        <div *ngIf="submitted && option.validationMessage" class="invalid-feedback">
                                             {{option.validationMessage}}</div>
                                     </div>
                                 </div>
-                                <span (click)="onRemoveOption(index)"><i style="cursor:pointer;"
-                                        class="fa fa-trash"></i></span>
+                                <span class="remove_item" (click)="onRemoveOption(index)"><i style="cursor:pointer;"
+                                        class="fa fa-times"></i></span>
+                            </div>
+                            <div class="title-container padding-top-10">
+                                <button class="rounded" (click)="onAddOption($event)">+ Add option</button>
+                                <label for="otherOptionYN" *ngIf="selectedQuestion.questionType!=='ComboBox'">
+                                    <input type="checkbox" id="otherOptionYN" name="otherOptionYN"
+                                        [(ngModel)]="selectedQuestion.otherOptionYN">
+                                    Allow other option</label>
                             </div>
                         </div>
-                        <a href="javascript:void(0)" (click)="onAddOption($event)"><strong>+ Add more</strong></a>
-                        <div class="form-group" *ngIf="selectedQuestion.questionType!=='ComboBox'">
-                            <label for="otherOptionYN">
-                                <input type="checkbox" name="otherOptionYN"
-                                    [(ngModel)]="selectedQuestion.otherOptionYN">Allow other
-                                option</label>
-                        </div>
+
                     </ng-container>
 
                 </ng-container>
 
             </form>
-            <div class="form-group" style="color:#f69a9a">
-                <span *ngIf="selectedQuestionIndex>-1"><i class="fa fa-trash"></i>
-
-                    <a href="javascript:void(0)" (click)="onRemoveQuestion($event)"><strong>Delete Quetion</strong></a>
-                </span>
+            <div *ngIf="selectedQuestionIndex>-1"
+                class="action-buttons-container left padding-bottom-10 padding-top-10">
+                <a class="danger" (click)="onRemoveQuestion($event)">
+                    Remove this quesiton</a>
             </div>
-            <!-- <button *ngIf="selectedQuestionIndex>-1" (click)="onRemoveQuestion()">Delete Quetion</button> -->
+            <hr>
+            <div class="action-buttons-container center">
+                <button class="width-100px" (click)="onCancelEditing()"><i class="fa fa-times"></i>Cancel</button>
+                <button class="primary width-100px" (click)="onConfirmEditQuestion($event)">
+                    <i class="fas fa-check"></i>
+                    OK</button>
+            </div>
         </div>
-    </div>
-</mm-modal>
+    </ng-template>
+</app-my-modal>

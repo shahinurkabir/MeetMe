@@ -1,7 +1,6 @@
 import { Route } from "@angular/router";
 import { EventTypeListComponent } from "./event-type-list/event-type-list.component";
 import { EventAvailabilityComponent } from "./event-type/event-availability/event-availability.component";
-import { EventInfoNewComponent } from "./event-type/event-info/event-info-new/event-info-new.component";
 import { EventInfoUpdateComponent } from "./event-type/event-info-update/event-info-update.component";
 import { EventQuestionComponent } from "./event-type/event-question/event-question.component";
 import { EventTypeShellComponent } from "./event-type/event-type-shell.component";
@@ -9,7 +8,6 @@ import { EventInfoModalComponent } from "./event-type/event-info-modal.component
 
 export const eventType_Routes: Route[] =  [
   { path: "", component: EventTypeListComponent },
-  { path: "new", component: EventInfoNewComponent },
   {
     path: ":id", component: EventTypeShellComponent,
     children: [
@@ -25,7 +23,6 @@ export const eventType_Components = [
     EventTypeListComponent,
     EventTypeShellComponent,
     EventInfoModalComponent,
-    EventInfoNewComponent,
     EventInfoUpdateComponent,
     EventAvailabilityComponent,
     EventQuestionComponent

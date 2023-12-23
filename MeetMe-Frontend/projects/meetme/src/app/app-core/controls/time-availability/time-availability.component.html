@@ -3,7 +3,7 @@
     <option *ngFor="let time of timeSlotsList" [value]="time"></option>
   </datalist>
 
-  <h4 *ngIf="viewMode=='readonly'">Time Zone <span>{{availability?.timeZone}} </span></h4>
+  <h4 *ngIf="viewMode=='readonly'">Time Zone : <span>{{availability?.timeZone}} </span></h4>
 
   <div *ngIf="viewMode!='readonly'" class="section_overview">
     <div class="section-timezone">
@@ -24,7 +24,7 @@
   <hr class="margin_0">
   <div *ngIf="viewMode=='readonly'" class="weekly_availability">
     <div class="weekly_days readonly ">
-      <h2>Weekly hours</h2>
+      <h3>Weekly hours</h3>
       <div class="weekly_day" *ngFor="let dailyTimeAvailabilities of availabilityInWeek">
         <span class="weekday_name readonly">{{dailyTimeAvailabilities.day}}</span>
         <ng-container
@@ -33,7 +33,7 @@
     </div>
 
     <div class="overrides_dates">
-      <h2 class="sub_title">Add date overrides</h2>
+      <h3 *ngIf="availabilityOverrides.length>0">Date-Specefic hours</h3>
       <div class="timeinterval_overrides" *ngFor="let dailyTimeAvailabilities of availabilityOverrides;let index=index">
         <div>{{dailyTimeAvailabilities.day}}</div>
         <div class="timeslots">
@@ -73,7 +73,7 @@
             <span>{{timeSlot.startTime}} - {{timeSlot.endTime}}</span>
           </div>
         </div>
-        <span class="btn big_icon" (click)="onRemoveOverrideData(index)"><i class="fas fa-times close-icon"></i></span>
+        <span class="btn big_icon remove_button" (click)="onRemoveOverrideData(index)"><i class="fas fa-times close-icon"></i></span>
       </div>
     </div>
   </div>
@@ -149,9 +149,9 @@
         *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay: selecteDateOverride,isOverride:true}"></ng-template>
     </div>
     <div class="action-buttons-container center margin-top-10">
-      <button (click)="onCloseCalendarModal()">Close</button>
-      <button [disabled]="selecteDateOverride?.isValidData==false" class="primary"
-        (click)="onApplyCalendarDateChanges()">OK</button>
+      <button class="width-100px" (click)="onCloseCalendarModal()"><i class="fa fa-times"></i>Close</button>
+      <button [disabled]="selecteDateOverride?.isValidData==false" class="primary width-100px"
+        (click)="onApplyCalendarDateChanges()"><i class="fa fa-check"></i>OK</button>
     </div>
   </ng-template>
 </app-my-modal>
@@ -166,8 +166,8 @@
     </div>
 
     <div class="action-buttons-container center margin-top-10">
-      <button (click)="onCloseWeekdayConfigureModal()">Close</button>
-      <button class="primary" (click)="onApplyWeekDayChanges()">OK</button>
+      <button class="width-100px" (click)="onCloseWeekdayConfigureModal()"><i class="fa fa-times"></i>Close</button>
+      <button class="primary width-100px" (click)="onApplyWeekDayChanges()"><i class="fa fa-check"></i>OK</button>
     </div>
   </ng-template>
 </app-my-modal>

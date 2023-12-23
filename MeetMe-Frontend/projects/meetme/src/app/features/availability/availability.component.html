@@ -10,20 +10,20 @@
                 <i style="color:orange;" class="fa-sharp fa-solid fa-star"></i> default schedule</span>
 
         </div>
-        <div>
+        <div style="display: flex;">
             <span class="btn big_icon action_menu_openner">
                 <i #toggle_availability_action_menu (click)="onOpenActionMenu()" class="fa fa-solid fa-gear"></i>
-            </span>
-            <ul #availability_action_menu *ngIf="showActionMenubarYN" class="action_menu dropdown-menu">
-                <li (click)="onClickEditName(selectedAvailability?.id!)"><i class="fa fa-pen"></i><span>Edit
+                <ul #availability_action_menu *ngIf="showActionMenubarYN" class="action_menu dropdown-menu">
+                    <li (click)="onClickEditName(selectedAvailability?.id!)"><i class="fa fa-pen"></i><span>Edit
                         Name</span>
-                </li>
-                <li (click)="onClone(selectedAvailability?.id!)"><i class="fa fa-clone"></i><span>Clone</span></li>
-                <li *ngIf="!selectedAvailability?.isDefault" (click)="onDefault(selectedAvailability?.id!)">
-                    <i class="fa fa-star"></i><span>Default</span>
-                </li>
-                <li (click)="onShowDeleteModal()"><i class="fa fa-trash"></i><span>Delete</span></li>
-            </ul>
+                    </li>
+                    <li (click)="onClone(selectedAvailability?.id!)"><i class="fa fa-clone"></i><span>Clone</span></li>
+                    <li *ngIf="!selectedAvailability?.isDefault" (click)="onDefault(selectedAvailability?.id!)">
+                        <i class="fa fa-star"></i><span>Default</span>
+                    </li>
+                    <li (click)="onShowDeleteModal()"><i class="fa fa-trash"></i><span>Delete</span></li>
+                </ul>
+            </span>
 
         </div>
     </div>
@@ -52,8 +52,8 @@
             </div>
             <hr>
             <div class="action-buttons-container">
-                <button (click)="onCloseModal()">Close</button>
-                <button class="primary" (click)="onEditNameFormSubmit(frmEdit)">OK</button>
+                <button class="width-100px" (click)="onCloseModal()">Close</button>
+                <button class="primary width-100px" (click)="onEditNameFormSubmit(frmEdit)"><i class="fas fa-check"></i>OK</button>
             </div>
         </form>
     </ng-template>
@@ -66,8 +66,8 @@
         <h2>Are you sure want to delete?</h2>
         <hr>
         <div class="action-buttons-container">
-            <button (click)="onCloseModal()">Close</button>
-            <button class="special" (click)="onDelete($event)">Delete</button>
+            <button class="width-100px" (click)="onCloseModal()">Close</button>
+            <button class="special width-100px" (click)="onDelete($event)">Delete</button>
         </div>
     </ng-template>
 </app-my-modal>
