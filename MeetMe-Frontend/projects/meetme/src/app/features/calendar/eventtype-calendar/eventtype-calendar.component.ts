@@ -79,7 +79,17 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
     this.selectedDate = Object.keys(e)[Object.keys(e).length - 1];
 
-    this.showAvailableTimeSlotsInDay();
+    let selectedDateParam = this.route.snapshot.queryParamMap.get('date') ?? "";
+
+    // if selected date in not same as currently selected month then make a api call to get available time slots
+    if (selectedDateParam != "") {
+      const selectedDateTime = new Date(selectedDateParam);
+      if (selectedDateTime.getMonth() != this.selectedMonth || selectedDateTime.getFullYear() != this.selectedYear) {
+        this.loadCalendarTimeSlots(this.selectedYear,this.selectedMonth);
+      }
+    } else {
+      this.showAvailableTimeSlotsInDay();
+    }
 
     this.addParamDate();
   }
@@ -89,7 +99,14 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.selectedYear = e.year;
     this.selectedMonth = e.month;
     this.addParamMonth();
-    this.loadCalendarTimeSlots();
+    this.loadCalendarTimeSlots(this.selectedYear, this.selectedMonth);
+    // if selected date is not in current month then make a api call to get available time slots
+    if (this.selectedDate) {
+      const selectedDateTime = new Date(this.selectedDate);
+      if (selectedDateTime.getMonth() != this.selectedMonth || selectedDateTime.getFullYear() != this.selectedYear) {
+        this.loadCalendarTimeSlots(selectedDateTime.getFullYear(), selectedDateTime.getMonth());
+      }
+    }
   }
 
   onLoadedTimezoneData(e: any) {
@@ -138,7 +155,11 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     if (this.formAppoinmentEntry.invalid) {
       return;
     }
-    const listRadioButtonsHasRequriedError = this.eventTypeQuestions.filter(e => e.questionType == "RadioButtons" && e.requiredYN && e.otherOptionYN && !e.otherOptionValue);
+    const listRadioButtonsHasRequriedError = this.eventTypeQuestions
+      .filter(e => e.questionType == "RadioButtons" 
+      && e.requiredYN && e.otherOptionYN && !e.otherOptionValue 
+      && this.formAppoinmentEntry.get('questionResponses')?.get(e.id!)?.value == "Other"
+      );
 
     //validate radio buttons with other option
     if (listRadioButtonsHasRequriedError.length > 0) {
@@ -354,18 +375,18 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     }
   }
 
-  private loadCalendarTimeSlots() {
+  private loadCalendarTimeSlots(year: number, month: number) {
 
-    const daysInMonth = DateFunction.getDaysInMonth(this.selectedYear, this.selectedMonth);
+    const daysInMonth = DateFunction.getDaysInMonth(year, month);
 
-    let fromDate = DateFunction.getDateString(this.selectedYear, this.selectedMonth, 1);
-    const toDate = DateFunction.getDateString(this.selectedYear, this.selectedMonth, daysInMonth);
+    let fromDate = DateFunction.getDateString(year, month, 1);
+    const toDate = DateFunction.getDateString(year, month, daysInMonth);
 
     let currentDate = DateFunction.getCurrentDateInTimeZone(this.selectedTimeZoneName);
-    let isCurrentMonth = currentDate.getMonth() == this.selectedMonth && currentDate.getFullYear() == this.selectedYear;
+    let isCurrentMonth = currentDate.getMonth() == month && currentDate.getFullYear() == year;
 
     if (isCurrentMonth) {
-      fromDate = DateFunction.getDateString(this.selectedYear, this.selectedMonth, currentDate.getDate());
+      fromDate = DateFunction.getDateString(year, month, currentDate.getDate());
     }
 
     this.fetchCalendarAvailability(fromDate, toDate);
@@ -396,6 +417,9 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     const fromDateObj = new Date(fromDate);
     const toDateObj = new Date(toDate);
 
+    // only disable days in the current month
+    if (fromDateObj.getMonth() != this.selectedMonth || fromDateObj.getFullYear() != this.selectedYear) return;
+
     const allDaysInRange = DateFunction.getDaysInRange(fromDateObj, toDateObj);
 
     const daysWithAvailability = availableTimeSlots.map((event) => new Date(event.date).getDate());
@@ -412,8 +436,9 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
     if (!this.selectedDate) return;
 
-    const earlierDate = new Date(this.selectedDate);
-    if (earlierDate.getMonth() != this.selectedMonth || earlierDate.getFullYear() != this.selectedYear) return;
+    const selectedDateTime = new Date(this.selectedDate);
+
+    //if (selectedDateTime.getMonth() != this.selectedMonth || selectedDateTime.getFullYear() != this.selectedYear) return;
 
     this.selectedDayAvailabilities = this.availableTimeSlots.find(e => e.date == this.selectedDate);
   }
