@@ -1,4 +1,4 @@
-
+<!-- 
 <div class="meetme-card">
     <div class="event-type-container">
 
@@ -10,6 +10,25 @@
             <a routerLink="question" [routerLinkActive]="['is-active']">Questions</a>
         </div>
         <div class="content">
+            <h2 >{{eventTypeName}}</h2>
+            <hr>
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div> -->
+
+
+<div class="meetme-card">
+    <div class="page-container">
+
+        <div class="nave-menu">
+            <button class="primary rounded"(click)="onBackToEventTypeList()" >Back to the List</button>
+            <hr>
+            <a routerLink="info" [routerLinkActive]="['is-active']">Info</a>
+            <a routerLink="availability" [routerLinkActive]="['is-active']">Time Availability</a>
+            <a routerLink="question" [routerLinkActive]="['is-active']">Questions</a>
+        </div>
+        <div class="width-100percent">
             <h2 >{{eventTypeName}}</h2>
             <hr>
             <router-outlet></router-outlet>

@@ -176,8 +176,10 @@ body.is-modal-open {
 
 
 .logo {
-    height: 50px;
-    width: 100px;
+    height: 30px;
+    width: 50px;
+    cursor: pointer;
+    margin: 10px 30px 0 0;
     cursor: pointer;
 }
 
@@ -196,77 +198,6 @@ body.is-modal-open {
     background-color: var(--secondary-color);
 }
 
-.user-pic {
-    width: 50px;
-    height: 50px;
-    margin-left: 20px;
-    border-radius: 5%;
-    cursor: pointer;
-}
-
-.user-profile-wrapper {
-    position: absolute;
-    top: 100%;
-    right: 1px;
-    width: 300px;
-    max-height: 0px;
-    overflow: hidden;
-    transition: max-height 0.5s;
-    z-index: 100;
-}
-
-.user-profile-wrapper.is-open {
-    max-height: 300px;
-}
-
-.user-profile {
-    padding: 10px;
-    background-color: lightblue;
-    margin: 1px;
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-}
-
-.user-info img {
-    width: 50px;
-    height: 50px;
-    border-radius: 5px;
-    margin-right: 10px;
-}
-
-.user-info span {
-    font-weight: 500;
-}
-
-.user-profile hr {
-    border: 0;
-    height: 1px;
-    width: 100%;
-    background-color: black;
-    margin: 10px 0;
-}
-
-.user-profile ul {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.user-profile ul li {
-    list-style: none;
-    padding: 10px 0;
-    margin: 0;
-}
-
-.user-profile ul li a {
-    cursor: pointer;
-    padding: 0;
-    margin: 0;
-}
-
 .layout .main {
     min-height: calc(100vh - 90px);
     padding: 15px 5px;
@@ -275,7 +206,10 @@ body.is-modal-open {
     margin: 0px auto;
 
 }
-
+.page-container {
+    display: flex;
+    flex-direction: row; 
+}
 .page_title {
     // padding: 10px 0;
     font-size: 26px;
@@ -312,15 +246,15 @@ hr {
     justify-content: flex-start;
 }
 
-.event-type-circle-box {
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    color: transparent;
-    font-size: 22px;
-    border-radius: 50%;
-}
+// .event-type-circle-box {
+//     width: 30px;
+//     height: 30px;
+//     line-height: 30px;
+//     text-align: center;
+//     color: transparent;
+//     font-size: 22px;
+//     border-radius: 50%;
+// }
 
 /* Default Styles for Input Elements */
 input {
@@ -663,5 +597,35 @@ i.fa, i.fas, i.far {
     width: 90%;
 }
 .width-100p{
+    width: 100%;
+}
+.width-10percent{
+    width: 10%;
+}
+.width-20percent{
+    width: 20%;
+}
+.width-30percent{
+    width: 30%;
+}
+.width-40percent{
+    width: 40%;
+}
+.width-50percent{
+    width: 50%;
+}
+.width-60percent{
+    width: 60%;
+}
+.width-70percent{
+    width: 70%;
+}
+.width-80percent{
+    width: 80%;
+}
+.width-90percent{
+    width: 90%;
+}
+.width-100percent{
     width: 100%;
 }

@@ -42,6 +42,25 @@ header nav ul li a.is-active {
     border-radius: 3px;
 }
 
+.nave-menu {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    background-color: var(--secondary-color);
+    margin: -9px;
+    padding: 10px 20px 20px 10px;
+    margin-right: 10px;
+}
+ .nave-menu a{
+    padding-left: 7px;
+    border-left: 2px solid transparent;
+}
+ .nave-menu li{
+   padding: 4px 6px;
+}
+.nave-menu a.is-active{
+    border-left: 2px solid var(--primary-color);
+}
 
 .dropdown-menu {
     position: absolute;
