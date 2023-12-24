@@ -1,8 +1,8 @@
 @import "_variables";
 @import 'menu.scss';
 @import 'buttons.scss';
+@import 'animation.scss';
 
-// Event colors
 :root {
     --event-orange: orange;
     --event-green: green;
@@ -115,9 +115,7 @@ body.is-modal-open {
 .margin-right-10 {
     margin-right: 10px;
 }
-.margin-right-20 {
-    margin-right: 20px;
-}
+
 .margin-bottom-5 {
     margin-bottom: 5px;
 }
@@ -172,55 +170,15 @@ body.is-modal-open {
 .layout {
     display: block;
     min-height: 100vh;
+    width: 1024px;
+    margin: 0 auto;
 }
 
-nav {
-    display: flex;
-    width: 100%;
-    background-color: var(--primary-color);
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    padding: 0 3px 0 0;
-}
 
 .logo {
     height: 50px;
     width: 100px;
     cursor: pointer;
-}
-
-ul {
-    list-style: none;
-}
-
-nav ul {
-    width: 100%;
-    text-align: center;
-}
-
-nav ul li {
-    display: inline-block;
-    list-style: none;
-    margin: 10px 20px;
-}
-
-nav ul.menu li a {
-    text-transform: uppercase;
-    color: var(--primary-text-color);
-    padding: 20px 20px;
-}
-
-nav ul li a {
-    color: var(--primary-text-color);
-    padding: 20px 20px;
-
-}
-
-nav ul li a.is-active {
-    color: var(--primary-text-color);
-    border-bottom: 2px solid gray;
-
 }
 
 .meetme-card {
@@ -311,7 +269,7 @@ nav ul li a.is-active {
 
 .layout .main {
     min-height: calc(100vh - 90px);
-    padding: 15px 20px;
+    padding: 15px 5px;
     width: 1024px;
     min-height: 100vh;
     margin: 0px auto;
@@ -606,91 +564,6 @@ form.single-column .form-group .form-control {
 }
 
 
-// animation
-.dot-pulse {
-    position: relative;
-    left: -9999px;
-    width: 10px;
-    height: 10px;
-    border-radius: 5px;
-    background-color: #9880ff;
-    color: #9880ff;
-    box-shadow: 9999px 0 0 -5px;
-    animation: dot-pulse 1.5s infinite linear;
-    animation-delay: 0.25s;
-}
-
-.dot-pulse::before,
-.dot-pulse::after {
-    content: "";
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    width: 10px;
-    height: 10px;
-    border-radius: 5px;
-    background-color: #9880ff;
-    color: #9880ff;
-}
-
-.dot-pulse::before {
-    box-shadow: 9984px 0 0 -5px;
-    animation: dot-pulse-before 1.5s infinite linear;
-    animation-delay: 0s;
-}
-
-.dot-pulse::after {
-    box-shadow: 10014px 0 0 -5px;
-    animation: dot-pulse-after 1.5s infinite linear;
-    animation-delay: 0.5s;
-}
-
-@keyframes dot-pulse-before {
-    0% {
-        box-shadow: 9984px 0 0 -5px;
-    }
-
-    30% {
-        box-shadow: 9984px 0 0 2px;
-    }
-
-    60%,
-    100% {
-        box-shadow: 9984px 0 0 -5px;
-    }
-}
-
-@keyframes dot-pulse {
-    0% {
-        box-shadow: 9999px 0 0 -5px;
-    }
-
-    30% {
-        box-shadow: 9999px 0 0 2px;
-    }
-
-    60%,
-    100% {
-        box-shadow: 9999px 0 0 -5px;
-    }
-}
-
-@keyframes dot-pulse-after {
-    0% {
-        box-shadow: 10014px 0 0 -5px;
-    }
-
-    30% {
-        box-shadow: 10014px 0 0 2px;
-    }
-
-    60%,
-    100% {
-        box-shadow: 10014px 0 0 -5px;
-    }
-}
-
-// end animation
 
 
 //anchor style

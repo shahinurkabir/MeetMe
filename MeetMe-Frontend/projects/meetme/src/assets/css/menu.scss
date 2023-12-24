@@ -1,3 +1,47 @@
+ul {
+    list-style: none;
+}
+
+
+header nav {
+    display: flex;
+    width: 100%;
+    background-color:var(--secondary-color);
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: 0 3px 0 0;
+    border-bottom: 2px solid var(--primary-color);
+}
+header nav ul {
+    width: 100%;
+    display: flex;
+    text-align: center;
+}
+
+header nav ul li {
+    display: inline-block;
+    list-style: none;
+    margin: 5px 10px;
+}
+
+header nav ul li a {
+    // padding: 20px 20px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    // border-bottom: 2px solid transparent;
+    padding: 7px 10px;
+}
+
+header nav ul li a.is-active {
+    color:white;
+    text-decoration: underline;
+    background-color: var(--primary-color);
+    border-radius: 3px;
+}
+
 
 .dropdown-menu {
     position: absolute;

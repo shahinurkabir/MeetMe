@@ -1,4 +1,8 @@
 <div>
+  
+</div>
+<h1>All Events</h1>
+<div class="meetme-card">
     <div class="section-header">
         <div class="user-info">
             <h3>{{user_name}}</h3>
@@ -9,9 +13,7 @@
         <button class="primary rounded" (click)="onShowAddNewEventTypeModal()">+ New Event Type</button>
 
     </div>
-</div>
-<h1>All Events</h1>
-<div class="meetme-card">
+    <hr>
     <div class="event-list-container">
 
         <div [ngClass]="{'is-inactive':!item.activeYN,'is-selected':item.isSelected}" class="event-list-item"
