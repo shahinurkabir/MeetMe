@@ -27,7 +27,7 @@ export class EventInfoModalComponent implements OnInit, OnDestroy {
     location: '',
     slug: '',
     availabilityId: '',
-    forwardDuration: 0,
+    forwardDurationInDays: 60,
     dateForwardKind: 'moving',
     bufferTimeAfter: 0,
     bufferTimeBefore: 0,

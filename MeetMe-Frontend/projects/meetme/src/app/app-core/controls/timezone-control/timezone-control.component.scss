@@ -4,14 +4,6 @@
   margin: 5px 0;
 }
 
-// .select-btn
-//  {
-//   display: flex;
-//   gap: 20px;
-//   align-items: center;
-//   cursor: pointer;
-// }
-
 .wrapper .select-btn {
   display: flex;
   height: 30px;
@@ -20,6 +12,7 @@
   align-items: center;
   font-size: 14px;
   color: #333;
+  cursor: pointer ;
 }
 
 .wrapper .select-btn i {
@@ -136,6 +129,7 @@ li.selected {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  cursor: pointer;
   
 }
 .options li:hover .timezone-currenttime-wrapper>div,

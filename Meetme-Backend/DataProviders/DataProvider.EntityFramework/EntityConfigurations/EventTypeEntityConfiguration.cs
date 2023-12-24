@@ -26,7 +26,7 @@ namespace DataProvider.EntityFramework.EntityConfigurations
             builder.Property(e => e.IsDeleted).HasColumnType("bit");
             builder.Property(e => e.TimeZone).IsRequired().HasColumnType("varchar(100)");
             builder.Property(e => e.DateForwardKind).IsRequired().HasColumnType("varchar(30)");
-            builder.Property(e => e.ForwardDuration).HasColumnType("int");
+            builder.Property(e => e.ForwardDurationInDays).HasColumnType("int");
             builder.Property(e => e.DateFrom).HasColumnType("datetime2");
             builder.Property(e => e.DateTo).HasColumnType("datetime2");
             builder.Property(e => e.Duration).HasColumnType("int");

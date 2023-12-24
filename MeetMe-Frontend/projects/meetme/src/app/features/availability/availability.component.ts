@@ -25,6 +25,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   isSaving: boolean=false;
   showDeleteModalYN: boolean=false;
   showEditModalYN: boolean=false;
+  submitted: boolean=false;
   constructor(
     private availabilityService: AvailabilityService,
     private renderer: Renderer2,
@@ -57,6 +58,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
     this.resetForm(this.editNameForm);
     this.editName = this.selectedAvailability?.name!
     this.showEditModalYN = true;  
+    this.submitted = false;
   }
 
   // onEditName(e: any) {
@@ -64,6 +66,7 @@ export class AvailabilityComponent implements OnInit, OnDestroy {
   // }
 
   onEditNameFormSubmit(frm: NgForm) {
+    this.submitted = true;
     if (frm.invalid) return;
 
     let command: IEditAvailabilityNameCommand = {

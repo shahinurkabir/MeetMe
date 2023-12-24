@@ -14,7 +14,7 @@ export interface ICreateEventTypeCommand {
 export interface IUpdateEventAvailabilityCommand {
     id: string,
     dateForwardKind: string,
-    forwardDuration?: number,
+    forwardDurationInDays?: number,
     dateFrom?: Date,
     dateTo?: Date,
     bufferTimeBefore: number,

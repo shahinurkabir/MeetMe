@@ -146,7 +146,10 @@
 .weekly_availability .overrides_dates .timeinterval_overrides:hover {
     background-color: var(--secondary-color);
 }
-
+.weekly_availability .overrides_dates.readonly .timeinterval_overrides:hover {
+    background-color: transparent;
+    cursor: default;
+}
 .weekly_availability .overrides_dates .timeinterval_overrides:last-child {
     border-bottom: 1px solid var(--gray-color);
 }

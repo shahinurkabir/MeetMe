@@ -81,7 +81,7 @@ namespace MeetMe.Application.EventTypes.Commands
                 TimeZone = availability.TimeZone,
                 AvailabilityId = availability.Id,
                 DateForwardKind = Events.ForwandDateKInd.Moving,
-                ForwardDuration = Events.ForwardDuration,
+                ForwardDurationInDays = Events.ForwardDurationInDays,
                 Duration = Events.MeetingDuration,
                 BufferTimeBefore = Events.BufferTimeDuration,
                 BufferTimeAfter = Events.BufferTimeDuration,

@@ -91,9 +91,10 @@ export class CalendarComponent implements OnInit {
       let dayNo = i + 1
       let shortDateString = DateFunction.getFormattedDate(this.selectedYear,this.selectedMonth, dayNo);
       let isPastDate =  currentTimeByTimeZone > calendarDay.getTime(); 
+      let isDisabled =isPastDate || (this.maxDate && this.maxDate.getTime() < calendarDay.getTime()?true:false);
       let isCurrentDate =this.isCurrentMonth() && currentDate.getDate() == calendarDay.getDate() ;
       let isSelected= this.selectedDates[shortDateString] != undefined;
-      this.days_in_month[weekNo][weekDay] = { dayNo: dayNo, date: shortDateString, isDisabled: isPastDate, isSelected: isSelected, isCurrentDate: isCurrentDate };
+      this.days_in_month[weekNo][weekDay] = { dayNo: dayNo, date: shortDateString, isDisabled: isDisabled, isSelected: isSelected, isCurrentDate: isCurrentDate };
 
       if (weekDay == 6) {
         weekNo += 1
@@ -184,21 +185,4 @@ export class CalendarComponent implements OnInit {
   private getCurrentDateByTimeZone(): Date {
     return new Date(new Date().toLocaleString("en-US", { timeZone: this.timeZoneMame }));
   }
-  // private getShortDateString(dayNo: number): string {
-
-  //   let shortMonth = settings_month_of_year[this.selectedMonth].substring(0, 3);
-  //   let dayNoString = "0" + dayNo.toString();
-  //   dayNoString = dayNoString.substring(dayNoString.length - 2, dayNoString.length);
-  //   let date = `${this.selectedYear}-${shortMonth}-${dayNoString}`;
-
-  //   return date;
-  // }
-
 }
-// interface IDay {
-//   dayNo: number,
-//   date: string,
-//   isDisabled: boolean,
-//   isSelected: boolean
-//   isCurrentDate: boolean,
-// }

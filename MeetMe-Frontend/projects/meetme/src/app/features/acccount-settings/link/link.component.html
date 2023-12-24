@@ -1,9 +1,10 @@
 <div class="width-50p padding-left-20">
-    <h2>User Name</h2>
+    <h2>Link Setup</h2>
     <hr>
     <form (ngSubmit)="onSubmit(formBaseURI)" #formBaseURI="ngForm">
+        <h3 class="margin-bottom-10">{{host}}/{{base_URI}}</h3>
         <div class="form-group">
-            <label for="baseURI">{{host}}/{{base_URI}}
+            <label for="baseURI">User Id *
             </label>
             <div class="form-control">
                 <input type="text" spellcheck="false" (input)="onLinkChanged($event)" (keydown)="onKeyDown($event)"

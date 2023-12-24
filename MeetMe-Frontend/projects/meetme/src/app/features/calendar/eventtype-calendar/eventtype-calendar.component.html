@@ -1,25 +1,32 @@
 <div [class.full-width]="selectedDate" class="meetme-card">
   <div class="appointment-page-container">
-    <!-- Event Info Section -->
     <section class="appointment-event-info-container">
-      <div *ngIf="selectedTimeSlot">
-        <button class="primary" (click)="onCancelAppointmentEntry($event)">Back
+      <div class="margin-bottom-10" *ngIf="selectedTimeSlot">
+        <button class="primary" (click)="onCancelAppointmentEntry($event)"><i class="fas fa-arrow-left"></i> Back
         </button>
-        <hr>
       </div>
-      <h2>{{ eventTypeInfo?.name }}</h2>
-      <h3>{{ eventTypeOwnerInfo?.userName }}</h3>
-      <h4>&#8986;{{ eventTypeInfo?.duration }} minutes</h4>
-      <h4 *ngIf="selectedTimeSlot">{{ selectedDateTime }}</h4>
-      <h4 *ngIf="selectedTimeSlot">{{ selectedTimeZoneName }}</h4>
+      <h2 class="margin-bottom-10">{{ eventTypeInfo?.name }}</h2>
+
+      <div class="detail-item">
+        <i class="far fa-user detail-icon"></i>
+        <div class="detail-text">{{eventTypeOwnerInfo?.userName }}</div>
+      </div>
+      <div class="detail-item">
+        <i class="far fa-clock detail-icon"></i>
+        <div class="detail-text">{{ eventTypeInfo?.duration }} minutes</div>
+      </div>
+      <div *ngIf="selectedTimeSlot" class="detail-item">
+        <i class="fas fa-calendar-alt detail-icon"></i>
+        <div class="detail-text">{{selectedDateTime}}</div>
+      </div>
+      <div *ngIf="selectedTimeSlot" class="detail-item">
+        <i class="fas fa-globe detail-icon"></i>
+        <div class="detail-text">{{selectedTimeZoneName}}</div>
+      </div>
     </section>
 
-    <!-- Booking Wrapper -->
     <section class="appointment-calendar-booking-wrapper">
-      <!-- Display when selectedTimeSlot is not available -->
       <div [ngStyle]="{'display': !selectedTimeSlot ? 'block' : 'none', 'width': '100%'}">
-
-        <!-- Calendar and Time Slots Section -->
 
         <div class="calendar-timeslots-wrapper">
           <section class="calendar-section">
@@ -27,7 +34,9 @@
               <h3>Select date and time</h3>
             </div>
             <app-calendar style="margin-top: 35px;" (handlerDateClick)="onCalendarDayClicked($event)"
-              (handlerMonthChange)="onMonthChange($event)" [allowMultipleSelection]="false"></app-calendar>
+              (handlerMonthChange)="onMonthChange($event)" [allowMultipleSelection]="false"
+              [maxDate]="forwardDurationDate"
+              ></app-calendar>
             <app-timezone-control style="width: 100%;" #timezoneControl [selectedTimeZone]="selectedTimeZone"
               [showHourFormatChangeOption]="true" (dataLoaded)="onLoadedTimezoneData($event)"
               (selectionChanged)="onChangedTimezone($event)"
@@ -74,13 +83,11 @@
         </div>
       </div>
 
-      <!-- Display when selectedTimeSlot is available -->
-      <!-- <div [ngStyle]="{'display': selectedTimeSlot ? 'block' : 'none'}" class="page  page-width-85p"> -->
-      <div *ngIf="selectedTimeSlot" class="page  page-width-75p">
-        <h2>Invitee details</h2>
-        <hr>
-        <form [formGroup]="formAppoinmentEntry" class=" ">
-          <!-- Form Fields with Labels and Validation Messages -->
+      <div *ngIf="selectedTimeSlot" class="page page-width-75p">
+       
+        <form [formGroup]="formAppoinmentEntry" class="padding-left-20 margin-left-20">
+          <h2>Invitee details</h2>
+          <hr>
           <div class="form-group">
             <label for="inviteeName">Name *</label>
             <div class="form-control">
@@ -93,7 +100,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="userName">Email *</label>
+            <label for="inviteeEmail">Email *</label>
             <div class="form-control">
               <input type="text" autocomplete="off" spellcheck="false" id="inviteeEmail" formControlName="inviteeEmail"
                 minlength="3" [ngClass]="{ 'is-invalid': submitted && f['inviteeEmail'].errors }">
@@ -221,7 +228,7 @@
           <hr>
           <div class="action-buttons-container center">
             <button loading-indicator [loading]="isSubmitting" [disabled]="isSubmitting"
-              (click)="onSubmitAppointmentForm()" class="primary">
+              (click)="onSubmitAppointmentForm()" class="primary rounded">
               Booking an Appointment
             </button>
           </div>

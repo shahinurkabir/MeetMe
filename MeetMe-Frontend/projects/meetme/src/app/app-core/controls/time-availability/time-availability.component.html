@@ -32,8 +32,9 @@
       </div>
     </div>
 
-    <div class="overrides_dates">
+    <div class="overrides_dates readonly">
       <h3 *ngIf="availabilityOverrides.length>0">Date-Specefic hours</h3>
+      <h3 *ngIf="availabilityOverrides.length==0">No Date-Specefic hours</h3>
       <div class="timeinterval_overrides" *ngFor="let dailyTimeAvailabilities of availabilityOverrides;let index=index">
         <div>{{dailyTimeAvailabilities.day}}</div>
         <div class="timeslots">

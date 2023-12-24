@@ -61,6 +61,12 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
   }
 
   setAvailability(availability?: IAvailability) {
+    if (availability) {
+      const dates = availability.details.filter(e => e.dayType == settings_meeting_day_type_date);
+      const futureDates = dates.filter(e => new Date(e.value!) >= new Date(new Date().setDate(-1)));
+      availability.details = availability.details.filter(e => e.dayType == settings_meeting_day_type_weekday);
+      availability.details.push(...futureDates);
+    }
 
     this.availability = availability;
     this.selectedTimeZone = this.timeZoneList.find(e => e.name == availability?.timeZone);

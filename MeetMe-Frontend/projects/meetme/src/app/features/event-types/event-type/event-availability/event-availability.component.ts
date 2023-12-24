@@ -34,7 +34,7 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
     location: '',
     slug: '',
     availabilityId: '',
-    forwardDuration: 0,
+    forwardDurationInDays: 0,
     dateForwardKind: 'moving',
     bufferTimeAfter: 0,
     bufferTimeBefore: 0,
@@ -111,7 +111,7 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
 
     this.customAvailability = this.convertEventScheduleToAvailabilitySchedule(this.model.timeZone, this.eventAvailabilityDetails);
 
-    this.forwardDurationInDays = CommonFunction.convertToDays(this.model.forwardDuration);
+    this.forwardDurationInDays = CommonFunction.convertToDays(this.model.forwardDurationInDays);
 
     
 
@@ -189,7 +189,7 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
     let eventTypeAvailability: IUpdateEventAvailabilityCommand = {
       id: this.eventTypeId,
       dateForwardKind: setting_meetting_forward_Duration_kind.moving,
-      forwardDuration: this.forwardDurationInDays * 24 * 60,
+      forwardDurationInDays: this.forwardDurationInDays * 24 * 60,
       bufferTimeBefore: this.model.bufferTimeBefore,
       bufferTimeAfter: this.model.bufferTimeAfter,
       timeZone: this.model.timeZone,

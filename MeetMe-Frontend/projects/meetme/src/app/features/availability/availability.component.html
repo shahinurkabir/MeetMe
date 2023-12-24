@@ -39,14 +39,14 @@
     <ng-template #modalContent>
         <form class="single-column" #frmEdit="ngForm">
             <div class="form-group">
-                <label for="name">Schedule Name</label>
+                <label for="scheduleName">Schedule Name</label>
                 <div class="form-control">
-                    <input #name="ngModel" id="name" name="name" autocomplete="off"
-                        [ngClass]="frmEdit.submitted && name.invalid?'is-invalid':''" type="text" [(ngModel)]="editName"
+                    <input type="text" #scheduleName="ngModel" id="scheduleName" name="scheduleName" autocomplete="off"
+                        [ngClass]="submitted && scheduleName.invalid?'is-invalid':''"  [(ngModel)]="editName"
                         required minlength="3">
-                    <div *ngIf="frmEdit.submitted && name.errors" class="invalid-feedback">
-                        <div *ngIf="name.errors['required']">Name is required</div>
-                        <div *ngIf="name.invalid">Name at-least three charecters</div>
+                    <div *ngIf="submitted && scheduleName.errors" class="invalid-feedback">
+                        <div *ngIf="scheduleName.errors['required']">Name is required</div>
+                        <div *ngIf="scheduleName.invalid">Name at-least three charecters</div>
                     </div>
                 </div>
             </div>
@@ -66,8 +66,10 @@
         <h2>Are you sure want to delete?</h2>
         <hr>
         <div class="action-buttons-container">
-            <button class="width-100px" (click)="onCloseModal()">Close</button>
-            <button class="special width-100px" (click)="onDelete($event)">Delete</button>
+            <button class="width-100px" (click)="onCloseModal()"><i class="fa fa-times"></i>Close</button>
+            <button class="special width-100px" (click)="onDelete($event)"><i class="fa fa-trash"></i>Delete</button>
+
+            
         </div>
     </ng-template>
 </app-my-modal>

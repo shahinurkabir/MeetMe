@@ -7,17 +7,18 @@
             <div class="form-group">
                 <label for="forwardDuration">In future days - User can book an appointment in advance *</label>
                 <div class="form-control">
-                    <input type="text" id="forwardDuration" required #forwardDuration="ngModel"
-                        [(ngModel)]="forwardDurationInDays" name="forwardDuration"
+                    <input type="number" id="forwardDuration" required #forwardDuration="ngModel"
+                        [(ngModel)]="forwardDurationInDays" name="forwardDuration" [min]="0" 
                         [ngClass]="{ 'is-invalid': submitted && forwardDuration.errors }">
                     <div *ngIf="submitted && forwardDuration.errors" class="invalid-feedback">
                         <div *ngIf="forwardDuration.errors['required']">This is required</div>
+                        <div *ngIf="forwardDuration.errors['min']">Not allowed less than zero</div>
                     </div>
                 </div>
             </div>
             <div class="form-group">
 
-                <label for="availability">Availability:</label>
+                <label for="availability">Availability</label>
                 <div class="form-control">
                     <select id="availability" (change)="onChangeAvailability()" name="availability" class="form-control"
                         [(ngModel)]="selectedAvailability">

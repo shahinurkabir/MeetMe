@@ -69,7 +69,7 @@ namespace MeetMe.Application.EventTypes.Commands
                 EventColor = eventType.EventColor,
                 Duration = eventType.Duration,
                 Description = eventType.Description,
-                ForwardDuration = eventType.ForwardDuration,
+                ForwardDurationInDays = eventType.ForwardDurationInDays,
                 Location = eventType.Location,
                 TimeZone = eventType.TimeZone,
                 DateFrom = eventType.DateFrom,

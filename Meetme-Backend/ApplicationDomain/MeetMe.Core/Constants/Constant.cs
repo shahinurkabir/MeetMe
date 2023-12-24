@@ -17,7 +17,7 @@ namespace MeetMe.Core.Constants
         };
         public const int BufferTimeDuration = 0;  // minutes
         public const int MeetingDuration = 30;   // minutes
-        public const int ForwardDuration = 24 * 60 * 60;  // 60 days
+        public const int ForwardDurationInDays = 60;
         public const string SCHEDULE_DATETYPE_WEEKDAY = "weekday";
         public const string SCHEDULE_DATETYPE_DATE = "date";
 

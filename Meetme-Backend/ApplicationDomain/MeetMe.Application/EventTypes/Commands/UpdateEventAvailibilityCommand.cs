@@ -11,7 +11,7 @@ namespace MeetMe.Application.EventTypes.Commands
     {
         public Guid Id { get; set; }
         public string DateForwardKind { get; set; } = null!;
-        public int ForwardDuration { get; set; }
+        public int ForwardDurationInDays { get; set; }
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }
         public int BufferTimeBefore { get; set; } = 0;
@@ -51,7 +51,7 @@ namespace MeetMe.Application.EventTypes.Commands
         private EventType MapCommandToEntity(EventType entityTypeExisting, UpdateEventAvailabilityCommand request)
         {
             entityTypeExisting.DateForwardKind = request.DateForwardKind;
-            entityTypeExisting.ForwardDuration = request.ForwardDuration;
+            entityTypeExisting.ForwardDurationInDays = request.ForwardDurationInDays;
             entityTypeExisting.DateFrom = request.DateFrom;
             entityTypeExisting.DateTo = request.DateTo;
             entityTypeExisting.BufferTimeBefore = request.BufferTimeBefore;

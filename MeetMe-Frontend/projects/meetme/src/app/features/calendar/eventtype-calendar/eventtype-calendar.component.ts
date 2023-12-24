@@ -35,6 +35,8 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   eventTypeQuestions: IEventTypeQuestion[] = [];
   selectedCheckBoxes: any = {};
   formAppoinmentEntry: FormGroup;
+  forwardDurationDate?: Date = undefined;
+
   constructor(
     private eventTypeService: EventTypeService,
     private calendarService: AppointmentService,
@@ -136,11 +138,11 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     if (this.formAppoinmentEntry.invalid) {
       return;
     }
-    const listRadioButtonsHasRequriedError= this.eventTypeQuestions.filter(e=>e.questionType=="RadioButtons" && e.requiredYN && e.otherOptionYN && !e.otherOptionValue);
+    const listRadioButtonsHasRequriedError = this.eventTypeQuestions.filter(e => e.questionType == "RadioButtons" && e.requiredYN && e.otherOptionYN && !e.otherOptionValue);
 
     //validate radio buttons with other option
-    if(listRadioButtonsHasRequriedError.length>0){
-      return ;
+    if (listRadioButtonsHasRequriedError.length > 0) {
+      return;
     }
 
     const questionnaireFormGroup = this.formAppoinmentEntry.get('questionResponses') as FormGroup;
@@ -149,12 +151,12 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     // to fill other option value in question response
     this.eventTypeQuestions.forEach((question) => {
       if (question.otherOptionYN && question.otherOptionValue) {
-        questionnaireFormGroupRowValues[question.id!] =`${questionnaireFormGroupRowValues[question.id!]} - ${question.otherOptionValue}`;
+        questionnaireFormGroupRowValues[question.id!] = `${questionnaireFormGroupRowValues[question.id!]} - ${question.otherOptionValue}`;
       }
     });
     const questionnaireResponseContent = this.getQuestionnaireResponseContent(questionnaireFormGroupRowValues);
-    
-    
+
+
 
     let command: ICreateAppointmentCommand = {
       eventTypeId: this.eventTypeInfo?.id!,
@@ -318,6 +320,10 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
           this.eventTypeInfo = response[0];
           this.eventTypeQuestions = response[0].questions.sort((a, b) => a.displayOrder - b.displayOrder);
           this.eventTypeOwnerInfo = response[1];
+          let currentDate = DateFunction.getCurrentDateInTimeZone(this.selectedTimeZoneName);
+          if (this.eventTypeInfo?.forwardDurationInDays > 0) {
+            this.forwardDurationDate = new Date(currentDate.setDate(this.eventTypeInfo?.forwardDurationInDays));
+          }
         },
         error: (error) => { console.log(error) },
         complete: () => {

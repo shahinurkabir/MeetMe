@@ -20,7 +20,7 @@
 .appointment-event-info-container {
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: 325px;
 }
 
 .appointment-calendar-booking-wrapper {
@@ -95,6 +95,7 @@ button.timeslot-button:hover {
   display: flex;
   flex-direction: column;
 }
+
 .form-control-checkbox-container-item {
   display: flex;
   flex-direction: row;
@@ -102,7 +103,25 @@ button.timeslot-button:hover {
   gap: 3px;
   align-items: center;
 }
-.form-control-checkbox-container label  {
- font-weight: normal;
- margin-right: 10px;
+
+.form-control-checkbox-container label {
+  font-weight: normal;
+  margin-right: 10px;
+}
+
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.detail-icon {
+  margin-right: 5px;
+  font-size: 20px;
+}
+
+.detail-text {
+  // font-size: 18px;
+  color: #333;
 }
