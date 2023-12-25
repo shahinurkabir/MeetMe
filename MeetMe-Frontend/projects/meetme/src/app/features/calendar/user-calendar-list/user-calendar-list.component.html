@@ -6,7 +6,7 @@
 
 <div class="event-list-container">
  <div *ngFor="let item of userProfileDetails?.events">
-    <h2><a  [routerLink]="['/calendar',baseUri,item.slug]" [queryParams]="{id:item.id}">
+    <h2><a  [routerLink]="['/calendar',baseUri,item.slug]">
         {{item.name}}
     </a>
  </h2>

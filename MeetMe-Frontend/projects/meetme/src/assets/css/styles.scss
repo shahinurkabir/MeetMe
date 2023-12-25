@@ -21,7 +21,7 @@
     font-family: 'poppins', 'sans-serif';
     box-sizing: border-box;
     font-size: 14px;
-    color:var(--text-color);
+    color: var(--text-color);
 }
 
 body {
@@ -29,6 +29,7 @@ body {
     background-color: var(--background-color);
 
 }
+
 h1 {
     font-size: 2em;
     line-height: 1.2;
@@ -50,9 +51,12 @@ h4 {
 }
 
 
-h1, h2, h3 {
-    font-weight: 700; /* Use the bold variant for headings */
-  }
+h1,
+h2,
+h3 {
+    font-weight: 700;
+    /* Use the bold variant for headings */
+}
 
 body.is-modal-open {
     overflow-y: hidden;
@@ -61,57 +65,75 @@ body.is-modal-open {
 .padding-left-5 {
     padding-left: 5px;
 }
+
 .padding-left-10 {
     padding-left: 10px;
 }
+
 .padding-left-15 {
     padding-left: 15px;
 }
+
 .padding-left-20 {
     padding-left: 20px;
 }
+
 .padding-right-5 {
     padding-right: 5px;
 }
+
 .padding-right-10 {
     padding-right: 10px;
 }
+
 .padding-right-15 {
     padding-right: 15px;
 }
+
 .padding-right-20 {
     padding-right: 20px;
 }
+
 .padding-bottom-5 {
     padding-bottom: 5px;
 }
+
 .padding-bottom-10 {
     padding-bottom: 10px;
 }
+
 .padding-bottom-20 {
     padding-bottom: 20px;
 }
-.padding-top-5{
+
+.padding-top-5 {
     padding-top: 5px;
 }
+
 .padding-top-10 {
     padding-top: 10px;
 }
+
 .padding-top-20 {
     padding-top: 20px;
 }
+
 .margin-left-5 {
     margin-left: 5px;
 }
+
 .margin-left-10 {
     margin-left: 10px;
 }
+
 .margin-left-20 {
     margin-left: 20px;
 }
+
 .margin-right-5 {
     margin-right: 5px;
 }
+
 .margin-right-10 {
     margin-right: 10px;
 }
@@ -119,61 +141,93 @@ body.is-modal-open {
 .margin-bottom-5 {
     margin-bottom: 5px;
 }
+
 .margin-bottom-10 {
     margin-bottom: 10px;
 }
+
 .margin-bottom-20 {
     margin-bottom: 20px;
 }
-.margin-top-5{
+
+.margin-top-5 {
     margin-top: 5px;
 }
+
 .margin-top-10 {
     margin-top: 10px;
 }
+
 .margin-top-20 {
     margin-top: 20px;
 }
+
 .margin_0 {
     margin: 0;
 }
-.margin_1{
+
+.margin_1 {
     margin: 1px;
 }
-.margin_2{
+
+.margin_2 {
     margin: 2px;
 }
-.margin_3{
+
+.margin_3 {
     margin: 3px;
 }
-.margin_4{
+
+.margin_4 {
     margin: 4px;
 }
-.margin_5{
+
+.margin_5 {
     margin: 5px;
 }
-.margin_6{
+
+.margin_6 {
     margin: 6px;
 }
-.margin_7{
+
+.margin_7 {
     margin: 7px;
 }
-.margin_8{
+
+.margin_8 {
     margin: 8px;
 }
-.margin_9{
+
+.margin_9 {
     margin: 9px;
 }
-.margin_10{
+
+.margin_10 {
     margin: 10px;
 }
-.layout {
+
+// .layout {
+//     display: block;
+//     min-height: 100vh;
+//     width: 1024px;
+//     margin: 0 auto;
+// }
+
+.container {
     display: block;
-    min-height: 100vh;
+    // min-height: 100vh;
     width: 1024px;
     margin: 0 auto;
 }
 
+.content-area {
+    //min-height: calc(100vh - 90px);
+    padding: 15px 5px;
+    //width: 1024px;
+    min-height: 100vh;
+    margin: 0px auto;
+
+}
 
 .logo {
     height: 30px;
@@ -198,18 +252,11 @@ body.is-modal-open {
     background-color: var(--secondary-color);
 }
 
-.layout .main {
-    min-height: calc(100vh - 90px);
-    padding: 15px 5px;
-    width: 1024px;
-    min-height: 100vh;
-    margin: 0px auto;
-
-}
 .page-container {
     display: flex;
-    flex-direction: row; 
+    flex-direction: row;
 }
+
 .page_title {
     // padding: 10px 0;
     font-size: 26px;
@@ -307,7 +354,8 @@ select.is-invalid {
     border-color: #dc3545 !important;
 }
 
-.invalid-feedback,.invalid-feedback>Div {
+.invalid-feedback,
+.invalid-feedback>Div {
     color: #dc3545 !important;
 }
 
@@ -317,7 +365,7 @@ select.is-invalid {
 
 .page.page-width-95p {
     width: 95%;
-   // margin: 0 auto;
+    // margin: 0 auto;
 }
 
 .page.page-width-85p {
@@ -327,7 +375,7 @@ select.is-invalid {
 
 .page.page-width-75p {
     width: 75%;
-   // margin: 0 auto;
+    // margin: 0 auto;
 }
 
 .page.page-width-65p {
@@ -337,7 +385,7 @@ select.is-invalid {
 
 .page.page-width-50p {
     width: 50%;
-   // margin: 0 auto;
+    // margin: 0 auto;
 }
 
 .page .header h2 {
@@ -364,9 +412,13 @@ select.is-invalid {
     padding: 10px 0;
     gap: 10px;
 }
-input,textarea,select{
+
+input,
+textarea,
+select {
     padding: 7px 5px;
 }
+
 .page .footer {
     padding: 30px 0;
     display: flex;
@@ -517,115 +569,150 @@ a:hover {
 a.is-active {
     border-color: var(--primary-color);
 }
-a.danger{
+
+a.danger {
     cursor: pointer;
     color: var(--accent-color);
     text-decoration: none;
     font-size: 16px;
     padding-bottom: 5px;
 }
+
 a.danger:hover {
     color: var(--accent-color);
     text-decoration: underline;
 }
-button>
-i.fa, i.fas, i.far {
-    padding:0 5px 0 0;
+
+button>i.fa,
+i.fas,
+i.far {
+    padding: 0 5px 0 0;
 }
 
 .width-50px {
     width: 50px;
 }
+
 .width-60px {
     width: 60px;
 }
+
 .width-70px {
     width: 70px;
 }
+
 .width-80px {
     width: 80px;
 }
+
 .width-90px {
     width: 90px;
 }
+
 .width-100px {
     width: 100px;
 }
+
 .width-110px {
     width: 110px;
 }
+
 .width-120px {
     width: 120px;
 }
+
 .width-130px {
     width: 130px;
 }
+
 .width-140px {
     width: 140px;
 }
+
 .width-150px {
     width: 150px;
 }
+
 .width-160px {
     width: 160px;
 }
+
 .width-170px {
     width: 170px;
 }
+
 .width-180px {
     width: 180px;
 }
+
 .width-190px {
     width: 190px;
 }
+
 .width-200px {
     width: 200px;
 }
-.width-50p{
+
+.width-50p {
     width: 50%;
 }
-.width-60p{
+
+.width-60p {
     width: 60%;
 }
-.width-70p{
+
+.width-70p {
     width: 70%;
 }
-.width-80p{
+
+.width-80p {
     width: 80%;
 }
-.width-90p{
+
+.width-90p {
     width: 90%;
 }
-.width-100p{
+
+.width-100p {
     width: 100%;
 }
-.width-10percent{
+
+.width-10percent {
     width: 10%;
 }
-.width-20percent{
+
+.width-20percent {
     width: 20%;
 }
-.width-30percent{
+
+.width-30percent {
     width: 30%;
 }
-.width-40percent{
+
+.width-40percent {
     width: 40%;
 }
-.width-50percent{
+
+.width-50percent {
     width: 50%;
 }
-.width-60percent{
+
+.width-60percent {
     width: 60%;
 }
-.width-70percent{
+
+.width-70percent {
     width: 70%;
 }
-.width-80percent{
+
+.width-80percent {
     width: 80%;
 }
-.width-90percent{
+
+.width-90percent {
     width: 90%;
 }
-.width-100percent{
+
+.width-100percent {
     width: 100%;
 }
