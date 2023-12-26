@@ -1,0 +1,16 @@
+.center-div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh; /* Ensure the container takes the full height of the viewport */
+    margin: 0; /* Remove default margin */  
+}
+
+.meetme-card.override{
+    width: 400px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    margin: 100px auto;
+    padding: 30px 40px;
+}

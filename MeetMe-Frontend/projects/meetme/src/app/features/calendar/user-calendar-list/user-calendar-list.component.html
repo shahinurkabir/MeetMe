@@ -1,13 +1,15 @@
-<div>
-    <h3>{{userName}}</h3>
-    <div>{{welcomeText!}}</div>
-</div>
-
-
-<div class="event-list-container">
- <div *ngFor="let item of userProfileDetails?.events">
-    <h2><a  [routerLink]="['/calendar',baseUri,item.slug]">
-        {{item.name}}
-    </a>
- </h2>
+<div class="meetme-card override">
+    <div class="profile">
+        <img class="image" src="../../../../assets/images/profile.png">
+        <div class="info">
+            <h3 class="info_name">{{userName}}</h3>
+            <div class="info_details">{{welcomeText!}}</div>
+        </div>
+    </div>
+    <hr>
+    <h3 class="padding-top-20">Availabile for booking here</h3>
+    <h2 *ngFor="let item of userProfileDetails?.events"><a [routerLink]="['/calendar',baseUri,item.slug]">
+            {{item.name}}
+        </a>
+    </h2>
 </div>

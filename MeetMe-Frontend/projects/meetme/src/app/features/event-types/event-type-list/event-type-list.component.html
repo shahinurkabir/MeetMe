@@ -1,19 +1,16 @@
-<div>
-  
-</div>
+
 <h1>All Events</h1>
 <div class="meetme-card">
-    <div class="section-header">
+    <div class="section-header padding-bottom-20">
         <div class="user-info">
-            <h3>{{user_name}}</h3>
-            <a target="_blank" [routerLink]="['/calendar',baseUri]">
-                {{host}}/{{baseUri}}
-            </a>
+            <h3>{{user_name}} : <a target="_blank" [routerLink]="['/calendar',baseUri]">
+                    {{host}}/{{baseUri}}
+                </a>
+            </h3>
         </div>
         <button class="primary rounded" (click)="onShowAddNewEventTypeModal()">+ New Event Type</button>
 
     </div>
-    <hr>
     <div class="event-list-container">
 
         <div [ngClass]="{'is-inactive':!item.activeYN,'is-selected':item.isSelected}" class="event-list-item"

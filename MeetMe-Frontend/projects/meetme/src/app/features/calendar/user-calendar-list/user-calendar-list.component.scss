@@ -1,0 +1,24 @@
+.meetme-card.override {
+    width: 600px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    padding: 30px 40px;
+}
+
+.profile {
+    display: flex;
+    gap: 20px;
+}
+
+.profile .image {
+    width: 70px;
+    height: 70px;
+}
+
+.profile .info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

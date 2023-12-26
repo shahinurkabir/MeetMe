@@ -1,5 +1,5 @@
 
-.page-container {
+.succcess-page-container {
     max-width: 600px;
     margin: 0 auto;
     background-color: #ffffff;
@@ -8,7 +8,7 @@
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   }
 
-  .page-container h1 {
+  .succcess-page-container h1 {
     color:var(--primary-color);
   }
 
@@ -29,13 +29,13 @@
   .detail-item {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 7px;
   }
 
   .detail-icon {
     margin-right: 15px;
     font-size: 24px;
-    color: #007bff;
+    // color: #007bff;
   }
 
   .detail-text {

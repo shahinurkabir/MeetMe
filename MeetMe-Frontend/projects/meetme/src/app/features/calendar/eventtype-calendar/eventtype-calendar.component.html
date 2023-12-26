@@ -1,8 +1,8 @@
-<div [class.full-width]="selectedDate" class="meetme-card">
+<div [class.full-width]="selectedDate" class="meetme-card override">
   <div class="appointment-page-container">
     <section class="appointment-event-info-container">
       <div class="margin-bottom-10" *ngIf="selectedTimeSlot">
-        <button class="primary" (click)="onCancelAppointmentEntry($event)"><i class="fas fa-arrow-left"></i> Back
+        <button class="primary rounded" (click)="onCancelAppointmentEntry($event)"><i class="fas fa-arrow-left"></i> Back
         </button>
       </div>
       <h2 class="margin-bottom-10">{{ eventTypeInfo?.name }}</h2>

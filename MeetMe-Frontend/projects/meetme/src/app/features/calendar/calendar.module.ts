@@ -7,7 +7,7 @@ import { calendar_Components, calendar_Routes } from '.';
 
 @NgModule({
     declarations: [
-        calendar_Components
+        calendar_Components,
     ],
     providers: [
     ],

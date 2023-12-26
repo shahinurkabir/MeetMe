@@ -24,8 +24,10 @@
 
 .user-profile {
     padding: 10px;
-    background-color: lightblue;
+    background-color:var(--secondary-color);
+    border:1px solid var(--primary-color);
     margin: 1px;
+    border-radius: 2px;
 }
 
 .user-info {
@@ -44,13 +46,13 @@
     font-weight: 500;
 }
 
-.user-profile hr {
-    border: 0;
-    height: 1px;
-    width: 100%;
-    background-color: black;
-    margin: 10px 0;
-}
+// .user-profile hr {
+//     border: 0;
+//     height: 1px;
+//     width: 100%;
+//     background-color: black;
+//     margin: 10px 0;
+// }
 
 .user-profile ul {
     display: flex;

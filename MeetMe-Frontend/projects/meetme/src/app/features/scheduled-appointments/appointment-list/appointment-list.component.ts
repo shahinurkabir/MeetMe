@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { AppointmentService,  CommonFunction, EventTypeService, IAppointmentDetailsDto, IAppointmentSearchParametersDto, IAppointmentsPaginationResult, ICancelAppointmentCommand, IDay, IEventType, MultiCalendarComponent, settings_appointment_search_by_date_option, settings_appointment_status } from '../../../app-core';
+import { AlertService, AppointmentService,  CommonFunction, EventTypeService, IAppointmentDetailsDto, IAppointmentSearchParametersDto, IAppointmentsPaginationResult, ICancelAppointmentCommand, IDay, IEventType, MultiCalendarComponent, settings_appointment_search_by_date_option, settings_appointment_status } from '../../../app-core';
 import { Subject, forkJoin, takeUntil } from 'rxjs';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -65,6 +65,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private router: Router,
+    private alertService: AlertService,
   ) {
 
     this.renderer.listen('window', 'click', (e: Event) => {
@@ -156,6 +157,8 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: response => {
           this.showCancelAppointmentWindowYN = false;
+          this.alertService.success("Appointment cancelled successfully");
+          
           this.filterAppointments();
         },
         error: (error) => {

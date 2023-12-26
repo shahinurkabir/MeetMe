@@ -5,7 +5,9 @@ import { first } from 'rxjs/operators';
 import { AlertService, AuthService } from '../../../app-core';
 import { Subject } from 'rxjs';
 
-@Component({ templateUrl: 'login.component.html' })
+@Component({ templateUrl: './login.component.html' 
+,styleUrls: ['./login.component.scss']
+})
 export class LoginComponent implements OnInit, OnDestroy {
   destroyed$: Subject<boolean> = new Subject<boolean>();
   form!: FormGroup;
