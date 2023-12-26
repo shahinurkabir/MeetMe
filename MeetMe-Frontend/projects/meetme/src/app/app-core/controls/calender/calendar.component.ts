@@ -164,8 +164,8 @@ export class CalendarComponent implements OnInit {
   }
   resetTimeZone(timezone: string) {
     this.timeZoneMame = timezone;
-    let localDate = this.getCurrentDateByTimeZone();
-    this.resetYearMonthFromDate(localDate);
+    // let localDate = this.getCurrentDateByTimeZone();
+    // this.resetYearMonthFromDate(localDate);
     this.updateCalendar();
   }
   resetYearMonthFromDate(date: Date) {

@@ -35,12 +35,13 @@
             </div>
             <app-calendar style="margin-top: 35px;" (handlerDateClick)="onCalendarDayClicked($event)"
               (handlerMonthChange)="onMonthChange($event)" [allowMultipleSelection]="false"
+              [selectedDates]="selectedDates" 
               [maxDate]="forwardDurationDate"
               ></app-calendar>
             <app-timezone-control style="width: 100%;" #timezoneControl [selectedTimeZone]="selectedTimeZone"
               [showHourFormatChangeOption]="true" (dataLoaded)="onLoadedTimezoneData($event)"
               (selectionChanged)="onChangedTimezone($event)"
-              (hourFormatChanged)="onChangedHourFormat($event)"></app-timezone-control>
+              ></app-timezone-control>
           </section>
           <section *ngIf="selectedDate" class="timeslots-section">
             <div style="display: flex;justify-content: center;">
@@ -83,7 +84,7 @@
         </div>
       </div>
 
-      <div *ngIf="selectedTimeSlot" class="page page-width-75p">
+      <div *ngIf="selectedTimeSlot" class="page width-100p">
        
         <form [formGroup]="formAppoinmentEntry" class="padding-left-20 margin-left-20">
           <h2>Invitee details</h2>

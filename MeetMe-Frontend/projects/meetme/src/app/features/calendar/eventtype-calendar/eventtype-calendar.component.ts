@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CalendarComponent, AppointmentService, TimezoneControlComponent, IEventTimeAvailability, TimeZoneData, EventTypeService, IEventType, AccountService, IAccountProfileInfo, ITimeSlot, settings_day_of_week, settings_month_of_year, AlertService, ICreateAppointmentCommand, IEventTypeQuestion, IEventAvailabilityDetailItemDto, IAppointmentQuestionaireItemDto, DateFunction } from '../../../app-core';
-import { Subject, forkJoin, takeUntil } from 'rxjs';
+import { CalendarComponent, AppointmentService, TimezoneControlComponent, IEventTimeAvailability, TimeZoneData, EventTypeService, IEventType, AccountService, IAccountProfileInfo, ITimeSlot, settings_day_of_week, settings_month_of_year, AlertService, ICreateAppointmentCommand, IEventTypeQuestion, IEventAvailabilityDetailItemDto, IAppointmentQuestionaireItemDto, DateFunction, CommonFunction } from '../../../app-core';
+import { Subject, forkJoin, lastValueFrom, takeUntil } from 'rxjs';
 import { FormArray, FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 
 @Component({
@@ -14,7 +14,8 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
   @ViewChild("timezoneControl", { static: true }) timezoneControl: TimezoneControlComponent | undefined;
 
   destroyed$: Subject<boolean> = new Subject<boolean>();
-  availableTimeSlots: IEventTimeAvailability[] = [];
+  timeAvailabilities: IEventTimeAvailability[] = [];
+  selectedDates: { [id: string]: string | undefined } = {}
   selectedDayAvailabilities: IEventTimeAvailability | undefined;
   selectedTimeZone: TimeZoneData | undefined;
   selectedYear: number = 0;
@@ -68,6 +69,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.initializeRouteParameters();
     this.loadEventDetails();
     this.updateCalendar();
+    this.loadAvailabilityOutsideOfMonth();
 
   }
   onClickBack() {
@@ -78,35 +80,44 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     if (Object.keys(e).length == 0) return;
 
     this.selectedDate = Object.keys(e)[Object.keys(e).length - 1];
-
-    let selectedDateParam = this.route.snapshot.queryParamMap.get('date') ?? "";
-
-    // if selected date in not same as currently selected month then make a api call to get available time slots
-    if (selectedDateParam != "") {
-      const selectedDateTime = new Date(selectedDateParam);
-      if (selectedDateTime.getMonth() != this.selectedMonth || selectedDateTime.getFullYear() != this.selectedYear) {
-        this.loadCalendarTimeSlots(this.selectedYear,this.selectedMonth);
-      }
-    } else {
-      this.showAvailableTimeSlotsInDay();
-    }
-
+    this.updateAvailableTimeSlotsInDay(this.timeAvailabilities);
     this.addParamDate();
   }
 
-  onMonthChange(e: any) {
+  private async loadAvailabilityOutsideOfMonth() {
+
+    if (!this.selectedDate) return;
+
+    if (this.selectedDate) {
+      const selectedDateTime = new Date(this.selectedDate);
+      if (selectedDateTime.getMonth() != this.selectedMonth || selectedDateTime.getFullYear() != this.selectedYear) {
+        const dateRange = DateFunction.getFromDateToDate(selectedDateTime.getFullYear(), selectedDateTime.getMonth(), this.selectedTimeZoneName);
+        const data = await lastValueFrom(this.eventTypeService.getEventAvailabilityCalendar(this.event_slug, this.selectedTimeZoneName, dateRange.fromDate, dateRange.toDate));
+        this.convertToLocalTime(data);
+        this.updateAvailableTimeSlotsInDay(data);
+      }
+    }
+  }
+
+  async onMonthChange(e: any) {
 
     this.selectedYear = e.year;
     this.selectedMonth = e.month;
     this.addParamMonth();
-    this.loadCalendarTimeSlots(this.selectedYear, this.selectedMonth);
-    // if selected date is not in current month then make a api call to get available time slots
-    if (this.selectedDate) {
-      const selectedDateTime = new Date(this.selectedDate);
-      if (selectedDateTime.getMonth() != this.selectedMonth || selectedDateTime.getFullYear() != this.selectedYear) {
-        this.loadCalendarTimeSlots(selectedDateTime.getFullYear(), selectedDateTime.getMonth());
-      }
-    }
+
+    const dateRange = DateFunction.getFromDateToDate(this.selectedYear, this.selectedMonth, this.selectedTimeZoneName);
+
+    const data = await lastValueFrom(this.eventTypeService.getEventAvailabilityCalendar(this.event_slug, this.selectedTimeZoneName, dateRange.fromDate, dateRange.toDate));
+
+    this.disableCalendarDaysForEmptySlot(dateRange.fromDate, dateRange.toDate, data);
+
+    this.convertToLocalTime(data);
+
+    this.timeAvailabilities = data;
+
+    // in case of calling this method by timezone changed
+    if (this.selectedDayAvailabilities)
+      this.convertToLocalTime([this.selectedDayAvailabilities])
   }
 
   onLoadedTimezoneData(e: any) {
@@ -120,10 +131,6 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
   }
 
-  onChangedHourFormat(is24HourFormat: boolean) {
-    this.is24HourFormat = is24HourFormat;
-    this.updateTimeLocalTime();
-  }
 
   onSelectedTimeSlot(e: ITimeSlot) {
     this.selectedTimeSlot = e;
@@ -156,9 +163,9 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
       return;
     }
     const listRadioButtonsHasRequriedError = this.eventTypeQuestions
-      .filter(e => e.questionType == "RadioButtons" 
-      && e.requiredYN && e.otherOptionYN && !e.otherOptionValue 
-      && this.formAppoinmentEntry.get('questionResponses')?.get(e.id!)?.value == "Other"
+      .filter(e => e.questionType == "RadioButtons"
+        && e.requiredYN && e.otherOptionYN && !e.otherOptionValue
+        && this.formAppoinmentEntry.get('questionResponses')?.get(e.id!)?.value == "Other"
       );
 
     //validate radio buttons with other option
@@ -375,42 +382,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     }
   }
 
-  private loadCalendarTimeSlots(year: number, month: number) {
-
-    const daysInMonth = DateFunction.getDaysInMonth(year, month);
-
-    let fromDate = DateFunction.getDateString(year, month, 1);
-    const toDate = DateFunction.getDateString(year, month, daysInMonth);
-
-    let currentDate = DateFunction.getCurrentDateInTimeZone(this.selectedTimeZoneName);
-    let isCurrentMonth = currentDate.getMonth() == month && currentDate.getFullYear() == year;
-
-    if (isCurrentMonth) {
-      fromDate = DateFunction.getDateString(year, month, currentDate.getDate());
-    }
-
-    this.fetchCalendarAvailability(fromDate, toDate);
-
-  }
-
-  private fetchCalendarAvailability(fromDate: string, toDate: string): void {
-    this.eventTypeService
-      .getEventAvailabilityCalendar(this.event_slug, this.selectedTimeZoneName, fromDate, toDate)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: (response) => {
-          this.availableTimeSlots = response;
-          this.updateTimeLocalTime();
-          this.disableCalendarDaysForEmptySlot(fromDate, toDate, response);
-          this.showAvailableTimeSlotsInDay();
-        },
-        error: (error) => {
-          console.log(error);
-        },
-        complete: () => {
-        },
-      });
-  }
+  
 
   private disableCalendarDaysForEmptySlot(fromDate: string, toDate: string, availableTimeSlots: IEventTimeAvailability[]) {
 
@@ -419,8 +391,15 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
     // only disable days in the current month
     if (fromDateObj.getMonth() != this.selectedMonth || fromDateObj.getFullYear() != this.selectedYear) return;
-
+    
     const allDaysInRange = DateFunction.getDaysInRange(fromDateObj, toDateObj);
+
+    if (this.selectedDate) {
+      let selectedDayNumber = new Date(this.selectedDate).getDate();
+      if (allDaysInRange.filter(e=>e==selectedDayNumber).length==0){
+        this.selectedDayAvailabilities=undefined
+      }
+    }
 
     const daysWithAvailability = availableTimeSlots.map((event) => new Date(event.date).getDate());
 
@@ -432,18 +411,16 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     }
   }
 
-  private showAvailableTimeSlotsInDay() {
+  private updateAvailableTimeSlotsInDay(timeAvailabilities: IEventTimeAvailability[]) {
 
     if (!this.selectedDate) return;
 
-    const selectedDateTime = new Date(this.selectedDate);
+    const availabilitiesInSelectedDate = timeAvailabilities.find(e => e.date == this.selectedDate);
 
-    //if (selectedDateTime.getMonth() != this.selectedMonth || selectedDateTime.getFullYear() != this.selectedYear) return;
-
-    this.selectedDayAvailabilities = this.availableTimeSlots.find(e => e.date == this.selectedDate);
+    this.selectedDayAvailabilities = CommonFunction.cloneObject(availabilitiesInSelectedDate);// this.timeAvailabilities.find(e => e.date == this.selectedDate);
   }
 
-  private updateTimeLocalTime() {
+  private convertToLocalTime(availableTimeSlots: IEventTimeAvailability[]) {
     // Function to convert a single time slot
     const convertTimeSlot = (slot: ITimeSlot) => {
       const startDateTime = DateFunction.convertTimeZone(slot.startDateTime, this.selectedTimeZone?.name!);
@@ -459,11 +436,11 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     };
 
     // Update time slots for each day
-    this.availableTimeSlots.forEach((day) => {
+    availableTimeSlots.forEach((day) => {
       day.slots = day.slots.map(convertTimeSlot);
     });
 
-    console.log(this.availableTimeSlots);
+    console.log(availableTimeSlots);
   }
 
   private addParamMonth() {

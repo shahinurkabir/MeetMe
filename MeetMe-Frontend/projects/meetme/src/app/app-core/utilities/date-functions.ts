@@ -32,7 +32,7 @@ export class DateFunction {
     }
 
     static getDateString(year: number, month: number, day: number): string {
-        return `${year}-${month + 1}-${day}`;
+        return `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
     }
 
     static getCurrentDateInTimeZone(timeZone: string): Date {
@@ -49,6 +49,20 @@ export class DateFunction {
         }
 
         return daysInRange;
+    }
+    static getFromDateToDate(year: number, month: number, timeZone: string) {
+        const daysInMonth = DateFunction.getDaysInMonth(year, month);
+        let fromDate = DateFunction.getDateString(year, month, 1);
+        const toDate = DateFunction.getDateString(year, month, daysInMonth);
+
+        let currentDate = DateFunction.getCurrentDateInTimeZone(timeZone);
+        let isCurrentMonth = currentDate.getMonth() === month && currentDate.getFullYear() === year;
+
+        if (isCurrentMonth) {
+            fromDate = DateFunction.getDateString(year, month, currentDate.getDate());
+        }
+
+        return { fromDate, toDate };
     }
     static getFormattedDate(year: number, month: number, dayNo: number): string {
 
