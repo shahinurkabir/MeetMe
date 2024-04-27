@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { AlertComponent, CalendarComponent,  MultiCalendarComponent, MyModalComponent, TimeAvailabilityComponent, TimezoneControlComponent, ToggleSwitchComponent } from './controls';
+import { AlertComponent, CalendarComponent,  MultiCalendarComponent, MyModalComponent, TimeAvailabilityComponent, TimezoneControlComponent, ToggleSwitchComponent,TooltipComponent, TooltipDirective } from './controls';
 import { MyOffClickDirective, LoadingIndicatorDirective } from './directives';
 import { CallbackPipe, FilterPipe } from './pipes';
 
@@ -22,6 +22,8 @@ import { CallbackPipe, FilterPipe } from './pipes';
         MultiCalendarComponent,
         MyModalComponent,
         ToggleSwitchComponent,
+        TooltipComponent,
+        TooltipDirective
     ],
     providers: [
     ],
@@ -46,6 +48,8 @@ import { CallbackPipe, FilterPipe } from './pipes';
         MultiCalendarComponent,
         MyModalComponent,
         ToggleSwitchComponent,
+        TooltipComponent,
+        TooltipDirective
     ]
 })
 export class AppCoreModule { }

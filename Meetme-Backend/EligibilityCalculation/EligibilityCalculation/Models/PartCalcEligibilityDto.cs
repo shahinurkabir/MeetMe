@@ -1,6 +1,6 @@
 ﻿namespace EligibilityCalculation.Models
 {
-    public partial class PartCalcEligibility
+    public class PartCalcEligibilityDto
     {
         public int PartCalcEligibilityID { get; set; }
         public int ParticipantID { get; set; }
@@ -15,7 +15,6 @@
         public string? MetEligibilityCode { get; set; }
         public DateTime? MetEligibilityAsOf { get; set; }
         public DateTime? EntryDate { get; set; }
-
     }
 
 }

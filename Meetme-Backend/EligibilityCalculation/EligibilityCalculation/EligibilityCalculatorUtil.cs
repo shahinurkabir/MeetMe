@@ -41,11 +41,11 @@ namespace EligibilityCalculation
             return servicePeriodMeetDate;
         }
 
-        public static DateTime CalculateEntryDate(DateTime eligibilityMeetDateAsOf, DateTime planYearStartDate, DateTime planYearEndDate, string planEntryDateCode, string planEntryTimingCode)
+        public static DateTime CalculateEntryDate(DateTime eligibilityMetDateAsOf, DateTime planYearStartDate, DateTime planYearEndDate, string planEntryDateCode, string planEntryTimingCode)
         {
             var isShortPlanYear = (planYearEndDate - planYearStartDate).TotalDays < 365 - 1;
 
-            var planEntryDate = eligibilityMeetDateAsOf;
+            var planEntryDate = eligibilityMetDateAsOf;
 
 
             if (planEntryDateCode == Utils.Constants.Elig_PlanEntryDateCode_Immediate || planEntryTimingCode == Utils.Constants.Elig_PLanEntryTimeCode_NotApplicable) // Entry Date:Immediate or Plan Entry Timing: Not applicable
@@ -59,19 +59,19 @@ namespace EligibilityCalculation
 
             if (planEntryTimingCode == Utils.Constants.Elig_PLanEntryTimeCode_After) // After
             {
-                planEntryDate = intervalDates.Where(x => x > eligibilityMeetDateAsOf).First();
+                planEntryDate = intervalDates.Where(x => x > eligibilityMetDateAsOf).First();
             }
             else if (planEntryTimingCode == Utils.Constants.Elig_PLanEntryTimeCode_ON_OR_After) // On or after
             {
-                planEntryDate = intervalDates.Where(x => x >= eligibilityMeetDateAsOf).First();
+                planEntryDate = intervalDates.Where(x => x >= eligibilityMetDateAsOf).First();
             }
             else if (planEntryTimingCode == Utils.Constants.Elig_PLanEntryTimeCode_Nearest) // Nearest
             {
-                planEntryDate = CalculateNearestDate(intervalDates, eligibilityMeetDateAsOf);
+                planEntryDate = CalculateNearestDate(intervalDates, eligibilityMetDateAsOf);
             }
             else if (planEntryTimingCode == Utils.Constants.Elig_PLanEntryTimeCode_Preceding) // Preceding
             {
-                planEntryDate = intervalDates.Where(x => x < eligibilityMeetDateAsOf).Last();
+                planEntryDate = intervalDates.Where(x => x < eligibilityMetDateAsOf).Last();
             }
 
             return planEntryDate;
@@ -157,64 +157,64 @@ namespace EligibilityCalculation
 
         }
 
-        public static (DateTime eligibilityMeetDateAsOf, DateTime planEntryDate) CalculateAgeAndServiceWaiver(DateTime eligibilityMeetDate_Calculated, DateTime planEntryDate_Calculated, DateTime immedateEntryDate, DateTime dateOfHire, bool WaiveMinAgeYN, bool WaiveMinServiceYN)
+        public static (DateTime eligibilityMeetDateAsOf, DateTime planEntryDate) CalculateAgeAndServiceWaiver(DateTime eligibilityMetDate_Calculated, DateTime planEntryDate_Calculated, DateTime immedaiteEntryDate, DateTime dateOfHire, bool minAgeWaiverYN, bool minServiceWaiverYN)
         {
-            var eligibilityMeetDateAsOf = eligibilityMeetDate_Calculated;
+            var eligibilityMetDateAsOf = eligibilityMetDate_Calculated;
             var planEntryDate = planEntryDate_Calculated;
 
-            if (dateOfHire > immedateEntryDate) return (eligibilityMeetDateAsOf, planEntryDate);
+            if (dateOfHire > immedaiteEntryDate) return (eligibilityMetDateAsOf, planEntryDate);
 
-            if (WaiveMinAgeYN)
+            if (minAgeWaiverYN)
             {
-                eligibilityMeetDateAsOf = immedateEntryDate < eligibilityMeetDateAsOf ? immedateEntryDate : eligibilityMeetDateAsOf;
+                eligibilityMetDateAsOf = immedaiteEntryDate < eligibilityMetDateAsOf ? immedaiteEntryDate : eligibilityMetDateAsOf;
             }
-            if (WaiveMinServiceYN)
+            if (minServiceWaiverYN)
             {
-                planEntryDate = immedateEntryDate < planEntryDate ? immedateEntryDate : planEntryDate;
+                planEntryDate = immedaiteEntryDate < planEntryDate ? immedaiteEntryDate : planEntryDate;
             }
 
             // Re-calculate eligibility and entry date 
-            if (eligibilityMeetDateAsOf == immedateEntryDate && planEntryDate == immedateEntryDate)
+            if (eligibilityMetDateAsOf == immedaiteEntryDate && planEntryDate == immedaiteEntryDate)
             {
-                eligibilityMeetDateAsOf = immedateEntryDate;
-                planEntryDate = immedateEntryDate;
+                eligibilityMetDateAsOf = immedaiteEntryDate;
+                planEntryDate = immedaiteEntryDate;
             }
-            else if (eligibilityMeetDateAsOf < immedateEntryDate && planEntryDate < immedateEntryDate)
+            else if (eligibilityMetDateAsOf < immedaiteEntryDate && planEntryDate < immedaiteEntryDate)
             {
-                eligibilityMeetDateAsOf = eligibilityMeetDate_Calculated;
-                planEntryDate = planEntryDate_Calculated < immedateEntryDate ? planEntryDate_Calculated : immedateEntryDate;
+                eligibilityMetDateAsOf = eligibilityMetDate_Calculated;
+                planEntryDate = planEntryDate_Calculated < immedaiteEntryDate ? planEntryDate_Calculated : immedaiteEntryDate;
             }
-            else if (eligibilityMeetDateAsOf == immedateEntryDate && planEntryDate < immedateEntryDate)
+            else if (eligibilityMetDateAsOf == immedaiteEntryDate && planEntryDate < immedaiteEntryDate)
             {
-                eligibilityMeetDateAsOf = immedateEntryDate;
-                planEntryDate = immedateEntryDate;
+                eligibilityMetDateAsOf = immedaiteEntryDate;
+                planEntryDate = immedaiteEntryDate;
             }
-            else if (eligibilityMeetDateAsOf == immedateEntryDate && planEntryDate > immedateEntryDate)
+            else if (eligibilityMetDateAsOf == immedaiteEntryDate && planEntryDate > immedaiteEntryDate)
             {
-                eligibilityMeetDateAsOf = eligibilityMeetDate_Calculated;
+                eligibilityMetDateAsOf = eligibilityMetDate_Calculated;
                 planEntryDate = planEntryDate_Calculated;
             }
-            else if (eligibilityMeetDateAsOf > immedateEntryDate && planEntryDate <= immedateEntryDate)
+            else if (eligibilityMetDateAsOf > immedaiteEntryDate && planEntryDate <= immedaiteEntryDate)
             {
-                eligibilityMeetDateAsOf = eligibilityMeetDate_Calculated;
+                eligibilityMetDateAsOf = eligibilityMetDate_Calculated;
                 planEntryDate = planEntryDate_Calculated;
             }
-            else if (eligibilityMeetDateAsOf > immedateEntryDate && planEntryDate > immedateEntryDate)
+            else if (eligibilityMetDateAsOf > immedaiteEntryDate && planEntryDate > immedaiteEntryDate)
             {
-                eligibilityMeetDateAsOf = eligibilityMeetDate_Calculated;
+                eligibilityMetDateAsOf = eligibilityMetDate_Calculated;
                 planEntryDate = planEntryDate_Calculated;
             }
-            else if (eligibilityMeetDateAsOf < immedateEntryDate && planEntryDate == immedateEntryDate)
+            else if (eligibilityMetDateAsOf < immedaiteEntryDate && planEntryDate == immedaiteEntryDate)
             {
-                eligibilityMeetDateAsOf = immedateEntryDate;
-                planEntryDate = immedateEntryDate;
+                eligibilityMetDateAsOf = immedaiteEntryDate;
+                planEntryDate = immedaiteEntryDate;
             }
-            else if (eligibilityMeetDateAsOf <= immedateEntryDate && planEntryDate > immedateEntryDate)
+            else if (eligibilityMetDateAsOf <= immedaiteEntryDate && planEntryDate > immedaiteEntryDate)
             {
-                eligibilityMeetDateAsOf = eligibilityMeetDate_Calculated;
+                eligibilityMetDateAsOf = eligibilityMetDate_Calculated;
                 planEntryDate = planEntryDate_Calculated;
             }
-            return (eligibilityMeetDateAsOf, planEntryDate);
+            return (eligibilityMetDateAsOf, planEntryDate);
         }
 
         public static DateTime? CalculatePlanEntryDateForExcludedType(

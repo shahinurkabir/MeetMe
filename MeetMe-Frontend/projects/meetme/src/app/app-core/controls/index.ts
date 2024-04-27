@@ -8,3 +8,6 @@ export * from '../controls/alert/alert'
 export * from '../controls/multi-calendar/multi-calendar.component';
 export * from '../controls/my-modal/my-modal.component';
 export * from '../controls/toggle-switch/toggle-switch.component';
+export * from '../controls/tooltip/tooltip.component'
+export * from '../controls/tooltip/tooltip.enums'
+export * from '../controls/tooltip/tooltip.directive'

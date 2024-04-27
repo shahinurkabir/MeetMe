@@ -57,7 +57,7 @@
         </label>
         <ng-container
           *ngTemplateOutlet="timeInvervalsInDayTemplate; context: {timeInvervalsInDay: dailyTimeAvailabilities}"></ng-container>
-        <span (click)="onAddTimeInterval(dailyTimeAvailabilities)" class="btn"><i class="fa fa-clone"></i></span>
+        <!-- <span (click)="onAddTimeInterval(dailyTimeAvailabilities)" class="btn"><i class="fa fa-clone"></i></span> -->
       </div>
     </div>
 
@@ -176,7 +176,7 @@
 <ng-template #timeInvervalsInDayTemplate let-timeInvervalsInDay="timeInvervalsInDay" let-isOverride="isOverride">
   <div class="intervals">
     <div *ngIf="!timeInvervalsInDay.isAvailable ">
-      <div class="interval_item not_available">Not available
+      <div class="interval_item "><div class="not_available">Not available</div>
         <span (click)="onAddTimeInterval(timeInvervalsInDay)" class="btn add_more_time_slot"><i
             class="fa fa-plus"></i></span>
       </div>
@@ -195,9 +195,9 @@
           [ngClass]="timeInterval.errorMessage ? 'is-invalid' : ''" required
           (focusout)="onLostFocus($event, i, true, timeInvervalsInDay)">
 
-        <span class="btn special" (click)="onRemoveTimeInterval(i, timeInvervalsInDay)"><i
+        <span tooltip="Remove {{timeInvervalsInDay.day}} slot {{i+1}}"  class="btn special" (click)="onRemoveTimeInterval(i, timeInvervalsInDay)"><i
             class="fas fa-times close-icon"></i></span>
-        <span *ngIf="i==0" (click)="onAddTimeInterval(timeInvervalsInDay)" [class.big_icon]="isOverride"
+        <span tooltip="New slot for {{timeInvervalsInDay.day}}"  *ngIf="i==0" (click)="onAddTimeInterval(timeInvervalsInDay)" [class.big_icon]="isOverride"
           class="btn add_more_time_slot"><i class="fa fa-plus"></i></span>
         <div *ngIf="timeInterval.errorMessage" class="invalid-feedback">
           {{timeInterval.errorMessage}}

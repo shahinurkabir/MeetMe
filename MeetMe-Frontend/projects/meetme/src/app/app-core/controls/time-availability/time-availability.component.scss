@@ -48,7 +48,7 @@
 .weekly_availability .weekly_days .weekly_day {
     display: flex;
     align-items: flex-start;
-    padding-bottom: 7px;
+    padding-bottom: 10px;
 }
 // .weekly_availability .weekly_days .weekly_day.readonly{
 //     padding-bottom: 0;
@@ -82,12 +82,12 @@
 .intervals .interval_item.readonly{
     padding-bottom: 0;
 }
-.intervals .interval_item.not_available {
+.intervals .interval_item .not_available {
     opacity: 0.5;
     font-weight: 700;
-    margin-top: 10px;
+    margin-top: 12px;
 }
-.intervals .interval_item.not_available.readonly{
+.intervals .interval_item .not_available.readonly{
     margin-top: 0;
 }
 .intervals .interval_item input[type=text] {
@@ -310,4 +310,6 @@ button {
     right: 0;
     top: 0;
 }
-
+.btn.add_more_time_slot .fa {
+    font-size: larger;
+}
