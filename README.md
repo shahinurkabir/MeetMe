@@ -89,4 +89,4 @@ Follow the steps
 - Backend - Run the backend application first. it will run on port:5073 that is localhost:5073
 - Frontend - Locate command line working directory at meetme\meetme-frontend and run command in command window npm install and then run ng serve. that's it. it will run at port:4200. Please open your desire browser and press address localhost:4200 and that you go!. you are being asked login credintals. 
    - UserId : admin
-   - Pwd    : 123
+   - Pwd    : *** (anything but have to change it later)
