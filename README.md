@@ -35,8 +35,8 @@ The frontend is a single-page application built with Angular 14. Currently, no U
 
 ## Technical Stack
    - .Net 6
-   - MediatR - command Query handler
-   - FluendValidation - To validate input data
+   - MediatR - Command Query Handler
+   - FluendValidation - To Validate Input Data
    - EFCore - ORM
    - Amazon DynamoDB - NoSQL support
    - Angular 14 - Frontend development framework
@@ -86,6 +86,6 @@ You have to clone repo from here https://github.com/shahinurkabir/MeetMe .
 
 Follow the steps
 - Backend - Run the backend application first. it will run on port:5073 that is localhost:5073
-- Frontend - Locate command directory location at meetme\meetme-frontend and run command in command window npm install and then run ng serve. that's it. it will run at port:4200. Please open your desire browser and press address localhost:4200 and that you go!. you are being asked login credintals. 
+- Frontend - Locate command line working directory at meetme\meetme-frontend and run command in command window npm install and then run ng serve. that's it. it will run at port:4200. Please open your desire browser and press address localhost:4200 and that you go!. you are being asked login credintals. 
    - UserId : admin
    - Pwd    : 123
