@@ -16,18 +16,22 @@ This project allows people to share their calendars online, enabling others to b
 - Managing your profile.
 
 ## Sample Screenshots to Illustrate Functionality
-![Booking page](https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_booking_page.png)
+<div style='display;flex'>
+<img alt='Event List Page' width=400 src='https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_event_list_page.png'>
+<img alt='booking page' width=400 src='https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_booking_page.png'>
+<img alt='booking page' width=400 src='https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_event_availability_page.png'>
+<img alt='booking page' width=400 src='https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_event_availability_custom.png'>
+<img width=400 alt='login page' src='https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_login.png'>
+</div>
 
-https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_solution_explorer.png
-https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_event_availability_page.png
-https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_event_availability_custom.png
-https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_login.png
+
+
 
 ## Project Overview
 This project consists of two main parts. The backend application is a .NET 6 Web API, which handles all server-side processing such as managing event types, availability, appointments, and more.
 
 The frontend is a single-page application built with Angular 14. Currently, no UI framework has been used, but we may incorporate one in the future if needed.
-![Solution explorer](https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_event_list_page.png)
+
 
 ## Technical Stack
    - .Net 6
@@ -41,7 +45,7 @@ The frontend is a single-page application built with Angular 14. Currently, no U
 Clean architecture is a popular design pattern for modern applications, regardless of the tech stack, whether .NET, Java, Python, or Node.js. It helps maintain complex systems by making them more maintainable and decoupling infrastructure from the core domain.
 
 The backend API application follows the clean architecture pattern. The entire backend system is divided into several projects:
-
+<img alt='solution explorer' width=300 src='https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_solution_explorer.png'>
 ### Backend Projects
    - MeetMe.Core - Contains core entities, DTOs, interfaces, extensions, and common services.
    - MeetMe.Application - Implements all business logic through core interfaces.
