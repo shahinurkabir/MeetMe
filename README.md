@@ -16,12 +16,18 @@ This project allows people to share their calendars online, enabling others to b
 - Managing your profile.
 
 ## Sample Screenshots to Illustrate Functionality
+![Booking page](https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_booking_page.png)
 
+https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_solution_explorer.png
+https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_event_availability_page.png
+https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_event_availability_custom.png
+https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_login.png
 
 ## Project Overview
 This project consists of two main parts. The backend application is a .NET 6 Web API, which handles all server-side processing such as managing event types, availability, appointments, and more.
 
 The frontend is a single-page application built with Angular 14. Currently, no UI framework has been used, but we may incorporate one in the future if needed.
+![Solution explorer](https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_event_list_page.png)
 
 ## Technical Stack
    - .Net 6
