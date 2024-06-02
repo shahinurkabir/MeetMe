@@ -4,7 +4,7 @@
 
 MeetMe is an application that allows you to share your calendar availability online, enabling people to book appointments based on your schedule. This concept is similar to what Calendly offers. MeetMe is a small-scale version of Calendly, aimed at creating a proof of concept during spare time.
 
-Last year, I worked on an appointment management feature for my organization's public-facing site, where we used Calendly. One of my coworkers suggested that we develop a small appointment booking system ourselves. However, after a brief analysis, I realized it wouldn't be easy and we didn't have the time to implement additional features beyond our core business application.
+Last year, I worked on an appointment management feature for my organization's public-facing site, where we used Calendly. One of my coworker suggested that we could develop a small appointment booking system by ourselves. However, after a brief analysis, I realized, it wouldn't be easy and we didn't have the time to implement additional features beyond our core business application.
 
 A few months later, at the end of 2023, I decided to create a basic project similar to Calendly, focusing on the essential features rather than a full production application.
 
@@ -17,8 +17,8 @@ This project allows people to share their calendars online, enabling others to b
 
 ## Sample Screenshots to Illustrate Functionality
 <div style='display;flex'>
-<img alt='Event List Page' width=400 src='https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_event_list_page.png'>
 <img alt='booking page' width=400 src='https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_booking_page.png'>
+<img alt='Event List Page' width=400 src='https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_event_list_page.png'>
 <img alt='booking page' width=400 src='https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_event_availability_page.png'>
 <img alt='booking page' width=400 src='https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_event_availability_custom.png'>
 <img width=400 alt='login page' src='https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_login.png'>
