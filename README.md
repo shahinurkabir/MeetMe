@@ -58,6 +58,7 @@ The backend API application follows the clean architecture pattern. The entire b
 
 ### Backend Project - MeetMe.Application
 All business logic is written here, following the mediator pattern. Each API request sends a command to the mediator. A specific handler for each command performs the appropriate action. Commands are validated before execution using FluentValidation.
+
 <img alt='solution explorer' width=300 src='https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_solution_explorer.png'>
 
 ## Frontend Application
