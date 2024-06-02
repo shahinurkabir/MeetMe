@@ -406,9 +406,41 @@ namespace DataProvider.InMemoryData
         {
         }
 
-        public Task<(int, List<AppointmentDetailsDto>?)> GetAppintmentListByParameters(AppointmentSearchParametersDto searchParametersDto, int pageNumber, int pageSize)
+        public async Task<(int, List<AppointmentDetailsDto>?)> GetAppintmentListByParameters(AppointmentSearchParametersDto searchParametersDto, int pageNumber, int pageSize)
         {
-            throw new NotImplementedException();
+            lock (_lockObjectRef)
+            {
+                var appointmentList = _inMemoryDatabase.AppointmentData.Where(x => x.OwnerId == searchParametersDto.OwnerId);
+
+                if (searchParametersDto.StatusNames.Any())
+                {
+                    appointmentList = appointmentList.Where(x => searchParametersDto.StatusNames.Contains(x.Status));
+                }
+                if (searchParametersDto.EventTypeIds.Any())
+                {
+                    appointmentList = appointmentList.Where(x => searchParametersDto.EventTypeIds.Contains(x.EventTypeId));
+                }
+                appointmentList = appointmentList
+                        .Where(e => e.StartTimeUTC >= searchParametersDto.StartDate && e.EndTimeUTC <= searchParametersDto.EndDate)
+                        .OrderByDescending(e => e.StartTimeUTC);
+
+                var totalRecords = appointmentList.Count();
+
+                appointmentList.ToList().ForEach(x =>
+                {
+                    var eventType = _inMemoryDatabase.EventTypeData.FirstOrDefault(e => e.Id == x.EventTypeId);
+                    var user = _inMemoryDatabase.UserData.FirstOrDefault(e => e.Id == eventType!.OwnerId);
+
+                    x.EventType = eventType;
+                    x.EventType!.User = user;
+                });
+                var result = appointmentList.Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(x => AppointmentDetailsDto.New(x, x.EventType!, x.EventType!.User))
+                    .ToList();
+
+                return (totalRecords, result);
+            }
         }
 
 

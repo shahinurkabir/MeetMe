@@ -32,6 +32,7 @@
             <app-time-availability #timeAvailabilityControl [style.display]="!isCustomAvailability?'block':'none'"
                 viewMode="readonly"></app-time-availability>
             <app-time-availability #timeAvailabilityControlCustom
+            (TimeAvailabilityChanged)="onTimeAvailabilityChanged($event)"
                 [style.display]="isCustomAvailability?'block':'none'"></app-time-availability>
 
         </div>

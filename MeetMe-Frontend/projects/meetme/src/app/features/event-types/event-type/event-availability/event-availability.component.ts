@@ -22,6 +22,7 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
   eventAvailabilityDetails: IEventAvailabilityDetailItemDto[] = [];
   customAvailability: IAvailability | undefined;
   isLoading: boolean = false;
+  isValidTimeValidablitityCustom:boolean=true;
   submitted = false;
   model: IEventType = {
     id: "",
@@ -163,12 +164,16 @@ export class EventAvailabilityComponent implements OnInit, OnDestroy {
     return availability;
   }
 
+  onTimeAvailabilityChanged(isValidChanged: boolean) {
+    this.isValidTimeValidablitityCustom=isValidChanged
+  }
   onSubmit(e: any) {
     this.submitted = true;
     e.preventDefault();
 
     if (this.formAvailability!.invalid) return;
-
+    if (this.isCustomAvailability && !this.isValidTimeValidablitityCustom) return ;
+    
     let availability: IAvailability | undefined;
 
     if (this.isCustomAvailability) {

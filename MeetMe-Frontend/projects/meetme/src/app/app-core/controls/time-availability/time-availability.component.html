@@ -64,7 +64,7 @@
     <div class="overrides_dates">
       <h3 class="padding-bottom-10">Customize Date-Specefic hours</h3>
       <div class="padding-bottom-20">If specefic dates are differ from reqular time schedules</div>
-      <button class="primary rounded margin-bottom-10" (click)="onOpenCalendarModal('modal-override-dates')">+ Add date
+      <button  type="button" class="primary rounded margin-bottom-10" (click)="onOpenCalendarModal('modal-override-dates')">+ Add date
         to override</button>
       <div class="timeinterval_overrides" (click)="onEditAvailabilityForOverrideDate(dailyTimeAvailabilities)"
         *ngFor="let dailyTimeAvailabilities of availabilityOverrides;let index=index">

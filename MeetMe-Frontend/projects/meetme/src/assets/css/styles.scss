@@ -30,6 +30,27 @@ body {
 
 }
 
+.container {
+    display: block;
+    width: 1130px;
+    margin: 0 auto;
+}
+
+.content-area {
+    padding: 15px 5px;
+    min-height: 100vh;
+    margin: 0px auto;
+
+}
+
+.logo {
+    height: 30px;
+    width: 50px;
+    cursor: pointer;
+    margin: 10px 30px 0 0;
+    cursor: pointer;
+}
+
 h1 {
     font-size: 2em;
     line-height: 1.2;
@@ -204,37 +225,6 @@ body.is-modal-open {
 
 .margin_10 {
     margin: 10px;
-}
-
-// .layout {
-//     display: block;
-//     min-height: 100vh;
-//     width: 1024px;
-//     margin: 0 auto;
-// }
-
-.container {
-    display: block;
-    // min-height: 100vh;
-    width: 1024px;
-    margin: 0 auto;
-}
-
-.content-area {
-    //min-height: calc(100vh - 90px);
-    padding: 15px 5px;
-    //width: 1024px;
-    min-height: 100vh;
-    margin: 0px auto;
-
-}
-
-.logo {
-    height: 30px;
-    width: 50px;
-    cursor: pointer;
-    margin: 10px 30px 0 0;
-    cursor: pointer;
 }
 
 .meetme-card {

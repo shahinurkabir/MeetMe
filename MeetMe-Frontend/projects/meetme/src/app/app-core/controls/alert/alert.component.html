@@ -5,7 +5,12 @@
         <div  class="alert-content-container">
           <div  class="alert-icon-container">
             <div  class="ng-tns-c0-3 ">
-              <div class="ng-star-inserted">icon</div>
+              <div class="ng-star-inserted">
+                <span *ngIf="alert?.type=='success'">✔️</span>
+                <span *ngIf="alert?.type=='error'">❌</span>
+                <span *ngIf="alert?.type=='info'">⚠️</span>
+                <span *ngIf="alert?.type=='warning'">⚠️</span>
+              </div>
             </div>
           </div>
           <div class="alert-content">

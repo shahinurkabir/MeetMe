@@ -99,6 +99,8 @@ namespace MeetMe.Core.Services
             var listScheduleDetails = MapDefaultScheduleToEntity(eventTypeId, availability.Details);
 
             var listQuestions = GetDefaultQuestion();
+            
+            listQuestions.ForEach(e => e.EventTypeId = eventTypeId);
 
             return new EventType
             {
@@ -139,23 +141,37 @@ namespace MeetMe.Core.Services
         {
             var questions = new List<EventTypeQuestion>()
             {
-                new EventTypeQuestion
+                 new EventTypeQuestion
                 {
-                    Name="Name",
+                    Id=Guid.NewGuid(),
+                    Name="Please specify your origin country",
                     QuestionType=Enums.QuestionType.Text.ToString(),
                     ActiveYN=true,
                     DisplayOrder=1 ,
                     RequiredYN=true,
-                    SystemDefinedYN=true,
+                    OtherOptionYN=true
                 },
-                 new EventTypeQuestion
+                new EventTypeQuestion
                 {
-                    Name="Email",
-                    QuestionType=Enums.QuestionType.Text.ToString(),
+                    Id=Guid.NewGuid(),
+                    Name="What are the best career option to choose?",
+                    QuestionType=Enums.QuestionType.CheckBoxes.ToString(),
                     ActiveYN=true,
                     DisplayOrder=2 ,
                     RequiredYN=true,
-                    SystemDefinedYN=true,
+                    Options="Software development,School teacher,Professor,Flight attendant,Sales representative,Engineer,Database administrator",
+                    OtherOptionYN=true
+                },
+                 new EventTypeQuestion
+                {
+                    Id=Guid.NewGuid(),
+                    Name="How many years of experiences do you have?",
+                    QuestionType=Enums.QuestionType.RadioButtons.ToString(),
+                    ActiveYN=true,
+                    DisplayOrder=3 ,
+                    RequiredYN=false,
+                    Options="0-1 year,1-3 years,3-5 years,5-10 years,10+ years",
+                    OtherOptionYN=false
                 }
             };
 

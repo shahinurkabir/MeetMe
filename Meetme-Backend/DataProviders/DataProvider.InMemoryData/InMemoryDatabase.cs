@@ -6,16 +6,16 @@ public class InMemoryDatabase
 {
     public InMemoryDatabase()
     {
-        UserData.Add(new User
-        {
-            Id = Guid.NewGuid(),
-            UserName = "System Admin",
-            UserId = "admin",
-            Password = "123",
-            BaseURI = "admin-meetme",
-            TimeZone = "asia/dhaka",
-            WelcomeText = "Please do book an appointment to talk about something."
-        });
+        //UserData.Add(new User
+        //{
+        //    Id = Guid.NewGuid(),
+        //    UserName = "System Admin",
+        //    UserId = "admin",
+        //    Password = "123",
+        //    BaseURI = "admin-meetme",
+        //    TimeZone = "asia/dhaka",
+        //    WelcomeText = "Please do book an appointment to talk about something."
+        //});
     }
 
     public List<Availability> AvailabilityData { get; } = new List<Availability>();

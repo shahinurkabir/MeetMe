@@ -202,6 +202,8 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   onLostFocus(e: Event, index: number, isEndTime: boolean, dailyTimeAvailabilities: ITimeIntervalInDay) {
 
+    e.preventDefault();
+    
     dailyTimeAvailabilities.isValidData = true;
 
     let htmlElement = e.target as HTMLInputElement;
@@ -567,21 +569,10 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
 
   private validateTimeIntervalsOfDay(timeIntervalsInDay: ITimeIntervalInDay) {
 
-    //timeIntervalsInDay.intervals.forEach(e => e.errorMessage = "");
-
     let intervals = timeIntervalsInDay.intervals;
 
-    //if (intervals.length == 0) return;
-
     timeIntervalsInDay.isValidData = true;
-
-    // if (intervals.length == 1) {
-    //   let item = intervals[0];
-    //   if (item.startTimeInMinute >= item.endTimeInMinute) {
-    //     item.errorMessage = "End time should be after than start time."
-    //   }
-    //   return;
-    // }
+    intervals.forEach(item=>item.errorMessage=undefined);
 
     for (let i = 0; i < intervals.length; i++) {
       let item = intervals[i];
@@ -593,8 +584,8 @@ export class TimeAvailabilityComponent implements OnInit, AfterViewInit {
       for (let j = i + 1; j < intervals.length; j++) {
         let item2 = intervals[j];
         if (
-          (item.startTimeInMinute >= item2.startTimeInMinute && item.startTimeInMinute <= item2.endTimeInMinute) ||
-          (item.endTimeInMinute >= item2.startTimeInMinute && item.endTimeInMinute <= item2.endTimeInMinute)
+          (item.startTimeInMinute > item2.startTimeInMinute && item.startTimeInMinute < item2.endTimeInMinute) ||
+          (item.endTimeInMinute > item2.startTimeInMinute && item.endTimeInMinute <=item2.endTimeInMinute)
         ) {
           item.errorMessage = "Times overlaping with other intervals";
           item2.errorMessage = "Times overlaping with other intervals";

@@ -60,7 +60,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.selectedDate = this.route.snapshot.queryParamMap.get('date') ?? "";
     this.selectedYearMonth = this.route.snapshot.queryParamMap.get("month");
     this.eventTypeOwner = this.route.snapshot.paramMap.get("user") ?? "";
@@ -80,24 +80,10 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     if (Object.keys(e).length == 0) return;
 
     this.selectedDate = Object.keys(e)[Object.keys(e).length - 1];
-    this.updateAvailableTimeSlotsInDay(this.timeAvailabilities);
+    this.updateAvailableTimeSlotsInDay(this.selectedDate, this.timeAvailabilities);
     this.addParamDate();
   }
 
-  private async loadAvailabilityOutsideOfMonth() {
-
-    if (!this.selectedDate) return;
-
-    if (this.selectedDate) {
-      const selectedDateTime = new Date(this.selectedDate);
-      if (selectedDateTime.getMonth() != this.selectedMonth || selectedDateTime.getFullYear() != this.selectedYear) {
-        const dateRange = DateFunction.getFromDateToDate(selectedDateTime.getFullYear(), selectedDateTime.getMonth(), this.selectedTimeZoneName);
-        const data = await lastValueFrom(this.eventTypeService.getEventAvailabilityCalendar(this.event_slug, this.selectedTimeZoneName, dateRange.fromDate, dateRange.toDate));
-        this.convertToLocalTime(data);
-        this.updateAvailableTimeSlotsInDay(data);
-      }
-    }
-  }
 
   async onMonthChange(e: any) {
 
@@ -118,6 +104,10 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     // in case of calling this method by timezone changed
     if (this.selectedDayAvailabilities)
       this.convertToLocalTime([this.selectedDayAvailabilities])
+
+    if (this.selectedDate && this.isSelectedDateInCurrentMonth(this.selectedDate)) {
+      this.updateAvailableTimeSlotsInDay(this.selectedDate, this.timeAvailabilities);
+    }
   }
 
   onLoadedTimezoneData(e: any) {
@@ -248,6 +238,24 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     this.formAppoinmentEntry?.reset();
     this.formAppoinmentEntry.markAsPristine();
     this.submitted = false;
+  }
+
+
+  private async loadAvailabilityOutsideOfMonth() {
+
+    if (this.selectedDate && !this.isSelectedDateInCurrentMonth(this.selectedDate)) {
+      const selectedDateTime = new Date(this.selectedDate);
+      const dateRange = DateFunction.getFromDateToDate(selectedDateTime.getFullYear(), selectedDateTime.getMonth(), this.selectedTimeZoneName);
+      const data = await lastValueFrom(this.eventTypeService.getEventAvailabilityCalendar(this.event_slug, this.selectedTimeZoneName, dateRange.fromDate, dateRange.toDate));
+      this.convertToLocalTime(data);
+      this.updateAvailableTimeSlotsInDay(this.selectedDate, data);
+    }
+  }
+
+  private isSelectedDateInCurrentMonth(selectedDate: string): boolean {
+    const selectedDateTime = new Date(selectedDate);
+    const result = selectedDateTime.getMonth() == this.selectedMonth && selectedDateTime.getFullYear() == this.selectedYear
+    return result;
   }
 
   private getQuestionnaireResponseContent(questionResponses: any): string | undefined {
@@ -382,7 +390,7 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     }
   }
 
-  
+
 
   private disableCalendarDaysForEmptySlot(fromDate: string, toDate: string, availableTimeSlots: IEventTimeAvailability[]) {
 
@@ -390,14 +398,13 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     const toDateObj = new Date(toDate);
 
     // only disable days in the current month
-    if (fromDateObj.getMonth() != this.selectedMonth || fromDateObj.getFullYear() != this.selectedYear) return;
-    
+    if (!this.isSelectedDateInCurrentMonth(fromDate)) return;
     const allDaysInRange = DateFunction.getDaysInRange(fromDateObj, toDateObj);
 
     if (this.selectedDate) {
       let selectedDayNumber = new Date(this.selectedDate).getDate();
-      if (allDaysInRange.filter(e=>e==selectedDayNumber).length==0){
-        this.selectedDayAvailabilities=undefined
+      if (allDaysInRange.filter(e => e == selectedDayNumber).length == 0) {
+        this.selectedDayAvailabilities = undefined
       }
     }
 
@@ -411,11 +418,9 @@ export class EventTypeCalendarComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateAvailableTimeSlotsInDay(timeAvailabilities: IEventTimeAvailability[]) {
-
-    if (!this.selectedDate) return;
-
-    const availabilitiesInSelectedDate = timeAvailabilities.find(e => e.date == this.selectedDate);
+  private updateAvailableTimeSlotsInDay(selectedDate: string, timeAvailabilities: IEventTimeAvailability[]) {
+    this.selectedDates={[selectedDate]:selectedDate};
+    const availabilitiesInSelectedDate = timeAvailabilities.find(e => e.date == selectedDate);
 
     this.selectedDayAvailabilities = CommonFunction.cloneObject(availabilitiesInSelectedDate);// this.timeAvailabilities.find(e => e.date == this.selectedDate);
   }
