@@ -52,8 +52,8 @@ All business logic is written here, following the mediator pattern. Each API req
 ## Frontend Application
 This is a single-page application based on Angular 14, consisting of two main parts: 
 - ### Application Core
-      Contains all common controls, utilities, pipes, shared types, and interfaces. These reusable items are included in a core module named App Core Module.
-   ### App-Core
+   Contains all common controls, utilities, pipes, shared types, and interfaces. These reusable items are included in a core module named App Core Module.
+   #### App-Core
    - controls
    - directives
    - gurads
@@ -63,10 +63,19 @@ This is a single-page application based on Angular 14, consisting of two main pa
    - services
    - utilities
 - ### Application Features
-      All main features of the application are included in this main module. Features are logically divided, but not yet into dedicated modules; this may be done later.
-   ### Features
+   All main features of the application are included in this main module. Features are logically divided, but not yet into dedicated modules; this may be done later.
+   #### Features
   - Account Settings - Manage user ID and base URI.
    - Availability - Configure your time availability using event type availability settings.
    - Event Types - Define your event types and time availability slots as needed.
    - Calendar - Lists all event availabilities. Share this URL to allow others to book appointments from your calendar.
    - Schedule Appointments - Filter booked appointments using various filtering options.
+
+## How to run this application
+You have to clone repo from here https://github.com/shahinurkabir/MeetMe .
+
+Follow the steps
+- Backend - Run the backend application first. it will run on port:5073 that is localhost:5073
+- Frontend - Locate command directory location at meetme\meetme-frontend and run command in command window npm install and then run ng serve. that's it. it will run at port:4200. Please open your desire browser and press address localhost:4200 and that you go!. you are being asked login credintals. 
+   - UserId : admin
+   - Pwd    : 123
