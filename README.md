@@ -45,7 +45,7 @@ The frontend is a single-page application built with Angular 14. Currently, no U
 Clean architecture is a popular design pattern for modern applications, regardless of the tech stack, whether .NET, Java, Python, or Node.js. It helps maintain complex systems by making them more maintainable and decoupling infrastructure from the core domain.
 
 The backend API application follows the clean architecture pattern. The entire backend system is divided into several projects:
-<img alt='solution explorer' width=300 src='https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_solution_explorer.png'>
+
 ### Backend Projects
    - MeetMe.Core - Contains core entities, DTOs, interfaces, extensions, and common services.
    - MeetMe.Application - Implements all business logic through core interfaces.
@@ -58,6 +58,7 @@ The backend API application follows the clean architecture pattern. The entire b
 
 ### Backend Project - MeetMe.Application
 All business logic is written here, following the mediator pattern. Each API request sends a command to the mediator. A specific handler for each command performs the appropriate action. Commands are validated before execution using FluentValidation.
+<img alt='solution explorer' width=300 src='https://github.com/shahinurkabir/MeetMe/blob/main/images/meetme_solution_explorer.png'>
 
 ## Frontend Application
 This is a single-page application based on Angular 14, consisting of two main parts: 
